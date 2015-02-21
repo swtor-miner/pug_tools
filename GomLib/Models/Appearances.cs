@@ -1,0 +1,410 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Newtonsoft.Json;
+
+namespace GomLib.Models
+{
+    public class AppSlot : PseudoGameObject, IEquatable<AppSlot>
+    {
+        public AppSlot(DataObjectModel dom)
+        {
+            _dom = dom;
+        }
+
+        public string BodyType { get; set; }
+        public string Type 
+        {
+            get { return _type.Substring(7).ToLower();; }
+            set
+            {
+                _type = value;
+            }
+        }
+        internal string _type;
+        public long ModelID{ get; set; }
+        public string Model
+        {
+            get
+            {
+                if (AMI != null)
+                    return AMI.BaseFile; //.Replace("[BT]", BodyType).Replace("[bt]", BodyType);
+                return "";
+            }
+        }
+        internal AMIEntry _AMI;
+        [Newtonsoft.Json.JsonIgnore]
+        public AMIEntry AMI
+        {
+            get
+            {
+                if (_AMI == null)
+                    _AMI = _dom.ami.Find(Type, ModelID);
+                return _AMI;
+            }
+        }
+        public long MaterialIndex { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        internal string _Material0;
+        [Newtonsoft.Json.JsonIgnore] //Need to fix this
+        public string Material0
+        {
+            get
+            {
+                if (_Material0 == null)
+                    FillMats();
+                return _Material0; //.Replace("[BT]", BodyType).Replace("[bt]", BodyType);
+            }
+        }
+        [Newtonsoft.Json.JsonIgnore]
+        internal string _MaterialMirror;
+        [Newtonsoft.Json.JsonIgnore] //Need to fix this
+        public string MaterialMirror
+        {
+            get
+            {
+                if (_MaterialMirror == null)
+                    FillMats();
+                return _MaterialMirror; //.Replace("[BT]", BodyType).Replace("[bt]", BodyType);
+            }
+        }
+        internal void FillMats()
+        {
+            if (AMI == null)
+            {
+                _Material0 = "";
+                _MaterialMirror = "";
+                return;
+            }
+            var matKvP = AMI.GetMaterial(MaterialIndex);
+            _Material0 = matKvP.Key;
+            _MaterialMirror = matKvP.Value;
+        }
+        public List<long> Attachments { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        internal List<string> _AttachedModels;
+        public List<string> AttachedModels
+        {
+            get
+            {
+                if (_AttachedModels == null)
+                {
+                    if (Attachments == null)
+                        return null;
+                    _AttachedModels = new List<string>();
+                    foreach (var attachId in Attachments)
+                    {
+                        if (AMI == null)
+                            _AttachedModels.Add("");
+                        else
+                            _AttachedModels.Add(AMI.GetAttachment(attachId)); //.Replace("[BT]", BodyType).Replace("[bt]", BodyType));
+                    }
+                }
+                return _AttachedModels;
+            }
+        }
+        public long PrimaryHueId { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        internal AMIEntry _PrimaryAMI;
+        [Newtonsoft.Json.JsonIgnore]
+        private AMIEntry PrimaryAMI
+        {
+            get
+            {
+                if (_PrimaryAMI == null)
+                    _PrimaryAMI = _dom.ami.Find("garmenthue", PrimaryHueId);
+                return _PrimaryAMI;
+            }
+        }
+        [Newtonsoft.Json.JsonIgnore]
+        internal string _PrimaryHue;
+        public string PrimaryHue
+        {
+            get
+            {
+                if (_PrimaryHue == null)
+                    if (PrimaryAMI != null)
+                        _PrimaryHue = String.Format("{0};{1}", PrimaryAMI.BaseFile, PrimaryAMI.ColorAsVector4);
+                    else
+                        return "";
+                return _PrimaryHue;
+            }
+        }
+
+        public long SecondaryHueId { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        internal AMIEntry _SecondaryAMI;
+        [Newtonsoft.Json.JsonIgnore]
+        private AMIEntry SecondaryAMI
+        {
+            get
+            {
+                if (_SecondaryAMI == null)
+                    _SecondaryAMI = _dom.ami.Find("garmenthue", SecondaryHueId);
+                return _SecondaryAMI;
+            }
+        }
+        [Newtonsoft.Json.JsonIgnore]
+        internal string _SecondaryHue;
+        public string SecondaryHue
+        {
+            get
+            {
+                if (_SecondaryHue == null)
+                    if (SecondaryAMI != null)
+                        _SecondaryHue = String.Format("{0};{1}", SecondaryAMI.BaseFile, SecondaryAMI.ColorAsVector4);
+                    else
+                        return "";
+                return _SecondaryHue;
+            }
+        }
+
+        public long RandomWeight { get; set; }
+
+        public override HashSet<string> GetDependencies()
+        {
+            HashSet<string> returnList = new HashSet<string>();
+            returnList.Add(this.Model);
+            //finish this off
+            return returnList;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+
+            if (ReferenceEquals(this, obj)) return true;
+
+            AppSlot aps = obj as AppSlot;
+            if (aps == null) return false;
+
+            return Equals(aps);
+        }
+
+        public bool Equals(AppSlot aps)
+        {
+            if (aps == null) return false;
+
+            if (ReferenceEquals(this, aps)) return true;
+
+            if (!Attachments.SequenceEqual(aps.Attachments))
+                return false;
+            if (MaterialIndex != aps.MaterialIndex)
+                return false;
+            if (ModelID != aps.ModelID)
+                return false;
+            if (RandomWeight != aps.RandomWeight)
+                return false;
+            if (Type != aps.Type)
+                return false;
+            //checked low hanging fruit
+            if (AMI != null)
+            {
+                if (!AMI.Equals(aps.AMI))
+                {
+                    //AMI changed, but did this ModelID/MaterialIndex?
+                    if (!AttachedModels.SequenceEqual(aps.AttachedModels))
+                        return false;
+                    if (Material0 != aps.Material0)
+                        return false;
+                    if (MaterialMirror != aps.MaterialMirror)
+                        return false;
+                    if (Model != aps.Model)
+                        return false;
+                }
+            }
+            else if (aps.AMI != null)
+                return false;
+
+            return true;
+        }
+
+    }
+
+    public class ItemAppearance : GameObject, IEquatable<ItemAppearance>
+    {
+        public ItemAppearance(DataObjectModel dom)
+        {
+            _dom = dom;
+        }
+
+        public ItemAppearance() { }
+
+        public AppSlot IPP { get; set; }
+        public long ColorScheme { get; set; } 
+        public string VOSoundTypeOverride { get; set; } //only found on IPPs of type appSlotFace
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+
+            if (ReferenceEquals(this, obj)) return true;
+
+            ItemAppearance ipp = obj as ItemAppearance;
+            if (ipp == null) return false;
+
+            return Equals(ipp);
+        }
+
+        public bool Equals(ItemAppearance ipp)
+        {
+            if (ipp == null) return false;
+
+            if (ReferenceEquals(this, ipp)) return true;
+
+            if (ColorScheme != ipp.ColorScheme)
+                return false;
+            if (VOSoundTypeOverride != ipp.VOSoundTypeOverride)
+                return false;
+            if (IPP != null)
+            {
+                if (!IPP.Equals(ipp.IPP))
+                    return false;
+            }
+            else if (ipp.IPP != null)
+                return false;
+
+            return true;
+        }
+    }
+
+    public class NpcAppearance : GameObject, IEquatable<NpcAppearance>
+    {
+        public NpcAppearance(DataObjectModel dom)
+        {
+            _dom = dom;
+        }
+
+        public string BodyType { get; set; }
+        public Dictionary<string, List<AppSlot>> AppearanceSlotMap { get; set; }
+        public string NppType { get; set; }
+        public string SoundPackage { get; set; }
+        public string ArmorSoundsetOverride { get; set; }
+        public Dictionary<long, string> VocalSoundsetOverride { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+
+            if (ReferenceEquals(this, obj)) return true;
+
+            NpcAppearance npp = obj as NpcAppearance;
+            if (npp == null) return false;
+
+            return Equals(npp);
+        }
+
+        public bool Equals(NpcAppearance npp)
+        {
+            if (npp == null) return false;
+
+            if (ReferenceEquals(this, npp)) return true;
+
+            if (AppearanceSlotMap != null)
+            {
+                if (npp.AppearanceSlotMap == null)
+                    return false;
+                foreach (var appearance in AppearanceSlotMap)
+                {
+                    var prevApp = new List<AppSlot>();
+                    npp.AppearanceSlotMap.TryGetValue(appearance.Key, out prevApp);
+                    if (!appearance.Value.SequenceEqual(prevApp))
+                        return false;
+                }
+            }
+            else if (npp.AppearanceSlotMap != null)
+                return false;
+            if (ArmorSoundsetOverride != npp.ArmorSoundsetOverride)
+                return false;
+            if (BodyType != npp.BodyType)
+                return false;
+            if (Fqn != npp.Fqn)
+                return false;
+            if (Id != npp.Id)
+                return false;
+            if (NppType != npp.NppType)
+                return false;
+            if (SoundPackage != npp.SoundPackage)
+                return false;
+
+            var lsComp = new DictionaryComparer<long, string>();
+            if (!lsComp.Equals(VocalSoundsetOverride, npp.VocalSoundsetOverride))
+                return false;
+
+            return true;
+        }
+    }
+
+    public class WeaponAppearance : PseudoGameObject, IEquatable<WeaponAppearance>
+    {
+        public WeaponAppearance(DataObjectModel dom)
+        {
+            _dom = dom;
+        }
+
+        public WeaponAppearance() { }
+
+        public string Name { get; set; }
+        public string WeaponType { get; set; }
+        public string Model { get; set; }
+        public string FxSpec { get; set; }
+        public string BoneName { get; set; }
+        public string DynamicData { get; set; }
+        public string CombatStance { get; set; }
+        public List<float> StowedScale { get; set; }
+        public List<float> StowedRotation { get; set; }
+        public List<float> StowedOffset { get; set; }
+        public List<float> DrawnScale { get; set; }
+        public List<float> DrawnRotation { get; set; }
+        public List<float> DrawnOffset { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+
+            if (ReferenceEquals(this, obj)) return true;
+
+            WeaponAppearance wpp = obj as WeaponAppearance;
+            if (wpp == null) return false;
+
+            return Equals(wpp);
+        }
+
+        public bool Equals(WeaponAppearance wpp)
+        {
+            if (wpp == null) return false;
+
+            if (ReferenceEquals(this, wpp)) return true;
+
+            if (Name != wpp.Name)
+                return false;
+            if (BoneName != wpp.BoneName)
+                return false;
+            if (CombatStance != wpp.CombatStance)
+                return false;
+            if (DrawnOffset != wpp.DrawnOffset)
+                return false;
+            if (DrawnRotation != wpp.DrawnRotation)
+                return false;
+            if (DrawnScale != wpp.DrawnScale)
+                return false;
+            if (DynamicData != wpp.DynamicData)
+                return false;
+            if (FxSpec != wpp.FxSpec)
+                return false;
+            if (Model != wpp.Model)
+                return false;
+            if (StowedOffset != wpp.StowedOffset)
+                return false;
+            if (StowedRotation != wpp.StowedRotation)
+                return false;
+            if (StowedScale != wpp.StowedScale)
+                return false;
+            if (WeaponType != wpp.WeaponType)
+                return false;
+
+            return true;
+        }
+    }
+}

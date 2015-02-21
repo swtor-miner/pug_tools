@@ -1,0 +1,34 @@
+G:\code\tor_tools\tor_tools\GomLib\ModelLoader\AchievementLoader.cs(99):                /*var firstList = rawRewards.Get<List<object>>("4611686297859444005"); //This is always empty
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\CollectionLoader.cs(30):            var unknownId = ((GomObjectData)mtxData).ValueOrDefault<long>("4611686297592334024", 0); //Always 3042172580397056 for collection items
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\CollectionLoader.cs(54):            List<object> unknownList = obj.Get<List<object>>("4611686297968184000"); // seems to be always empty.
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\CollectionLoader.cs(60):            List<object> unknownList2 = obj.Get<List<object>>("4611686297983034002"); // { 15607973448745700563 } - need to find out what this is.
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\CollectionLoader.cs(94):            var longBoolDic = obj.Get<Dictionary<object, object>>("4611686347575727004"); /* [ 93001972900066292: True, 4095493194534377413: True, 4104425345487988702: True,  ]
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\CollectionLoader.cs(97):            List<long> linkedList = obj.Get<List<object>>("4611686347582697000").ConvertAll(x => (long)x); ;
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\CollectionLoader.cs(99):            var unknownlong = (long)obj.ValueOrDefault<long>("4611686348190277001", 0); // -7824174851411027002 - not sure what this is
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\CollectionLoader.cs(104):            collectionItemsList2 = obj.ValueOrDefault("4611686348671327000", new List<object>()).ConvertAll(x => (ulong)x);
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\MapNoteLoader.cs(118):                case 4611686055156531852:
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\MapNoteLoader.cs(119):                case 4611686048166971304:
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\MapNoteLoader.cs(120):                case 4611686048166971255:
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\MapNoteLoader.cs(121):                case 4611686038902870211:
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\MtxStorefrontEntryLoader.cs(36):            var unknownId = ((GomObjectData)obj).ValueOrDefault<long>("4611686297592334024", 0); //Always 3042172580397056 for collection items
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\MtxStorefrontEntryLoader.cs(55):            mtx.unknownNumber = obj.ValueOrDefault<long>("4611686296598030002", 0);
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\MtxStorefrontEntryLoader.cs(73):            var retiredItemsLookupDictionary = obj.ValueOrDefault<Dictionary<object, object>>("4611686348190657002", new Dictionary<object, object>());
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\MtxStorefrontEntryLoader.cs(76):            mtx.unknownBool2 = obj.ValueOrDefault("4611686297975974006", false); // if they have it, it's true
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\NpcLoader.cs(158):            List<object> trainedPackages = obj.Data.ValueOrDefault<List<object>>("4611686061871131192", null);
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\PlaceableLoader.cs(106):            ulong hydNodeId = obj.Data.ValueOrDefault<ulong>("4611686062713031205", 0);
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\QuestLoader.cs(192):                    long unknownNum = qReward.Get<long>("4611686090803470052");
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\scFFComponentLoader.cs(105):                    var unknownMulti = controller.Data.ValueOrDefault<float>("4611686298398014003", 0); // 70, 85 for Cannons, 1E+07 for Railguns, and 1E+08 for Missiles
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\scFFComponentLoader.cs(125):                    var unknownBool = controller.Data.ValueOrDefault<bool>("4611686350202417000", false); // true
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\scFFComponentLoader.cs(161):            cmp.UnknownId = obj.Data.ValueOrDefault<long>("4611686348912157005", 0); //ex. -1, 4
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\scFFShipLoader.cs(212):            shp.unknownStat1 = obj.ValueOrDefault<float>("4611686298643904002", 0); //scale ?? ex. 0.15 - Override Power_Shield_Regen_Rate Modifier?
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\scFFShipLoader.cs(213):            shp.unknownStat2 = obj.ValueOrDefault<float>("4611686298656584000", 0); // ?? ex. 0.0025
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\scFFShipLoader.cs(215):            shp.unknownStat3 = obj.ValueOrDefault<float>("4611686348394117006", 0); //ex. 2
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\scFFShipLoader.cs(216):            shp.unknownStat4 = obj.ValueOrDefault<float>("4611686348594427000", 0); //ex. 2
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\scFFShipLoader.cs(217):            shp.unknownStat5 = obj.ValueOrDefault<float>("4611686348594427001", 0); //ex. 1.25
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\scFFShipLoader.cs(219):            shp.unknownStat6 = obj.ValueOrDefault<float>("4611686348976567004", 0); //ex. 0.032
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\scFFShipLoader.cs(220):            shp.unknownStat7 = obj.ValueOrDefault<float>("4611686348976567005", 0); //ex. 0.3
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\scFFShipLoader.cs(221):            shp.unknownStat8 = obj.ValueOrDefault<float>("4611686348976567007", 0); //ex. 0.6
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\scFFShipLoader.cs(223):            long unknown9 = obj.ValueOrDefault<long>("4611686349455207001", 0); //ex. 29
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\scFFShipLoader.cs(246):                { "4611686349353597005", "Yaw" },
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\scFFShipLoader.cs(247):                { "4611686349353597009", "Pitch" },
+  G:\code\tor_tools\tor_tools\GomLib\ModelLoader\scFFShipLoader.cs(248):                { "4611686349353597000", "Engine Base Speed" }

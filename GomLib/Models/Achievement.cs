@@ -1,0 +1,414 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Xml.Linq;
+using System.Xml.XPath;
+using System.Text.RegularExpressions;
+using System.Xml;
+
+namespace GomLib.Models
+{
+    public class Achievement : GameObject, IEquatable<Achievement>
+    {
+        public ulong NodeId { get; set; }
+        public string Name { get; set; }
+        public Dictionary<string, string> LocalizedName { get; set; }
+        public long NameId { get; set; }
+        public string Description { get; set; }
+        public Dictionary<string, string> LocalizedDescription { get; set; }
+        public long DescriptionId { get; set; }
+        public string NonSpoilerDesc { get; set; }
+        public Dictionary<string, string> LocalizedNonSpoilerDesc { get; set; }
+        public long nonSpoilerId { get; set; }
+        public int Level { get; set; }
+        public string Icon { get; set; }
+        public AchievementVisibility Visibility { get; set; }
+        public long AchId { get; set; }
+        public long RewardsId { get; set; }
+        public Rewards Rewards { get; set; }
+        public List<AchTask> Tasks { get; set; }
+        public List<AchCondition> Conditions { get; set; }
+
+        public Achievement()
+        {
+            Name = "";
+            Description = "";
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = Level.GetHashCode();
+            if (LocalizedDescription != null) { hash ^= LocalizedDescription.GetHashCode(); }
+            if (LocalizedNonSpoilerDesc != null) { hash ^= LocalizedNonSpoilerDesc.GetHashCode(); }
+            if (LocalizedName != null) { hash ^= LocalizedName.GetHashCode(); }
+            if (Icon != null) { hash ^= Icon.GetHashCode(); }
+            hash ^= RewardsId.GetHashCode();
+            //hash ^= Rewards.GetHashCode();
+            //hash ^= Tasks.GetHashCode();
+            //hash ^= Conditions.GetHashCode();
+            return hash;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} {1} {2}", NameId, Name, Description);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+
+            if (ReferenceEquals(this, obj)) return true;
+
+            Achievement ach = obj as Achievement;
+            if (ach == null) return false;
+
+            return Equals(ach);
+        }
+
+        public bool Equals(Achievement ach)
+        {
+            if (ach == null) return false;
+
+            if (ReferenceEquals(this, ach)) return true;
+
+            if (this.AchId != ach.AchId)
+                return false;
+            if (this.Description != ach.Description)
+                return false;
+            if (this.DescriptionId != ach.DescriptionId)
+                return false;
+            if (this.Fqn != ach.Fqn)
+                return false;
+            if (this.Icon != ach.Icon)
+                return false;
+            if (this.Id != ach.Id)
+                return false;
+            if (this.Level != ach.Level)
+                return false;
+
+            var ssComp = new DictionaryComparer<string, string>();
+            if (!ssComp.Equals(this.LocalizedDescription, ach.LocalizedDescription))
+                return false;
+            if (!ssComp.Equals(this.LocalizedName, ach.LocalizedName))
+                return false;
+            if (!ssComp.Equals(this.LocalizedNonSpoilerDesc, ach.LocalizedNonSpoilerDesc))
+                return false;
+
+            
+            if (this.Name != ach.Name)
+                return false;
+            if (this.NameId != ach.NameId)
+                return false;
+            if (this.NodeId != ach.NodeId)
+                return false;
+
+            
+            if (this.NonSpoilerDesc != ach.NonSpoilerDesc)
+                return false;
+            if (this.nonSpoilerId != ach.nonSpoilerId)
+                return false;
+            if (this.Rewards != null)
+            {
+                if (ach.Rewards == null)
+                    return false;
+                if (!this.Rewards.Equals(ach.Rewards))
+                    return false;
+            }
+            else if (ach.Rewards != null)
+                return false;
+            if (this.RewardsId != ach.RewardsId)
+                return false;
+            if (this.Tasks != null)
+            {
+                if (ach.Tasks == null)
+                    return false;
+                if (!this.Tasks.SequenceEqual(ach.Tasks))
+                    return false;
+            }
+            else if (ach.Tasks != null)
+                return false;
+            if (this.Conditions != null)
+            {
+                if (ach.Conditions == null)
+                    return false;
+                if (!this.Conditions.SequenceEqual(ach.Conditions))
+                    return false;
+            }
+            else if (ach.Conditions != null)
+                return false;
+            if (this.Visibility != ach.Visibility)
+                return false;
+            return true;
+        }
+
+    }
+
+    public class Rewards : GameObject, IEquatable<Rewards>
+    {
+        public Dictionary<string, string> LocalizedLegacyTitle { get; set; }
+        public string LegacyTitle { get; set; }
+        //public string Title { get; set; }
+        public long CartelCoins { get; set; }
+        public long AchievementPoints { get; set; }
+        public long Requisition { get; set; }
+        public Dictionary<ulong, long> ItemRewardList { get; set; }
+
+        public override int GetHashCode()
+        {
+            int hash = LocalizedLegacyTitle.GetHashCode();
+            hash ^= CartelCoins.GetHashCode();
+            hash ^= AchievementPoints.GetHashCode();
+            hash ^= Requisition.GetHashCode();
+            return hash;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} {1} {2} {3}", LegacyTitle, CartelCoins, AchievementPoints, Requisition);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+
+            if (ReferenceEquals(this, obj)) return true;
+
+            Rewards rwd = obj as Rewards;
+            if (rwd == null) return false;
+
+            return Equals(rwd);
+        }
+
+        public bool Equals(Rewards rwd)
+        {
+            if (rwd == null) return false;
+
+            if (ReferenceEquals(this, rwd)) return true;
+
+            if (this.AchievementPoints != rwd.AchievementPoints)
+                return false;
+            if (this.CartelCoins != rwd.CartelCoins)
+                return false;
+            if (this.Fqn != rwd.Fqn)
+                return false;
+            if (this.Id != rwd.Id)
+                return false;
+            if (this.LegacyTitle != rwd.LegacyTitle)
+                return false;
+
+            var ssComp = new DictionaryComparer<string, string>();
+            if (!ssComp.Equals(this.LocalizedLegacyTitle, rwd.LocalizedLegacyTitle))
+                return false;
+
+            if (this.Requisition != rwd.Requisition)
+                return false;
+
+            var ulComp = new DictionaryComparer<ulong, long>();
+            if (!ulComp.Equals(this.ItemRewardList, rwd.ItemRewardList))
+                return false;
+            return true;
+        }
+    }
+
+    //Each achievement consists of one or multiple tasks
+    public class AchTask : GameObject, IEquatable<AchTask>
+    {
+        public long Index { get; set; }
+        public long Index2 { get; set; }
+        public long Count { get; set; }
+        public string Name { get; set; }
+        public Dictionary<string, string> LocalizedNames { get; set; }
+        public List<AchEvent> Events { get; set; }
+        
+        public override int GetHashCode()
+        {
+            int hash = Index.GetHashCode();
+            hash ^= Index2.GetHashCode();
+            hash ^= Count.GetHashCode();
+            hash ^= Name.GetHashCode();
+            hash ^= LocalizedNames.GetHashCode();
+            hash ^= Events.GetHashCode();
+            return hash;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0}x {1}", Count, Name);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+
+            if (ReferenceEquals(this, obj)) return true;
+
+            AchTask rwd = obj as AchTask;
+            if (rwd == null) return false;
+
+            return Equals(rwd);
+        }
+
+        public bool Equals(AchTask rwd)
+        {
+            if (rwd == null) return false;
+
+            if (ReferenceEquals(this, rwd)) return true;
+
+            if (this.Index != rwd.Index)
+                return false;
+            if (this.Index2 != rwd.Index2)
+                return false;
+            if (this.Count != rwd.Count)
+                return false;
+            if (this.Name != rwd.Name)
+                return false;
+
+            var ssComp = new DictionaryComparer<string, string>();
+            if (!ssComp.Equals(this.LocalizedNames, rwd.LocalizedNames))
+                return false;
+
+            //var ulComp = new DictionaryComparer<AchEvent, AchEvent>();
+            //if (!ulComp.Equals(this.Events, rwd.Events))
+            //  return false;
+            return true;
+        }
+    }
+
+    //A list of events that each can complete an achievement task
+    public class AchEvent : GameObject, IEquatable<AchEvent>
+    {
+        public ulong NodeRef { get; set; }
+        public string NodePrefix { get; set; }
+        public long Value { get; set; }
+
+        public void checkNodeRef(DataObjectModel _dom) {
+            var tmpNode = _dom.GetObject(NodeRef);
+            if (tmpNode != null)
+            {
+                NodePrefix = tmpNode.Name.Substring(0, tmpNode.Name.IndexOf("."));
+                tmpNode.Unload();
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = NodeRef.GetHashCode();
+            hash ^= Value.GetHashCode();
+            return hash;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} ({1})", NodeRef, Value);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+
+            if (ReferenceEquals(this, obj)) return true;
+
+            AchEvent rwd = obj as AchEvent;
+            if (rwd == null) return false;
+
+            return Equals(rwd);
+        }
+
+        public bool Equals(AchEvent rwd)
+        {
+            if (rwd == null) return false;
+
+            if (ReferenceEquals(this, rwd)) return true;
+
+            if (this.NodeRef != rwd.NodeRef)
+                return false;
+            if (this.Value != rwd.Value)
+                return false;
+
+            return true;
+        }
+    }
+
+    //Each achievement consists of one or multiple tasks
+    public class AchCondition : GameObject, IEquatable<AchCondition>
+    {
+        public bool UnknownBoolean { get; set; }
+        public AchConditionType Type { get; set; }
+        public AchConditionTarget Target { get; set; }
+        
+        public override int GetHashCode()
+        {
+            int hash = UnknownBoolean.GetHashCode();
+            hash ^= Type.GetHashCode();
+            hash ^= Target.GetHashCode();
+            return hash;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0}", Type.ToString());
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+
+            if (ReferenceEquals(this, obj)) return true;
+
+            AchCondition rwd = obj as AchCondition;
+            if (rwd == null) return false;
+
+            return Equals(rwd);
+        }
+
+        public bool Equals(AchCondition rwd)
+        {
+            if (rwd == null) return false;
+
+            if (ReferenceEquals(this, rwd)) return true;
+
+            if (this.UnknownBoolean != rwd.UnknownBoolean)
+                return false;
+            if (this.Type != rwd.Type)
+                return false;
+            if (this.Target != rwd.Target)
+                return false;
+
+            return true;
+        }
+    }
+
+    //Whether you can see this achievement in the achievement window
+    public enum AchievementVisibility
+    { 
+        Always = 0,//This achievement is always visible
+        Progress = 1,//This achievement becomes visible when a player starts completing one of the tasks
+        Completion = 2//This achievement will only become visible once it has been completed
+    }
+
+    public enum AchConditionType
+    {
+        Area = 0,
+        InPhase = 1,
+        SurvivedNightmare = 2,
+        IsClass = 3,
+        Unknown4 = 4,
+        CompletedInTime = 8,
+        IsNightmare = 10,
+        Faction = 11,
+        Unknown13 = 13,
+        Companion = 15,
+        PvPScoreboard = 16,
+        RaidDifficulty = 18,
+        HasEffect = 19
+    }
+
+    public enum AchConditionTarget
+    {
+         Player = 0,
+         Enemy = 2
+    }
+
+}

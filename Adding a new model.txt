@@ -1,0 +1,27 @@
+When adding a new model:
+
+
+GomLib\Models\....cs
+* create new class based on _Empty.cs
+
+
+GomLib\ModelLoader\...Loader.cs
+* create new class based on _EmptyLoader.cs
+
+
+GomLib\DataObjectModel.cs
+* add:
+   + public AbilityLoader abilityLoader;
+   + abilityLoader = new AbilityLoader(this);
+
+
+SwtorTools\ExtractionFunctions\....cs
+* create new Windows Form based on _Empty.cs
+
+
+SwtorTools\Tools.cs
+* add to combo box:
+   + "...",
+* add logic:
+   + case "...": t = new ThreadStart(get...Data);
+   +    break;
