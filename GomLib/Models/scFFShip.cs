@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace GomLib.Models
 {
@@ -214,6 +215,117 @@ namespace GomLib.Models
             if (this.unknownStat8 != shp.unknownStat8)
                 return false;
             return true;
+        }
+
+        public override XElement ToXElement(bool verbose)
+        {
+            XElement shipContainer = new XElement("Ship");
+            if (this.Id != 0)
+            {
+                string currency = " Fleet Requisition";
+                if (IsPurchasedWithCC) currency = " ???";
+                shipContainer.Add(new XElement("Name", Name),
+                    new XAttribute("Id", Id),
+                    new XElement("Description", Description),
+                    new XElement("Faction", Faction),
+                    new XElement("Category", Category),
+                    new XElement("IsAvailable_IsDeprecated_IsHidden", IsAvailable + "," + IsDeprecated + "," + IsHidden),
+                    new XElement("Cost", Cost + currency));
+                if (verbose)
+                {
+                    shipContainer.Add(//new XElement("Fqn", Fqn,
+                        //new XAttribute("NodeId", NodeId)),
+                        //new XAttribute("Hash", GetHashCode()),
+                    new XElement("Tag", Icon),
+                    new XElement("ShipIcon", ShipIcon),
+                    new XElement("Model", Model));
+                    foreach (var optionContainer in ColorOptions)
+                    {
+                        XElement colorOptions = new XElement("ColorOption",
+                            new XAttribute("Id", optionContainer.Key.ToString().Replace("scFFColorOption", "")));
+                        foreach (var colorOption in optionContainer.Value)
+                        {
+                            colorOptions.Add(new XElement("Color", new XElement("Name", colorOption.Name,
+                                new XAttribute("Id", colorOption.NameId)),
+                                new XElement("Icon", colorOption.Icon),
+                                new XElement("IsAvailable", colorOption.IsAvailable),
+                                //new XElement("Type", colorOption.type), //unneeded
+                                new XAttribute("Id", colorOption.ShortId)));
+                        }
+                        shipContainer.Add(colorOptions);
+                    }
+                    XElement patternOptions = new XElement("Patterns");
+                    foreach (var pattern in PatternOptions)
+                    {
+                        patternOptions.Add(new XElement("Pattern", new XElement("Name", pattern.Name,
+                              new XAttribute("Id", pattern.NameId)),
+                              new XElement("Icon", pattern.Icon),
+                              new XElement("IsAvailable", pattern.IsAvailable),
+                              new XElement("Texture", pattern.TextureForCurrentShip),
+                            //new XElement("Type", pattern.type), //unneeded
+                              new XAttribute("Id", pattern.ShortId)));
+                    }
+                    shipContainer.Add(patternOptions);
+                }
+                XElement stats = new XElement("Stats");
+                if (Stats != null)
+                {
+                    //stats.Add("[ " + string.Join("; ", Stats.Select(x => currentDom.statD.ToStat(x.Key) + ", " + x.Value).ToArray()) + "; ]");
+                    stats.Add(Stats.Select(x => new XElement("Stat", new XAttribute("Id", _dom.statD.ToStat(x.Key)), x.Value)));
+                    if (!verbose)
+                    {
+                        stats.Elements().Where(x => x.Attribute("Id").Value.Contains("4611") || x.Attribute("Id").Value.Contains("OBSOLETE")).Remove();
+                    }
+                }
+                shipContainer.Add(stats);
+                shipContainer.Add(ContainerToXElement(MajorComponentSlots, ComponentMap, "MajorSlot", DefaultLoadout, verbose).Elements());
+                shipContainer.Add(ContainerToXElement(MinorComponentSlots, ComponentMap, "MinorSlot", DefaultLoadout, verbose).Elements());
+
+                if (verbose)
+                {
+                    shipContainer.Add(new XElement("s1", unknownStat1),
+                        new XElement("s2", unknownStat2),
+                        new XElement("s3", unknownStat3),
+                        new XElement("s4", unknownStat4),
+                        new XElement("s5", unknownStat5),
+                        new XElement("s6", unknownStat6),
+                        new XElement("s7", unknownStat7),
+                        new XElement("s8", unknownStat8));
+                }
+            }
+            return shipContainer;
+        }
+
+        private XElement ContainerToXElement(Dictionary<string, long> containerMap,
+            Dictionary<string, List<GomLib.Models.scFFComponent>> componentMap,
+            string containerName,
+            Dictionary<string, ulong> defaultLoadoutMap,
+            bool verbose)
+        {
+            XElement container = new XElement(containerName);
+            if (containerMap != null)
+            {
+                int c = 1;
+                foreach (var containerMapSlot in containerMap)
+                {
+                    XElement subContainer = new XElement(containerName, new XAttribute("Name", containerMapSlot.Key), new XAttribute("Id", c), new XAttribute("NumSlots", containerMapSlot.Value.ToString()));
+                    if (componentMap != null)
+                    {
+                        if (componentMap.ContainsKey(containerMapSlot.Key))
+                        {
+                            foreach (GomLib.Models.scFFComponent comp in componentMap[containerMapSlot.Key])
+                            {
+                                bool isDefault = ((ulong)defaultLoadoutMap[containerMapSlot.Key] == comp.Id);
+                                /* code moved to GomLib.Models.scFFComponent.cs */
+                                subContainer.Add(comp.ToXElement(isDefault, verbose));
+                            }
+                        }
+                    }
+                    container.Add(subContainer);
+                    c++;
+                }
+            }
+            return container;
         }
     }
 }

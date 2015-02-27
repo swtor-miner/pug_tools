@@ -185,6 +185,150 @@ namespace GomLib.Models
                 return false;
             return true;
         }
+
+        public override string ToString(bool verbose)
+        {
+            string n = Environment.NewLine;
+            var txtFile = new StringBuilder();
+
+            txtFile.Append("------------------------------------------------------------" + n);
+            txtFile.Append("Quest Name: " + Name + n);
+            txtFile.Append("Quest NodeId: " + NodeId + n);
+            txtFile.Append("Quest Id: " + Id + n);
+            txtFile.Append("------------------------------------------------------------" + n);
+            txtFile.Append("Quest INFO" + n);
+            txtFile.Append("  IsBonus: " + IsBonus + n);
+            txtFile.Append("  BonusShareable: " + BonusShareable + n);
+            txtFile.Append("  Branches: " + Branches.ToList().ToString() + n);
+            txtFile.Append("  CanAbandon: " + CanAbandon + n);
+            txtFile.Append("  Category: " + Category + n);
+            txtFile.Append("  CategoryId: " + CategoryId + n);
+            txtFile.Append("  Classes: " + Classes.ToList().ToString() + n);
+            txtFile.Append("  Difficulty: " + Difficulty + n);
+            txtFile.Append("  Fqn: " + Fqn + n);
+            txtFile.Append("  Icon: " + Icon + n);
+            txtFile.Append("  IsClassQuest: " + IsClassQuest + n);
+            txtFile.Append("  IsHidden: " + IsHidden + n);
+            txtFile.Append("  IsRepeatable: " + IsRepeatable + n);
+            txtFile.Append("  Items: " + Items + n);
+            txtFile.Append("  RequiredLevel: " + RequiredLevel + n);
+            txtFile.Append("  XpLevel: " + XpLevel + n);
+            txtFile.Append("------------------------------------------------------------" + n + n);
+
+            return txtFile.ToString();
+        }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public Dictionary<string, XElement> LoadedNpcs;
+        [Newtonsoft.Json.JsonIgnore]
+        public Dictionary<string, XElement> LoadedQuests;
+        
+
+        public override XElement ToXElement(bool verbose)
+        {
+            var questNode = new XElement("Quest", new XElement("Name", Name),
+                //new XAttribute("Name", itm.Name),
+                new XElement("Fqn", Fqn,
+                    new XAttribute("NodeId", NodeId)),
+                new XAttribute("Id", Id),
+                new XElement("Category", Category,
+                    new XAttribute("Id", CategoryId)),
+                new XElement("RequiredLevel", RequiredLevel),
+                new XElement("XpLevel", XpLevel));
+            if (verbose)
+            {
+                //Intialize our repeat XElement holders for this quest.
+                LoadedNpcs = new Dictionary<string, XElement>();
+                LoadedQuests = new Dictionary<string, XElement>();
+
+                questNode.Add(
+                    //new XAttribute("Hash", itm.GetHashCode()),
+                new XElement("IsBonus", IsBonus),
+                new XElement("BonusShareable", BonusShareable),
+                new XElement("CanAbandon", CanAbandon),
+                new XElement("IsClassQuest", IsClassQuest),
+                new XElement("IsHidden", IsHidden),
+                new XElement("IsRepeatable", IsRepeatable),
+                new XElement("Difficulty", Difficulty),
+                new XElement("Icon", Icon),
+                new XElement("RequiredPrivacy", ReqPrivacy));
+                string classString = null;
+                if (Classes != null)
+                {
+                    foreach (var classy in Classes)
+                    {
+                        classString += classy.Name + ", ";
+                    }
+                    if (classString != null) { classString = classString.Substring(0, classString.Length - 2); }
+                }
+                questNode.Add(new XElement("Classes", classString));
+
+                XElement questItems = new XElement("Items");
+                if (Items != null)
+                {
+                    questItems.Add(new XAttribute("id", Items.Count));
+                    foreach (var item in Items)
+                    {
+                        if (item.Value != null)
+                        {
+                            questItems.Add(item.Value.ToXElement(true));
+                        }
+                    }
+                }
+                questNode.Add(questItems);
+
+
+                //XElement rewards = new XElement("Rewards");
+                //int r = 1;
+                if (Rewards != null)
+                {
+                    foreach (var rewardEntry in Rewards.OrderBy(x => x.RewardItemId))
+                    {
+                        questNode.Add(rewardEntry.ToXElement(verbose));
+                        //r++;
+                    }
+                }
+                //questNode.Add(rewards);
+
+                foreach (var branch in Branches)
+                {
+                    XElement branchNode = branch.ToXElement(verbose);
+                    questNode.Add(branchNode); //add branch to branches
+
+                }
+                //Trash our repeat XElement holders
+                LoadedNpcs = null;
+                LoadedQuests = null;
+            }
+            return questNode;
+        }
+
+        public void QuestItemsGivenOrTakenToXElement(XElement questNode, List<GomLib.Models.QuestItem> givenItems, List<GomLib.Models.QuestItem> takenItems)
+        {
+            XElement itemsGiven = QuestItemListToXElement("ItemsGiven", givenItems);
+            XElement itemsTaken = QuestItemListToXElement("itemsTaken", takenItems);
+
+            questNode.Add(itemsGiven, itemsTaken);
+        }
+
+        private XElement QuestItemListToXElement(string elementName, List<GomLib.Models.QuestItem> Items)
+        {
+            XElement itemsElement = new XElement(elementName);
+            if (Items != null)
+            {
+                if (Items.Count != 0)
+                {
+                    itemsElement.Add(new XAttribute("id", Items.Count));
+                    for (var i = 0; i < Items.Count; i++)
+                    {
+                        var item = Items.ElementAt(i);
+                        XElement questItem = item.ToXElement(true);
+                        itemsElement.Add(questItem);
+                    }
+                }
+            }
+            return itemsElement;
+        }
     }
 
     public class QuestReward : GameObject, IEquatable<QuestReward>
@@ -251,6 +395,27 @@ namespace GomLib.Models
             if (this.UnknownNum != qsr.UnknownNum)
                 return false;
             return true;
+        }
+
+        public override XElement ToXElement(bool verbose)
+        {
+            XElement reward = new XElement("Reward", new XAttribute("Id", Id));
+            if (verbose)
+            {
+                reward.Add(new XElement("IsAlwaysProvided", IsAlwaysProvided),
+                new XElement("UnknownNum", UnknownNum),
+                new XElement("MinLevel", MinLevel),
+                new XElement("MaxLevel", MaxLevel));
+
+                XElement clas = new XElement("Classes");
+                foreach (var c in Classes)
+                {
+                    clas.Add(new XElement("Class", c.Name, new XAttribute("Id", c.Id)));
+                }
+                reward.Add(clas);
+            }
+            reward.Add(RewardItem.ToXElement(true));
+            return reward;
         }
     }
 }

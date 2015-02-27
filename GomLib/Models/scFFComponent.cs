@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace GomLib.Models
 {
@@ -115,6 +116,70 @@ namespace GomLib.Models
             if (this.UsedByShipId != scp.UsedByShipId)
                 return false;
             return true;
+        }
+
+        public override XElement ToXElement(bool verbose)
+        {
+            return ToXElement(false, verbose);
+        }
+        public XElement ToXElement(bool isDefault, bool verbose)
+        {
+            XElement component = new XElement("Component");
+            if (verbose) component.Add(new XElement("Fqn", Fqn), new XAttribute("Id", ComponentId));
+            component.Add(new XElement("Name", Name),// new XAttribute("Id", NameId)),
+                new XElement("Description", Description),// new XAttribute("Id", DescriptionId)),
+                //new XElement("Icon",Icon),
+                new XElement("IsDefault", isDefault));
+            if (verbose) component.Add(new XElement("IsAvailable_IsDeprecated", IsAvailable + "," + IsDeprecated));
+            if (TalentList.ContainsKey(0))
+            {
+                var type = TalentList[0].GetType();
+                if (type.Name == "Talent")
+                {
+                    if (verbose) component.Add(new XElement("Ability"));
+                    component.Add(((GomLib.Models.Talent)TalentList[0]).ToXElement(verbose));
+                }
+                else
+                {
+                    component.Add(((GomLib.Models.Ability)TalentList[0]).ToXElement(verbose));
+                    component.Add(new XElement("Talent"));
+                }
+            }
+            if (verbose)
+            {
+                XElement talentTree = new XElement("TalentTree", new XAttribute("NumUpgdTiers", NumUpgradeTiers));
+                if(Talents.Ability != null)
+                    talentTree.Add(Talents.Ability.ToXElement(verbose));
+                foreach (var row in Talents.Tree)
+                {
+                    XElement xRow = new XElement("Row", new XAttribute("Id", row.Key));
+                    foreach (var column in row.Value)
+                    {
+                        XElement xCol = null; //new XElement("Column");
+                        if (((List<object>)column.Value)[0].GetType() == typeof(GomLib.Models.Talent))
+                        {
+                            xCol = ((GomLib.Models.Talent)((List<object>)column.Value)[0]).ToXElement();
+                        }
+                        else
+                        {
+                            xCol = ((GomLib.Models.Ability)((List<object>)column.Value)[0]).ToXElement(verbose);
+                        }
+                        xCol.Add(new XAttribute("Priority", column.Key));
+                        if (((List<object>)column.Value)[1] == null)
+                        {
+                            xCol.Add(new XAttribute("Target", "All"));
+                        }
+                        else
+                        {
+                            xCol.Add(new XAttribute("Target", ((List<object>)column.Value)[1]));
+                        }
+                        xRow.Add(xCol);
+                    }
+                    talentTree.Add(xRow);
+                }
+                component.Add(talentTree);
+            }
+            return component;
         }
     }
 }

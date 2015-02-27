@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace GomLib.Models
 {
@@ -159,6 +160,59 @@ namespace GomLib.Models
             }
 
             return true;
+        }
+
+        public XElement ToXElement(bool verbose)
+        {
+            XElement taskNode = new XElement("Task",
+                new XAttribute("Id", Id));
+            //new XAttribute("DBId", DbId)); //this is always 0
+            if (String != null)
+                taskNode.Add(new XElement("String", String));
+            else
+                taskNode.Add(new XElement("String"));
+
+            taskNode.Add(new XElement("CountMax", CountMax));
+
+            new Quest().QuestItemsGivenOrTakenToXElement(taskNode, ItemsGiven, ItemsTaken);
+
+            taskNode.Add(new XElement("BonusMissions"));
+            if (BonusMissions != null)
+            {
+                foreach (var bonus in BonusMissions)
+                {
+                    taskNode.Element("BonusMissions").Add(bonus.ToXElement(verbose));
+                }
+            }
+
+            if (verbose)
+            {
+                taskNode.Add(new XElement("Hook", Hook),
+                    new XElement("ShowCount", ShowCount),
+                    new XElement("ShowTracking", ShowTracking));
+                XElement taskNpcs = new XElement("TaskNpcs");
+                foreach (var npc in TaskNpcs)
+                {
+                    if (this.Step.Branch.Quest.LoadedNpcs.ContainsKey(npc.Fqn))
+                    {
+                        taskNpcs.Add(this.Step.Branch.Quest.LoadedNpcs[npc.Fqn]);
+                    }
+                    else
+                    {
+                        XElement taskNpc = npc.ToXElement(verbose);
+                        taskNpcs.Add(taskNpc); //add task npc to task npcs
+                    }
+                }
+                taskNode.Add(taskNpcs); //add task npcs to task
+                XElement taskQuests = new XElement("TaskQuests");
+                foreach (var quest in TaskQuests)
+                {
+                    XElement taskQuest = quest.ToXElement(verbose);
+                    taskQuests.Add(taskQuest); //add task quest to task quests
+                }
+                taskNode.Add(taskQuests); //add task quests to task
+            }
+            return taskNode;
         }
     }
 }

@@ -86,5 +86,34 @@ namespace GomLib.Models
 
             return true;
         }
+
+        public XElement ToXElement(bool verbose)
+        {
+            XElement branchNode = new XElement("Branch",
+                new XAttribute("Id", Id)); //,
+            //new XAttribute("Hash", GetHashCode()));
+            /*if (verbose)
+            {
+                XElement rewardAll = new XElement("RewardAll"); //need to fix the questloader to actually load these from the questrewards prototypes.
+                if (RewardAll != null)
+                {
+                    foreach (var reward in RewardAll) { rewardAll.Add(new XElement("Reward", new XAttribute("Name", reward.Name))); }
+                }
+
+                XElement rewardOne = new XElement("RewardOne"); //need to fix the questloader to actually load these from the questrewards prototypes.
+                if (RewardOne != null)
+                {
+                    foreach (var reward in RewardOne) { rewardOne.Add(new XElement("Reward", new XAttribute("Name", reward.Name))); }
+                }
+
+                branchNode.Add(rewardAll, rewardOne);
+            }*/
+            foreach (var step in Steps)
+            {
+                XElement stepNode = step.ToXElement(verbose);
+                branchNode.Add(stepNode); //add step to steps
+            }
+            return branchNode;
+        }
     }
 }

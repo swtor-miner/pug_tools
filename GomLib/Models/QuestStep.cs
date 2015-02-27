@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace GomLib.Models
 {
@@ -120,5 +121,36 @@ namespace GomLib.Models
 
             return true;
         }
+
+        public XElement ToXElement(bool verbose)
+        {
+            XElement stepNode = new XElement("Step", new XElement("JournalText", JournalText.Replace(Environment.NewLine, "<br>")),
+                new XAttribute("Id", Id),
+                new XElement("Shareable", IsShareable),
+                new XElement("ItemsTaken"));
+            //new XAttribute("DBId", DbId)); //this is always 0
+            foreach (var task in Tasks)
+            {
+                XElement taskNode = task.ToXElement(verbose);
+                stepNode.Add(taskNode); //add task to tasks
+            }
+
+            if (verbose)
+            {
+                new Quest().QuestItemsGivenOrTakenToXElement(stepNode, ItemsGiven, ItemsTaken);
+            }
+
+            stepNode.Add(new XElement("BonusMissions"));
+            if (BonusMissions.Count > 0)
+            {
+                foreach (var bonus in BonusMissions)
+                {
+                    stepNode.Element("BonusMissions").Add(bonus.ToXElement(true));
+                }
+            }
+
+            return stepNode;
+        }
+
     }
 }

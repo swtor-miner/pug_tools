@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace GomLib.Models
 {
@@ -133,6 +134,33 @@ namespace GomLib.Models
             if (this.unknowntextId != mtx.unknowntextId)
                 return false;
             return true;
+        }
+
+        public override XElement ToXElement(bool verbose)
+        {
+            XElement mtxStorefrontEntryXE = new XElement("MtxStoreFront");
+
+            mtxStorefrontEntryXE.Add(new XElement("Name", Name),
+                new XElement("RarityDescription", RarityDesc),
+                new XAttribute("Id", Id),
+                new XElement("Cost", FullPriceCost),
+                new XElement("DiscountCost", DiscountCost),
+                new XElement("IsAccountUnlock", IsAccountUnlock),
+                new XElement("UnknownBool", unknownBool2));
+
+            if (unknowntext != "") { mtxStorefrontEntryXE.Add(new XElement("Unknown", unknowntext)); }
+            else { mtxStorefrontEntryXE.Add(new XElement("Unknown")); }
+
+            mtxStorefrontEntryXE.Add(new XElement("Requirements"),
+                new XElement("Icon", Icon));
+            int b = 0;
+            foreach (var bullet in BulletPoints)
+            {
+                mtxStorefrontEntryXE.Add(new XElement("Info", bullet, new XAttribute("Id", b)));
+                b++;
+            }
+
+            return mtxStorefrontEntryXE;
         }
     }
 }

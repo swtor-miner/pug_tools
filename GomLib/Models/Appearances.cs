@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
+using System.Xml.Linq;
 
 namespace GomLib.Models
 {
@@ -220,6 +221,30 @@ namespace GomLib.Models
             return true;
         }
 
+        public override XElement ToXElement(bool verbose)
+        {
+            XElement appearanceSlot = new XElement("AppearanceSlot", new XAttribute("Id", ModelID));
+
+            appearanceSlot.Add(new XElement("Type", Type));
+            if (ModelID != 0) appearanceSlot.Add(new XElement("Model", Model, new XAttribute("Id", ModelID)));
+            if (MaterialIndex != 0) appearanceSlot.Add(new XElement("Material", Material0, new XAttribute("Id", MaterialIndex)),
+                new XElement("MaterialMirror", Material0, new XAttribute("Id", MaterialIndex)));
+            if (Attachments.Count > 0)
+            {
+                XElement attachments = new XElement("Attachments");
+                for (int i = 0; i < Attachments.Count; i++)
+                {
+                    attachments.Add(new XElement("Attachment", AttachedModels[i], new XAttribute("Id", Attachments[i])));
+                }
+                appearanceSlot.Add(attachments);
+            }
+            if (PrimaryHueId != 0) appearanceSlot.Add(new XElement("PrimaryHue", PrimaryHue, new XAttribute("Id", PrimaryHueId)));
+            if (SecondaryHueId != 0) appearanceSlot.Add(new XElement("SecondaryHue", SecondaryHue, new XAttribute("Id", SecondaryHueId)));
+
+            appearanceSlot.Add(new XElement("RandomWeight", RandomWeight));
+            return appearanceSlot;
+        }
+
     }
 
     public class ItemAppearance : GameObject, IEquatable<ItemAppearance>
@@ -266,6 +291,18 @@ namespace GomLib.Models
                 return false;
 
             return true;
+        }
+
+        public override XElement ToXElement(bool verbose)
+        {
+            XElement ItemAppearance = new XElement("ItemAppearance", new XAttribute("Id", IPP.ModelID));
+            XElement appSlot = IPP.ToXElement(true);
+
+            ItemAppearance.Add(appSlot.Elements());
+            ItemAppearance.Add(new XElement("ColorScheme", ColorScheme),
+                new XElement("VOSoundTypeOverride", VOSoundTypeOverride));
+
+            return ItemAppearance;
         }
     }
 
@@ -333,6 +370,33 @@ namespace GomLib.Models
                 return false;
 
             return true;
+        }
+
+        public override XElement ToXElement(bool verbose)
+        {
+            XElement npcAppearance = new XElement("NpcAppearance", new XAttribute("Id", Id));
+
+            if (Id == 0) return npcAppearance;
+
+            npcAppearance.Add(new XElement("Type", NppType),
+                new XElement("BodyType", BodyType),
+                new XElement("Fqn", Fqn));
+            if (AppearanceSlotMap.Count > 0)
+            {
+                XElement slotMap = new XElement("AppearanceSlotMap");
+                foreach (var appSlot in AppearanceSlotMap)
+                {
+                    XElement slot = new XElement(appSlot.Key);
+                    foreach (var randomSlot in appSlot.Value)
+                    {
+                        slot.Add(randomSlot.ToXElement(true));
+                    }
+                    slotMap.Add(slot);
+                }
+                npcAppearance.Add(slotMap);
+            }
+
+            return npcAppearance;
         }
     }
 

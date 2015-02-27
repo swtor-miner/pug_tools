@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace GomLib.Models
 {
@@ -179,6 +180,95 @@ namespace GomLib.Models
                 }
             }
             return true;
+        }
+
+        public override XElement ToXElement(bool verbose)
+        {
+            XElement talent = new XElement("Talent");
+            if (NodeId == 0) return talent;
+            /*if (!File.Exists(String.Format("{0}{1}/icons/{2}.dds", Config.ExtractPath, prefix, Icon)))
+            {
+                var stream = _dom._assets.FindFile(String.Format("/resources/gfx/icons/{0}.dds", Icon));
+                if(stream != null)
+                    WriteFile((MemoryStream)stream.OpenCopyInMemory(), String.Format("/icons/{0}.dds", Icon));
+            }*/
+            if (verbose)
+            {
+                talent.Add(new XElement("Fqn", Fqn,
+                            new XAttribute("NodeId", NodeId)),
+                    new XElement("Name", Name, new XAttribute("Id", NameId)),
+                    new XAttribute("Id", Id),
+                    new XElement("Ranks", Ranks),
+                    new XElement("Description", Description,
+                        new XAttribute("Id", DescriptionId)),
+                    new XElement("DescriptionRank2", DescriptionRank2),
+                    new XElement("DescriptionRank3", DescriptionRank3),
+                    new XElement("Icon", Icon),
+                    new XElement("Tokens", TokenList.Select(x => new XElement("Token", new XAttribute("Id", TokenList.IndexOf(x)), x))));
+            }
+            else
+            {
+                talent.Add(new XElement("Name", Name),
+                    new XElement("Ranks", Ranks),
+                    new XElement("Description", Description));
+
+            }
+            if (verbose)
+            {
+                int r = 1;
+                foreach (var blah in RankStats)
+                {
+                    XElement rank = new XElement("Rank", new XAttribute("Id", r));
+                    string firstStatList = "{ ";
+                    foreach (var stat in blah.DefensiveStats)
+                    {
+                        string affectedAbility = "";
+                        if (stat.AffectedNodeId != 0)
+                        {
+                            if (stat.AffectedAbility != null)
+                            {
+                                if (stat.AffectedAbility.Fqn != null)
+                                {
+                                    affectedAbility = stat.AffectedAbility.Fqn;
+                                }
+                                else if (stat.AffectedNodeId != 0)
+                                {
+                                    affectedAbility = stat.AffectedNodeId.ToString();
+                                }
+                            }
+                        }
+                        firstStatList += String.Format("{0}, {1}, {2}, {3}, {4}; ", _dom.statD.ToStat(stat.Stat), stat.Value, stat.Modifier, stat.Enabled, affectedAbility);
+                    }
+                    rank.Add(new XElement("FirstStatList", firstStatList + "}"));
+                    string secondStatList = "{ ";
+                    foreach (var stat in blah.OffensiveStats)
+                    {
+                        string affectedAbility = "";
+                        if (stat.AffectedNodeId != 0)
+                        {
+                            if (stat.AffectedAbility != null)
+                            {
+                                if (stat.AffectedAbility.Fqn != null)
+                                {
+                                    affectedAbility = stat.AffectedAbility.Fqn;
+                                }
+                                else if (stat.AffectedNodeId != 0)
+                                {
+                                    affectedAbility = stat.AffectedNodeId.ToString();
+                                }
+                            }
+                        }
+                        secondStatList += String.Format("{0}, {1}, {2}, {3}, {4}; ", _dom.statD.ToStat(stat.Stat), stat.Value, stat.Modifier, stat.Enabled, affectedAbility);
+                    }
+
+                    rank.Add(new XElement("SecondStatList", secondStatList + "}"));
+                    //new XAttribute("Hash", itm.GetHashCode()),
+                    talent.Add(rank);
+                    r++;
+                }
+            }
+
+            return talent;
         }
     }
 }

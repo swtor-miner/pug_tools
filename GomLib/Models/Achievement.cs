@@ -6,6 +6,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using System.Text.RegularExpressions;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace GomLib.Models
 {
@@ -143,6 +144,98 @@ namespace GomLib.Models
             return true;
         }
 
+        public override XElement ToXElement(bool verbose)
+        {
+            XElement achievement = new XElement("Achievement");
+
+            achievement.Add(
+                new XElement("Name", Name),
+                new XElement("Description", Description),
+                new XElement("Fqn", Fqn),
+                new XAttribute("Id", Id));
+
+            if (verbose)
+            {
+                /*achievement.Element("Name").RemoveAll();
+                for (int i = 0; i < localizations.Count; i++)
+                {
+                    if (LocalizedName[localizations[i]] != "")
+                    {
+                        achievement.Element("Name").Add(new XElement(localizations[i], LocalizedName[localizations[i]]));
+                    }
+                }
+
+                achievement.Element("Description").RemoveAll();
+                for (int i = 0; i < localizations.Count; i++)
+                {
+                    if (LocalizedDescription[localizations[i]] != "")
+                    {
+                        achievement.Element("Description").Add(new XElement(localizations[i], LocalizedDescription[localizations[i]]));
+                    }
+                } */
+
+                achievement.Element("Name").Add(new XAttribute("Id", NameId));
+                achievement.Element("Description").Add(new XAttribute("Id", DescriptionId));
+                achievement.Element("Fqn").Add(new XAttribute("Id", NodeId));
+
+                //new XAttribute("Hash", GetHashCode()),
+                achievement.Add(new XElement("Rewards"),
+                new XElement("NonSpoilerDescription", NonSpoilerDesc,
+                    new XAttribute("Id", nonSpoilerId)),
+                new XElement("Requirements"),
+                new XElement("Amounts"));
+
+                
+                /*for (int i = 0; i < localizations.Count; i++)
+                {
+                    if (LocalizedNonSpoilerDesc[localizations[i]] != "")
+                    {
+                        achievement.Element("NonSpoilerDescription").Add(new XElement(localizations[i], LocalizedNonSpoilerDesc[localizations[i]]));
+                    }
+                }*/
+
+                //string rewards = "{ " + String.Join(", ", RewardsList) + " }";
+                if (RewardsId != 0)
+                {
+                    string cC = Rewards.CartelCoins.ToString();
+                    if (cC == "0") cC = null;
+                    string fR = Rewards.Requisition.ToString();
+                    if (fR == "0") fR = null;
+                    achievement.Element("Rewards").Add(new XAttribute("Id", RewardsId),
+                        new XElement("AchievementPoints", Rewards.AchievementPoints),
+                        new XElement("CartelCoins", cC),
+                        new XElement("FleetRequisition", fR),
+                        new XElement("LegacyTitle", Rewards.LegacyTitle));
+                    
+                    XElement itemRew = new XElement("Items", new XAttribute("Num", Rewards.ItemRewardList.Count));
+                    foreach (var kvp in Rewards.ItemRewardList)
+                    {
+                        var item = new GameObject().ToXElement(kvp.Key, _dom, true);
+                        if (item != null)
+                        {
+                            item.Add(new XAttribute("Quantity", kvp.Value));
+                            itemRew.Add(item);
+                        }
+                    }
+                    if (itemRew.HasElements)
+                        achievement.Element("Rewards").Add(itemRew);
+                    /*if (Rewards.LocalizedLegacyTitle.Count > 0)
+                    {
+                        for (int i = 0; i < localizations.Count; i++)
+                        {
+                            if (Rewards.LocalizedLegacyTitle[localizations[i]] != "")
+                            {
+                                achievement.Element("Rewards").Element("LegacyTitle").Add(new XElement(localizations[i], Rewards.LocalizedLegacyTitle[localizations[i]]));
+                            }
+                        }
+                    }*/
+                }
+                //TODO: Add code to output tasks
+                if (References != null)
+                    achievement.Add(ReferencesToXElement());
+            }
+            return achievement;
+        }
     }
 
     public class Rewards : GameObject, IEquatable<Rewards>

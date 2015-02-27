@@ -63,6 +63,12 @@ namespace GomLib.ModelLoader
             return Load(cdx, obj);
         }
 
+        public Models.Codex Load(GomObject obj)
+        {
+            Codex cdx = new Codex();
+            return Load(cdx, obj);
+        }
+
         public Models.GameObject CreateObject()
         {
             return new Models.Codex();

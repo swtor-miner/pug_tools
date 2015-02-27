@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace GomLib.Models
 {
@@ -137,6 +138,19 @@ namespace GomLib.Models
                 }
                 return _BaseAbilities;
             }
+        }
+
+        public override XElement ToXElement(bool verbose)
+        {
+            XElement element = new XElement("Discipline");
+            element.Add(new XAttribute("Id", Id),
+                new XElement("Name", Name),
+                new XElement("Description", Description),
+                new XElement("Icon", Icon),
+                new XElement("SortIndex", SortIdx),
+                new XElement("DisciplinePath", PathAbilities.ToXElement(verbose)));
+
+            return element;
         }
     }
 }

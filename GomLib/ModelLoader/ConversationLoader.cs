@@ -59,6 +59,12 @@ namespace GomLib.ModelLoader
             return Load(cnv, obj);
         }
 
+        public Models.Conversation Load(GomObject obj)
+        {
+            Conversation cnv = new Conversation();
+            return Load(cnv, obj);
+        }
+
         public Models.Conversation Load(Models.GameObject obj, GomObject gom)
         {
             if (gom == null) { return (Conversation)obj; }
@@ -162,6 +168,7 @@ namespace GomLib.ModelLoader
         {
             DialogNode result = new DialogNode();
 
+            result.Conversation = cnv;
             result.NodeId = data.Get<long>("cnvNodeNumber");
             result.MinLevel = (int)data.ValueOrDefault<long>("cnvLevelConditionMin", -1);
             result.MaxLevel = (int)data.ValueOrDefault<long>("cnvLevelConditionMax", -1);

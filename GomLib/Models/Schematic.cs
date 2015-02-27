@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace GomLib.Models
 {
@@ -254,6 +255,105 @@ namespace GomLib.Models
             if (this.Workstation != sch.Workstation)
                 return false;
             return true;
+        }
+
+        public override string ToString(bool verbose)
+        {
+            var txt = new StringBuilder();
+            string n = Environment.NewLine;
+
+            txt.Append(String.Format("* {0}{1}", Item.Name, n)); //Item.Description.Replace("\r\n", replaceWith).Replace("\n", replaceWith).Replace("\r", replaceWith), n));
+            List<string> reqs = new List<string>();
+            foreach (var kvp in Materials)
+            {
+                var mat = _dom.itemLoader.Load(kvp.Key);
+                reqs.Add(String.Format("{0}x {1}", kvp.Value, mat.Name)); //, mat.Description));
+            }
+            if (reqs.Count > 0)
+                txt.Append(String.Format(" * {0}{1}", String.Join(n + " * ", reqs), n));
+            return txt.ToString();
+        }
+
+        public override XElement ToXElement(bool verbose)
+        {
+            XElement schem = new XElement("Schematic");
+            if (this.Id == 0) return schem;
+
+            schem.Add(new XElement("Fqn", Fqn),
+                new XAttribute("Id", NodeId),
+                new XElement("CrewSkill", CrewSkillId));
+
+            if (Name == "")
+            {
+                if (ItemId != 0)
+                {
+                    var crafted = new GameObject().ToXElement(ItemId, _dom, verbose);
+                    crafted.Name = "CraftedItem";
+                    schem.Add(crafted);
+                    /*if (ExportICONS)
+                    {
+                        OutputSchematicIcon(crftItm.Icon);
+                    }*/
+                }
+
+                XElement mats = new XElement("RequiredMaterials");
+                if (Materials != null)
+                {
+                    foreach (var kvp in Materials)
+                    {
+                        mats.Add(RequiredMatToXElement(_dom, kvp.Value, kvp.Key, verbose));
+                    }
+                    schem.Add(mats);
+                }
+                XElement resmats = new XElement("ResearchReturnedMaterials");
+                if (Research1 != null)
+                    resmats.Add(RequiredMatToXElement(_dom, ResearchQuantity1, Research1.NodeId, verbose));
+                if (Research2 != null)
+                    resmats.Add(RequiredMatToXElement(_dom, ResearchQuantity2, Research2.NodeId, verbose));
+                if (Research3 != null)
+                    resmats.Add(RequiredMatToXElement(_dom, ResearchQuantity3, Research3.NodeId, verbose));
+                schem.Add(resmats);
+            }
+            else
+            {
+                schem.Add(new XElement("Name", Name),
+                    new XElement("MissionDescription", MissionDescription));
+            }
+
+
+            if (verbose)
+            {
+                if (Name == "")
+                {
+
+                }
+                else
+                {
+                    schem.Add(new XElement("Yield", MissionYieldDescription),
+                        new XElement("IsUnlockable", MissionUnlockable),
+                        new XElement("Cost", MissionCost),
+                        new XElement("Alignment", String.Format("Light(normal/crit): {0}/{1}, Dark(normal/crit): {2}/{3}", MissionLight, MissionLightCrit, MissionDark, MissionDarkCrit)));
+                }
+                schem.Add(new XElement("SkillRanges",
+                    new XElement("Orange", SkillOrange),
+                    new XElement("Yellow", SkillYellow),
+                    new XElement("Green", SkillGreen),
+                    new XElement("Grey", SkillGrey)));
+            }
+
+            return schem;
+        }
+
+        private XElement RequiredMatToXElement(DataObjectModel dom, int i, ulong id, bool verbose)
+        {
+            var itm = dom.itemLoader.Load(id);
+            var mat = new GameObject().ToXElement(id, dom, verbose);
+            mat.Add(new XAttribute("Quantity", i), new XElement("Icon", itm.Icon));
+            /* (ExportICONS)
+            {
+                OutputSchematicIcon(itm.Icon);
+            }*/
+            return mat;
         }
     }
 }

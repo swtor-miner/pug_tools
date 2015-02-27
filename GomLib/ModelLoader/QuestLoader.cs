@@ -61,6 +61,12 @@ namespace GomLib.ModelLoader
             return Load(qst, obj);
         }
 
+        public Models.Quest Load(GomObject obj)
+        {
+            Quest qst = new Quest();
+            return Load(qst, obj);
+        }
+
         public Models.GameObject CreateObject()
         {
             return new Models.Quest();

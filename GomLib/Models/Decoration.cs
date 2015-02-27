@@ -203,6 +203,60 @@ namespace GomLib.Models
         public Dictionary<long, string> SourceDict { get; set; }
 
         public bool UniquePerLegacy { get; set; }
+
+        public override string ToString(bool verbose)
+        {
+            var hookNameList = _dom.decorationLoader.HookList.Select(x => x.Value.Name).ToList();
+            hookNameList.Sort();
+            string hookString = String.Join(";", hookNameList.Select(x => (AvailableHooks.Contains(x)) ? "x" : "").ToList());
+
+            return String.Join(";",
+                Name,
+                String.Join(" - ", SourceDict.Values),
+                UnlockingItem.Binding.ToString().Replace("None", ""),
+                //String.Join(" - ", AvailableHooks)
+                CategoryName.Replace("\r\n", "").Replace("\n", "").Replace("\r", ""),
+                SubCategoryName,
+                GuildPurchaseCost,
+                StubType,
+                hookString).Replace("decStubType", "");
+        }
+
+        public override XElement ToXElement(bool verbose)
+        {
+            XElement decoration = new XElement("Decoration");
+
+            decoration.Add(new XElement("Name", Name, new XAttribute("Id", NameId)),
+                new XAttribute("Id", Id),
+                new XElement("Fqn", Fqn, new XAttribute("Id", NodeId)),
+                new XElement("PreviewWindowValues", String.Join(", ", decPrevObjRotationX, decPrevObjRotationY, PrevCamDisOff, PrevCamHeightOff))
+                );
+            if (State != null) decoration.Add(new XElement("DynamicState", State));
+
+            decoration.Add(new XElement("DecorationFqn", DecorationFqn, new XAttribute("Id", DecorationId)),
+                new XElement("IsAvailable", UseItemName));
+
+            if (DefaultAnimation != null) decoration.Add(new XElement("DefaultAnimation", DefaultAnimation));
+
+            decoration.Add(new XElement("FactionPlacementRestriction", FactionPlacementRestriction),
+                new XElement("Category", CategoryName, new XAttribute("Id", CategoryId)),
+                new XElement("SubCategory", SubCategoryName, new XAttribute("Id", SubCategoryId)));
+
+            decoration.Add(new XElement("AvailableHooks", String.Join(", ", AvailableHooks)));
+            decoration.Add(new XElement("GuildPurchaseCost", GuildPurchaseCost));
+            if (StubType != null) decoration.Add(new XElement("RequiredAbilityType", StubType));
+            decoration.Add(new XElement("RequiresAbilityUnlocked", RequiresAbilityUnlocked));
+
+            XElement sources = new XElement("Sources", new XAttribute("Num", SourceDict.Count));
+            foreach (var kvp in SourceDict)
+            {
+                sources.Add(new XElement("Source", kvp.Value, new XAttribute("Id", kvp.Key)));
+            }
+            decoration.Add(sources);
+            decoration.Add(new XElement("UnlockingItem", UnlockingItem.ToXElement(false)),
+                new XElement("UnlockLimits", String.Join(", ", F2PLimit, MaxUnlockLimit)));
+            return decoration;
+        }
     }
 
     public class Hook: IEquatable<Hook>

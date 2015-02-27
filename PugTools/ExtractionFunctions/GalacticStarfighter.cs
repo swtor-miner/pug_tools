@@ -273,9 +273,9 @@ namespace tor_tools
             addtolist("the Ship lists has been generated there are " + i + " Ships");
         }
         #endregion
-        #region XML
+        #region Deprecated
 
-        private XElement ShipDataFromPrototypeAsXElement(Dictionary<object, object> shipProto, bool addedChangedOnly)
+        /* private XElement ShipDataFromPrototypeAsXElement(Dictionary<object, object> shipProto, bool addedChangedOnly)
         {
             double i = 0;
             double e = 0;
@@ -322,7 +322,9 @@ namespace tor_tools
             addtolist(e + " Ships are available.");
             addtolist(h + " Ships are hidden.");
             return ships;
-        }
+        }*/
+        #endregion
+        #region XML
 
         private XElement SortShips(XElement ships)
         {
@@ -335,197 +337,7 @@ namespace tor_tools
             return ships;
         }
 
-        private XElement ShipToXElement(GomLib.Models.scFFShip ship)
-        {
-            XElement shipContainer = new XElement("Ship");
-            if (ship != null)
-            {
-                string currency = " Fleet Requisition";
-                if (ship.IsPurchasedWithCC) currency = " ???";
-                shipContainer.Add(new XElement("Name", ship.Name),
-                    new XAttribute("Id", ship.Id),
-                    new XElement("Description", ship.Description),
-                    new XElement("Faction", ship.Faction),
-                    new XElement("Category", ship.Category),
-                    new XElement("IsAvailable_IsDeprecated_IsHidden", ship.IsAvailable + "," + ship.IsDeprecated + "," + ship.IsHidden),
-                    new XElement("Cost", ship.Cost + currency));
-                if (verbose)
-                {
-                    shipContainer.Add(//new XElement("Fqn", ship.Fqn,
-                        //new XAttribute("NodeId", ship.NodeId)),
-                        //new XAttribute("Hash", ship.GetHashCode()),
-                    new XElement("Tag", ship.Icon),
-                    new XElement("ShipIcon", ship.ShipIcon),
-                    new XElement("Model", ship.Model));
-                    foreach (var optionContainer in ship.ColorOptions)
-                    {
-                        XElement colorOptions = new XElement("ColorOption",
-                            new XAttribute("Id", optionContainer.Key.ToString().Replace("scFFColorOption", "")));
-                        foreach (var colorOption in optionContainer.Value)
-                        {
-                            colorOptions.Add(new XElement("Color", new XElement("Name", colorOption.Name,
-                                new XAttribute("Id", colorOption.NameId)),
-                                new XElement("Icon", colorOption.Icon),
-                                new XElement("IsAvailable", colorOption.IsAvailable),
-                                //new XElement("Type", colorOption.type), //unneeded
-                                new XAttribute("Id", colorOption.ShortId)));
-                        }
-                        shipContainer.Add(colorOptions);
-                    }
-                    XElement patternOptions = new XElement("Patterns");
-                    foreach (var pattern in ship.PatternOptions)
-                    {
-                        patternOptions.Add(new XElement("Pattern", new XElement("Name", pattern.Name,
-                              new XAttribute("Id", pattern.NameId)),
-                              new XElement("Icon", pattern.Icon),
-                              new XElement("IsAvailable", pattern.IsAvailable),
-                              new XElement("Texture", pattern.TextureForCurrentShip),
-                            //new XElement("Type", pattern.type), //unneeded
-                              new XAttribute("Id", pattern.ShortId)));
-                    }
-                    shipContainer.Add(patternOptions);
-                }
-                XElement stats = new XElement("Stats");
-                if (ship.Stats != null)
-                {
-                    //stats.Add("[ " + string.Join("; ", ship.Stats.Select(x => currentDom.statD.ToStat(x.Key) + ", " + x.Value).ToArray()) + "; ]");
-                    stats.Add(ship.Stats.Select(x => new XElement("Stat", new XAttribute("Id", currentDom.statD.ToStat(x.Key)), x.Value)));
-                    if (!verbose)
-                    {
-                        stats.Elements().Where(x => x.Attribute("Id").Value.Contains("4611") || x.Attribute("Id").Value.Contains("OBSOLETE")).Remove();
-                    }
-                }
-                shipContainer.Add(stats);
-                shipContainer.Add(ContainerToXElement(ship.MajorComponentSlots, ship.ComponentMap, "MajorSlot", ship.DefaultLoadout).Elements());
-                shipContainer.Add(ContainerToXElement(ship.MinorComponentSlots, ship.ComponentMap, "MinorSlot", ship.DefaultLoadout).Elements());
-
-                if (verbose)
-                {
-                    shipContainer.Add(new XElement("s1", ship.unknownStat1),
-                        new XElement("s2", ship.unknownStat2),
-                        new XElement("s3", ship.unknownStat3),
-                        new XElement("s4", ship.unknownStat4),
-                        new XElement("s5", ship.unknownStat5),
-                        new XElement("s6", ship.unknownStat6),
-                        new XElement("s7", ship.unknownStat7),
-                        new XElement("s8", ship.unknownStat8));
-                }
-            }
-            return shipContainer;
-        }
-
-        private XElement ShipAbilityPackageAsXElement(GomLib.Models.AbilityPackage shpAbl)
-        {
-            XElement shpAblPackage = new XElement("AbilityPackage");
-            if (shpAbl != null)
-            {
-                int i = 1;
-                shpAblPackage.Add(new XAttribute("Id", shpAbl.Fqn));
-                if (verbose) shpAblPackage.Add(new XElement("NodeId", shpAbl.Id)); //, new XAttribute("Hash", shpAbl.GetHashCode()));
-                foreach (var shpAblPack in shpAbl.PackageAbilities)
-                {
-                    var levels = shpAblPack.Levels[0] + "-" + shpAblPack.Levels[shpAblPack.Levels.Count() - 1];
-                    XElement package = new XElement("Package", new XAttribute("Index", i));
-                    //new XElement("CategoryName", shpAblPack.CategoryName,
-                    //new XAttribute("Id", shpAblPack.CategoryNameId)),
-                    if (verbose)
-                    {
-                        package.Add(new XElement("AutoAcquire", shpAblPack.AutoAcquire),
-                        new XElement("Level", shpAblPack.Level),
-                        new XElement("Levels", levels), //String.Join(",", shpAblPack.Levels)),
-                        new XElement("Scales", shpAblPack.Scales));
-                    }
-                    package.Add(ConvertToXElement(shpAblPack.Ability));
-                    shpAblPackage.Add(package); //add ability to AbilityPackage
-                    i++;
-                }
-            }
-            return shpAblPackage;
-        }
-
-        private XElement ContainerToXElement(Dictionary<string, long> containerMap,
-            Dictionary<string, List<GomLib.Models.scFFComponent>> componentMap,
-            string containerName,
-            Dictionary<string, ulong> defaultLoadoutMap)
-        {
-            XElement container = new XElement(containerName);
-            if (containerMap != null)
-            {
-                int c = 1;
-                foreach (var containerMapSlot in containerMap)
-                {
-                    XElement subContainer = new XElement(containerName, new XAttribute("Name", containerMapSlot.Key), new XAttribute("Id", c), new XAttribute("NumSlots", containerMapSlot.Value.ToString()));
-                    if (componentMap != null)
-                    {
-                        if (componentMap.ContainsKey(containerMapSlot.Key))
-                        {
-                            foreach (GomLib.Models.scFFComponent comp in componentMap[containerMapSlot.Key])
-                            {
-                                bool isDefault = ((ulong)defaultLoadoutMap[containerMapSlot.Key] == comp.Id);
-                                XElement component = new XElement("Component");
-                                if (verbose) component.Add(new XElement("Fqn", comp.Fqn), new XAttribute("Id", comp.ComponentId));
-                                component.Add(new XElement("Name", comp.Name),// new XAttribute("Id", comp.NameId)),
-                                    new XElement("Description", comp.Description),// new XAttribute("Id", comp.DescriptionId)),
-                                    //new XElement("Icon",comp.Icon),
-                                    new XElement("IsDefault", isDefault));
-                                if (verbose) component.Add(new XElement("IsAvailable_IsDeprecated", comp.IsAvailable + "," + comp.IsDeprecated));
-                                if (comp.TalentList.ContainsKey(0))
-                                {
-                                    var type = comp.TalentList[0].GetType();
-                                    if (type.Name == "Talent")
-                                    {
-                                        if (verbose) component.Add(new XElement("Ability"));
-                                        component.Add(TalentToXElement((GomLib.Models.Talent)comp.TalentList[0]));
-                                    }
-                                    else
-                                    {
-                                        component.Add(ConvertToXElement((GomLib.Models.Ability)comp.TalentList[0]));
-                                        component.Add(new XElement("Talent"));
-                                    }
-                                }
-                                if (verbose)
-                                {
-                                    XElement talentTree = new XElement("TalentTree", new XAttribute("NumUpgdTiers", comp.NumUpgradeTiers));
-                                    talentTree.Add(ConvertToXElement(comp.Talents.Ability));
-                                    foreach (var row in comp.Talents.Tree)
-                                    {
-                                        XElement xRow = new XElement("Row", new XAttribute("Id", row.Key));
-                                        foreach (var column in row.Value)
-                                        {
-                                            XElement xCol = null; //new XElement("Column");
-                                            if (((List<object>)column.Value)[0].GetType() == typeof(GomLib.Models.Talent))
-                                            {
-                                                xCol = TalentToXElement((GomLib.Models.Talent)((List<object>)column.Value)[0]);
-                                            }
-                                            else
-                                            {
-                                                xCol = AbilityToXElement((GomLib.Models.Ability)((List<object>)column.Value)[0]);
-                                            }
-                                            xCol.Add(new XAttribute("Priority", column.Key));
-                                            if (((List<object>)column.Value)[1] == null)
-                                            {
-                                                xCol.Add(new XAttribute("Target", "All"));
-                                            }
-                                            else
-                                            {
-                                                xCol.Add(new XAttribute("Target", ((List<object>)column.Value)[1]));
-                                            }
-                                            xRow.Add(xCol);
-                                        }
-                                        talentTree.Add(xRow);
-                                    }
-                                    component.Add(talentTree);
-                                }
-                                subContainer.Add(component);
-                            }
-                        }
-                    }
-                    container.Add(subContainer);
-                    c++;
-                }
-            }
-            return container;
-        }
+        /* code moved to GomLib.Models.scFFShip.cs */
 
         #endregion
         # region Misc

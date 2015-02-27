@@ -62,6 +62,12 @@ namespace GomLib.ModelLoader
             return Load(tal, obj);
         }
 
+        public Models.Talent Load(GomObject obj)
+        {
+            Talent tal = new Talent();
+            return Load(tal, obj);
+        }
+
         public Models.GameObject CreateObject()
         {
             return new Models.Talent();

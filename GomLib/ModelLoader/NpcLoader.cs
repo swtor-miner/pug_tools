@@ -61,6 +61,12 @@ namespace GomLib.ModelLoader
             return Load(npc, obj);
         }
 
+        public Models.Npc Load(GomObject obj)
+        {
+            Npc npc = new Npc();
+            return Load(npc, obj);
+        }
+
         public Models.GameObject CreateObject()
         {
             return new Models.Npc();

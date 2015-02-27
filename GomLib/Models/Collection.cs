@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace GomLib.Models
 {
@@ -167,6 +168,55 @@ namespace GomLib.Models
             if (this.unknowntextId != col.unknowntextId)
                 return false;
             return true;
+        }
+
+        public override XElement ToXElement(bool verbose)
+        {
+            XElement collectionXE = new XElement("Collection");
+
+            collectionXE.Add(new XElement("Name", Name),
+                new XElement("RarityDescription", RarityDesc),
+                new XAttribute("Id", Id));
+
+            if (unknowntext != "") { collectionXE.Add(new XElement("Unknown", unknowntext)); }
+            else { collectionXE.Add(new XElement("Unknown")); }
+
+            collectionXE.Add(new XElement("Requirements"),
+                new XElement("Icon", Icon));
+            int b = 0;
+            foreach (var bullet in BulletPoints)
+            {
+                collectionXE.Add(new XElement("Info", bullet, new XAttribute("Id", b)));
+                b++;
+            }
+
+            XElement grantedItems = new XElement("GrantedItems");
+            foreach (var grantedItem in ItemList)
+            {
+                grantedItems.Add(grantedItem.ToXElement(false));
+            }
+            collectionXE.Add(grantedItems);
+
+            XElement grantedAbilities = new XElement("GrantedAbilities");
+            foreach (var grantedAbility in AbilityList)
+            {
+                grantedAbilities.Add(grantedAbility.ToXElement(false));
+            }
+            collectionXE.Add(grantedAbilities);
+
+            XElement alternateUnlocks = new XElement("AlternateUnlocks");
+            foreach (var altUnlock in AlternateUnlocksMap)
+            {
+                XElement alternate = new GameObject().ToXElement(altUnlock.Key, _dom, false);
+                foreach (var baseAlternate in altUnlock.Value)
+                {
+                    alternate.Add(new XElement("AlternateUnlockFor", new GameObject().ToXElement(baseAlternate, _dom, false)));
+                }
+                alternateUnlocks.Add(alternate);
+            }
+            collectionXE.Add(alternateUnlocks);
+
+            return collectionXE;
         }
     }
 }

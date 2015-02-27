@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace GomLib.Models
 {
@@ -203,5 +204,140 @@ namespace GomLib.Models
         }
 
         public string stb { get; set; }
+
+        public XElement ToXElement(ref List<int> childs, long id, bool verbose)
+        {
+                XElement dNode = new XElement("DialogNode", new XAttribute("Id", id));
+                
+                if (true) //!childs.Contains((int)id))
+                {
+                    if (Conversation.SpeakersIds.Contains(SpeakerId))
+                    {
+                        ulong speakerId = SpeakerId;
+                        if (speakerId == 0)
+                        {
+                            speakerId = Conversation.DefaultSpeakerId;
+                        }
+                        if (Conversation.Speakers[speakerId] != null)
+                        {
+                            switch (Conversation.Speakers[speakerId].Fqn.Substring(0, 3))
+                            {
+                                case "npc":
+                                    string name = ((GomLib.Models.Npc)Conversation.Speakers[speakerId]).Name;
+                                    if (name.Length == 0) { name = Conversation.Speakers[speakerId].Fqn; }
+                                    dNode.Add(new XElement("Speaker", new XAttribute("Id", ((GomLib.Models.Npc)Conversation.Speakers[speakerId]).NodeId >> 32), name));
+                                    break;
+                                case "plc":
+                                    string plcName = ((GomLib.Models.Placeable)Conversation.Speakers[speakerId]).Name;
+                                    if (plcName.Length == 0) { plcName = Conversation.Speakers[speakerId].Fqn; }
+                                    dNode.Add(new XElement("Speaker", new XAttribute("Id", ((GomLib.Models.Placeable)Conversation.Speakers[speakerId]).NodeId >> 32), plcName));
+                                    break;
+                                default:
+                                    throw new Exception("Unaccounted for speaker type");
+                            }
+                        }
+
+                    }
+                    dNode.Add(new XElement("Text", Text));
+                    if (MinLevel != -1) { dNode.Add(new XElement("MinLevel", MinLevel)); }
+                    if (MaxLevel != -1) { dNode.Add(new XElement("MaxLevel", MaxLevel)); }
+                    if (IsEmpty) { dNode.Add(new XElement("IsEmpty", IsEmpty)); }
+                    if (IsAmbient) { dNode.Add(new XElement("IsAmbient", IsAmbient)); }
+                    if (IsPlayerNode) { dNode.Add(new XElement("IsPlayerNode", IsPlayerNode)); }
+                    if (JoinDisabledForHolocom) { dNode.Add(new XElement("JoinDisabledForHolocom", JoinDisabledForHolocom)); }
+                    if (ChoiceDisabledForHolocom) { dNode.Add(new XElement("ChoiceDisabledForHolocom", ChoiceDisabledForHolocom)); }
+                    if (AbortsConversation) { dNode.Add(new XElement("AbortsConversation", AbortsConversation)); }
+                    if (ActionHook.ToString() != "None") { dNode.Add(new XElement("ActionHook", ActionHook.ToString())); }
+                    if (ActionQuest != 0)
+                    {
+                        /*dNode.Add(new XElement("ActionQuest", new XElement("Name", ActionQuest.Name),
+                            new XElement("Fqn", ActionQuest.Fqn,
+                            new XAttribute("NodeId", ActionQuest.NodeId)),
+                            new XAttribute("Id", ActionQuest.Id)));*/
+                        dNode.Add(new XElement("ActionQuest", new XAttribute("Id", ActionQuest)));
+                    }
+                    if (QuestReward != 0)
+                    {
+                        /*XElement rewardNode = new XElement("QuestReward", new XElement("Name", QuestReward.Name),
+                            new XElement("Fqn", QuestReward.Fqn,
+                            new XAttribute("NodeId", QuestReward.NodeId)),
+                            new XAttribute("Id", QuestReward.Id));
+                        dNode.Add(rewardNode);*/
+                        dNode.Add(new XElement("QuestReward", new XAttribute("Id", QuestReward)));
+                    }
+                    if (QuestsGranted.Count != 0)
+                    {
+                        XElement questsGranted = new XElement("QuestsGranted", new XAttribute("Id", QuestsGranted.Count));
+                        for (int i = 0; i < QuestsGranted.Count; i++)
+                        {
+                            /*questsGranted.Add(new XElement("Quest", new XElement("Name", QuestsGranted[i].Name),
+                                new XElement("Fqn", QuestsGranted[i].Fqn,
+                                new XAttribute("NodeId", QuestsGranted[i].NodeId)),
+                                new XAttribute("Id", QuestsGranted[i].Id)));*/
+                            questsGranted.Add(new XElement("Quest", new XAttribute("Id", QuestsGranted[i])));
+                        }
+                        dNode.Add(questsGranted);
+                    }
+                    if (QuestsEnded.Count != 0)
+                    {
+                        XElement questsEnded = new XElement("QuestsEnded", new XAttribute("Id", QuestsEnded.Count));
+                        for (int i = 0; i < QuestsEnded.Count; i++)
+                        {
+                            /*questsEnded.Add(new XElement("Quest", new XElement("Name", QuestsEnded[i].Name),
+                                new XElement("Fqn", QuestsEnded[i].Fqn,
+                                new XAttribute("NodeId", QuestsEnded[i].NodeId)),
+                                new XAttribute("Id", QuestsEnded[i].Id)));*/
+                            questsEnded.Add(new XElement("Quest", new XAttribute("Id", QuestsEnded[i])));
+                        }
+                        dNode.Add(questsEnded);
+                    }
+                    if (QuestsProgressed.Count != 0)
+                    {
+                        XElement questsProgressed = new XElement("QuestsProgressed", new XAttribute("Id", QuestsProgressed.Count));
+                        for (int i = 0; i < QuestsProgressed.Count; i++)
+                        {
+                            /*questsProgressed.Add(new XElement("Quest", new XElement("Name", QuestsProgressed[i].Name),
+                                new XElement("Fqn", QuestsProgressed[i].Fqn,
+                                new XAttribute("NodeId", QuestsProgressed[i].NodeId)),
+                                new XAttribute("Id", QuestsProgressed[i].Id)));*/
+                            questsProgressed.Add(new XElement("Quest", new XAttribute("Id", QuestsProgressed[i])));
+                        }
+                        dNode.Add(questsProgressed);
+                    }
+                    if (AlignmentGain.ToString() != "None")
+                    {
+                        dNode.Add(new XElement("AlignmentGain", AlignmentGain.ToString().Replace("Small", "+50 ")
+                                                                                      .Replace("Medium", "+100 ")
+                                                                                      .Replace("Large", "+150 ")
+                                                                                      .Replace("Mega", "+200 ")));
+                    }
+                    for (int i = 0; i < AffectionRewards.Count; i++)
+                    {
+                        dNode.Add(new XElement("AffectionGain", new XAttribute("Id", i), AffectionRewards.ElementAt(i).Key.Fqn + " - " + AffectionRewards.ElementAt(i).Value.ToString()));
+                    }
+
+                    if (ChildIds != null)
+                    {
+                        foreach (var child in ChildIds)
+                        {
+                            if (Conversation.NodeLinkList.ContainsKey(child))
+                            {
+                                dNode.Add(new XElement("LinkToDialogNode", new XAttribute("Id", child), Conversation.NodeLinkList[child]));
+                            }
+                            else if (Conversation.NodeLookup.ContainsKey(child))
+                            {
+                                dNode.Add(Conversation.NodeLookup[child].ToXElement(ref childs, child, verbose));
+                            }
+                            else
+                            {
+                                dNode.Add(new XElement("DialogNode", new XAttribute("Id", "notFound" + child)));
+                            }
+                        }
+                    }
+                    childs.Add((int)id);
+                }
+                return dNode;
+            
+        }
     }
 }

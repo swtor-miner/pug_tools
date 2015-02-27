@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace GomLib.Models
 {
@@ -59,6 +60,24 @@ namespace GomLib.Models
             if (this.VariableId != qsi.VariableId)
                 return false;
             return true;
+        }
+
+        public XElement ToXElement()
+        {
+            return ToXElement(false);
+        }
+        public XElement ToXElement(bool verbose)
+        {
+            XElement questItem = new XElement("QuestItem",
+                new XElement("Name", Name),
+                new XElement("MaxCount", MaxCount),
+                new XElement("Min", Min),
+                new XElement("Max", Max),
+                new XElement("GUID", GUID),
+                new XAttribute("Id", VariableId),
+                new XElement("UnknownLong", UnknownLong));
+            questItem.Add(new GameObject().ToXElement(Id, _dom, verbose));
+            return questItem;
         }
     }
 }

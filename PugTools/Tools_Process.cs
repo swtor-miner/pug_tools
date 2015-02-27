@@ -717,7 +717,7 @@ namespace tor_tools
                         {
                             conqOrder.Add(actDat.ActualOrderNum, String.Format("{0}: {1} EST - {2}", actDat.ActualOrderNum, actDat.StartTime.ToString(), ((GomLib.Models.Conquest)itm).Name));
                         }
-                    WriteFile(ConquestToSCSV((GomLib.Models.Conquest)itm), "ConquestSCSV.txt", true);
+                    WriteFile(((GomLib.Models.Conquest)itm).ConquestToSCSV(), "ConquestSCSV.txt", true);
                 }
             }
             if (prefix.Contains("Conquest"))
@@ -822,7 +822,7 @@ namespace tor_tools
                 case "GomLib.Models.Quest": return QuestToXElement((GomLib.Models.Quest)item, overrideVerbose);
                 case "GomLib.Models.QuestItem": return QuestItemToXElement((GomLib.Models.QuestItem)item, overrideVerbose);
                 case "GomLib.Models.Codex": return CodexToXElement((GomLib.Models.Codex)item, overrideVerbose);*/
-                case "GomLib.Models.Conversation": return ConversationToText((GomLib.Models.Conversation)item, overrideVerbose);
+                case "GomLib.Models.Conversation":
                 /*case "GomLib.Models.Achievement": return AchievementToXElement((GomLib.Models.Achievement)item, overrideVerbose);
                 case "GomLib.Models.Talent": return TalentToXElement((GomLib.Models.Talent)item, overrideVerbose);
                 case "GomLib.Models.Collection": return CollectionToXElement((GomLib.Models.Collection)item);
@@ -830,9 +830,9 @@ namespace tor_tools
                 case "GomLib.Models.Companion": return CompanionToXElement((GomLib.Models.Companion)item);
                 case "GomLib.Models.scFFShip": return ShipToXElement((GomLib.Models.scFFShip)item);
                 case "GomLib.Models.Schematic": return SchematicToXElement((GomLib.Models.Schematic)item);*/
-                case "GomLib.Models.Decoration": return DecorationToText((GomLib.Models.Decoration)item);
+                case "GomLib.Models.Decoration": 
                 //case "GomLib.Models.ItemAppearance": return ItemAppearanceToXElement((GomLib.Models.ItemAppearance)item);*/
-                case "GomLib.Models.Conquest": return ConquestToText((GomLib.Models.Conquest)item);
+                case "GomLib.Models.Conquest": return ((GomLib.Models.GameObject)item).ToString(!overrideVerbose);
                 default: break;
             }
             return null;
@@ -1175,19 +1175,19 @@ namespace tor_tools
                     return null;
                 switch (gomItm.Name.Substring(0, 3))
                 {
-                    case "itm": return ItemToXElement(gomItm, overrideVerbose);
                     case "abl":
                         if (!gomItm.Name.Contains("/"))
-                            return AbilityToXElement(gomItm, overrideVerbose);
+                            return new GomLib.Models.GameObject().ToXElement(gomItm, !overrideVerbose);
                         break;
-                    case "npc": return NpcToXElement(gomItm, overrideVerbose);
-                    case "qst": return QuestToXElement(gomItm, overrideVerbose);
-                    case "cdx": return CodexToXElement(gomItm, overrideVerbose);
-                    case "cnv": return ConversationToXElement(gomItm, overrideVerbose);
-                    case "ach": return AchievementToXElement(gomItm, overrideVerbose);
-                    case "tal": return TalentToXElement(gomItm, overrideVerbose);
-                    case "sch": return SchematicToXElement(gomItm, overrideVerbose);
-                    case "dec": return DecorationToXElement(gomItm, overrideVerbose);
+                    case "itm":
+                    case "npc":
+                    case "qst":
+                    case "cdx":
+                    case "cnv":
+                    case "ach":
+                    case "tal":
+                    case "sch":
+                    case "dec": return new GomLib.Models.GameObject().ToXElement(gomItm, !overrideVerbose);
                     default: break;
                 }
             }
@@ -1205,31 +1205,31 @@ namespace tor_tools
             string type = item.GetType().ToString();
             switch (type)
             {
-                case "GomLib.Models.Item": return ItemToXElement((GomLib.Models.Item)item, overrideVerbose);
-                case "GomLib.Models.Npc": return NpcToXElement((GomLib.Models.Npc)item, overrideVerbose);
-                case "GomLib.Models.Ability": return AbilityToXElement((GomLib.Models.Ability)item, overrideVerbose);
-                case "GomLib.Models.Quest": return QuestToXElement((GomLib.Models.Quest)item, overrideVerbose);
-                case "GomLib.Models.QuestItem": return QuestItemToXElement((GomLib.Models.QuestItem)item, overrideVerbose);
-                case "GomLib.Models.Codex": return CodexToXElement((GomLib.Models.Codex)item, overrideVerbose);
-                case "GomLib.Models.Conversation": return ConversationToXElement((GomLib.Models.Conversation)item, overrideVerbose);
-                case "GomLib.Models.Achievement": return AchievementToXElement((GomLib.Models.Achievement)item, overrideVerbose);
-                case "GomLib.Models.Talent": return TalentToXElement((GomLib.Models.Talent)item, overrideVerbose);
-                case "GomLib.Models.Collection": return CollectionToXElement((GomLib.Models.Collection)item); //, overrideVerbose);
-                case "GomLib.Models.MtxStorefrontEntry": return MtxStoreFrontToXElement((GomLib.Models.MtxStorefrontEntry)item); //, overrideVerbose);
-                case "GomLib.Models.Companion": return CompanionToXElement((GomLib.Models.Companion)item, overrideVerbose);
-                case "GomLib.Models.scFFShip": return ShipToXElement((GomLib.Models.scFFShip)item); //, overrideVerbose);
-                case "GomLib.Models.Schematic": return SchematicToXElement((GomLib.Models.Schematic)item, overrideVerbose);
-                case "GomLib.Models.Decoration": return DecorationToXElement((GomLib.Models.Decoration)item, overrideVerbose);
-                case "GomLib.Models.ItemAppearance": return ItemAppearanceToXElement((GomLib.Models.ItemAppearance)item); //, overrideVerbose);
-                case "GomLib.Models.Stronghold": return StrongholdToXElement((GomLib.Models.Stronghold)item, overrideVerbose);
-                case "GomLib.Models.Room": return RoomToXElement((GomLib.Models.Room)item, overrideVerbose);
-                case "GomLib.Models.Conquest": return ConquestToXElement((GomLib.Models.Conquest)item, overrideVerbose);
-                case "GomLib.Models.Planet": return PlanetToXElement((GomLib.Models.Planet)item, overrideVerbose);
-                case "GomLib.Models.ConquestObjective": return ConquestObjectiveToXElement((GomLib.Models.ConquestObjective)item, overrideVerbose);
-                case "GomLib.Models.ConquestData": return ConquestDataToXElement((GomLib.Models.ConquestData)item, overrideVerbose);
-                case "GomLib.Models.AdvancedClass": return AdvancedClassToXElement((GomLib.Models.AdvancedClass)item, overrideVerbose);
-                case "GomLib.Models.Discipline": return DisciplineToXElement((GomLib.Models.Discipline)item, overrideVerbose);
-                case "GomLib.Models.AbilityPackage": return AbilityPackageToXElement((GomLib.Models.AbilityPackage)item, overrideVerbose);
+                case "GomLib.Models.Item":
+                case "GomLib.Models.Npc":
+                case "GomLib.Models.Ability":
+                case "GomLib.Models.Quest":
+                case "GomLib.Models.QuestItem":
+                case "GomLib.Models.Codex":
+                case "GomLib.Models.Conversation":
+                case "GomLib.Models.Achievement":
+                case "GomLib.Models.Talent":
+                case "GomLib.Models.Schematic":
+                case "GomLib.Models.Decoration": 
+                case "GomLib.Models.ItemAppearance": 
+                case "GomLib.Models.Stronghold": 
+                case "GomLib.Models.Room":
+                case "GomLib.Models.Planet":
+                case "GomLib.Models.AdvancedClass": 
+                case "GomLib.Models.Discipline":
+                case "GomLib.Models.AbilityPackage": return ((GomLib.Models.GameObject)item).ToXElement(!overrideVerbose);
+                case "GomLib.Models.Conquest":
+                case "GomLib.Models.scFFShip":
+                case "GomLib.Models.Companion":
+                case "GomLib.Models.Collection":
+                case "GomLib.Models.MtxStorefrontEntry": return ((GomLib.Models.PseudoGameObject)item).ToXElement(!overrideVerbose);
+                case "GomLib.Models.ConquestObjective": return ((GomLib.Models.ConquestObjective)item).ToXElement(!overrideVerbose);
+                case "GomLib.Models.ConquestData": return ((GomLib.Models.ConquestData)item).ToXElement(!overrideVerbose);
                 default: break;
             }
             return null;

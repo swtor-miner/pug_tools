@@ -208,5 +208,130 @@ namespace GomLib.Models
         }
 
         public string stb { get; set; }
+
+        public string ToString(bool verbose)
+        {
+            StringBuilder bld = new StringBuilder();
+            string n = Environment.NewLine;
+            bld.Append(String.Format("Conversation - {0}{1}", Fqn, n));
+            foreach (var dialogNode in DialogNodes)
+            {
+                if (SpeakersIds.Contains(dialogNode.SpeakerId))
+                {
+                    ulong speakerId = dialogNode.SpeakerId;
+                    if (speakerId == 0)
+                    {
+                        speakerId = DefaultSpeakerId;
+                    }
+                    if (Speakers[speakerId] != null)
+                    {
+                        switch (Speakers[speakerId].Fqn.Substring(0, 3))
+                        {
+                            case "npc":
+                                string name = ((GomLib.Models.Npc)Speakers[speakerId]).Name;
+                                if (name.Length == 0) { name = Speakers[speakerId].Fqn; }
+                                bld.Append(String.Format("{0}: {1} - {2}{3}", dialogNode.NodeId, name, dialogNode.Text, n));
+                                continue;
+                            case "plc":
+                                string plcName = ((GomLib.Models.Placeable)Speakers[speakerId]).Name;
+                                if (plcName.Length == 0) { plcName = Speakers[speakerId].Fqn; }
+                                bld.Append(String.Format("{0}: {1} - {2}{3}", dialogNode.NodeId, plcName, dialogNode.Text, n));
+                                continue;
+                            default:
+                                throw new Exception("Unaccounted for speaker type");
+                        }
+                    }
+
+                }
+                bld.Append(String.Format("{0}: {1}{2}", dialogNode.NodeId, dialogNode.Text, n));
+            }
+            return bld.ToString();
+        }
+
+        public override XElement ToXElement(bool verbose)
+        {
+            XElement conversation = new XElement("Conversation", new XAttribute("Id", Id));
+            conversation.Add(new XElement("Fqn", Fqn));
+            if (verbose)
+            {
+                XElement dialogNodes = new XElement("DialogNodes");
+                if (RootNodes != null)
+                {
+                    foreach (var rootNodeKvp in RootNodes)
+                    {
+                        var childs = new List<int>();
+                        if (NodeLinkList.ContainsKey(rootNodeKvp.Value))
+                        {
+                            dialogNodes.Add(new XElement("LinkToDialogNode", new XAttribute("Id", rootNodeKvp.Value), NodeLinkList[rootNodeKvp.Value]));
+                        }
+                        else if (NodeLookup.ContainsKey(rootNodeKvp.Value))
+                        {
+                            dialogNodes.Add(NodeLookup[rootNodeKvp.Value].ToXElement(ref childs, rootNodeKvp.Value, verbose));
+                        }
+                        else
+                        {
+                            dialogNodes.Add(new XElement("DialogNode", new XAttribute("Id", "notFound" + rootNodeKvp.Value)));
+                        }
+                    }
+                }
+                conversation.Add(dialogNodes); //add classes to codex
+                /*XElement speakers = new XElement("Speakers");
+                foreach (var speaker in Speakers)
+                {
+                    if (speaker.Value != null)
+                    {
+                        switch (speaker.Value.Fqn.Substring(0, 3))
+                        {
+                            case "npc":
+                                speakers.Add(new XElement("Speaker", new XAttribute("Id", speaker.Key >> 32), ((GomLib.Models.Npc)speaker.Value).Name + " - " + speaker.Value.Fqn));
+                                break;
+                            case "plc":
+                                speakers.Add(new XElement("Speaker", new XAttribute("Id", speaker.Key >> 32), ((GomLib.Models.Placeable)speaker.Value).Name + " - " + speaker.Value.Fqn));
+                                break;
+                            default:
+                                throw new Exception("Unaccounted for speaker type");
+                        }
+                    }
+                    else
+                    {
+                        speakers.Add(new XElement("Speaker", new XAttribute("Id", speaker.Key)));
+                    }
+                }
+                conversation.Add(speakers);
+                XElement questStarted = new XElement("QuestStarted");
+                foreach (var quest in QuestStarted)
+                {
+                    questStarted.Add(new XElement("Quest", new XElement("Name", quest.Name),
+                                new XElement("Fqn", quest.Fqn,
+                                new XAttribute("NodeId", quest.NodeId)),
+                                new XAttribute("Id", quest.Id)));
+                }
+                conversation.Add(questStarted);
+
+                XElement questProgressed = new XElement("QuestProgressed");
+                foreach (var quest in QuestProgressed)
+                {
+                    questProgressed.Add(new XElement("Quest", new XElement("Name", quest.Name),
+                                new XElement("Fqn", quest.Fqn,
+                                new XAttribute("NodeId", quest.NodeId)),
+                                new XAttribute("Id", quest.Id)));
+                }
+                conversation.Add(questProgressed);
+
+                XElement questEnded = new XElement("QuestEnded");
+                foreach (var quest in QuestEnded)
+                {
+                    questEnded.Add(new XElement("Quest", new XElement("Name", quest.Name),
+                                new XElement("Fqn", quest.Fqn,
+                                new XAttribute("NodeId", quest.NodeId)),
+                                new XAttribute("Id", quest.Id)));
+                }
+                conversation.Add(questEnded);*/
+                //conversation.Add(new XElement("QuestStarted", QuestStarted));
+                //sqlexec("INSERT INTO `conversations` (`conversation_idc`, `quest_name`, `quest_nodeid`, `quest_id`, `IsBonus`, `BonusShareable`, `Branches`, `CanAbandon`, `Category`, `CategoryId`, `Classes`, `Difficulty`, `Fqn`, `Icon`, `IsClassQuest`, `IsHidden`, `IsRepeatable`, `Items`, `RequiredLevel`, `XpLevel`) VALUES (NULL, '" + name + "', '" + NodeId + "', '" + Id + "', '" + IsBonus + "', '" + BonusShareable + "', '" + Branches + "', '" + CanAbandon + "', '" + Category + "', '" + CategoryId + "', '" + Classes + "', '" + Difficulty + "', '" + Fqn + "', '" + Icon + "', '" + IsClassQuest + "', '" + IsHidden + "', '" + IsRepeatable + "', '" + Items + "', '" + RequiredLevel + "', '" + XpLevel + "');");
+            }
+            return conversation;
+
+        }
     }
 }

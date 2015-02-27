@@ -60,6 +60,12 @@ namespace GomLib.ModelLoader
             return Load(sch, obj);
         }
 
+        public Models.Schematic Load(GomObject obj)
+        {
+            Schematic sch = new Schematic();
+            return Load(sch, obj);
+        }
+
         public Models.GameObject CreateObject()
         {
             return new Models.Schematic();

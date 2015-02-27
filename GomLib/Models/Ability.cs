@@ -232,5 +232,117 @@ namespace GomLib.Models
                 return false;
             return true;
         }
+
+        public override string ToString(bool verbose){
+            var txtFile = new StringBuilder();
+            string n = Environment.NewLine;
+
+            if (this.NodeId == 0) return "";
+
+            txtFile.Append("Name: " + Name + n);
+            txtFile.Append("NodeId: " + NodeId + n);
+            txtFile.Append("Id: " + Id + n);
+            txtFile.Append("  Flags (Passive/Hidden): " + IsPassive + "/" + IsHidden + n);
+            txtFile.Append("  Description: " + Description + " (" + DescriptionId + ")" + n);
+            txtFile.Append("  Tokens: " + TalentTokens + n);
+            txtFile.Append("  Fqn: " + Fqn + n);
+            txtFile.Append("  Icon: " + Icon + n);
+            txtFile.Append("  level: " + Level + n);
+            txtFile.Append("  Range (Min/Max): " + MinRange + "/" + MaxRange + n);
+            if (ApCost != 0) { txtFile.Append("  Ammo/Heat Cost: " + ApCost + n); }
+            if (EnergyCost != 0) { txtFile.Append("  Energy Cost: " + EnergyCost + n); }
+            if (ForceCost != 0) { txtFile.Append("  Force Cost: " + ForceCost + n); }
+            if (ChannelingTime != 0) { txtFile.Append("  Channeling Time: " + ChannelingTime + n); }
+            else
+            {
+                if (CastingTime != 0) { txtFile.Append("  Casting Time: " + CastingTime + n); }
+                else { txtFile.Append("  Casting Time: Instant" + n); }
+            }
+            txtFile.Append("  Cooldown Time: " + Cooldown + n);
+            if (GCD != -1) { txtFile.Append("  GCD: " + GCD + n); } else { txtFile.Append("  GCD: No GCD" + n); }
+            if (GcdOverride) { txtFile.Append("  Overrides GCD: " + GcdOverride + n); }
+            txtFile.Append("  Uses Pushback: " + Pushback + n);
+            txtFile.Append("  Ignores Alacrity: " + IgnoreAlacrity + n);
+            txtFile.Append("  LoS Check: " + LineOfSightCheck + n);
+            if (ModalGroup != 0) { txtFile.Append("  Modal Group: " + ModalGroup + n); }
+            if (SharedCooldown != 0) { txtFile.Append("  Shared Cooldown: " + SharedCooldown + n); }
+            if (TargetArc != 0 && TargetArcOffset != 0) { txtFile.Append("  Target Arc/Offset: " + TargetArc + "/" + TargetArcOffset + n); }
+            txtFile.Append("  Target Rule: " + (GomLib.Models.TargetRule)TargetRule + n + n);
+
+            return txtFile.ToString();
+        }
+
+        public override XElement ToXElement(bool verbose)
+        {
+            XElement ability = new XElement("Ability");
+            if (NodeId != 0)
+            {
+                /*if (!File.Exists(String.Format("{0}{1}/icons/{2}.dds", Config.ExtractPath, prefix, Icon)) && Icon != null)
+                {
+                    var stream = _dom._assets.FindFile(String.Format("/resources/gfx/icons/{0}.dds", Icon));
+                    if (stream != null)
+                        WriteFile((MemoryStream)stream.OpenCopyInMemory(), String.Format("/icons/{0}.dds", Icon));
+                }*/
+                if (Fqn == null) return ability;
+                ability.Add(new XElement("Fqn", Fqn),
+                        new XAttribute("Id", Id),
+                        new XElement("Name", Name),
+                        new XElement("Description", Description));
+
+                if (verbose)
+                {
+                    /*ability.Element("Name").RemoveAll(); //removes base text to replace with localized variants.
+                    for (int i = 0; i < localizations.Count; i++)
+                    {
+                        if (LocalizedName[localizations[i]] != "")
+                        {
+                            ability.Element("Name").Add(new XElement(localizations[i], LocalizedName[localizations[i]]));
+                        }
+                    }
+
+                    ability.Element("Description").RemoveAll();
+                    for (int i = 0; i < localizations.Count; i++)
+                    {
+                        if (LocalizedDescription[localizations[i]] != "")
+                        {
+                            ability.Element("Description").Add(new XElement(localizations[i], LocalizedDescription[localizations[i]]));
+                        }
+                    } */
+                    ability.Element("Name").Add(new XAttribute("Id", NameId));
+                    ability.Element("Fqn").Add(new XAttribute("NodeId", NodeId));
+                    ability.Element("Description").Add(new XAttribute("Id", DescriptionId));
+                    ability.Add(new XElement("IsPassive", IsPassive),
+                        new XElement("IsHidden", IsHidden),
+                        new XElement("Tokens", (DescriptionTokens ?? new Dictionary<int, Dictionary<string, object>>()).Select(x => TokenToXElement(x))),
+                        new XElement("Icon", Icon),
+                        new XElement("level", Level),
+                        new XElement("MinRange", MinRange * 10),
+                        new XElement("MaxRange", MaxRange * 10),
+                        new XElement("AmmoHeatCost", ApCost),
+                        new XElement("EnergyCost", EnergyCost),
+                        new XElement("ForceCost", ForceCost),
+                        new XElement("ChannelingTime", ChannelingTime),
+                        new XElement("CastingTime", CastingTime),
+                        new XElement("CooldownTime", Cooldown),
+                        new XElement("GCD", GCD),
+                        new XElement("OverridesGCD", GcdOverride),
+                        new XElement("UsesPushback", Pushback),
+                        new XElement("IgnoresAlacrity", IgnoreAlacrity),
+                        new XElement("LoSCheck", LineOfSightCheck),
+                        new XElement("ModalGroup", ModalGroup),
+                        new XElement("SharedCooldown", SharedCooldown),
+                        new XElement("TargetArc", TargetArc),
+                        new XElement("TargetArcOffset", TargetArcOffset),
+                        new XElement("TargetRule", (GomLib.Models.TargetRule)TargetRule));
+                }
+                ability.Elements().Where(x => x.Value == "0" || x.IsEmpty).Remove();
+            }
+            return ability;
+        }
+        public static XElement TokenToXElement(KeyValuePair<int, Dictionary<string, object>> data)
+        {
+            return new XElement("Token", new XAttribute("Id", data.Key),
+                data.Value.Select(x => new XElement(x.Key, x.Value)));
+        }
     }
 }

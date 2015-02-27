@@ -69,6 +69,12 @@ namespace GomLib.ModelLoader
             return Load(abl, obj);
         }
 
+        public Models.Ability Load(GomObject obj)
+        {
+            Models.Ability abl = new Ability();
+            return Load(abl, obj);
+        }
+
         public Models.GameObject CreateObject()
         {
             return new Models.Ability();

@@ -65,6 +65,12 @@ namespace GomLib.ModelLoader
             return Load(ach, obj);
         }
 
+        public Models.Achievement Load(GomObject obj)
+        {
+            Models.Achievement ach = new Achievement();
+            return Load(ach, obj);
+        }
+
         public Models.GameObject CreateObject()
         {
             return new Models.Achievement();

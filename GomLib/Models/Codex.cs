@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace GomLib.Models
 {
@@ -125,6 +126,50 @@ namespace GomLib.Models
             if (this.Name != cdx.Name)
                 return false;
             return true;
+        }
+
+        public override XElement ToXElement(bool verbose) //split to see if it was necessary to loop through linked codices. Didn't seem like it.
+        {
+            XElement codex = new XElement("Codex");
+
+            codex.Add(new XElement("Title", Name),
+                new XElement("NodeId", NodeId),
+                new XAttribute("Id", Id),
+                //new XAttribute("Hash", GetHashCode()),
+                new XElement("CategoryId", CategoryId));
+            if (verbose)
+            {
+                string reqclasses = null;
+                if (Classes != null)
+                {
+                    foreach (var reqclass in Classes)
+                    {
+                        reqclasses += reqclass.Name.ToString() + ", ";
+                    }
+                }
+                if (reqclasses != null) { reqclasses = reqclasses.Substring(0, reqclasses.Length - 2); }
+                codex.Add(new XElement("Classes", reqclasses));
+                codex.Add(new XElement("ClassRestricted", ClassRestricted),
+                    new XElement("Faction", Faction),
+                    new XElement("Fqn", Fqn),
+                    new XElement("HasPlanets", HasPlanets),
+                    new XElement("Image", Image),
+                    new XElement("IsHidden", IsHidden),
+                    new XElement("IsPlanet", IsPlanet),
+                    new XElement("Level", Level),
+                    new XElement("Text", LocalizedDescription["enMale"]));
+                XElement subCodices = new XElement("LinkedCodexEntries");
+                if (HasPlanets && Planets != null)
+                {
+                    foreach (var planet in Planets)
+                    {
+                        if (planet != null) subCodices.Add(new XElement("Codex", planet.Fqn, new XAttribute("Id", planet.Id))); //change this to call the parent method to iterate through linked codices
+                    }
+                    codex.Add(subCodices);
+                }
+                //codex.Add(subCodices);
+            }
+            return codex;
         }
     }
 }

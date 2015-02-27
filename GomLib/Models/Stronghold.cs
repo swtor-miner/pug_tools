@@ -139,6 +139,49 @@ namespace GomLib.Models
                 return false;
             return true;
         }
+
+        public override string ToString(bool verbose)
+        {
+            return String.Join("; ",
+                Name,
+                String.Join(" - ", RoomTable.Values.Select(x => x.Name).ToList()),
+                GuildShCost,
+                PlayerShCost);
+        }
+
+        public override XElement ToXElement(bool verbose)
+        {
+            XElement stronghold = new XElement("Stronghold");
+
+            stronghold.Add(new XElement("Name", Name, new XAttribute("Id", NameId)),
+                new XAttribute("Id", Id),
+                new XElement("Description", Description, new XAttribute("Id", DescId)),
+                new XElement("Fqn", Fqn, new XAttribute("Id", NodeId)),
+                new XElement("DefaultOccupancy", DefaultOccupancy),
+                new XElement("DefaultGuildSHOccupancy", DefGuildShOcc),
+                new XElement("GuildSHCost", GuildShCost),
+                new XElement("PlayerShCost", PlayerShCost),
+                new XElement("CartelMarketEntries",
+                    new XElement("DataminingNote", "I haven't confirmed what the second entry is for yet. They could be Subscriber/F2P costs, or a Player Stronghold cost (lower cost one) and a disabled Guild Stronghold cost."),
+                    DiscountMtxSF.ToXElement(verbose),
+                    MtxStoreFront.ToXElement(verbose)),
+                new XElement("FactionPurchaseRestriction", FactionPurchaseRestriction),
+                new XElement("Icon", Icon),
+                new XElement("PublicIcon", PublicIcon),
+                new XElement("MaxHooks", MaxHooks),
+                new XElement("DefaultHooks", DefaultHooks),
+                new XAttribute("PhaseId", PhsId),
+                new XElement("Type", Type)
+                );
+            XElement rooms = new XElement("Rooms", new XAttribute("Num", RoomTable.Count));
+            foreach (var kvp in RoomTable)
+            {
+                rooms.Add(kvp.Value.ToXElement(verbose));
+            }
+            stronghold.Add(rooms);
+
+            return stronghold;
+        }
     }
 
     public class Room: IEquatable<Room>
@@ -246,6 +289,28 @@ namespace GomLib.Models
                 return false;
 
             return true;
+        }
+
+        public XElement ToXElement(bool verbose)
+        {
+            XElement room = new XElement("Room");
+
+            room.Add(new XElement("Name", Name, new XAttribute("Id", NameId)),
+                new XAttribute("Id", Idx),
+                new XElement("Description", Description, new XAttribute("Id", DescId)),
+                new XElement("PlayerShCost", PlayerShCost),
+                new XElement("IncPlayerSHOccupancy", PlyrShIncOcc),
+                new XElement("IncPlayerSHDecorations", PlyrShIncDecs),
+                new XElement("GuildSHCost", GldShCost),
+                new XElement("IncGuildSHOccupancy", GldShIncOcc),
+                new XElement("IncGuildSHDecorations", GldShIncDecs),
+                new XElement(DiscountMtxSF.ToXElement(verbose)),
+                new XElement(MtxStoreFront.ToXElement(verbose)),
+                new XElement("RequiredItemToUnlock", new GameObject().ToXElement(ReqItmToUnlockId, _dom, true),
+                    new XAttribute("Qty", ReqQty))
+                );
+
+            return room;
         }
     }
 

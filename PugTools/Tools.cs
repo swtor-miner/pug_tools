@@ -457,8 +457,8 @@ namespace tor_tools
             DialogResult result = testFile.ShowDialog();
             if (result == System.Windows.Forms.DialogResult.OK)
             {
-                try
-                {
+                //try
+                //{
                     LoadData();
 
                     DisableButtons();
@@ -580,19 +580,20 @@ namespace tor_tools
                     {
                         DisableButtons(); GC.Collect();
                         addtolist("Getting Item Appearances.");
-                        getItemApps();
+                        getObjects("ipp.", "ItemAppearances");
+                        //getItemApps();
                     }
                     if (extensions.Contains("MISC"))
                     {
                         /* nothing yet! */
                     }
                     addtolist("Completed extraction of all supported objects.");
-                }
+                /*}
                 catch (Exception e)
                 {
-                    /* do something here */
+                    //do something here
                     MessageBox.Show(String.Format("An error occured while loading data. ({0})", e.HResult));
-                }
+                }*/
             }
             EnableButtons();
         }

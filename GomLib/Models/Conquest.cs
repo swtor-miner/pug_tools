@@ -124,6 +124,240 @@ namespace GomLib.Models
                 return false;
             return true;
         }
+
+        public override string ToString(bool verbose)
+        {
+            string objectives = "";
+            if (RepeatableObjectivesList != null)
+                objectives = ObjectivesToText(ActivePlanets, RepeatableObjectivesList);
+            else
+                objectives = "";
+            string secondObjectives = "";
+            if (OneTimeObjectivesList != null)
+                secondObjectives = ObjectivesToText(ActivePlanets, OneTimeObjectivesList);
+            else
+                secondObjectives = "";
+            string conquestDates = "Event Order/Start Time: None Listed!";
+            if (ActiveData != null)
+            {
+                var data = String.Join(
+                    Environment.NewLine,
+                    ActiveData.OrderBy(x => x.ActualOrderNum).Select(x => String.Format("Event Order/Start Time: {0} - {1} EST", x.ActualOrderNum, x.StartTime.ToString())));
+                conquestDates = data;
+            }
+            //WriteFile(String.Join(Environment.NewLine, Name, conquestDates, Environment.NewLine), "conquestPost.txt", true);
+            return String.Join(Environment.NewLine,
+                Name,
+                Description,
+                conquestDates,
+                String.Format("Personal Goal: {0}", ParticipateGoal),
+                String.Format("Republic Active Planets: {0}", String.Join(" - ", RepublicActivePlanets.Select(x => x.Name).ToList())),
+                String.Format("Imperial Active Planets: {0}", String.Join(" - ", ImperialActivePlanets.Select(x => x.Name).ToList())),
+                String.Format("Repeatable Objectives List: {0}  {1}", Environment.NewLine, objectives),
+                String.Format("One Time Objectives List: {0}  {1}", Environment.NewLine, secondObjectives),
+                Environment.NewLine
+                );
+        }
+        private string ObjectivesToText(Dictionary<ulong, bool> activePlanets, List<GomLib.Models.ConquestObjective> objectivesList)
+        {
+            string objectives = String.Join(
+                Environment.NewLine + "  ",
+                objectivesList
+                    .Select(x =>                                            // Behold the abortion of spawned by Linq. Bow before the absurdity!
+                        String.Join(
+                            Environment.NewLine + "  ",                     // Mash em all together!
+                            x.ObjectiveList
+                            .Select(y =>                                    // Turn the ConquestObjective List into a string List
+                                String.Join(                                // Mash em all together!
+                                    Environment.NewLine + "    ",
+                                    String.Join(
+                                        ": ",
+                                        (y.Key.Name == "") ?                // This is a handy inline conditional for fixing missing objective entries
+                                            "Missing Objective!"
+                                                :
+                                            y.Key.Name,                     // Grab the Achievement/Objective Name/Rewards/Description
+                                        (y.Key.Rewards != null) ?
+                                            y.Key.Rewards.AchievementPoints.ToString()
+                                                :
+                                            "???"),
+                                    (y.Key.Description == "")
+                                    ? "Missing Objective Description!" : y.Key.Description.Replace("\r", " ").Replace("\n", " "),
+                                    "  " +
+                                    String.Join(                            // Mash em all together!
+                                        Environment.NewLine + "      ",     // Now to tack on the Planetary bonus list!
+                                        y.Value
+                                            .Where(q => (activePlanets != null) ?
+                                                activePlanets.Keys.Contains(q.Key.Id)
+                                                    :
+                                                true)  // Choose only those planets listed as active planets in the base conquest or all planets if no list provided
+                                            .Select(z =>                    // Turn the Planet/bonus dictionary into a List of strings
+                                            String.Format(
+                                                "{0} x{1}",
+                                                z.Key.Name,
+                                                z.Value
+                                                )
+                                            ).ToList()                      // This enumerates the IEnumberable<string> Linq Statement and puts it into a List<string>
+                                    )
+                                )
+                            ).ToList()                                      // This enumerates the IEnumberable<string> Linq Statement and puts it into a List<string>
+                        )
+                    ).ToList()                                              // This enumerates the IEnumberable<string> Linq Statement and puts it into a List<string>
+            );
+            return objectives;
+        }
+
+        public string ConquestToSCSV()
+        {
+            string objectives = "";
+            if (RepeatableObjectivesList != null)
+                objectives = ObjectivesToSCSV(ActivePlanets, RepeatableObjectivesList);
+            else
+                objectives = "";
+            string secondObjectives = "";
+            if (OneTimeObjectivesList != null)
+                secondObjectives = ObjectivesToSCSV(ActivePlanets, OneTimeObjectivesList);
+            else
+                secondObjectives = "";
+            string conquestDates = "Event Order/Start Time: None Listed!";
+            if (ActiveData != null)
+            {
+                var data = String.Join(
+                    String.Format("{0};;", Environment.NewLine),
+                    ActiveData.OrderBy(x => x.ActualOrderNum).Select(x => String.Format("Event Order/Start Time: {0} - {1} EST", x.ActualOrderNum, x.StartTime.ToString())));
+                conquestDates = data;
+            }
+            //WriteFile(String.Join(Environment.NewLine, Name, conquestDates, Environment.NewLine), "conquestPost.txt", true);
+            return String.Join(Environment.NewLine,
+                String.Format("{0};;{1}", Name, conquestDates),
+                String.Format(";;{0}", Description),
+                String.Format("Personal Goal: {0};;;Planetary Multipliers", ParticipateGoal),
+                String.Format("Active Planets;Objective Points;{0};Task Description;Required Task Total", String.Join(";", ActivePlanets.Select(y =>
+                    (!RepublicActivePlanets.Select(w => w.Id).ToList().Contains(y.Key))
+                    ?
+                        (!ActivePlanetObjects.ContainsKey(y.Key))
+                            ?
+                                "Unknown Planet Name"
+                            :
+                                String.Format("Imperial {0}", ActivePlanetObjects[y.Key].Name)
+                    :
+                        (!ImperialActivePlanets.Select(w => w.Id).ToList().Contains(y.Key))
+                        ?
+                            String.Format("Republic {0}", ActivePlanetObjects[y.Key].Name)
+                        :
+                            (!ActivePlanetObjects.ContainsKey(y.Key))
+                            ?
+                                "Unknown Planet Name"
+                            :
+                                ActivePlanetObjects[y.Key].Name
+                    ).ToList())),
+                //String.Format("Invasion Bonus:;;{0}", String.Join(";", ActivePlanets.Select(y => ActivePlanetObjects[y.Key].InvasionBonus.Replace("Invasion Bonus - ", "")).ToList())),
+                String.Format("Repeatable Objectives:;;{0}{1}{2}",
+                    String.Join(";", ActivePlanets.Select(y =>
+                        (!ActivePlanetObjects.ContainsKey(y.Key))
+                            ?
+                                ""
+                            :
+                                ActivePlanetObjects[y.Key].InvasionBonus.Replace("Invasion Bonus - ", "")).ToList()),
+                    Environment.NewLine,
+                    objectives),
+                "",
+                String.Format("One Time Objectives: {0}{1}", Environment.NewLine, secondObjectives),
+                Environment.NewLine
+                );
+        }
+        private string ObjectivesToSCSV(Dictionary<ulong, bool> activePlanets, List<GomLib.Models.ConquestObjective> objectivesList)
+        {
+            string objectives = String.Join(
+                    Environment.NewLine,
+                    objectivesList
+                        .Select(x =>                                            // Behold the abortion of spawned by Linq. Bow before the absurdity!
+                            String.Join(
+                                Environment.NewLine,                     // Mash em all together!
+                                x.ObjectiveList
+                                .Select(y =>                                    // Turn the ConquestObjective List into a string List
+                                    String.Join(                                // Mash em all together!
+                                        ";",
+                                        String.Join(
+                                            ";",
+                                            (y.Key.Name == "") ?                // This is a handy inline conditional for fixing missing objective entries
+                                                "Missing Objective!"
+                                                    :
+                                                y.Key.Name,                     // Grab the Achievement/Objective Name/Rewards/Description
+                                            (y.Key.Rewards != null) ?
+                                                y.Key.Rewards.AchievementPoints.ToString()
+                                                    :
+                                                "???"),
+                                        String.Join(                            // Mash em all together!
+                                            ";",     // Now to tack on the Planetary bonus list!
+                                            activePlanets
+                                                .Select(z =>                    // Turn the Planet/bonus dictionary into a List of strings
+                                                    (y.Value.Where(t => t.Key.Id == z.Key).Count() != 0)
+                                                    ? y.Value.Where(t => t.Key.Id == z.Key).First().Value : 1.0
+                                                ).ToList()                      // This enumerates the IEnumberable<string> Linq Statement and puts it into a List<string>
+                                        ),
+                                        (y.Key.Description == "")
+                                        ? "Missing Objective Description!" : y.Key.Description.Replace("\r", " ").Replace("\n", " "),
+                                        (y.Key.Tasks != null)
+                                        ? y.Key.Tasks[0].Count.ToString() : "???"
+                                    )
+                                ).ToList()                                      // This enumerates the IEnumberable<string> Linq Statement and puts it into a List<string>
+                            )
+                        ).ToList()                                              // This enumerates the IEnumberable<string> Linq Statement and puts it into a List<string>
+                );
+            return objectives;
+        }
+
+        public override XElement ToXElement(bool verbose)
+        {
+            XElement stronghold = new XElement("Conquest");
+
+            stronghold.Add(new XElement("Name", Name, new XAttribute("Id", NameId)),
+                new XAttribute("Id", Id),
+                new XElement("Description", Description, new XAttribute("Id", DescId)),
+                new XElement("Icon", Icon),
+                new XElement("DesignName", DesignName)
+                );
+            if (ActiveData != null)
+            {
+
+                XElement activeData = new XElement("Schedule", new XAttribute("Num", ActiveData.Count));
+                for (int i = 0; i < ActiveData.Count; i++)
+                {
+                    var actDat = ActiveData[i].ToXElement(verbose);
+                    actDat.SetAttributeValue("Id", i);
+                    activeData.Add(actDat);
+                }
+                stronghold.Add(activeData);
+            }
+
+            XElement repPlanets = new XElement("RepublicActivePlanets", new XAttribute("Num", RepublicActivePlanets.Count));
+            foreach (var planet in RepublicActivePlanets)
+            {
+                repPlanets.Add(planet.ToXElement(verbose));
+            }
+            stronghold.Add(repPlanets);
+            XElement impPlanets = new XElement("ImperialActivePlanets", new XAttribute("Num", ImperialActivePlanets.Count));
+            foreach (var planet in ImperialActivePlanets)
+            {
+                impPlanets.Add(planet.ToXElement(verbose));
+            }
+            stronghold.Add(impPlanets);
+            XElement rptObjectives = new XElement("RepeatableObjectivesList", new XAttribute("Num", RepeatableObjectivesList.Count));
+            foreach (var conquestObj in RepeatableObjectivesList)
+            {
+                rptObjectives.Add(conquestObj.ToXElement(verbose));
+            }
+            stronghold.Add(rptObjectives);
+
+            XElement oneTObjectives = new XElement("OneTimeObjectivesList", new XAttribute("Num", OneTimeObjectivesList.Count));
+            foreach (var conquestObj in OneTimeObjectivesList)
+            {
+                oneTObjectives.Add(conquestObj.ToXElement(verbose));
+            }
+            stronghold.Add(oneTObjectives);
+
+            return stronghold;
+        }
     }
 
     public class ConquestObjective : IEquatable<ConquestObjective>
@@ -181,6 +415,29 @@ namespace GomLib.Models
             }
 
             return true;
+        }
+
+        public XElement ToXElement(bool verbose)
+        {
+            XElement cObj = new XElement("ConquestObjective");
+
+            cObj.Add(new XAttribute("Id", Id));
+            foreach (var kvp in ObjectiveList)
+            {
+                var ach = kvp.Key.ToXElement(false);
+                if (kvp.Key.Name != null && kvp.Key.Name != "")
+                    ach.Add(new XElement("ObjectivePoints", kvp.Key.Rewards.AchievementPoints));
+                cObj.Add(ach);
+                XElement planetMods = new XElement("PlanetModifiers");
+                foreach (var subKvp in kvp.Value)
+                {
+                    var plt = subKvp.Key.ToXElement(false);
+                    plt.Add(new XElement("Modifier", String.Format("x{0}", subKvp.Value)));
+                    planetMods.Add(plt);
+                }
+                cObj.Add(planetMods);
+            }
+            return cObj;
         }
     }
 
@@ -285,6 +542,31 @@ namespace GomLib.Models
                 return false;
             return true;
         }
+
+        public override XElement ToXElement(bool verbose)
+        {
+            XElement room = new XElement("Planet");
+
+            room.Add(new XElement("Name", Name),
+                new XAttribute("Id", Id));
+            if (verbose)
+            {
+                room.Element("Name").Add(new XAttribute("Id", NameId));
+                room.Add(new XElement("Description", Description, new XAttribute("Id", DescId)),
+                    new XElement("DataminingNote", "Fuel Cost to transport your Flagship includes the selected exit's fuel cost as well."),
+                    new XElement("OrbitalSupportCost", OrbtSupportCost),
+                    new XElement("OrbitalSupportAbility", OrbtSupportAbility.ToXElement(false)),
+                    new XElement("FuelCost", TransportCost),
+                    new XElement("Icon", Icon),
+                    new XElement("PrimaryAreaId", PrimaryAreaId)
+                    //new XElement("PrimaryAreaFuelCost", ExitList[PrimaryAreaId]
+                    );
+            }
+            //TODO load sub-areas
+
+
+            return room;
+        }
     }
 
     public class ConquestData : IEquatable<ConquestData>
@@ -360,6 +642,22 @@ namespace GomLib.Models
                 return false;
 
             return true;
+        }
+
+        public XElement ToXElement(bool verbose)
+        {
+            XElement room = new XElement("EventData", new XAttribute("Id", Id));
+
+            room.Add(new XElement("OrderNum", ActualOrderNum),
+                new XElement("StartTime", String.Format("{0} EST", StartTime.ToString())));
+            if (verbose)
+            {
+                room.Element("OrderNum").Add(new XAttribute("Id", OrderId));
+                room.Add(new XElement("PersonalRewardQuest", PersonalQst.ToXElement(false)),
+                    new XElement("GuildRewardQuest", GuildQst.ToXElement(false))
+                    );
+            }
+            return room;
         }
     }
 }

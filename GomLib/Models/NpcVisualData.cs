@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace GomLib.Models
 {
@@ -119,6 +120,35 @@ namespace GomLib.Models
             if (this.SpeciesScale != nvd.SpeciesScale)
                 return false;
             return true;
+        }
+
+        public XElement ToXElement()
+        {
+            return ToXElement(0);
+        }
+        public XElement ToXElement(int i)
+        {
+            XElement visualDataElement = new XElement("VisualData", new XAttribute("Id", i));
+
+            visualDataElement.Add(new XElement("Skeleton", CharSpec),
+                new XElement("ScaleAdjustment", ScaleAdjustment),
+                new XElement("Appearance", AppearanceFqn, new XAttribute("Id", AppearanceId)));
+            if (SpeciesScale != 0) visualDataElement.Add(new XElement("SpeciesScale", SpeciesScale));
+            if (MeleeWepId != 0) visualDataElement.Add(new XElement("MeleeWep", (MeleeWep ?? new Item()).ToXElement(false), new XAttribute("Id", MeleeWepId)));
+            if (MeleeOffWepId != 0) visualDataElement.Add(new XElement("MeleeOffWep", (MeleeOffWep ?? new Item()).ToXElement(false), new XAttribute("Id", MeleeOffWepId)));
+            if (RangedWepId != 0) visualDataElement.Add(new XElement("RangedWep", (RangedWep ?? new Item()).ToXElement(false), new XAttribute("Id", RangedWepId)));
+            if (RangedOffWepId != 0) visualDataElement.Add(new XElement("RangedOffWep", (RangedOffWep ?? new Item()).ToXElement(false), new XAttribute("Id", RangedOffWepId)));
+            if (AppearanceId != 0)
+            {
+                XElement npp = (Appearance ?? new NpcAppearance(_dom)).ToXElement(true);
+                visualDataElement.Add(npp);
+                /*if (ExportNPP)
+                {
+                    WriteFile(new XDocument(npp), AppearanceFqn.Replace(".", "\\") + ".npp", false);
+                }*/
+            }
+
+            return visualDataElement;
         }
     }
 }

@@ -416,6 +416,215 @@ namespace GomLib.Models
             if (this.RepublicVOModulation != null) hash ^= this.RepublicVOModulation.GetHashCode();
             return hash;
         }
+
+        public override string ToString(bool verbose)
+        {
+
+            string n = Environment.NewLine;
+            var txtFile = new StringBuilder();
+
+            if (!verbose)
+            {
+                txtFile.Append(Name + ": " + Description.Replace("\u000A", " ") + n);
+                //txtFile.Append(Name + ": " + StatModifiers.ToString() + n);
+            }
+            else
+            {
+                txtFile.Append("------------------------------------------------------------" + n);
+                txtFile.Append("ItemName: " + Name + n);
+                txtFile.Append("ItemNodeID: " + NodeId + n);
+                txtFile.Append("NameId: " + NameId + n);
+                //file.Append("------------------------------------------------------------" + n);
+                //file.Append("  Item INFO" + n);
+                txtFile.Append("  Item.fqn: " + Fqn + n);
+                txtFile.Append("  ItemLevel: " + ItemLevel + n);
+                txtFile.Append("  ItemRequiredLevel: " + RequiredLevel + n);
+                txtFile.Append("  AppearanceColor: " + AppearanceColor + n);
+                txtFile.Append("  Description: " + Description.Replace("\u000A", " ") + n);
+                txtFile.Append("  Icon: " + Icon + n);
+                txtFile.Append("  ArmorSpec: " + ArmorSpec + n);
+                txtFile.Append("  MaxStack: " + MaxStack + n);
+                txtFile.Append("  Bindtype: " + Binding + n);
+                txtFile.Append("  ModifierSpec: " + ModifierSpec + n);
+                txtFile.Append("  Quality: " + Quality + n);
+                txtFile.Append("  Rating: " + Rating + n);
+                txtFile.Append("  RequiredAlignmentInverte: " + RequiredAlignmentInverted + n);
+                txtFile.Append("  RequiredAlignmentTier: " + RequiredAlignmentTier + n);
+                txtFile.Append("  RequiredClasses: " + RequiredClasses + n);
+                txtFile.Append("  RequiredGender: " + RequiredGender + n);
+                txtFile.Append("  RequiredProfession: " + RequiredProfession + n);
+                txtFile.Append("  RequiredProfessionLevel: " + RequiredProfessionLevel + n);
+                txtFile.Append("  RequiredSocialTier: " + RequiredSocialTier + n);
+                txtFile.Append("  RequiredValorRank: " + RequiredValorRank + n);
+                txtFile.Append("  RequiresAlignment: " + RequiresAlignment + n);
+                txtFile.Append("  RequiresSocial: " + RequiresSocial + n);
+                txtFile.Append("  Schematic: " + Schematic + n);
+                txtFile.Append("  SchematicId: " + SchematicId + n);
+                txtFile.Append("  ShieldSpec: " + ShieldSpec + n);
+                txtFile.Append("  Slots: " + Slots + n);
+                txtFile.Append("  StatModifiers: " + StatModifiers + n);
+                txtFile.Append("  SubCategory: " + SubCategory + n);
+                txtFile.Append("  TreasurePackageId: " + TreasurePackageId + n);
+                txtFile.Append("  TreasurePackageSpec: " + TreasurePackageSpec + n);
+                txtFile.Append("  TypeBitSet: " + TypeBitSet + n);
+                txtFile.Append("  UniqueLimit: " + UniqueLimit + n);
+                txtFile.Append("  UseAbility: " + UseAbility + n);
+                txtFile.Append("  UseAbilityId: " + UseAbilityId + n);
+                txtFile.Append("  Value: " + Value + n);
+                txtFile.Append("  VendorStackSize: " + VendorStackSize + n);
+                txtFile.Append("  WeaponSpec: " + weaponAppearanceSpec + n);
+                txtFile.Append("------------------------------------------------------------" + n + n);
+            }
+            return txtFile.ToString();
+        }
+
+        public override XElement ToXElement(bool verbose)
+        {
+            XElement item = new XElement("Item",
+                new XElement("Fqn", Fqn),
+                new XAttribute("Id", Id),
+                //new XAttribute("Hash", GetHashCode()),
+                new XElement("Name", Name),
+                new XElement("Description", Description));
+
+            if (UseAbilityId == 0) { item.Add(new XElement("UseAbility")); }
+            else { item.Add(new XElement("UseAbility", UseAbility.ToXElement(verbose))); }
+            if (EquipAbilityId == 0) { item.Add(new XElement("EquipAbility")); }
+            else { item.Add(new XElement("EquipAbility", EquipAbility.ToXElement(verbose))); }
+
+            if (verbose)
+            {
+                /*item.Element("Name").RemoveAll();
+                for (int i = 0; i < localizations.Count; i++)
+                {
+                    if (LocalizedName[localizations[i]] != "")
+                    {
+                        item.Element("Name").Add(new XElement(localizations[i], LocalizedName[localizations[i]]));
+                    }
+                }
+
+                item.Element("Description").RemoveAll();
+                for (int i = 0; i < localizations.Count; i++)
+                {
+                    if (LocalizedDescription[localizations[i]] != "")
+                    {
+                        item.Element("Description").Add(new XElement(localizations[i], LocalizedDescription[localizations[i]]));
+                    }
+                }*/
+                item.Element("Name").Add(new XAttribute("Id", NameId));
+                item.Element("Description").Add(new XAttribute("Id", DescriptionId));
+                item.Element("Fqn").Add(new XAttribute("Id", NodeId));
+                //item.Element("EquipAbility").Add(new XAttribute("Id", EquipAbilityId));
+                //item.Element("UseAbility").Add(new XAttribute("Id", UseAbilityId));
+                item.Add(new XElement("Icon", Icon),
+                    new XElement("SoundPackage", SoundType),
+                    new XElement("Model", Model),
+                    new XElement("ItemLevel", ItemLevel),
+                    new XElement("RequiredLevel", RequiredLevel),
+                    new XElement("CombinedRequiredLevel", CombinedRequiredLevel),
+                    new XElement("ArmorSpec", ArmorSpec),
+                    new XElement("Binding", Binding),
+                    new XElement("CombinedRating", CombinedRating),
+                    new XElement("ConsumedOnUse", ConsumedOnUse),
+                    new XElement("AppearanceColor", AppearanceColor));
+                if (ConversationFqn != null)
+                {
+                    item.Add(new GameObject().ToXElement(ConversationFqn, _dom, false));
+                }
+                else
+                {
+                    item.Add(new XElement("Conversation"));
+                }
+                item.Add(new XElement("DamageType", DamageType),
+                    new XElement("DisassembleCategory", DisassembleCategory),
+                    new XElement("Durability", Durability));
+                XElement enhancements = new XElement("Enhancements",
+                        new XElement("Category", EnhancementCategory),
+                        new XElement("SubCategory", EnhancementSubCategory));
+                foreach (var enhancement in EnhancementSlots)
+                {
+                    enhancements.Add(new XElement(enhancement.Slot.ToString(),
+                        new XElement("Modification", enhancement.Modification,
+                            new XAttribute("Id", enhancement.ModificationId.ToString()))));
+                }
+                item.Add(enhancements,
+                    new XElement("StatModifiers", StatModifiers.ToString()),
+                    new XElement("CombinedStatModifiers", CombinedStatModifiers.ToString()),
+                    new XElement("EnhancementType", EnhancementType),
+                    new XElement("GiftType", GiftType,
+                        new XAttribute("GiftRank", GiftRank)),
+                    new XElement("IsModdable", IsModdable),
+                    new XElement("MaxStack", MaxStack),
+                    new XElement("ModifierSpec", ModifierSpec),
+                    new XElement("MountSpec", MountSpec),
+                    new XElement("Quality", Quality),
+                    new XElement("Rating", Rating),
+                    new XElement("RequiredAlignmentInverted", RequiredAlignmentInverted));
+
+                XElement requirements = new XElement("Requirements");
+                string reqclasses = null;
+                foreach (var reqclass in RequiredClasses)
+                {
+                    reqclasses += reqclass.Name.ToString() + ", ";
+                }
+                if (reqclasses != null) { reqclasses = reqclasses.Substring(0, reqclasses.Length - 2); }
+                requirements.Add(new XElement("Classes", reqclasses));
+                requirements.Add(new XElement("Gender", RequiredGender),
+                    new XElement("Profession", RequiredProfession,
+                        new XAttribute("Level", RequiredProfessionLevel)));
+                if (RequiresSocial)
+                {
+                    requirements.Add(new XElement("Social", RequiredSocialTier));
+                }
+                else
+                {
+                    requirements.Add(new XElement("Social"));
+                }
+                requirements.Add(new XElement("ValorRank", RequiredValorRank),
+                    new XElement("Alignment", RequiresAlignment));
+                item.Add(requirements);
+                item.Add((Schematic ?? new Schematic()).ToXElement(false));
+                item.Add(new XElement("ShieldSpec", ShieldSpec),
+                    new XElement("Slots", Slots),
+                    new XElement("SubCategory", SubCategory),
+                    new XElement("TreasurePackageSpec", TreasurePackageSpec,
+                        new XAttribute("Id", TreasurePackageId)),
+                    new XElement("TypeBitSet", TypeBitSet),
+                    /*   new XAttribute("Id", TypeBitSet),
+                       ((GomLib.Models.ItemTypeFlags)(object)TypeBitSet)
+                       .ToString()
+                       .Replace(" ", "")
+                       .Split(',')
+                       .ToList()
+                       .Select(x => new XElement("Flag", x))), */
+                    new XElement("UniqueLimit", UniqueLimit),
+                    new XElement("Value", Value),
+                    new XElement("VendorStackSize", VendorStackSize),
+                    new XElement("WeaponSpec", weaponAppearanceSpec));
+                if (ImperialVOModulation != null)
+                {
+                    item.Add(new XElement("ImpVoiceModulation", ImperialVOModulation),
+                        new XElement("RepublicVoiceModulation", RepublicVOModulation));
+                }
+                if (ImperialAppearanceTag != null)
+                {
+                    item.Add(new XElement("ImperialAppearanceTag", ImperialAppearanceTag),
+                        new XElement("RepublicAppearanceTag", RepublicAppearanceTag));
+                }
+                if (classAppearance != null)
+                    item.Add(new XElement("ClassAppearances", classAppearance.Select(x => new XElement(x.Key, x.Value))));
+            }
+            else
+            {
+                item.Elements().Where(x => x.IsEmpty).Remove();
+            }
+
+            /*if (ExportICONS)
+            {
+                OutputSchematicIcon(Icon);
+            }*/
+            return item;
+        }
     }
 
     public class ItemStatList : List<ItemStat>, IEquatable<ItemStatList>

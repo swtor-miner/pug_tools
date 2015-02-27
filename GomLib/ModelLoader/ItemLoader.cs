@@ -523,5 +523,12 @@ namespace GomLib.ModelLoader
             Models.Item itm = new Item();
             return Load(itm, obj);
         }
+
+        public Models.Item Load(GomObject obj)
+        {
+            if (obj == null) { return null; }
+            Models.Item itm = new Item();
+            return Load(itm, obj);
+        }
     }
 }

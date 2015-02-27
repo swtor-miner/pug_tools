@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace GomLib.Models
 {
@@ -131,6 +132,109 @@ namespace GomLib.Models
             if (this.uId != cmp.uId)
                 return false;
             return true;
+        }
+
+        public override XElement ToXElement(bool verbose)
+        {
+            XElement companion = new XElement("Companion");
+            if (this.Id != 0)
+            {
+                companion.Add(new XAttribute("Id", uId),
+                    new XElement("Name", Name),
+                    new XElement("Description", Description),
+                    new XElement("Faction", Faction));
+                if (verbose)
+                {
+                    companion.Add(new XElement("Fqn", Npc.Fqn,
+                        new XAttribute("Id", Npc.NodeId)),
+                    new XElement("Potrait", Portrait));
+
+                    int p = 1;
+                    foreach (var prof in ProfessionModifiers)
+                    {
+                        companion.Add(new XElement("ProfessionModifier", new XAttribute("Id", p), new XElement("Name", prof.Stat), new XElement("Modifier", prof.Modifier)));
+                        p++;
+                    }
+
+                    companion.Add(new XElement("ConversationMultiplier", ConversationMultiplier),
+                        new XElement("IsRomanceable", IsRomanceable),
+                        new XElement("IsGenderMale", IsGenderMale));
+
+                    var giftDic = new Dictionary<string, string>();
+                    foreach (var gift in GiftInterest)
+                    {
+                        if (giftDic.ContainsKey(gift.Reaction.ToString()))
+                        {
+                            string oldReactionList = giftDic[gift.Reaction.ToString()];
+                            giftDic[gift.Reaction.ToString()] = oldReactionList + ", " + gift.GiftType.ToString();
+                        }
+                        else
+                        {
+                            giftDic.Add(gift.Reaction.ToString(), gift.GiftType.ToString());
+                        }
+
+                        if (giftDic.ContainsKey(gift.RomancedReaction.ToString()))
+                        {
+                            string oldReactionList = giftDic[gift.RomancedReaction.ToString()];
+                            giftDic[gift.RomancedReaction.ToString()] = oldReactionList + ", " + gift.GiftType.ToString();
+                        }
+                        else
+                        {
+                            giftDic.Add(gift.RomancedReaction.ToString(), gift.GiftType.ToString());
+                        }
+                    }
+                    int g = 1;
+                    foreach (var reaction in giftDic)
+                    {
+                        companion.Add(new XElement("GiftReactions", new XAttribute("Id", reaction.Key), reaction.Value));
+                        g++;
+                    }
+
+                    string affRanks = "";
+                    if (AffectionRanks.Count > 0)
+                    {
+                        foreach (var affRank in AffectionRanks)
+                        {
+                            affRanks += affRank.Affection + ", ";
+                        }
+                        affRanks.Remove(affRanks.Length - 2);
+                    }
+
+                    XElement affectionRanks = new XElement("ConversationAffectionRanks", affRanks);
+                    companion.Add(affectionRanks);
+
+                    companion.Add(new XElement("SpaceIcon", SpaceIcon));
+                    if (CrewPositions != null)
+                    {
+                        companion.Add(new XElement("CrewPositions", String.Join(", ", (List<string>)CrewPositions)));
+                    }
+                    else
+                    {
+                        companion.Add(new XElement("CrewPositions"));
+                    }
+
+                    string reqclasses = null;
+                    if (Classes != null)
+                    {
+                        foreach (var reqclass in Classes)
+                        {
+                            reqclasses += reqclass.Name.ToString() + ", ";
+                        }
+                    }
+                    if (reqclasses != null) { reqclasses = reqclasses.Substring(0, reqclasses.Length - 2); }
+                    companion.Add(new XElement("Classes", reqclasses));
+                    companion.Add(new XElement("SpaceAbility", new XAttribute("Id", 0), SpaceAbility.ToXElement(verbose)));
+                    int s = 1;
+                    foreach (var crwAbl in CrewAbilities)
+                    {
+                        companion.Add(new XElement("SpacePassive", new XAttribute("Id", s), crwAbl.ToXElement(verbose)));
+                        s++;
+                    }
+
+                    companion.Add(Npc.ToXElement(verbose));
+                }
+            }
+            return companion;
         }
     }
 }

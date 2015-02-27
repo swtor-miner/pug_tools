@@ -282,5 +282,11 @@ namespace GomLib.ModelLoader
             Models.Decoration itm = new Decoration();
             return Load(itm, obj);
         }
+
+        public Models.Decoration Load(GomObject obj)
+        {
+            Models.Decoration itm = new Decoration();
+            return Load(itm, obj);
+        }
     }
 }

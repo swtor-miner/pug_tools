@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace GomLib.Models
 {
@@ -149,5 +150,27 @@ namespace GomLib.Models
         }
 
         public string ClassBackground { get; set; }
+
+        public override XElement ToXElement(bool verbose)
+        {
+            XElement playerClass = new XElement("Class");
+            playerClass.Add(new XElement("Name", Name, new XAttribute("Id", NameId)),
+                new XElement("Description", Description, new XAttribute("Id", DescriptionId)));
+
+            XElement disciplines = new XElement("Disciplines");
+            foreach (var disc in Disciplines)
+            {
+                disciplines.Add(disc.ToXElement(verbose));
+            }
+            playerClass.Add(disciplines);
+            XElement classPkgs = new XElement("BaseClassPackages");
+            foreach (var classPkg in AdvancedClassPkgs)
+            {
+                classPkgs.Add(classPkg.ToXElement(verbose));
+            }
+            playerClass.Add(classPkgs,
+                new XElement("Utilties", UtilityPkg.ToXElement(verbose)));
+            return playerClass;
+        }
     }
 }

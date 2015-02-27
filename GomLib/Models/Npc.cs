@@ -191,5 +191,161 @@ namespace GomLib.Models
                 return false;
             return true;
         }
+
+        public override string ToString()
+        {
+            var txtFile = new StringBuilder();
+            string n = Environment.NewLine;
+
+            txtFile.Append("------------------------------------------------------------" + n);
+            txtFile.Append("Name: " + Name + n);
+            txtFile.Append("NodeId: " + NodeId + n);
+            txtFile.Append("Id: " + Id + n);
+            txtFile.Append("  Title: " + Title + n);
+            txtFile.Append("  Level (Min/Max): " + MinLevel + "/" + MaxLevel + n);
+            txtFile.Append("  Toughness: " + Toughness + n);
+            txtFile.Append("  Faction: " + Faction + n);
+            txtFile.Append("  Fqn: " + Fqn + n);
+            txtFile.Append("  ClassSpec: " + n);
+            txtFile.Append("    Name: " + ClassSpec.Name + " (" + n); // + ClassSpec.NameId + ")" + n );
+            txtFile.Append("    NodeId: " + ClassSpec.Id + n);
+            txtFile.Append("    ID: " + ClassSpec.Id + n);
+            txtFile.Append("    Fqn: " + ClassSpec.Fqn + n);
+            //txtFile.Append("    Player Class?: " + ClassSpec.IsPlayerClass + n); //Always false
+            //txtFile.Append("    Alignment (Dark/Light): " + ClassSpec.AlignmentDark + "/" + ClassSpec.AlignmentLight + n); //Always 0
+            txtFile.Append("    Ability Package Id: " + ClassSpec.AbilityPackageId + n);
+            txtFile.Append("    Ability Package:" + n);
+            txtFile.Append("    --------------------" + n);
+            int p = 1;
+            if (ClassSpec.AbilityPackage != null)
+            {
+                foreach (var ablpack in ClassSpec.AbilityPackage.PackageAbilities)
+                {
+                    txtFile.Append("     Package " + p + ":" + n);
+                    var abl = ablpack.Ability;
+                    txtFile.Append("      Ability Name: " + abl.Name + n);
+                    txtFile.Append("      Ability NodeId: " + abl.NodeId + n);
+                    //txtFile.Append("      Ability Id: " + abl.Id + n);
+                    //txtFile.Append("      Flags (Passive/Hidden): " + abl.IsPassive + "/" + abl.IsHidden + n);
+                    txtFile.Append("      Description: " + abl.Description + " (" + abl.DescriptionId + ")" + n);
+                    txtFile.Append("      Tokens: " + abl.TalentTokens + n);
+                    /*if (abl.ablEffects != null) // May have gone overboard here on the text output. Add check for Verbose flag and radiobutton to set it.
+                    {
+                        txtFile.Append("      Ability Effects:" + abl.ablEffects.ToArray().ToString() + n);
+                    }
+                    txtFile.Append("      Fqn: " + abl.Fqn + n);
+                    txtFile.Append("      Icon: " + abl.Icon + n);
+                    txtFile.Append("      level: " + ablpack.Level + n);
+                    if (ablpack.Scales) { txtFile.Append("      levels: " + String.Join(", ", ablpack.Levels.ToArray()) + n); }
+                    txtFile.Append("      Range (Min/Max): " + abl.MinRange + "/" + abl.MaxRange + n);
+                    if (abl.ChannelingTime != 0) { txtFile.Append("      Channeling Time: " + abl.ChannelingTime + n); }
+                    else
+                    {
+                        if (abl.CastingTime != 0) { txtFile.Append("      Casting Time: " + abl.CastingTime + n); }
+                        else { txtFile.Append("      Casting Time: Instant" + n); }
+                    }
+                    txtFile.Append("      Cooldown Time: " + abl.Cooldown + n);
+                    if (abl.GCD != -1) { txtFile.Append("      GCD: " + abl.GCD + n); }
+                    if (abl.GcdOverride) { txtFile.Append("      Overrides GCD: " + abl.GcdOverride + n); }
+                    txtFile.Append("      LoS Check: " + abl.LineOfSightCheck + n);
+                    if (abl.ModalGroup != 0) { txtFile.Append("      Modal Group: " + abl.ModalGroup + n); }
+                    if (abl.SharedCooldown != 0) { txtFile.Append("      Shared Cooldown: " + abl.SharedCooldown + n); }
+                    if (abl.TargetArc != 0 && abl.TargetArcOffset != 0) { txtFile.Append("      Target Arc/Offset: " + abl.TargetArc + "/" + abl.TargetArcOffset + n); }
+                    txtFile.Append("      Target Rule: " + abl.TargetRule + n);*/
+                    txtFile.Append("    --------------------" + n);
+                    p++;
+                }
+            }
+            if (Codex != null)
+            {
+                txtFile.Append("  Codex: " + Codex.Fqn.ToString() + ": " + Codex.LocalizedName["enMale"] + n);
+            }
+            /* txtFile.Append("  CompanionOverride: " + CompanionOverride + n); //Always Empty
+            txtFile.Append("  Conversation: " + Conversation + n);
+            txtFile.Append("  ConversationFqn: " + ConversationFqn + n); */
+            txtFile.Append("  DifficultyFlags: " + DifficultyFlags + n);
+            if (IsClassTrainer) { txtFile.Append("  ProfessionTrained: " + ProfessionTrained + n); }
+            if (IsVendor) { txtFile.Append("  VendorPackages: { " + String.Join(", ", VendorPackages.ToArray<string>()) + " }" + n); }
+            txtFile.Append("  LootTableId: " + LootTableId + n);
+            txtFile.Append("------------------------------------------------------------" + n);
+            txtFile.Append(Environment.NewLine + n);
+
+            return txtFile.ToString();
+        }
+
+        public override XElement ToXElement(bool verbose)
+        {
+            if (NodeId == 0) return null;
+
+            /* Missing Element Fixers */
+            string codexFQN = "none";
+            string codexTitle = "none";
+            if (Codex != null)
+            {
+                codexFQN = Codex.Fqn;
+                codexTitle = Codex.LocalizedName["enMale"];
+            }
+            string conversation = null;
+            string conversationFQN = null;
+            if (Conversation != null)
+            {
+                conversation = Conversation.Id.ToString();
+                conversationFQN = cnvConversationName;
+            }
+
+            XElement npcNode = new XElement("Npc",
+                new XElement("Fqn", Fqn,
+                    new XAttribute("NodeId", NodeId)),
+                new XAttribute("Id", NodeId), //this is a hack otherwise the id would always be "376543"
+                //new XAttribute("Hash", GetHashCode()),
+                new XElement("Name", Name),
+                new XElement("MinLevel", MinLevel),
+                new XElement("MaxLevel", MaxLevel),
+                new XElement("Toughness", Toughness));
+            if (verbose)
+            {
+                if (VisualDataList != null)
+                {
+                    for (var x = 0; x < VisualDataList.Count; x++)
+                    {
+                        npcNode.Add(VisualDataList[x].ToXElement(x));
+                    }
+                }
+                npcNode.Add(new XElement("Faction", Faction),
+                new XElement("Codex", new XElement("Title", codexTitle), //add codex section here
+                    new XAttribute("Id", codexFQN)),
+                new XElement("CompanionOverride", CompanionOverride.ToXElement(false)),
+                    /*new XElement("Conversation", new XElement("String", conversation), //add code here to cycle through nodes
+                        new XElement("Fqn", conversationFQN)), */
+                new XElement("DifficultyFlags", DifficultyFlags),
+                new XElement("ProfessionTrained", ProfessionTrained),
+                new XElement("LootTableId", LootTableId));
+
+                XElement vendorPackages = new XElement("VendorPackages");
+                foreach (var venPack in VendorPackages)
+                {
+                    vendorPackages.Add(new XElement("VendorPackage", venPack));
+                }
+                npcNode.Add(vendorPackages); //add VendorPackages to NPC
+
+                XElement classSpec = new XElement("ClassSpec",
+                    new XElement("Name", ClassSpec.Name,
+                        new XAttribute("Id", ClassSpec.NameId)),
+                    new XAttribute("Id", ClassSpec.Id),
+                    //new XAttribute("Hash", ClassSpec.GetHashCode()),
+                    new XElement("Fqn", ClassSpec.Fqn,
+                        new XAttribute("Id", ClassSpec.Id)));
+
+                classSpec.Add(new XElement("PlayerClass", ClassSpec.IsPlayerClass),
+                        new XElement("AlignmentDark", ClassSpec.AlignmentDark),
+                        new XElement("AlignmentLight", ClassSpec.AlignmentLight));
+
+                classSpec.Add((ClassSpec.AbilityPackage ?? new AbilityPackage()).ToXElement());
+
+                npcNode.Add(classSpec); //add ClassSpec to NPC
+            }
+
+            return npcNode;
+        }
     }
 }
