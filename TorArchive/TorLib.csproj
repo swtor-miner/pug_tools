@@ -63,7 +63,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="HashDictionary">
-      <HintPath>..\tor_tools\HashDictionary.dll</HintPath>
+      <HintPath>..\HashDictionary.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\..\SharpZipLib\net-20\ICSharpCode.SharpZipLib.dll</HintPath>
