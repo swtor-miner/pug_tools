@@ -11,6 +11,7 @@ namespace GomLib.Models
     public class Conversation : GameObject, IEquatable<Conversation>
     {
         public List<ulong> SpeakersIds { get; set; }
+        public Dictionary<string, bool> AudioLanguageState { get; set; }
         internal Dictionary<ulong, GameObject> LoadedSpeakers { get; set; }
         public Dictionary<ulong, GameObject> Speakers {
             get
@@ -58,6 +59,7 @@ namespace GomLib.Models
             DialogNodes = new List<DialogNode>();
             NodeLookup = new Dictionary<long, DialogNode>();
             NodeLinkList = new Dictionary<long,long>();
+            AudioLanguageState = new Dictionary<string, bool>();
         }
 
         public override bool Equals(object obj)
@@ -254,6 +256,13 @@ namespace GomLib.Models
             conversation.Add(new XElement("Fqn", Fqn));
             if (verbose)
             {
+                XElement audioStateElem = new XElement("HasAudio");
+                foreach(KeyValuePair<string, bool> audKvp in AudioLanguageState)
+                {
+                    audioStateElem.SetAttributeValue(audKvp.Key, audKvp.Value);
+                }
+                conversation.Add(audioStateElem);
+
                 XElement dialogNodes = new XElement("DialogNodes");
                 if (RootNodes != null)
                 {

@@ -82,6 +82,20 @@ namespace GomLib.ModelLoader
             cnv._dom = _dom;
             cnv.References = obj.References;
 
+            //Try to get the audio for each language.
+            string cnvPath = cnv.Fqn.Replace('.', '_');
+            foreach(string fileGroup in _dom._assets.loadedFileGroups)
+            {
+                //Don't want to check for main.
+                if(fileGroup == "main")
+                {
+                    continue;
+                }
+
+                cnv.AudioLanguageState.Add(fileGroup,
+                    _dom._assets.HasFile(String.Format("/resources/{0}/bnk2/" + cnvPath + ".acb", fileGroup)));
+            }
+
             var dialogNodeMap = obj.Data.ValueOrDefault<Dictionary<object, object>>("cnvTreeDialogNodes_Prototype", new Dictionary<object,object>());
             foreach (var dialogKvp in dialogNodeMap)
             {

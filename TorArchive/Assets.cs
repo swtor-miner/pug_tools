@@ -10,6 +10,7 @@ namespace TorLib
         //public static string assetPath = @"C:\Program Files (x86)\Electronic Arts\BioWare\Star Wars - The Old Republic\Assets";
         public string assetPath = @"C:\2.4PTS\Assets";
         public List<Library> libraries;
+        public List<string> loadedFileGroups;
         private System.Text.RegularExpressions.Regex fileNameParse = new System.Text.RegularExpressions.Regex("swtor_(?:test_)?(.*)_1");
         private bool disposed = false;       
 
@@ -22,6 +23,7 @@ namespace TorLib
         {
             assetPath = _assetPath;
             icons = new Icons(this);
+            loadedFileGroups = new List<string>();
         }
 
         public void Dispose()
@@ -124,6 +126,11 @@ namespace TorLib
             }
 
             var assetFilePaths = System.IO.Directory.GetFiles(assetPath, searchPattern, System.IO.SearchOption.TopDirectoryOnly);
+
+            if(assetFilePaths.Length > 0)
+            {
+                loadedFileGroups.Add(fileGroup);
+            }
 
             foreach (var assetFilePath in assetFilePaths)
             {
