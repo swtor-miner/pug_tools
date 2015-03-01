@@ -1439,6 +1439,7 @@ namespace tor_tools
         #region SQL Functions
         private void GameObjectListAsSql(string prefix, string xmlRoot, IEnumerable<GomLib.Models.GameObject> itmList)
         {
+            if (prefix == "Removed") return; //not supported as of yet.
             int i = 0;
             short e = 0;
             string n = Environment.NewLine;
