@@ -272,6 +272,13 @@ namespace GomLib.Models
             return txtFile.ToString();
         }
 
+        public override string ToSQL(string patchVersion)
+        {
+            string s = "', '";
+            string value = "('" + sqlSani(patchVersion) + s + s + sqlSani(Name) + s + NodeId + s + NameId + s + sqlSani(Description) + s + DescriptionId + s + Fqn + s + Level + s + sqlSani(Icon) + s + IsHidden + s + IsPassive + s + Cooldown + s + CastingTime + s + ForceCost + s + EnergyCost + s + ApCost + s + ApType.ToString() + s + MinRange + s + MaxRange + s + GCD + s + GcdOverride + s + ModalGroup + s + SharedCooldown + s + sqlSani(TalentTokens) + s + sqlSani(AbilityTokens) + s + TargetArc + s + TargetArcOffset + s + (GomLib.Models.TargetRule)TargetRule + s + LineOfSightCheck + s + Pushback + s + IgnoreAlacrity + s + GetHashCode() + "')";
+            return value;
+        }
+
         public override XElement ToXElement(bool verbose)
         {
             XElement ability = new XElement("Ability");
