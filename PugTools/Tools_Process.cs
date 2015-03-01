@@ -68,6 +68,12 @@ namespace tor_tools
 
         public void ProcessGameObjects(string gomPrefix, string xmlRoot)
         {
+            if (!OutputCompatible("xmlRoot"))
+            {
+                ClearProgress();
+                FlushTempTables();
+                return;
+            }
             IEnumerable<GomObject> curItmList = getMatchingGomObjects(currentDom, gomPrefix);
 
             var curItmNames = curItmList.Select(x => x.Name).ToList();
@@ -153,14 +159,15 @@ namespace tor_tools
             {
                 count += itmList.Value.Count;
             }
-
-
+            
             foreach (var itmList in ObjectLists)
             {
                 if (outputTypeName == "JSON")
                     GameObjectListAsJSON(String.Join("", itmList.Key, xmlRoot), itmList.Value);
                 else if (outputTypeName == "Text")
                     GameObjectListAsText(String.Join("", itmList.Key, xmlRoot), itmList.Value);
+                else if (outputTypeName == "SQL")
+                    GameObjectListAsSql(itmList.Key, xmlRoot, itmList.Value);
                 else
                 {
                     if (itmList.Key == "Changed")
@@ -234,8 +241,15 @@ namespace tor_tools
 
             FlushTempTables();
         }
+
         public void ProcessProtoData(string xmlRoot, string prototype, string dataTable)
         {
+            if (!OutputCompatible("xmlRoot"))
+            {
+                ClearProgress();
+                FlushTempTables();
+                return;
+            }
             int i = 0;
             int count = 0;
 
@@ -632,6 +646,25 @@ namespace tor_tools
             ClearProgress();
         }
 
+        #endregion
+
+        #region Misc
+        private bool OutputCompatible(string xmlRoot)
+        {
+            switch (outputTypeName)
+            {
+                case "Text":
+                case "JSON":
+                case "XML": return true;
+                case "SQL":
+                    if (initTable.ContainsKey(xmlRoot))
+                        return true;
+                    else
+                        return false;
+                default:
+                    return false;
+            }
+        }
         #endregion
 
         #region Txt functions
@@ -1402,6 +1435,129 @@ namespace tor_tools
             CreateGzip(filename);
             ClearProgress();
         }
+        #endregion
+        #region SQL Functions
+        private void GameObjectListAsSql(string prefix, string xmlRoot, IEnumerable<GomLib.Models.GameObject> itmList)
+        {
+            int i = 0;
+            short e = 0;
+            string n = Environment.NewLine;
+            var txtFile = new StringBuilder();
+            string filename = String.Format("{0}{1}{2}", prefix, xmlRoot, ".sql");
+            WriteFile("", filename, false);
+            var count = itmList.Count();
+            
+            SQLInitStore transInit;
+            if (initTable.TryGetValue(xmlRoot, out transInit)) //verify that there is an SQL Transaction Query for this object type
+            {
+                WriteFile(transInit.InitBegin + n, filename, false);
+                if (sql)
+                    sqlTransactionsInitialize(transInit.InitBegin, transInit.InitEnd); //initialize the SQL tranaction if direct SQL output is enabled.
+            }
+            else
+            {
+                addtolist2(String.Format("Output type not supported for: {1}", xmlRoot));
+                return;
+            }
+            foreach (var itm in itmList)
+            {
+                progressUpdate(i, count);
+
+                if (e % 1000 == 1)
+                {
+                    WriteFile(txtFile.ToString(), filename, true);
+                    txtFile.Clear();
+                    e = 0;
+                }
+
+                addtolist2(String.Format("{0}: {1}", prefix, itm.Fqn));
+
+                string sqlString = itm.ToSQL(patchVersion);
+                if (sql)
+                    sqlAddTransactionValue(sqlString); //Add to current SQL Transaction if direct SQL output is enabled.
+                txtFile.Append(String.Join(",", sqlString, n)); //Append it with a newline to the output.
+                i++;
+                e++;
+            }
+            addtolist(String.Format("The {0} sql file has been generated; there were {1} {0}", prefix, i));
+            WriteFile(txtFile.ToString(), filename, true);
+            sqlTransactionsFlush(); //flush the transaction queue
+            DeleteEmptyFile(filename);
+            itmList = null;
+            GC.Collect();
+            //CreateGzip(filename); //compresses output for upload
+            ClearProgress();
+        }
+
+        /*private void PseudoGameObjectListAsSql(string prefix, IEnumerable<GomLib.Models.PseudoGameObject> itmList)
+        {
+            int i = 0;
+            short e = 0;
+            string n = Environment.NewLine;
+            var txtFile = new StringBuilder();
+            string filename = String.Format("{0}{1}", prefix, ".json");
+            WriteFile("", filename, false);
+            var count = itmList.Count();
+            foreach (var itm in itmList)
+            {
+                progressUpdate(i, count);
+                if (e % 1000 == 1)
+                {
+                    WriteFile(txtFile.ToString(), filename, true);
+                    txtFile.Clear();
+                    e = 0;
+                }
+
+                addtolist2(String.Format("{0}: {1}", prefix, itm.Name));
+
+                string jsonString = itm.ToJSON();
+                txtFile.Append(jsonString + Environment.NewLine); //Append it with a newline to the output.
+                i++;
+                e++;
+            }
+            addtolist(String.Format("The {0} json file has been generated; there were {1} {0}", prefix, i));
+            WriteFile(txtFile.ToString(), filename, true);
+            DeleteEmptyFile(filename);
+            itmList = null;
+            GC.Collect();
+            CreateGzip(filename);
+            ClearProgress();
+        }
+
+        private void GomObjectListAsSql(string prefix, IEnumerable<GomLib.GomObject> itmList)
+        {
+            int i = 0;
+            short e = 0;
+            string n = Environment.NewLine;
+            var txtFile = new StringBuilder();
+            string filename = String.Join("", prefix, ".json");
+            WriteFile("", filename, false);
+            var count = itmList.Count();
+            foreach (var itm in itmList)
+            {
+                progressUpdate(i, count);
+                if (e % 1000 == 1)
+                {
+                    WriteFile(txtFile.ToString(), filename, true);
+                    txtFile.Clear();
+                    e = 0;
+                }
+
+                addtolist2(String.Format("{0}: {1}", prefix, itm.Name));
+
+                string jsonString = LoadGameObject(itm._dom, itm).ToJSON(); // ConvertToJson(itm); //added method in Tools.cs
+                txtFile.Append(jsonString + Environment.NewLine); //Append it with a newline to the output.
+                i++;
+                e++;
+            }
+            addtolist(String.Format("The {0} json file has been generated; there were {1} {0}", prefix, i));
+            WriteFile(txtFile.ToString(), filename, true);
+            DeleteEmptyFile(filename);
+            itmList = null;
+            GC.Collect();
+            CreateGzip(filename);
+            ClearProgress();
+        }*/
         #endregion
     }
 }

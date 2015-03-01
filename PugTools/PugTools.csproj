@@ -228,6 +228,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DevILNet\DevILNet.csproj">
+      <Project>{578fd0d9-41aa-4fa4-8d9b-4021978fa48d}</Project>
+      <Name>DevILNet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GomLib\GomLib.csproj">
       <Project>{A147D4D8-1EA1-4BDA-A388-AB843B037307}</Project>
       <Name>GomLib</Name>
@@ -238,6 +242,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DevILNet.csproj" />
     <Content Include="ICSharpCode.SharpZipLib.dll" />
     <Content Include="WarhammerOnlineHash.dll" />
     <Content Include="SQL Files\ability_create.sql">

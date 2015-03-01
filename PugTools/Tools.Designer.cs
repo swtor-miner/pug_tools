@@ -75,6 +75,7 @@
             this.gbxLogs = new System.Windows.Forms.GroupBox();
             this.gbxTools = new System.Windows.Forms.GroupBox();
             this.fnfinderBtn = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.gbxFormat.SuspendLayout();
             this.gbxDB.SuspendLayout();
             this.gbxExtract.SuspendLayout();
@@ -260,7 +261,8 @@
             this.cbxExtractFormat.Items.AddRange(new object[] {
             "Text",
             "JSON",
-            "XML"});
+            "XML",
+            "SQL"});
             this.cbxExtractFormat.Location = new System.Drawing.Point(6, 14);
             this.cbxExtractFormat.Name = "cbxExtractFormat";
             this.cbxExtractFormat.Size = new System.Drawing.Size(86, 21);
@@ -558,6 +560,7 @@
             // 
             // gbxTools
             // 
+            this.gbxTools.Controls.Add(this.button1);
             this.gbxTools.Controls.Add(this.fnfinderBtn);
             this.gbxTools.Location = new System.Drawing.Point(359, 374);
             this.gbxTools.Name = "gbxTools";
@@ -575,6 +578,16 @@
             this.fnfinderBtn.Text = "Filename Finder";
             this.fnfinderBtn.UseVisualStyleBackColor = true;
             this.fnfinderBtn.Click += new System.EventHandler(this.fnfinderBtn_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(144, 19);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 1;
+            this.button1.Text = "Create SQL";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Tools
             // 
@@ -659,6 +672,7 @@
         private System.Windows.Forms.Button btnUnloadAllData;
         private System.Windows.Forms.GroupBox gbxTools;
         private System.Windows.Forms.Button fnfinderBtn;
+        private System.Windows.Forms.Button button1;
     }
 }
 

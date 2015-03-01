@@ -803,6 +803,11 @@ namespace tor_tools
             DomHandler.Instance.unloadAllDOM();
             Loaded = false;
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SqlCreate();
+        }
     }
 
     public static class DocumentExtensions

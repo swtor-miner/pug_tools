@@ -36,42 +36,7 @@ namespace tor_tools
             string changed = "";
             if (sql)
             {
-                sqlTransactionsInitialize("INSERT INTO `ability` (`current_version`, `previous_version`, `Name`, `NodeId`, `NameId`, `Description`, `DescriptionId`, `Fqn`, `Level`, `Icon`, `IsHidden`, `IsPassive`, `Cooldown`, `CastingTime`, `ForceCost`, `EnergyCost`, `ApCost`, `ApType`, `MinRange`, `MaxRange`, `Gcd`, `GcdOverride`, `ModalGroup`, `SharedCooldown`, `TalentTokens`, `AbilityTokens`, `TargetArc`, `TargetArcOffset`, `TargetRule`, `LineOfSightCheck`, `Pushback`, `IgnoreAlacrity`, `Hash`) VALUES ",
-
-@"ON DUPLICATE KEY UPDATE 
-previous_version = IF((@update_record := (Hash <> VALUES(Hash))), current_version, previous_version),
-current_version = IF(@update_record, VALUES(current_version), current_version),
-Name = IF(@update_record, VALUES(Name), Name),
-NodeId = IF(@update_record, VALUES(NodeId), NodeId),
-NameId = IF(@update_record, VALUES(NameId), NameId),
-Description = IF(@update_record, VALUES(Description), Description),
-DescriptionId = IF(@update_record, VALUES(DescriptionId), DescriptionId),
-Fqn = IF(@update_record, VALUES(Fqn), Fqn),
-Level = IF(@update_record, VALUES(Level), Level),
-Icon = IF(@update_record, VALUES(Icon), Icon),
-IsHidden = IF(@update_record, VALUES(IsHidden), IsHidden),
-IsPassive = IF(@update_record, VALUES(IsPassive), IsPassive),
-Cooldown = IF(@update_record, VALUES(Cooldown), Cooldown),
-CastingTime = IF(@update_record, VALUES(CastingTime), CastingTime),
-ForceCost = IF(@update_record, VALUES(ForceCost), ForceCost),
-EnergyCost = IF(@update_record, VALUES(EnergyCost), EnergyCost),
-ApCost = IF(@update_record, VALUES(ApCost), ApCost),
-ApType = IF(@update_record, VALUES(ApType), ApType),
-MinRange = IF(@update_record, VALUES(MinRange), MinRange),
-MaxRange = IF(@update_record, VALUES(MaxRange), MaxRange),
-Gcd = IF(@update_record, VALUES(Gcd), Gcd),
-GcdOverride = IF(@update_record, VALUES(GcdOverride), GcdOverride),
-ModalGroup = IF(@update_record, VALUES(ModalGroup), ModalGroup),
-SharedCooldown = IF(@update_record, VALUES(SharedCooldown), SharedCooldown),
-TalentTokens = IF(@update_record, VALUES(TalentTokens), TalentTokens),
-AbilityTokens = IF(@update_record, VALUES(AbilityTokens), AbilityTokens),
-TargetArc = IF(@update_record, VALUES(TargetArc), TargetArc),
-TargetArcOffset = IF(@update_record, VALUES(TargetArcOffset), TargetArcOffset),
-TargetRule = IF(@update_record, VALUES(TargetRule), TargetRule),
-LineOfSightCheck = IF(@update_record, VALUES(LineOfSightCheck), LineOfSightCheck),
-Pushback = IF(@update_record, VALUES(Pushback), Pushback),
-IgnoreAlacrity = IF(@update_record, VALUES(IgnoreAlacrity), IgnoreAlacrity),
-Hash = IF(@update_record, VALUES(Hash), Hash);");
+                sqlTransactionsInitialize(initTable["Abilities"].InitBegin, initTable["Abilities"].InitEnd);
 
                 AbilityDataFromFqnListToSQL(itmList);
 
