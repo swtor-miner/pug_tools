@@ -68,7 +68,7 @@ namespace tor_tools
 
         public void ProcessGameObjects(string gomPrefix, string xmlRoot)
         {
-            if (!OutputCompatible("xmlRoot"))
+            if (!OutputCompatible(xmlRoot))
             {
                 ClearProgress();
                 FlushTempTables();
@@ -1464,7 +1464,7 @@ namespace tor_tools
             {
                 progressUpdate(i, count);
 
-                if (e % 1000 == 1)
+                if (e % 100000 == 1)
                 {
                     WriteFile(txtFile.ToString(), filename, true);
                     txtFile.Clear();
@@ -1486,7 +1486,7 @@ namespace tor_tools
             DeleteEmptyFile(filename);
             itmList = null;
             GC.Collect();
-            //CreateGzip(filename); //compresses output for upload
+            CreateGzip(filename); //compresses output for upload
             ClearProgress();
         }
 

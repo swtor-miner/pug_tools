@@ -783,21 +783,21 @@ namespace tor_tools
         }
         #endregion
 
-        private async void unloadCurrent()
+        private void unloadCurrent()
         {
             TorLib.AssetHandler.Instance.unloadCurrentAssets();
             DomHandler.Instance.unloadCurrentDOM();
             Loaded = false;
         }
 
-        private async void unloadPrevious()
+        private void unloadPrevious()
         {
             TorLib.AssetHandler.Instance.unloadPreviousAssets();
             DomHandler.Instance.unloadPreviousDOM();
             Loaded = false;
         }
 
-        private async void unloadAll()
+        private void unloadAll()
         {
             TorLib.AssetHandler.Instance.unloadAllAssets();
             DomHandler.Instance.unloadAllDOM();
