@@ -504,7 +504,10 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF NOT EXIST  "$(TargetDir)\Hash\"   MKDIR $(TargetDir)\Hash\ 
+    <PostBuildEvent>copy /Y "$(SolutionDir)\DevILNet\Libs\$(PlatformTarget)\DevIL.dll" "$(TargetDir)DevIL.dll"
+copy /Y "$(SolutionDir)\DevILNet\Libs\$(PlatformTarget)\ILU.dll" "$(TargetDir)ILU.dll"
+copy /Y "$(SolutionDir)\DevILNet\Libs\DevIL_License.txt" "$(TargetDir)DevIL_License.txt"
+IF NOT EXIST  "$(TargetDir)\Hash\"   MKDIR $(TargetDir)\Hash\ 
 IF NOT EXIST  "$(TargetDir)\Hash\hashes_filename.txt"     copy /Y "$(SolutionDir)\Current Hash List\hashes_filename.txt" "$(TargetDir)\Hash\hashes_filename.txt"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
