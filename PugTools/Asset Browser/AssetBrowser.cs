@@ -1296,7 +1296,7 @@ namespace tor_tools
                         if (line.Contains("#"))
                         {
                             string[] temp = line.Split('#');
-                            if (temp[2] == null || temp[2] == "")
+                            if (temp.Length < 3 || temp[2].Length == 0)
                                 continue;
                             else
                                 testLines.Add(temp[2].ToLower());

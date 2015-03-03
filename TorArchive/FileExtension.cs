@@ -73,10 +73,8 @@ namespace TorLib
             var bytes = new byte[200];
             if (file.FileInfo.Checksum < bytes.Length)
                 bytes = new byte[file.FileInfo.CompressedSize];
-            for (int i = 0; i < bytes.Length; i++)
-            {
-                bytes[i] = (byte)fs.ReadByte();
-            }
+            fs.Read(bytes, 0, bytes.Length);
+
             string str = "";
             str = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
             char[] separator = new char[] { ',' };

@@ -1712,7 +1712,7 @@ namespace tor_tools
             {
                 treeViewFast1.SelectedNode = treeViewFast1.GetNodeAt(e.X, e.Y);
 
-                if (treeViewFast1.SelectedNode.Nodes.Count > 0)
+                if (treeViewFast1.SelectedNode != null && treeViewFast1.SelectedNode.Nodes.Count > 0)
                 {
                     if (treeViewFast1.SelectedNode.Name.Contains("ipp."))
                     {
