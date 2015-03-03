@@ -34,10 +34,10 @@ namespace GomLib.ModelLoader
 
             Models.AdvancedClass ac = new Models.AdvancedClass();
             ac._dom = _dom;
-            ac.NodeId = obj.Id;
+            ac.Id = obj.Id;
             ac.Fqn = obj.Name;
             ac.NameId = obj.Data.ValueOrDefault<long>("chrAdvancedClassDataNameId", 0);
-            ac.Id = (int)ac.NameId;
+            //ac.AcId = (int)ac.NameId;
             ac.Name = classNames.GetText(ac.NameId, obj.Name);
             ac.LocalizedName = classNames.GetLocalizedText(ac.NameId, obj.Name);
             ac.DescriptionId = Convert.ToInt64(obj.Data.ValueOrDefault<string>("chrAdvancedClassDescription"));
@@ -55,9 +55,9 @@ namespace GomLib.ModelLoader
             var classBaseTable = ablPackagePrototype.Data.ValueOrDefault<Dictionary<object, object>>("classBaseTable");
             ablPackagePrototype.Unload();
 
-            if (classDisciplinesTable.ContainsKey((object)ac.NodeId))
+            if (classDisciplinesTable.ContainsKey((object)ac.Id))
             {
-                var discData = (List<GomObjectData>)((List<object>)classDisciplinesTable[(object)ac.NodeId]).ConvertAll(x => (GomObjectData)x);
+                var discData = (List<GomObjectData>)((List<object>)classDisciplinesTable[(object)ac.Id]).ConvertAll(x => (GomObjectData)x);
 
                 ac.Disciplines = new List<Discipline>();
                 foreach (var disc in discData)
@@ -69,9 +69,9 @@ namespace GomLib.ModelLoader
                 ac.Disciplines = ac.Disciplines.OrderBy(x => x.SortIdx).ToList();
 
 
-                if (disUtilityTable.ContainsKey(ac.NodeId))
+                if (disUtilityTable.ContainsKey(ac.Id))
                 {
-                    var entry = (GomObjectData)disUtilityTable[ac.NodeId];
+                    var entry = (GomObjectData)disUtilityTable[ac.Id];
                     ac.UtiltyPkgId = entry.ValueOrDefault<ulong>("disApcId");
                     ac.UtilPkgIsActive = entry.ValueOrDefault<bool>("disUtilPkgActive");
 
@@ -81,9 +81,9 @@ namespace GomLib.ModelLoader
                     string backupName = nameTable.GetText(backupNameId, "str.gui.abl.player.skill_trees");
                     string unusedString = nameTable.GetText(unusedStringId, "str.gui.abl.player.skill_trees");
                 }
-                if (classBaseTable.ContainsKey((object)ac.NodeId))
+                if (classBaseTable.ContainsKey((object)ac.Id))
                 {
-                    var entries = (List<GomObjectData>)((List<object>)classBaseTable[ac.NodeId]).ConvertAll(x => (GomObjectData)x);
+                    var entries = (List<GomObjectData>)((List<object>)classBaseTable[ac.Id]).ConvertAll(x => (GomObjectData)x);
 
                     ac.AdvancedClassPkgIds = new List<ulong>();
                     foreach (var entry in entries)

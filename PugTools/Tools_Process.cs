@@ -1464,7 +1464,7 @@ namespace tor_tools
             {
                 progressUpdate(i, count);
 
-                if (e % 100000 == 1)
+                if (e > 10000)
                 {
                     WriteFile(txtFile.ToString(), filename, true);
                     txtFile.Clear();

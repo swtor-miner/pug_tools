@@ -111,10 +111,8 @@ namespace TorLib
         {
             var fs = Open();
             var buffer = new byte[this.FileInfo.UncompressedSize];
-            for (int i = 0; i < this.FileInfo.UncompressedSize; i++)
-            {
-                buffer[i] = (byte)fs.ReadByte();
-            }
+            //This will screw up if we have a single file greater than 2.1 GB.. probably not an issue.
+            fs.Read(buffer, 0, (int)this.FileInfo.UncompressedSize);
             var memStream = new MemoryStream(buffer);
             //fs.CopyTo(memStream);
             memStream.Position = 0;

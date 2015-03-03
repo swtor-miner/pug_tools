@@ -8,7 +8,7 @@ namespace GomLib.Models
     public class ClassSpec : GameObject, IEquatable<ClassSpec>
     {
         //public int Id { get; set; }
-        public string Fqn { get; set; }
+        //public string Fqn { get; set; }
         //public ulong Id { get; set; }
         public int DataHash { get; set; }
         public bool IsPlayerClass { get; set; }

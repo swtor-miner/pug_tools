@@ -32,7 +32,6 @@ namespace tor_tools
 
             var data = currentDom.GetObject("...").Data.Get<List<object>>("...");
 
-            bool append = false;
             bool addedChanged = false;
             string changed = "";
             if (chkBuildCompare.Checked)

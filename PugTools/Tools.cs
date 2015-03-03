@@ -52,6 +52,40 @@ namespace tor_tools
             textBoxPrevXMLFolder.Text = Config.PrevXMLPath;
             textBoxPrevAssetsFolder.Text = Config.PrevAssetsPath;            
             CrossLinkDomCheckBox.Checked = Config.CrossLinkDOM;
+            comboBoxExtractTypes.Items.AddRange(new object[]
+            { "Abilities",
+                "Codex",
+                "Npcs",
+                "Quests",
+                "Areas",
+                "Collections",
+                "Achievements",
+                "Cartel Market",
+                "Companions",
+                "Starfighter Ships",
+                "Items",
+                "Item Appearances",
+                "Raw GOM",
+                "Icons",
+                "(Everything)",
+                "Conversations",
+                "Filenames",
+                "Talents",
+                "String Tables",
+                "Schematics",
+                "Decorations",
+                "Fansite Data",
+                "Ability Effects",
+                "Strongholds",
+                "Conquests",                
+                "Reputation Groups & Ranks",
+                "Legacy Titles",
+                "Player Titles",
+                "Achievement Categories",
+                "Advanced Classes"//,
+                //"test - GOM"
+            });
+            comboBoxExtractTypes.SelectedIndex = 0;
             cbxExtractFormat.SelectedIndex = 0;
             formOpen = false;
             textBox1.Enabled = false;
@@ -609,11 +643,9 @@ namespace tor_tools
             var itmList = currentDom.GetObjectsStartingWith("");//.Where(obj => obj.Name.Contains("."));
             double ttl = itmList.Count();
             bool append = false;
-            bool addedChanged = false;
             string changed = "";
             if(chkBuildCompare.Checked)
             {
-                addedChanged = true;
                 changed = "Changed";
             }
             var filename = "GOM_Items.xml";            
@@ -626,7 +658,7 @@ namespace tor_tools
                     txtFile.Append(gomItm + n);
                     i++;
                 }
-                WriteFile(txtFile.ToString(), filename, append);
+                WriteFile(txtFile.ToString(), changed + filename, append);
             }
             else
             {

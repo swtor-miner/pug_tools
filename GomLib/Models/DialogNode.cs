@@ -84,8 +84,7 @@ namespace GomLib.Models
                 foreach (var kvp in this.AffectionRewardsIds)
                 {
                     ConversationAffection prevAff;
-                    dln.AffectionRewardsIds.TryGetValue(kvp.Key, out prevAff);
-                    if (prevAff == null)
+                    if (!dln.AffectionRewardsIds.TryGetValue(kvp.Key, out prevAff))
                         return false;
                     if (!kvp.Value.Equals(prevAff))
                         return false;

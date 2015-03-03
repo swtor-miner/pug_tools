@@ -15,6 +15,7 @@ namespace GomLib.Models
 
         public CrewSkill(DataObjectModel dom)
         {
+            _dom = dom;
             fqnMap = new Dictionary<Profession, CrewSkill>();
             nameTable = _dom.stringTable.Find("str.prf.professions");
         }

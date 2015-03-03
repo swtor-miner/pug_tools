@@ -31,8 +31,6 @@ namespace tor_tools
 
             var itmList = currentDom.GetObjectsStartingWith("abl.").Where(obj => !obj.Name.Contains("/"));
             double ttl = itmList.Count();
-            bool append = false;
-            bool addedChanged = false;
             string changed = "";
             if (sql)
             {
@@ -46,7 +44,6 @@ namespace tor_tools
             {
                 if(chkBuildCompare.Checked)
                 {
-                    addedChanged = true;
                     changed = "Changed";
                 }
                 var filename = changed + "Abilities.xml";

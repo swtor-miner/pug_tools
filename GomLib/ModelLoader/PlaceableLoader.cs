@@ -153,7 +153,7 @@ namespace GomLib.ModelLoader
             if (plc.Fqn.Contains("data_holocron")) { plc.Category = PlaceableCategory.Holocron; return; }
             if (obj.Data.ContainsKey("plcTaxiTerminalSpec")) { plc.Category = PlaceableCategory.TaxiTerminal; return; }
 
-            if (plc.CodexId != null) { plc.Category = PlaceableCategory.Codex; return; }
+            if (plc.CodexId != 0) { plc.Category = PlaceableCategory.Codex; return; }
             if (plc.WonkaPackageId != 0) { plc.Category = PlaceableCategory.Elevator; return; }
 
             if (plc.Fqn.StartsWith("plc.location.")) { plc.Category = PlaceableCategory.Quest; }

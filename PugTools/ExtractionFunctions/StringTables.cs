@@ -29,15 +29,11 @@ namespace tor_tools
             
             LoadData();
 
-            bool append = false;
-            string filename = "Filenames.txt";
-
             //string generatedContent = ConversationStringTables(itmList);
 
             XElement stringTables;
             int i;
             HashSet<string> foundStringTables = DiscoverStringTables(currentDom);
-            HashSet<string> prevfoundStringTables;
 
             if(chkBuildCompare.Checked)
             {

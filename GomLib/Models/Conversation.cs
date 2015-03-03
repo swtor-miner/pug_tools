@@ -211,7 +211,7 @@ namespace GomLib.Models
 
         public string stb { get; set; }
 
-        public string ToString(bool verbose)
+        public override string ToString(bool verbose)
         {
             StringBuilder bld = new StringBuilder();
             string n = Environment.NewLine;

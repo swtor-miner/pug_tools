@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using GomLib.Models;
 using System.Xml.Linq;
-using System.Linq;
 
 namespace GomLib.ModelLoader
 {
@@ -20,10 +19,10 @@ namespace GomLib.ModelLoader
 
         public void Flush()
         {
-            HookList = null;
+            //HookList = null;
         }
 
-        private Dictionary<long, Hook> HookList;
+        //private Dictionary<long, Hook> HookList;
 
         public string ClassName
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -9,6 +10,7 @@ using System.Windows.Forms;
 using System.Net;
 using System.Windows;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Win32;
 using MySql.Data.MySqlClient;
 using System.Text.RegularExpressions;
@@ -31,69 +33,135 @@ namespace tor_tools
             {
                 LoadData();
 
-                HashSet<string> filenames = new HashSet<string>();
+                ConcurrentBag<string> filenameBag = new ConcurrentBag<string>();
                 string n = Environment.NewLine;
 
                 bool append = false;
-                string filename = "Filenames.txt";
+                const string filename = "Filenames.txt";
+                
+                int prog = 0;
+                const int tasksToRun = 8;
 
-                addtolist("Getting Dynamic Visuals.");
-                var dynList = currentDom.GetObjectsStartingWith("dyn.");
-                filenames.UnionWith(DynamicPlaceableVisuals(dynList));
+                //Run as many extractors as we can in parallel.
+                //RIP coding standards.
+                System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+                sw.Start();
+                Parallel.For(0, tasksToRun, i =>
+                    {
+                        HashSet<string> tempList;
 
-                addtolist("Getting GSF Filenames.");
-                GomObject shipDataProto = currentDom.GetObject("scFFShipsDataPrototype");
-                var shipData = shipDataProto.Data.Get<Dictionary<object, object>>("scFFShipsData");
-                shipDataProto.Unload();
-                filenames.UnionWith(ShipModelsFromPrototype(shipData));
-                shipDataProto = null;
+                        switch(i)
+                        {
+                            case 0:
+                                {
+                                    addtolist("Getting Dynamic Visuals.");
+                                    var dynList = currentDom.GetObjectsStartingWith("dyn.");
+                                    tempList = DynamicPlaceableVisuals(dynList);
+                                    break;
+                                }
 
-                addtolist("Getting Weapon Filenames.");
-                GomObject itemAppProto = currentDom.GetObject("itmAppearanceDatatable");
-                var itemAppearances = itemAppProto.Data.Get<Dictionary<object, object>>("itmAppearances");
-                itemAppProto.Unload();
-                filenames.UnionWith(WeaponModelsFromPrototype(itemAppearances));
-                itemAppearances = null;
+                            case 1:
+                                {
+                                    addtolist("Getting GSF Filenames.");
+                                    GomObject shipDataProto = currentDom.GetObject("scFFShipsDataPrototype");
+                                    var shipData = shipDataProto.Data.Get<Dictionary<object, object>>("scFFShipsData");
+                                    shipDataProto.Unload();
+                                    tempList = ShipModelsFromPrototype(shipData);
+                                    shipDataProto = null;
+                                    break;
+                                }
 
-                addtolist("Getting Mount Filenames.");
-                GomObject mountInfoProto = currentDom.GetObject("mntMountInfoPrototype");
-                var mountAppearances = mountInfoProto.Data.Get<Dictionary<object, object>>("4611686298607484000");
-                mountInfoProto.Unload();
-                filenames.UnionWith(MountModelsFromPrototype(mountAppearances));
-                mountAppearances = null;
+                            case 2:
+                                {
+                                    addtolist("Getting Weapon Filenames.");
+                                    GomObject itemAppProto = currentDom.GetObject("itmAppearanceDatatable");
+                                    var itemAppearances = itemAppProto.Data.Get<Dictionary<object, object>>("itmAppearances");
+                                    itemAppProto.Unload();
+                                    tempList = WeaponModelsFromPrototype(itemAppearances);
+                                    itemAppearances = null;
+                                    break;
+                                }
 
-                addtolist("Getting Conversation STB Filenames.");
-                var itmList = currentDom.GetObjectsStartingWith("cnv.").Where(obj => !obj.Name.StartsWith("cnv.test."));
-                filenames.UnionWith(ConversationStringTables(itmList));
+                            case 3:
+                                {
+                                    addtolist("Getting Mount Filenames.");
+                                    GomObject mountInfoProto = currentDom.GetObject("mntMountInfoPrototype");
+                                    var mountAppearances = mountInfoProto.Data.Get<Dictionary<object, object>>("4611686298607484000");
+                                    mountInfoProto.Unload();
+                                    tempList = MountModelsFromPrototype(mountAppearances);
+                                    mountAppearances = null;
+                                    break;
+                                }
 
-                addtolist("Getting AMI Filenames.");
-                var amiList = currentDom.GetObjectsStartingWith("ami.");
-                filenames.UnionWith(AmiModelsFromPrototypes(amiList));
+                            case 4:
+                                {
+                                    addtolist("Getting Conversation STB Filenames.");
+                                    var itmList = currentDom.GetObjectsStartingWith("cnv.").Where(obj => !obj.Name.StartsWith("cnv.test."));
+                                    tempList = ConversationStringTables(itmList);
+                                    break;
+                                }
 
-                addtolist("Getting Area Filenames.");
-                var areaList = currentDom.GetObject("mapAreasDataProto").Data.Get<Dictionary<object, object>>("mapAreasDataObjectList");
-                filenames.UnionWith(AreasFromPrototypes(areaList));
+                            case 5:
+                                {
+                                    addtolist("Getting AMI Filenames.");
+                                    var amiList = currentDom.GetObjectsStartingWith("ami.");
+                                    tempList = new HashSet<string>(AmiModelsFromPrototypes(amiList));
+                                    break;
+                                }
 
-                addtolist("Getting Tutorial Screen Names.");
-                var tutorialList = currentDom.GetObject("loadingAreaLoadScreenPrototype").Data.Get<Dictionary<object, object>>("ldgAreaNameToLoadScreen");
-                List<string> tutorials = tutorialList.Select(x => "\\resources\\gfx\\loadingscreen\\" + ((GomLib.GomObjectData)x.Value).ValueOrDefault<string>("ldgScreenName", "") + ".dds").ToList();
-                tutorials.AddRange(tutorialList.Select(x => "\\resources\\gfx\\gfx_production\\" + ((GomLib.GomObjectData)x.Value).ValueOrDefault<string>("ldgOverlayName", "") + ".gfx").ToList());
-                filenames.UnionWith(tutorials);
+                            case 6:
+                                {
+                                    addtolist("Getting Area Filenames.");
+                                    var areaList = currentDom.GetObject("mapAreasDataProto").Data.Get<Dictionary<object, object>>("mapAreasDataObjectList");
+                                    tempList = AreasFromPrototypes(areaList);
+                                    break;
+                                }
 
-                WriteFile(String.Join(n, filenames
+                            case 7:
+                                {
+                                    addtolist("Getting Tutorial Screen Names.");
+                                    var tutorialList = currentDom.GetObject("loadingAreaLoadScreenPrototype").Data.Get<Dictionary<object, object>>("ldgAreaNameToLoadScreen");
+                                    List<string> tutorials = tutorialList.Select(x => "\\resources\\gfx\\loadingscreen\\" + ((GomLib.GomObjectData)x.Value).ValueOrDefault<string>("ldgScreenName", "") + ".dds").ToList();
+                                    tutorials.AddRange(tutorialList.Select(x => "\\resources\\gfx\\gfx_production\\" + ((GomLib.GomObjectData)x.Value).ValueOrDefault<string>("ldgOverlayName", "") + ".gfx").ToList());
+                                    tempList = new HashSet<string>(tutorials);
+                                    break;
+                                }
+
+                            default:
+                                {
+                                    //Thread without a job.
+                                    tempList = new HashSet<string>();
+                                    break;
+                                }
+                    }
+
+                        //Add the resources to the bag.
+                        foreach(string res in tempList)
+                        {
+                            filenameBag.Add(res);
+                        }
+
+                        Interlocked.Increment(ref prog);
+                        progressUpdate(prog, tasksToRun);
+                    });
+
+
+                //Get rid of any duplicates.
+                HashSet<string> filenames = new HashSet<string>(filenameBag);
+
+               IEnumerable<string> resourceList = filenames
                     .Select(x => x
                         .Replace("\t", "")
                         .Replace("\\", "/")
                         .Replace("//", "/")
-                        .Replace("/resourcesart/", "/resources/art/"))), filename, append);
+                        .Replace("/resourcesart/", "/resources/art/"));
+
+                WriteFile(String.Join(n, resourceList), filename, append);
 
                 if (outputTypeName == "XML")
                 {
-                    XElement filenamesElement = new XElement("Filenames", filenames.Select(x => new XElement("Filename", new XAttribute("Id", x.Replace("\t", "")
-                        .Replace("\\", "/")
-                        .Replace("//", "/")
-                        .Replace("/resourcesart/", "/resources/art/")))));
-                    string changed = "";
+                    XElement filenamesElement = new XElement("Filenames", resourceList.Select(x => new XElement("Filename", new XAttribute("Id", x))));
+                    string changed = string.Empty;
                     if (chkBuildCompare.Checked)
                     {
                         //addtolist("Comparing the Current Areas to the loaded Patch");
@@ -106,26 +174,22 @@ namespace tor_tools
                     XDocument xmlContent = new XDocument(filenamesElement);
                     WriteFile(xmlContent, changed + "Filenames.xml", append);
                 }
-                addtolist("Finished! Found " + filenames.Count + " potential filenames.");
+                sw.Stop();
+                addtolist("Finished in " + sw.ElapsedMilliseconds / 1000 + " seconds! Found " + filenames.Count + " potential filenames.");
             }
             catch (Exception e)
             {
                 /* do something here */
-                MessageBox.Show(String.Format("An error occured while loading data. ({0})", e.HResult));
+                System.Windows.MessageBox.Show(String.Format("An error occured while loading data. ({0})", e.HResult));
             }
             EnableButtons();
         }
 
         private HashSet<string> AreasFromPrototypes(Dictionary<object, object> areaList)
         {
-            double i = 0;
-            double e = 0;
-
             HashSet<string> assetList = new HashSet<string>();
             foreach (var gomItm in areaList)
             {
-                Clearlist2();
-                addtolist2("Scanning Area " + i + " of " + areaList.Count);
                 ulong id = ((GomLib.GomObjectData)gomItm.Value).ValueOrDefault<ulong>("mapAreasDataAreaId", 0);
 
                 ParseArea(assetList, id);
@@ -145,22 +209,17 @@ namespace tor_tools
                         }
                     }
                 }
-                
-                i++;
             }
-            addtolist("Found " + assetList.Count + " filenames in " + i + " Areas");
+            addtolist("Found " + assetList.Count + " filenames in " + areaList.Count + " Areas");
             return assetList;
         }
 
         private IEnumerable<string> AmiModelsFromPrototypes(List<GomObject> amiList)
         {
-            double i = 0;
             var resourceList = new HashSet<string>();
 
             foreach (GomObject itm in amiList)
             {
-                Clearlist2();
-                addtolist2("Scanning AMI: " + itm.Name + " (" + i + "/" + amiList.Count + ")");
                 Dictionary<object, object> appModelDetails = itm.Data.ValueOrDefault<Dictionary<object, object>>("appModelDetails", new Dictionary<object, object>());
                 foreach (KeyValuePair<object, object> appModelKvp in appModelDetails)
                 {
@@ -174,7 +233,6 @@ namespace tor_tools
                         ParseResource(resourceList, resourceFilename);
                     }
                 }
-                i++;
                 itm.Unload();
             }
 
@@ -184,7 +242,6 @@ namespace tor_tools
 
         private HashSet<string> ConversationStringTables(IEnumerable<GomLib.GomObject> itmList)
         {
-            Clearlist2();
 
             double i = 0;
             var stbList = new HashSet<string>();
@@ -212,13 +269,12 @@ namespace tor_tools
                 itm.Unload();
             }
             
-            addtolist("the conversations have been scanned there are " + i + " conversation STBs");
+            addtolist("Found " + i + " conversation STBs");
             return stbList;
         }
 
         private HashSet<string> ShipModelsFromPrototype(Dictionary<object, object> shipProto)
         {
-            Clearlist2();
             addtolist2("Scanning ships (" + shipProto.Count + ")");
             double i = 0;
             HashSet<string> gr2List = new HashSet<string>();
@@ -229,7 +285,7 @@ namespace tor_tools
 
                 currentDom.scFFShipLoader.Load(ship, (long)shipEntry.Key, (GomObjectData)shipEntry.Value); //add a way of calling this that only models get loaded.
 
-                if (ship.Model != "") ParseGR2(gr2List, ship.Model);
+                if (ship.Model.Length > 0) ParseGR2(gr2List, ship.Model);
 
                 foreach (var containerMapSlot in ship.MajorComponentSlots)
                 {
@@ -237,7 +293,7 @@ namespace tor_tools
                     {
                         foreach (GomLib.Models.scFFComponent comp in ship.ComponentMap[containerMapSlot.Key])
                         {
-                            if (comp.Model != "") ParseGR2(gr2List, comp.Model);
+                            if (comp.Model.Length > 0) ParseGR2(gr2List, comp.Model);
                         }
                     }
                 }
@@ -279,7 +335,6 @@ namespace tor_tools
             var scFFComponentAppearanceData = scFFComponentAppearanceDataPrototype.Data.ValueOrDefault<Dictionary<object, object>>("scFFComponentAppearanceData", null);
             scFFComponentAppearanceDataPrototype.Unload();
 
-            Clearlist2();
             addtolist2("Scanning component appearances (" + scFFComponentAppearanceData.Count + ")");
 
             foreach (var entry in scFFComponentAppearanceData)
@@ -301,8 +356,6 @@ namespace tor_tools
 
         private HashSet<string> WeaponModelsFromPrototype(Dictionary<object, object> itemAppearances)
         {
-            Clearlist2();
-            addtolist2("Scanning weapon filenames (" + itemAppearances.Count + ")");
             double i = 0;
             HashSet<string> gr2List = new HashSet<string>();
 
@@ -311,7 +364,7 @@ namespace tor_tools
                 string gr2 = ((GomObjectData)itemEntry.Value).ValueOrDefault<string>("itmModel", "");
                 ParseGR2(gr2List, gr2);
                 string fxspec = ((GomObjectData)itemEntry.Value).ValueOrDefault<string>("itmFxSpec", "");
-                if (fxspec != "")
+                if (fxspec.Length > 0)
                 {
                     if (!fxspec.EndsWith(".fxspec")) { fxspec += ".fxspec"; }
                     fxspec = "\\resources\\art\\fx\\fxspec\\" + fxspec;
@@ -329,15 +382,13 @@ namespace tor_tools
 
         private HashSet<string> MountModelsFromPrototype(Dictionary<object, object> mountAppearances)
         {
-            Clearlist2();
-            addtolist2("Scanning mount filenames (" + mountAppearances.Count + ")");
             double i = 0;
             HashSet<string> fxSpecList = new HashSet<string>();
 
             foreach (var mountEntry in mountAppearances)
             {
                 string vfx = ((GomObjectData)mountEntry.Value).ValueOrDefault<string>("mntDataVFX", "");
-                if (vfx != "")
+                if (vfx.Length > 0)
                 {
                     if (!vfx.EndsWith(".fxspec")) { vfx += ".fxspec"; }
                     vfx = "/resources/art/fx/fxspec/" + vfx;
@@ -362,8 +413,6 @@ namespace tor_tools
 
         private HashSet<string> DynamicPlaceableVisuals(IEnumerable<GomLib.GomObject> itmList)
         {
-            Clearlist2();
-
             double i = 0;
             var stbList = new HashSet<string>();
 
@@ -374,7 +423,7 @@ namespace tor_tools
                 foreach (var obj in dynVisualList)
                 {
                     string visualFqn = obj.ValueOrDefault<string>("dynVisualFqn", "");
-                    if (visualFqn != "")
+                    if (visualFqn.Length > 0)
                     {
                         if (visualFqn.Contains("."))
                         {
@@ -404,7 +453,7 @@ namespace tor_tools
                 itm.Unload();
             }
 
-            addtolist("the dynamic placeables have been scanned there were " + i + " dynamic visuals");
+            addtolist("Found " + i + " dynamic visuals");
             return stbList;
         }
 
@@ -422,7 +471,6 @@ namespace tor_tools
 
         private void BodyType(HashSet<string> resourceList, string filename)
         {
-            var fileList = new List<string>();
             List<string> bodyTypeList = new List<string> { "bfa", "bfb", "bfn", "bfs", "bma", "bmf", "bmn", "bms" };
             foreach (var bodytype in bodyTypeList)
             {
@@ -435,7 +483,7 @@ namespace tor_tools
         #region File Parsers
         private void ParseResource(HashSet<string> resourceList, string filename)
         {
-            if (filename == ""
+            if (filename.Length == 0
                 || filename == "default") return;
 
             if (filename.Contains("[bt")) BodyType(resourceList, filename);
@@ -455,7 +503,7 @@ namespace tor_tools
 
         private void ParseGR2(HashSet<string> gr2List, string rawModel)
         {
-            if (rawModel == "") return;
+            if (rawModel.Length == 0) return;
 
             string slash = "/";
             if (!rawModel.Contains(slash))
@@ -466,7 +514,7 @@ namespace tor_tools
             if(!rawModel.Contains("resources")) model = "/resources" + rawModel;
             string path = model.Substring(0, model.LastIndexOf(slash) + 1);
             string gr2Name = model.Substring(model.LastIndexOf(slash) + 1);
-            string weaponPrefix = "";
+            string weaponPrefix = string.Empty;
             if (gr2Name.Contains("_"))
             {
                 weaponPrefix = model.Substring(model.LastIndexOf(slash) + 1, gr2Name.IndexOf("_"));
@@ -584,8 +632,8 @@ namespace tor_tools
                             if (i < stream.Length)
                             {
                                 count++;
-                                string name = "";
-                                string final_name = "";
+                                string name = string.Empty;
+                                string final_name = string.Empty;
                                 List<byte> temp = new List<byte>();
                                 stream.Position = i;
                                 buffer = stream.ReadBuffer(1);
@@ -628,8 +676,8 @@ namespace tor_tools
                         foreach (uint i in offsetMaterialNames)
                         {
                             count++;
-                            string name = "";
-                            string final_name = "";
+                            string name = string.Empty;
+                            string final_name = string.Empty;
                             List<byte> temp = new List<byte>();
                             stream.Position = i;
                             buffer = stream.ReadBuffer(1);
@@ -656,7 +704,7 @@ namespace tor_tools
 
         private void ParseMaterial(HashSet<string> matList, string fullMatName)
         {
-            if (fullMatName == "" || fullMatName == "default") return;
+            if (fullMatName.Length == 0 || fullMatName == "default") return;
             if (!fullMatName.StartsWith("/resources")) fullMatName = "/resources" + fullMatName;
             if (matList.Add(fullMatName)) addtolist2(fullMatName);
 
@@ -711,12 +759,8 @@ namespace tor_tools
                         var type = childnode.Element("type").Value; //new way of searching for texture file names
                         if (type == "texture")
                         {
-                            if (childnode.Element("semantic").Value == "UsesGuildInsignia")
-                            {
-                                string stophere = "";
-                            }
                             var textureName = childnode.Element("value").Value;
-                            if (textureName != null && textureName != "")
+                            if (textureName != null && textureName.Length > 0)
                             {
                                 string scrubbedName = textureName.Replace("////", "//").Replace(" #", "").Replace("#", "").Replace("+", "/").Replace(" ", "_");
                                 fileList.Add("/resources/" + scrubbedName + ".dds");
@@ -763,7 +807,7 @@ namespace tor_tools
 
         private void ParseArea(HashSet<string> assetList, ulong id)
         {
-            if (id == 0 || id == null) return;
+            if (id == 0) return;
             string path = "\\resources\\world\\areas\\" + id.ToString() + "\\";
             string fileName = path + "area.dat";
             ParseResource(assetList, path + "mapnotes.not");
@@ -773,136 +817,115 @@ namespace tor_tools
             var datFile = this.currentAssets.FindFile(fileName);
             if (datFile == null) return;
             XDocument doc = new XDocument();
-            List<string> lines = new List<string>();
+            //List<string> lines = new List<string>();
+            Dictionary<string, List<string>> blockLines = new Dictionary<string, List<string>>();
             using (var fileStream = datFile.OpenCopyInMemory())
             {
                 StreamReader reader = new StreamReader(fileStream);
 
-                int x = 0;
+                string nextBlockName = string.Empty;
                 while (!reader.EndOfStream)
                 {
-                    lines.Add(reader.ReadLine());
-                    x++;
-                }
-
-
-                int line_count = 0;
-                int line_skip = 0;
-
-                foreach (string line in lines)
-                {
-                    if (line_skip >= 1)
+                    string line = reader.ReadLine();
+                    if(line.StartsWith("[") || nextBlockName.Length > 0)
                     {
-                        line_count++;
-                        line_skip--;
-                        continue;
-                    }
+                        string blockName;
+                        if(nextBlockName.Length > 0)
+                        {
+                            blockName = nextBlockName;
+                        }
+                        else
+                        {
+                            blockName = line;
+                        }
+                        List<string> currBlockLines = new List<string>();
 
-                    if (line.Contains("[ROOMS]"))
+                        bool doneBlock = false;
+                        while(!doneBlock)
+                        {
+                            if (nextBlockName.Length > 0)
+                            {
+                                nextBlockName = string.Empty;
+                            } else
+                            {
+                                line = reader.ReadLine();
+                            }
+
+                            if(line.StartsWith("["))
+                            {
+                                nextBlockName = line;
+                                doneBlock = true;
+                                break;
+                            } else if (reader.EndOfStream)
+                            {
+                                doneBlock = true;
+                            }
+
+                            currBlockLines.Add(line);
+                        }
+
+                        blockLines.Add(blockName, currBlockLines);
+                    }
+                }
+                reader.Close();
+
+                foreach (KeyValuePair<string, List<string>> block in blockLines)
+                {
+                    string line = block.Key;
+
+                    if (line == "[ROOMS]")
                     {
                         addtolist2("Found Rooms!");
-                        string line_ahead = "";
-                        bool stop = false;
-                        do
+                        foreach (string blockLine in block.Value)
                         {
-                            line_skip++;
-                            line_ahead = lines[line_count + line_skip];
-                            if (line_ahead.Contains("[ASSETS]"))
-                            {
-                                line_skip--;
-                                stop = true;
-                            }
-                            else
-                                ParseResource(assetList, path + line_ahead.ToLower().Trim() + ".dat");
-                        } while (stop == false);
+                            ParseResource(assetList, path + blockLine.ToLower().Trim() + ".dat");
+                        }
                     }
-
-                    if (line.Contains("[ASSETS]"))
+                    else if (line == "[ASSETS]")
                     {
                         addtolist2("Found Assets!");
-                        string line_ahead = "";
-                        bool stop = false;
-                        do
+                        foreach (string blockLine in block.Value)
                         {
-                            line_skip++;
-                            line_ahead = lines[line_count + line_skip];
-                            if (line_ahead.Contains("[PATHS]"))
-                            {
-                                line_skip--;
-                                stop = true;
-                            }
-                            else
-                            {
-                                string[] temp = line_ahead.Split('=');
-                                string temp1 = temp[1].Trim().Replace('/', '\\');
-                                if (!temp1.Contains('\\') && !temp1.StartsWith("spn.")) ParseResource(assetList, "/resources/art/shaders/materials/" + temp1 + ".mat");
-                                else if (!(temp1.StartsWith("\\spn\\")
-                                    || temp1.StartsWith("\\cos\\")
-                                    || temp1.StartsWith("spn.")
-                                    || temp1.StartsWith("\\enc\\")
-                                    || temp1.StartsWith("\\gamedata\\stg\\")
-                                    || temp1.StartsWith("\\server\\mpn\\")
-                                    || temp1.Contains(':'))) ParseResource(assetList, temp1);
-                            }
-                        } while (stop == false);
+                            string[] temp = blockLine.Split('=');
+                            string temp1 = temp[1].Trim().Replace('/', '\\');
+                            if (!temp1.Contains('\\') && !temp1.StartsWith("spn.")) ParseResource(assetList, "/resources/art/shaders/materials/" + temp1 + ".mat");
+                            else if (!(temp1.StartsWith("\\spn\\")
+                                || temp1.StartsWith("\\cos\\")
+                                || temp1.StartsWith("spn.")
+                                || temp1.StartsWith("\\enc\\")
+                                || temp1.StartsWith("\\gamedata\\stg\\")
+                                || temp1.StartsWith("\\server\\mpn\\")
+                                || temp1.Contains(':'))) ParseResource(assetList, temp1);
+                        }
                     }
-
-
-                    if (line.Contains("[TERRAINTEXTURES]"))
+                    else if (line == "[TERRAINTEXTURES]")
                     {
                         addtolist2("Found Terrain Textures!");
-                        string line_ahead = "";
-                        bool stop = false;
-                        do
+                        foreach (string blockLine in block.Value)
                         {
-                            line_skip++;
-                            line_ahead = lines[line_count + line_skip];
-                            if (line_ahead.Contains("[DYDTEXTURES]"))
+                            string[] temp = blockLine.Split(':');
+                            if (temp.Length > 2)
                             {
-                                line_skip--;
-                                stop = true;
+                                string temp1 = temp[1].Trim().Replace('/', '\\');
+                                if (!temp1.Contains('\\')) ParseResource(assetList, "/resources/art/shaders/materials/" + temp1 + ".mat");
+                                else ParseResource(assetList, temp[2].Trim());
                             }
-                            else
-                            {
-                                string[] temp = line_ahead.Split(':');
-                                if (temp.Length > 2)
-                                {
-                                    string temp1 = temp[1].Trim().Replace('/', '\\');
-                                    if (!temp1.Contains('\\')) ParseResource(assetList, "/resources/art/shaders/materials/" + temp1 + ".mat");
-                                    else ParseResource(assetList, temp[2].Trim());
-                                }
-                            }
-                        } while (stop == false);
+                        }
                     }
-
-                    if (line.Contains("[DYDTEXTURES]"))
+                    else if (line == "[DYDTEXTURES]")
                     {
                         addtolist2("Found Textures!");
-                        string line_ahead = "";
-                        bool stop = false;
-                        do
+                        foreach (string blockLine in block.Value)
                         {
-                            line_skip++;
-                            line_ahead = lines[line_count + line_skip];
-                            if (line_ahead.Contains("[DYDCHANNELPARAMS]"))
+                            string[] temp = blockLine.Split(':');
+                            if (temp[1].Length > 0)
                             {
-                                line_skip--;
-                                stop = true;
+                                string temp1 = temp[1].Trim().Replace('/', '\\');
+                                if (!temp1.Contains('\\')) ParseResource(assetList, "/resources/art/shaders/materials/" + temp1 + ".mat");
+                                else ParseResource(assetList, temp[1].Trim());
                             }
-                            else
-                            {
-                                string[] temp = line_ahead.Split(':');
-                                if (temp[1] != "")
-                                {
-                                    string temp1 = temp[1].Trim().Replace('/', '\\');
-                                    if (!temp1.Contains('\\')) ParseResource(assetList, "/resources/art/shaders/materials/" + temp1 + ".mat");
-                                    else ParseResource(assetList, temp[1].Trim());
-                                }
-                            }
-                        } while (stop == false);
+                        }
                     }
-
-                    line_count++;
                 }
             }
         }

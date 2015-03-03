@@ -38,5 +38,12 @@ namespace GomLib
 
             return true;
         }
+
+        public override int GetHashCode()
+        {
+            int hash = Id.GetHashCode();
+            if (localizedText != null) { hash ^= localizedText.GetHashCode(); }
+            return hash;
+        }
     }
 }

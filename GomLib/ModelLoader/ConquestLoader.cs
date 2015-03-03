@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using GomLib.Models;
 using System.Xml.Linq;
-using System.Linq;
 
 namespace GomLib.ModelLoader
 {
@@ -273,10 +272,10 @@ namespace GomLib.ModelLoader
                 {
                     ObjectiveList.Add((long)kvp.Key, LoadObjective((long)kvp.Key, tempDict));
                 }
-                else
+                /*else//obsolete debugging code
                 {
                     string pausehere = "";
-                }
+                }*/
             }
             achProto.Unload();
         }

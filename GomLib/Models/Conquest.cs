@@ -11,7 +11,7 @@ namespace GomLib.Models
     public class Conquest : PseudoGameObject, IEquatable<Conquest>
     {
         public long NameId { get; set; }
-        public string Name { get; set; }
+        //public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
         public long DescId { get; set; }
         public string Description { get; set; }
@@ -444,7 +444,6 @@ namespace GomLib.Models
     public class Planet : GameObject, IEquatable<Planet>
     {
         [Newtonsoft.Json.JsonIgnore]
-        public DataObjectModel _dom;
         public long NameId { get; set; }
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
@@ -452,7 +451,6 @@ namespace GomLib.Models
         public string Description { get; set; }
         public Dictionary<string, string> LocalizedDescription { get; set; }
         public string Icon { get; set; }
-        public ulong Id { get; set; }
         public Dictionary<ulong, object> ExitList { get; set; }
         public ulong PrimaryAreaId { get; set; }
         public long TransportCost { get; set; }

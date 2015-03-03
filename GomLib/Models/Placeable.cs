@@ -36,7 +36,7 @@ namespace GomLib.Models
             int result = NodeId.GetHashCode();
             result ^= Name.GetHashCode();
             if (ConversationFqn != null) { result ^= ConversationFqn.GetHashCode(); }
-            if (CodexId != null) { result ^= CodexId.GetHashCode(); }
+            if (CodexId != 0) { result ^= CodexId.GetHashCode(); }
             result ^= RequiredProfession.GetHashCode();
             result ^= RequiredProfessionLevel.GetHashCode();
             result ^= IsBank.GetHashCode();

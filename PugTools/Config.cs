@@ -29,10 +29,28 @@ namespace tor_tools
                     AssetsPath = str;
             str = Config.configFile.AppSettings.Settings["ExtractPath"].Value;
             if (str != null)
-                ExtractPath = str;
+            {
+                if (!str.EndsWith("\\"))
+                {
+                    ExtractPath = str + "\\";
+                }
+                else
+                {
+                    ExtractPath = str;
+                }
+            }
             str = Config.configFile.AppSettings.Settings["PrevXMLPath"].Value;
             if (str != null)
-                PrevXMLPath = str;
+            {
+                if (!str.EndsWith("\\"))
+                {
+                    PrevXMLPath = str + "\\";
+                }
+                else
+                {
+                    PrevXMLPath = str;
+                }
+            }
             str = Config.configFile.AppSettings.Settings["PrevAssetsPath"].Value;
             if (str != null)
                 PrevAssetsPath = str;
@@ -41,7 +59,16 @@ namespace tor_tools
                 CrossLinkDOM = Convert.ToBoolean(str);
             str = Config.configFile.AppSettings.Settings["ExtractAssetsPath"].Value;
             if (str != null)
-                ExtractAssetsPath = str;
+            {
+                if (!str.EndsWith("\\"))
+                {
+                    ExtractAssetsPath = str + "\\";
+                }
+                else
+                {
+                    ExtractAssetsPath = str;
+                }
+            }
         }
         public static void Save()
         {

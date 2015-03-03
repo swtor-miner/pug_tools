@@ -409,7 +409,7 @@ namespace GomLib.Models
 
         public WeaponAppearance() { }
 
-        public string Name { get; set; }
+        public override string Name { get; set; }
         public string WeaponType { get; set; }
         public string Model { get; set; }
         public string FxSpec { get; set; }

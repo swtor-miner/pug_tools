@@ -8,9 +8,6 @@ namespace GomLib.Models
 {
     public class AdvancedClass : GameObject, IEquatable<AdvancedClass>
     {
-        public int Id { get; set; }
-        public ulong NodeId { get; set; }
-        public string Fqn { get; set; }
         public ClassSpec ClassSpec { get; set; }
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
@@ -49,8 +46,6 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, obj)) return true;
 
-            if (this.NodeId != obj.NodeId)
-                return false;
             if (!this.AdvancedClassPkgIds.SequenceEqual(obj.AdvancedClassPkgIds))
                 return false;
             if (!this.AdvancedClassPkgs.SequenceEqual(obj.AdvancedClassPkgs))

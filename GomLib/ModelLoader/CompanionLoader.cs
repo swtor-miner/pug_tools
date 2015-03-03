@@ -8,7 +8,7 @@ namespace GomLib.ModelLoader
 {
     public class CompanionLoader
     {
-        StringTable strTable;
+        //StringTable strTable;
         Dictionary<object, object> crewPositionLookup;
         Dictionary<object, object> crewData;
         Dictionary<object, object> factionLookup;
@@ -24,7 +24,7 @@ namespace GomLib.ModelLoader
 
         public void Flush()
         {
-            strTable = null;
+            //strTable = null;
             crewPositionLookup = new Dictionary<object, object>();
             crewData = new Dictionary<object, object>();
             factionLookup = new Dictionary<object, object>();

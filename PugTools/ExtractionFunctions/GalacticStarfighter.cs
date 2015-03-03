@@ -29,7 +29,6 @@ namespace tor_tools
         private void ShipDataFromPrototype(Dictionary<object, object> shipProto)
         {
             double i = 0;
-            double e = 0;
             string n = Environment.NewLine;
 
             foreach (var shipEntry in shipProto)

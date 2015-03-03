@@ -44,6 +44,7 @@ namespace TorLib
     public class Library : IDisposable
     {
         // public static Library Current { get; private set; }
+        private Object lockObject = new Object();
 
         private Dictionary<ulong, MetadataEntry> metadataLookup = new Dictionary<ulong, MetadataEntry>();
         public Dictionary<int, Archive> archives = new Dictionary<int, Archive>();        
@@ -118,54 +119,58 @@ namespace TorLib
 
         public void Load()
         {
-            if (this.Loaded) { return; }
+            lock (lockObject)
+            {
+                if (this.Loaded) { return; }
 
-            Archive archive = null;
-            bool hasFile;
-            string basePath = this.Location;
-            for (var i = 1;; i++) {
-                string filePath = null;
-                //string filePath = Path.Combine(basePath, String.Format("assets_{0}_{1}.tor", this.Name, i));
-                if (IsPtr)
+                Archive archive = null;
+                bool hasFile;
+                string basePath = this.Location;
+                for (var i = 1; ; i++)
                 {
-                    filePath = Path.Combine(basePath, String.Format("swtor_test_{0}_{1}.tor", this.Name, i));
-                    // Console.WriteLine("WARNING: USING PTR DATA");
-                }
-                else
-                {
-                    filePath = Path.Combine(basePath, String.Format("swtor_{0}_{1}.tor", this.Name, i));
-                }
-
-                hasFile = System.IO.File.Exists(filePath);
-
-                if (!hasFile)
-                {
-                    if (archive == null)
+                    string filePath = null;
+                    //string filePath = Path.Combine(basePath, String.Format("assets_{0}_{1}.tor", this.Name, i));
+                    if (IsPtr)
                     {
-                        // Can't find a single file for this library?! Something is quite wrong with this.
-                        throw new InvalidOperationException("Cannot find any files for library named " + this.Name + " in " + this.Location);
+                        filePath = Path.Combine(basePath, String.Format("swtor_test_{0}_{1}.tor", this.Name, i));
+                        // Console.WriteLine("WARNING: USING PTR DATA");
+                    }
+                    else
+                    {
+                        filePath = Path.Combine(basePath, String.Format("swtor_{0}_{1}.tor", this.Name, i));
                     }
 
-                    // What is currently in 'archive' is the last archive in this library -- we need to get metadata from it!
-                    File metadataFile = archive.FindFile(FileId.FromFilePath("metadata.bin"));
-                    if (metadataFile == null)
+                    hasFile = System.IO.File.Exists(filePath);
+
+                    if (!hasFile)
                     {
-                        throw new InvalidOperationException("Cannot Load metadata.bin for this library from " + archive.FileName);
+                        if (archive == null)
+                        {
+                            // Can't find a single file for this library?! Something is quite wrong with this.
+                            throw new InvalidOperationException("Cannot find any files for library named " + this.Name + " in " + this.Location);
+                        }
+
+                        // What is currently in 'archive' is the last archive in this library -- we need to get metadata from it!
+                        File metadataFile = archive.FindFile(FileId.FromFilePath("metadata.bin"));
+                        if (metadataFile == null)
+                        {
+                            throw new InvalidOperationException("Cannot Load metadata.bin for this library from " + archive.FileName);
+                        }
+
+                        this.LoadMetadataFromFile(metadataFile);
+
+                        break;
                     }
 
-                    this.LoadMetadataFromFile(metadataFile);
-
-                    break;
+                    archive = new Archive();
+                    archive.Library = this;
+                    archive.FileName = filePath;
+                    archives[i] = archive;
                 }
 
-                archive = new Archive();
-                archive.Library = this;
-                archive.FileName = filePath;
-                archives[i] = archive;
+                this.Loaded = true;
+                return;
             }
-
-            this.Loaded = true;
-            return;
         }       
 
         //public File FindFileByFqn(string fqn, string ext)
@@ -177,7 +182,10 @@ namespace TorLib
 
         public File FindFile(string path)
         {
-            if (!this.Loaded) { this.Load(); }
+            if (!this.Loaded)
+            {
+                this.Load();
+            }
 
             // path = String.Format("/resources{0}", path.Replace('\\', '/'));
 

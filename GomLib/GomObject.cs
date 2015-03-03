@@ -301,10 +301,10 @@ namespace GomLib
 
         public void Load()
         {
-            if (Name == "guiScaleFormGFxProto")
+            /*if (Name == "guiScaleFormGFxProto")//obsolete debugging code
             {
                 string pausehere = "";
-            }
+            }*/
             if (IsLoaded) { return; }
             //if (IsUnloaded) { throw new InvalidOperationException("Cannot reload object once it's unloaded"); } //Fuck you yes I can reload it.
 
@@ -397,7 +397,7 @@ namespace GomLib
                 return false;
             if (DataLength != other.DataLength)
                 return false;
-            if (Checksum != null)
+            if (Checksum != 0)
                 if (Checksum != other.Checksum)
                     return false;
             

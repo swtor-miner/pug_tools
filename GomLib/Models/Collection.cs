@@ -8,8 +8,6 @@ namespace GomLib.Models
 {
     public class Collection : PseudoGameObject, IEquatable<Collection>
     {
-        [Newtonsoft.Json.JsonIgnore]
-        public DataObjectModel _dom;
         //public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
         public string Icon { get; set; }

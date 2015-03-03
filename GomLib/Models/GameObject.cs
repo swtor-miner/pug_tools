@@ -28,7 +28,7 @@ namespace GomLib.Models
             return json;
         }
 
-        public virtual string ToString() { return ToString(true); }
+        public override string ToString() { return ToString(true); }
         public virtual string ToString(bool verbose) { return ""; }
 
         public virtual string ToSQL(string patchVersion) { return "Unsupported"; }
@@ -160,7 +160,7 @@ namespace GomLib.Models
             return json;
         }
 
-        public virtual string ToString() { return ToString(true); }
+        public override string ToString() { return ToString(true); }
         public virtual string ToString(bool verbose) { return ""; }
 
         public virtual XElement ToXElement() { return ToXElement(true); }

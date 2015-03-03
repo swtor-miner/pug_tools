@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using GomLib.Models;
 using System.Xml.Linq;
-using System.Linq;
 
 namespace GomLib.ModelLoader
 {
@@ -249,10 +248,10 @@ namespace GomLib.ModelLoader
 
             dec.GuildPurchaseCost = gom.Data.ValueOrDefault<long>("decGuildPurchaseCost", 0);
 
-            if (dec.Name == "")
+            /*if (dec.Name == "")//obsolete debugging code
             {
                 string pausehere = "";
-            }
+            }*/
             gom.Unload();
             return dec;
         }

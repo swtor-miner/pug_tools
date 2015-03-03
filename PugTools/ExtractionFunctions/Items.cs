@@ -23,6 +23,32 @@ namespace tor_tools
 {
     public partial class Tools
     {
+        public void getItemApps()
+        {
+            Clearlist2();
+            ClearProgress();
+
+            LoadData();
+            var itmList = currentDom.GetObjectsStartingWith("ipp.");
+
+            if (chkBuildCompare.Checked) ProcessGameObjects("ipp.", "ItemAppearances");
+            else
+            {
+                int i = 0;
+                int count = itmList.Count();
+                ClearProgress();
+                foreach (var itm in itmList)
+                {
+                    i++;
+                    progressUpdate(i, count);
+                    addtolist2(itm.Name);
+
+                    WriteFile(new XDocument(new GomLib.Models.GameObject().ToXElement(itm)), itm.Name.Replace(".", "\\") + ".ipp", false);
+                }
+            }
+
+            EnableButtons();
+        }
         #region SQL
         public string ItemDataFromFqnListToSQL(IEnumerable<GomLib.GomObject> itmList)
         {

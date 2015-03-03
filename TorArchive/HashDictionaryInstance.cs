@@ -11,7 +11,7 @@ namespace TorLib
     {
         private static readonly HashDictionaryInstance instance = new HashDictionaryInstance();
         public HashDictionary dictionary = new HashDictionary();
-        private bool disposed = false;
+        //private bool disposed = false;
 
         static HashDictionaryInstance()
         {

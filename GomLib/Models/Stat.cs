@@ -262,7 +262,6 @@ namespace GomLib.Models
         public string ToStat(string str)
         {
             if (String.IsNullOrEmpty(str)) { return "Undefined"; }
-            string blah = "";
 
             if (StatLookup == null)
             {

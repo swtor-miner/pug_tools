@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{41ACBEF1-B159-4C49-A0F9-A07911617B52}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SlimDX_Framework</RootNamespace>
+    <AssemblyName>SlimDX_Framework</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'voronoi|AnyCPU'">
+    <OutputPath>bin\voronoi\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AssimpNet">
+      <HintPath>..\packages\AssimpNet-3.2\Bin\AssimpNet.dll</HintPath>
+    </Reference>
+    <Reference Include="SlimDX, Version=2.0.7.41, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Windows\Microsoft.NET\assembly\GAC_64\SlimDX\v4.0_4.0.13.43__b1b0c32fd1ffe4f9\SlimDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SpriteTextRenderer, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\SpriteTextRenderer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Camera\CameraBase.cs" />
+    <Compile Include="Camera\FpsCamera.cs" />
+    <Compile Include="Camera\OrthoCamera.cs" />
+    <Compile Include="D3DForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="D3DPanelApp.cs" />
+    <Compile Include="CosTable.cs" />
+    <Compile Include="D3DApp.cs" />
+    <Compile Include="DisposableClass.cs" />
+    <Compile Include="FontCache.cs" />
+    <Compile Include="Frustum.cs" />
+    <Compile Include="FX\GR2_Effect.cs" />
+    <Compile Include="FX\Effect.cs" />
+    <Compile Include="FX\Effects.cs" />
+    <Compile Include="GameTimer.cs" />
+    <Compile Include="GeometryGenerator.cs" />
+    <Compile Include="InputLayoutDescriptions.cs" />
+    <Compile Include="InputLayouts.cs" />
+    <Compile Include="Lights.cs" />
+    <Compile Include="Camera\LookAtCamera.cs" />
+    <Compile Include="MathF.cs" />
+    <Compile Include="Physics\Particle.cs" />
+    <Compile Include="ProgressUpdate.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RenderStates.cs" />
+    <Compile Include="ShadowMap.cs" />
+    <Compile Include="TextureAtlas.cs" />
+    <Compile Include="Util.cs" />
+    <Compile Include="Vertex.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AssimpNet.dll" />
+    <Content Include="SpriteTextRenderer.dll" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

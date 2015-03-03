@@ -148,7 +148,7 @@ namespace GomLib.ModelLoader
         private Dictionary<ulong, string> LoadAssets(ulong id)
         {
             Dictionary<ulong, string> assets = new Dictionary<ulong, string>();
-            if (id == 0 || id == null) return assets;
+            if (id == 0) return assets;
             
             string path = "\\resources\\world\\areas\\" + id.ToString() + "\\";
             string fileName = path + "area.dat";

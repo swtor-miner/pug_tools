@@ -243,7 +243,7 @@ namespace GomLib.ModelLoader
 
             ScriptEnum shipCategory = obj.ValueOrDefault("scFFShipCategory", new ScriptEnum());// only accessible ships have this.
             shp.Category = shipCategory.ToString().Replace("0x00", "Strike Fighter").Replace("scFFShip", "");
-            string shipCategoryName = null;
+            
             /*switch(shipClass)
             {
                 case "*/

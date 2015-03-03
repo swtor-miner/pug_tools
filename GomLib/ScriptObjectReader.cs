@@ -66,10 +66,10 @@ namespace GomLib
                 }
 
                 // Read in the data
-                if (_dom == null)
+                /*if (_dom == null)//obsolete debugging code
                 {
                     string pausehere = "";
-                }
+                }*/
                 object fieldValue = fieldType.ReadData(_dom, reader);
 
                 // Save data to resulting script object

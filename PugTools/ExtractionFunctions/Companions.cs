@@ -27,7 +27,6 @@ namespace tor_tools
         private string CompanionDataFromPrototype(Dictionary<object, object> cmpProto)
         {
             double i = 0;
-            double e = 0;
             string n = Environment.NewLine;
 
             var txtFile = new StringBuilder();

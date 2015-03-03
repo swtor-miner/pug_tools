@@ -37,7 +37,14 @@ namespace tor_tools
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             fbd.SelectedPath = textBoxAssetsFolder.Text;
             DialogResult result = fbd.ShowDialog();
-            textBoxAssetsFolder.Text = fbd.SelectedPath + "\\";
+            if (fbd.SelectedPath.EndsWith("\\"))
+            {
+                textBoxAssetsFolder.Text = fbd.SelectedPath;
+            }
+            else
+            {
+                textBoxAssetsFolder.Text = fbd.SelectedPath + "\\";
+            }
         }
 
         private void buttonSelectExtractFolder_Click(object sender, EventArgs e)
@@ -45,7 +52,14 @@ namespace tor_tools
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             fbd.SelectedPath = textBoxExtractFolder.Text;
             DialogResult result = fbd.ShowDialog();
-            textBoxExtractFolder.Text = fbd.SelectedPath + "\\";
+            if (fbd.SelectedPath.EndsWith("\\"))
+            {
+                textBoxExtractFolder.Text = fbd.SelectedPath;
+            }
+            else
+            {
+                textBoxExtractFolder.Text = fbd.SelectedPath + "\\";
+            }
         }
 
         private void buttonPreviousBuildFolder_Click(object sender, EventArgs e)
@@ -53,7 +67,14 @@ namespace tor_tools
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             fbd.SelectedPath = textBoxPrevXMLFolder.Text;
             DialogResult result = fbd.ShowDialog();
-            textBoxPrevXMLFolder.Text = fbd.SelectedPath + "\\";
+            if (fbd.SelectedPath.EndsWith("\\"))
+            {
+                textBoxPrevXMLFolder.Text = fbd.SelectedPath;
+            }
+            else
+            {
+                textBoxPrevXMLFolder.Text = fbd.SelectedPath + "\\";
+            }
         }
 
         private void buttonFindPrevAssets_Click(object sender, EventArgs e)
@@ -61,7 +82,14 @@ namespace tor_tools
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             fbd.SelectedPath = textBoxPrevAssetsFolder.Text;
             DialogResult result = fbd.ShowDialog();
-            textBoxPrevAssetsFolder.Text = fbd.SelectedPath + "\\";
+            if (fbd.SelectedPath.EndsWith("\\"))
+            {
+                textBoxPrevAssetsFolder.Text = fbd.SelectedPath;
+            }
+            else
+            {
+                textBoxPrevAssetsFolder.Text = fbd.SelectedPath + "\\";
+            }
         }
         #endregion
         private void button3_Click(object sender, EventArgs e)
@@ -95,10 +123,76 @@ namespace tor_tools
             DisableButtons();
             try
             {
+                string selected = comboBoxExtractTypes.SelectedItem.ToString();
                 if (!System.IO.Directory.Exists(Config.ExtractPath + prefix)) { System.IO.Directory.CreateDirectory(Config.ExtractPath + prefix); }
-                ThreadStart t = new ThreadStart(getAll);
+                /*ThreadStart t = new ThreadStart(getAll);
                 Thread oGetItems = new Thread(t);
-                oGetItems.Start();
+                oGetItems.Start();*/
+                ThreadStart t = null;
+                switch (selected)
+                {
+                    case "(Everything)": t = new ThreadStart(getAll);
+                        break;
+                    case "Abilities": t = () => getObjects("abl.", "Abilities");
+                        break;
+                    case "Achievements": t = () => getObjects("ach.", "Achievements");
+                        break;
+                    case "Areas": t = new ThreadStart(getAreas);
+                        break;
+                    case "Cartel Market": t = () => getPrototypeObjects("MtxStoreFronts", "mtxStorefrontInfoPrototype", "mtxStorefrontData"); //new ThreadStart(getMtx);
+                        break;
+                    case "Codex": t = () => getObjects("cdx.", "CodexEntries");
+                        break;
+                    case "Collections": t = () => getPrototypeObjects("Collections", "colCollectionItemsPrototype", "colCollectionItemsData"); //new ThreadStart(getCollect);
+                        break;
+                    case "Companions": t = () => getPrototypeObjects("Companions", "chrCompanionInfo_Prototype", "chrCompanionInfoData"); //new ThreadStart(getCompanions);
+                        break;
+                    case "Conversations": t = () => getObjects("cnv.", "Conversations");
+                        break;
+                    case "Filenames": t = new ThreadStart(getFilenames);
+                        break;
+                    case "Icons": t = new ThreadStart(getIcons);
+                        break;
+                    case "Items": t = () => getObjects("itm.", "Items");
+                        break;
+                    case "Item Appearances": t = new ThreadStart(getItemApps); //t = () => getObjects("ipp.", "ItemAppearances");
+                        break;
+                    case "Npcs": t = () => getObjects("npc.", "Npcs");
+                        break;
+                    case "Quests": t = () => getObjects("qst.", "Quests");
+                        break;
+                    case "Raw GOM": t = new ThreadStart(getRaw);
+                        break;
+                    case "String Tables": t = new ThreadStart(getStrings);
+                        break;
+                    case "Starfighter Ships": t = () => getPrototypeObjects("Ships", "scFFShipsDataPrototype", "scFFShipsData"); //new ThreadStart(getSpaceShip);
+                        break;
+                    case "Talents": t = () => getObjects("tal.", "Talents");
+                        break;
+                    case "Schematics": t = () => getObjects("schem.", "Schematics");
+                        break;
+                    case "Decorations": t = () => getObjects("dec.", "Decorations");
+                        break;
+                    case "Ability Effects": t = () => getObjects("eff.", "Effects");
+                        break;
+                    case "Strongholds": t = () => getObjects("apt.", "Strongholds");
+                        break;
+                    case "Conquests": t = () => getPrototypeObjects("Conquests", "wevConquestInfosPrototype", "wevConquestTable");
+                        break;
+                    case "Advanced Classes": t = () => getObjects("class.pc.advanced", "AdvancedClasses");
+                        break;
+                    //case "test - GOM": t = new ThreadStart(testGom);
+                    //break;
+                }
+                if (t != null)
+                {
+                    Thread oGetItems = new Thread(t);
+                    oGetItems.Start();
+                }
+                else
+                {
+                    EnableButtons();
+                }
             }
             catch (Exception ex)
             {
@@ -165,12 +259,32 @@ namespace tor_tools
             GC.Collect();
         }
 
-
-        private void fnfinderBtn_Click(object sender, EventArgs e)
+        private void btnAssetBrowser_Click(object sender, EventArgs e)
         {
-            DisableButtons();
-            Thread oGetItems = new Thread(delegate() { getFilenames(); });
-            oGetItems.Start();
+            bool usePTS = this.usePTSAssets.Checked;
+            Form AssetBrowser = new AssetBrowser(this.textBoxAssetsFolder.Text, usePTS, this.textBoxExtractFolder.Text);
+            AssetBrowser.Show();
+        }
+
+        private void btnNodeBrowser_Click(object sender, EventArgs e)
+        {
+            bool usePTS = this.usePTSAssets.Checked;
+            Form NodeBrowser = new NodeBrowser(this.textBoxAssetsFolder.Text, usePTS, this.textBoxExtractFolder.Text);
+            NodeBrowser.Show();
+        }
+
+        private void btnModelBrowser_Click(object sender, EventArgs e)
+        {
+            bool usePTS = this.usePTSAssets.Checked;
+            Form ModelBrowser = new ModelBrowser(this.textBoxAssetsFolder.Text, usePTS);
+            ModelBrowser.Show();
+        }
+
+        private void btnWorldBrowser_Click(object sender, EventArgs e)
+        {
+            bool usePTS = this.usePTSAssets.Checked;
+            Form WorldBrowser = new WorldBrowser(this.textBoxAssetsFolder.Text, usePTS);
+            WorldBrowser.Show();
         }
 
         #region Saved Config Events
@@ -182,7 +296,12 @@ namespace tor_tools
 
         private async void textBox1_TextChanged(object sender, EventArgs e)
         {
-            Config.AssetsPath = textBoxAssetsFolder.Text;
+            string path = textBoxAssetsFolder.Text;
+            if (path.Length > 0 && !path.EndsWith("\\"))
+            {
+                path += "\\";
+            }
+            Config.AssetsPath = path;
             Config.Save();
             if (Loaded)
             {
@@ -199,7 +318,12 @@ namespace tor_tools
 
         private void textBox7_TextChanged(object sender, EventArgs e)
         {
-            Config.ExtractPath = textBoxExtractFolder.Text;
+            string path = textBoxExtractFolder.Text;
+            if(path.Length > 0 && !path.EndsWith("\\"))
+            {
+                path += "\\";
+            }
+            Config.ExtractPath = path;
             Config.Save();
         }
 
@@ -211,7 +335,12 @@ namespace tor_tools
 
         private async void textBoxPrevAssetsFolder_TextChanged(object sender, EventArgs e)
         {
-            Config.PrevAssetsPath = textBoxPrevAssetsFolder.Text;
+            string path = textBoxPrevAssetsFolder.Text;
+            if (path.Length > 0 && !path.EndsWith("\\"))
+            {
+                path += "\\";
+            }
+            Config.PrevAssetsPath = path;
             Config.Save();
             if (Loaded)
             {
@@ -331,8 +460,9 @@ namespace tor_tools
             else
             {
                 this.listBox1.Items.Add(text);
-                this.listBox1.SelectedIndex = listBox1.Items.Count - 1;
-                this.listBox1.SelectedIndex = -1;
+                //this.listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                //this.listBox1.SelectedIndex = -1;
+                this.listBox1.TopIndex = listBox1.Items.Count - 1;
 
             }
         }

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<custom_sort enabled="true">
+	<roots>
+		<root name="GSF_Nodes" />
+		<root name="GSH_Nodes" />	
+	</roots>
+
+	<nodes>
+		<!-- GSF Nodes Start -->
+		<node name="armor_" parent="GSF_Nodes" />
+		<node name="BlasterConfig_" parent="GSF_Nodes" />
+		<node name="BlasterVisual_" parent="GSF_Nodes" />		
+		<node name="barrel_" parent="GSF_Nodes" />
+		<node name="bom_" parent="GSF_Nodes" />
+		<node name="bomber_" parent="GSF_Nodes" />
+		<node name="capacitor_" parent="GSF_Nodes" />
+		<node name="conSpec_scff_" parent="GSF_Nodes" />
+		<node name="death." parent="GSF_Nodes" />
+		<node name="drone_" parent="GSF_Nodes" />
+		<node name="dth." parent="GSF_Nodes" />
+		<node name="eng_" parent="GSF_Nodes" />
+		<node name="FFDeath" parent="GSF_Nodes" />
+		<node name="FFSpace" parent="GSF_Nodes" />
+		<node name="FFSPACE" parent="GSF_Nodes" />
+		<node name="gun_" parent="GSF_Nodes" />
+		<node name="gunship_" parent="GSF_Nodes" />
+		<node name="HANGAR" parent="GSF_Nodes" />
+		<node name="imp_" parent="GSF_Nodes" />
+		<node name="inf_" parent="GSF_Nodes" />
+		<node name="infiltrator_" parent="GSF_Nodes" />
+		<node name="locked." parent="GSF_Nodes" />
+		<node name="magazine_" parent="GSF_Nodes" />
+		<node name="padlock." parent="GSF_Nodes" />
+		<node name="premium_" parent="GSF_Nodes" />
+		<node name="pweap_" parent="GSF_Nodes" />
+		<node name="reactor_" parent="GSF_Nodes" />
+		<node name="rep_" parent="GSF_Nodes" />
+		<node name="SCFF" parent="GSF_Nodes" />
+		<node name="scFF" parent="GSF_Nodes" />
+		<node name="scff" parent="GSF_Nodes" />
+		<node name="sco_" parent="GSF_Nodes" />
+		<node name="scout_" parent="GSF_Nodes" />
+		<node name="scPvpGlobalDataPrototype" parent="GSF_Nodes" />		
+		<node name="sensor_" parent="GSF_Nodes" />
+		<node name="shield_" parent="GSF_Nodes" />
+		<node name="sniper." parent="GSF_Nodes" />
+		<node name="spc." parent="GSF_Nodes" />
+		<node name="spvp." parent="GSF_Nodes" />
+		<node name="str_" parent="GSF_Nodes" />
+		<node name="striker_" parent="GSF_Nodes" />
+		<node name="sweap_" parent="GSF_Nodes" />
+		<node name="sys_" parent="GSF_Nodes" />
+		<node name="thruster_" parent="GSF_Nodes" />
+		<!-- GSF Nodes End -->
+
+		<!-- GSH_Nodes Start -->
+		<node name="APT" parent="GSH_Nodes" />
+		<node name="apt." parent="GSH_Nodes" />
+		<node name="apthookdata" parent="GSH_Nodes" />
+		<node name="aptLabelTableDefinition" parent="GSH_Nodes" />
+		<node name="dec." parent="GSH_Nodes" />	
+		<node name="decCategoriesTable" parent="GSH_Nodes" />
+		<node name="decorationsPrototype" parent="GSH_Nodes" />
+		<node name="decSubCategoriesTable" parent="GSH_Nodes" />
+		<node name="gldFlagshipPrototype" parent="GSH_Nodes" />		
+		<node name="ProtoaptPlacementLayoutInstance" parent="GSH_Nodes" />
+		<!-- GSH_Nodes End -->
+	</nodes>
+</custom_sort>

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.textBoxAssetsFolder = new System.Windows.Forms.TextBox();
             this.labelAssetsFolder = new System.Windows.Forms.Label();
             this.listBox1 = new System.Windows.Forms.ListBox();
@@ -51,8 +52,6 @@
             this.gbxDB = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.gbxExtract = new System.Windows.Forms.GroupBox();
-            this.label6 = new System.Windows.Forms.Label();
             this.extractButton = new System.Windows.Forms.Button();
             this.gbxFQN = new System.Windows.Forms.GroupBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -74,15 +73,22 @@
             this.btnUnloadAllData = new System.Windows.Forms.Button();
             this.gbxLogs = new System.Windows.Forms.GroupBox();
             this.gbxTools = new System.Windows.Forms.GroupBox();
-            this.fnfinderBtn = new System.Windows.Forms.Button();
+            this.btnNodeBrowser = new System.Windows.Forms.Button();
+            this.btnWorldBrowser = new System.Windows.Forms.Button();
+            this.btnModelBrowser = new System.Windows.Forms.Button();
+            this.btnAssetBrowser = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.gbxExtract = new System.Windows.Forms.GroupBox();
+            this.comboBoxExtractTypes = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.gbxFormat.SuspendLayout();
             this.gbxDB.SuspendLayout();
-            this.gbxExtract.SuspendLayout();
             this.gbxFQN.SuspendLayout();
             this.gbxPath.SuspendLayout();
             this.gbxLogs.SuspendLayout();
             this.gbxTools.SuspendLayout();
+            this.gbxExtract.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBoxAssetsFolder
@@ -213,6 +219,7 @@
             this.searchButton.Size = new System.Drawing.Size(53, 23);
             this.searchButton.TabIndex = 23;
             this.searchButton.Text = "Search";
+            this.toolTip1.SetToolTip(this.searchButton, "Perform search");
             this.searchButton.UseVisualStyleBackColor = true;
             this.searchButton.Click += new System.EventHandler(this.searchButton_Click);
             // 
@@ -237,6 +244,7 @@
             this.chkBuildCompare.Size = new System.Drawing.Size(94, 17);
             this.chkBuildCompare.TabIndex = 18;
             this.chkBuildCompare.Text = "Compare Build";
+            this.toolTip1.SetToolTip(this.chkBuildCompare, "Generate an output of the changes between current and the previous builds.");
             this.chkBuildCompare.UseVisualStyleBackColor = true;
             this.chkBuildCompare.CheckedChanged += new System.EventHandler(this.chkBuildCompare_CheckedChanged);
             // 
@@ -251,6 +259,7 @@
             this.chkRemoveElements.Size = new System.Drawing.Size(92, 17);
             this.chkRemoveElements.TabIndex = 17;
             this.chkRemoveElements.Text = "Remove Elem";
+            this.toolTip1.SetToolTip(this.chkRemoveElements, "Remove unchanged elements.");
             this.chkRemoveElements.UseVisualStyleBackColor = true;
             this.chkRemoveElements.CheckedChanged += new System.EventHandler(this.removeElementsCheckBox_CheckedChanged);
             // 
@@ -279,6 +288,7 @@
             this.chkVerbose.Size = new System.Drawing.Size(65, 17);
             this.chkVerbose.TabIndex = 14;
             this.chkVerbose.Text = "Verbose";
+            this.toolTip1.SetToolTip(this.chkVerbose, "Export all data.");
             this.chkVerbose.UseVisualStyleBackColor = true;
             this.chkVerbose.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
@@ -319,29 +329,6 @@
             this.textBox1.TabIndex = 12;
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged_1);
             // 
-            // gbxExtract
-            // 
-            this.gbxExtract.Controls.Add(this.label6);
-            this.gbxExtract.Controls.Add(this.extractButton);
-            this.gbxExtract.Location = new System.Drawing.Point(358, 291);
-            this.gbxExtract.Name = "gbxExtract";
-            this.gbxExtract.Size = new System.Drawing.Size(238, 77);
-            this.gbxExtract.TabIndex = 31;
-            this.gbxExtract.TabStop = false;
-            this.gbxExtract.Text = "Extractors";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.label6.Location = new System.Drawing.Point(11, 16);
-            this.label6.MaximumSize = new System.Drawing.Size(230, 0);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(229, 26);
-            this.label6.TabIndex = 29;
-            this.label6.Text = "Click and select what you want from the dialog window. The default is to dump eve" +
-    "rything.";
-            // 
             // extractButton
             // 
             this.extractButton.Location = new System.Drawing.Point(160, 45);
@@ -349,6 +336,7 @@
             this.extractButton.Size = new System.Drawing.Size(68, 23);
             this.extractButton.TabIndex = 19;
             this.extractButton.Text = "Extract";
+            this.toolTip1.SetToolTip(this.extractButton, "Opens the extraction dialog to extract data and compare builds.");
             this.extractButton.UseVisualStyleBackColor = true;
             this.extractButton.Click += new System.EventHandler(this.extractButton_Click);
             // 
@@ -403,6 +391,7 @@
             this.usePTSAssets.Size = new System.Drawing.Size(47, 17);
             this.usePTSAssets.TabIndex = 2;
             this.usePTSAssets.Text = "PTS";
+            this.toolTip1.SetToolTip(this.usePTSAssets, "Loads PTS assets if checked.");
             this.usePTSAssets.UseVisualStyleBackColor = true;
             this.usePTSAssets.CheckedChanged += new System.EventHandler(this.usePTSAssets_CheckedChanged);
             // 
@@ -489,6 +478,7 @@
             this.prevUsePTSAssets.Size = new System.Drawing.Size(47, 17);
             this.prevUsePTSAssets.TabIndex = 5;
             this.prevUsePTSAssets.Text = "PTS";
+            this.toolTip1.SetToolTip(this.prevUsePTSAssets, "Loads PTS assets if checked.");
             this.prevUsePTSAssets.UseVisualStyleBackColor = true;
             this.prevUsePTSAssets.CheckedChanged += new System.EventHandler(this.prevUsePTSAssets_CheckedChanged);
             // 
@@ -544,6 +534,7 @@
             this.btnUnloadAllData.Size = new System.Drawing.Size(89, 23);
             this.btnUnloadAllData.TabIndex = 46;
             this.btnUnloadAllData.Text = "Unload All Data";
+            this.toolTip1.SetToolTip(this.btnUnloadAllData, "Unload current DOM and assets.");
             this.btnUnloadAllData.UseVisualStyleBackColor = true;
             this.btnUnloadAllData.Click += new System.EventHandler(this.btnUnloadAllData_Click);
             // 
@@ -560,40 +551,109 @@
             // 
             // gbxTools
             // 
+            this.gbxTools.Controls.Add(this.btnNodeBrowser);
+            this.gbxTools.Controls.Add(this.btnWorldBrowser);
+            this.gbxTools.Controls.Add(this.btnModelBrowser);
+            this.gbxTools.Controls.Add(this.btnAssetBrowser);
             this.gbxTools.Controls.Add(this.button1);
-            this.gbxTools.Controls.Add(this.fnfinderBtn);
             this.gbxTools.Location = new System.Drawing.Point(359, 374);
             this.gbxTools.Name = "gbxTools";
-            this.gbxTools.Size = new System.Drawing.Size(233, 79);
+            this.gbxTools.Size = new System.Drawing.Size(233, 108);
             this.gbxTools.TabIndex = 34;
             this.gbxTools.TabStop = false;
             this.gbxTools.Text = "Tools";
             // 
-            // fnfinderBtn
+            // btnNodeBrowser
             // 
-            this.fnfinderBtn.Location = new System.Drawing.Point(9, 20);
-            this.fnfinderBtn.Name = "fnfinderBtn";
-            this.fnfinderBtn.Size = new System.Drawing.Size(75, 23);
-            this.fnfinderBtn.TabIndex = 0;
-            this.fnfinderBtn.Text = "Filename Finder";
-            this.fnfinderBtn.UseVisualStyleBackColor = true;
-            this.fnfinderBtn.Click += new System.EventHandler(this.fnfinderBtn_Click);
+            this.btnNodeBrowser.Location = new System.Drawing.Point(119, 19);
+            this.btnNodeBrowser.Name = "btnNodeBrowser";
+            this.btnNodeBrowser.Size = new System.Drawing.Size(108, 23);
+            this.btnNodeBrowser.TabIndex = 50;
+            this.btnNodeBrowser.Text = "Node Browser";
+            this.btnNodeBrowser.UseVisualStyleBackColor = true;
+            this.btnNodeBrowser.Click += new System.EventHandler(this.btnNodeBrowser_Click);
+            // 
+            // btnWorldBrowser
+            // 
+            this.btnWorldBrowser.Enabled = false;
+            this.btnWorldBrowser.Location = new System.Drawing.Point(6, 77);
+            this.btnWorldBrowser.Name = "btnWorldBrowser";
+            this.btnWorldBrowser.Size = new System.Drawing.Size(108, 23);
+            this.btnWorldBrowser.TabIndex = 49;
+            this.btnWorldBrowser.Text = "World Browser";
+            this.btnWorldBrowser.UseVisualStyleBackColor = true;
+            this.btnWorldBrowser.Click += new System.EventHandler(this.btnWorldBrowser_Click);
+            // 
+            // btnModelBrowser
+            // 
+            this.btnModelBrowser.Location = new System.Drawing.Point(6, 48);
+            this.btnModelBrowser.Name = "btnModelBrowser";
+            this.btnModelBrowser.Size = new System.Drawing.Size(108, 23);
+            this.btnModelBrowser.TabIndex = 48;
+            this.btnModelBrowser.Text = "Model Browser";
+            this.btnModelBrowser.UseVisualStyleBackColor = true;
+            this.btnModelBrowser.Click += new System.EventHandler(this.btnModelBrowser_Click);
+            // 
+            // btnAssetBrowser
+            // 
+            this.btnAssetBrowser.Location = new System.Drawing.Point(6, 19);
+            this.btnAssetBrowser.Name = "btnAssetBrowser";
+            this.btnAssetBrowser.Size = new System.Drawing.Size(108, 23);
+            this.btnAssetBrowser.TabIndex = 24;
+            this.btnAssetBrowser.Text = "Asset Browser";
+            this.btnAssetBrowser.UseVisualStyleBackColor = true;
+            this.btnAssetBrowser.Click += new System.EventHandler(this.btnAssetBrowser_Click);
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(144, 19);
+            this.button1.Location = new System.Drawing.Point(121, 48);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.Size = new System.Drawing.Size(106, 23);
             this.button1.TabIndex = 1;
             this.button1.Text = "Create SQL";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // gbxExtract
+            // 
+            this.gbxExtract.Controls.Add(this.comboBoxExtractTypes);
+            this.gbxExtract.Controls.Add(this.extractButton);
+            this.gbxExtract.Location = new System.Drawing.Point(358, 291);
+            this.gbxExtract.Name = "gbxExtract";
+            this.gbxExtract.Size = new System.Drawing.Size(238, 77);
+            this.gbxExtract.TabIndex = 31;
+            this.gbxExtract.TabStop = false;
+            this.gbxExtract.Text = "Extractors";
+            // 
+            // comboBoxExtractTypes
+            // 
+            this.comboBoxExtractTypes.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.comboBoxExtractTypes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxExtractTypes.FormattingEnabled = true;
+            this.comboBoxExtractTypes.Location = new System.Drawing.Point(10, 47);
+            this.comboBoxExtractTypes.Name = "comboBoxExtractTypes";
+            this.comboBoxExtractTypes.Size = new System.Drawing.Size(144, 21);
+            this.comboBoxExtractTypes.Sorted = true;
+            this.comboBoxExtractTypes.TabIndex = 20;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.label6.Location = new System.Drawing.Point(367, 307);
+            this.label6.MaximumSize = new System.Drawing.Size(230, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(229, 26);
+            this.label6.TabIndex = 29;
+            this.label6.Text = "Click and select what you want from the dialog window. The default is to dump eve" +
+    "rything.";
             // 
             // Tools
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(604, 613);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.gbxTools);
             this.Controls.Add(this.gbxLogs);
             this.Controls.Add(this.gbxPath);
@@ -611,15 +671,15 @@
             this.gbxFormat.PerformLayout();
             this.gbxDB.ResumeLayout(false);
             this.gbxDB.PerformLayout();
-            this.gbxExtract.ResumeLayout(false);
-            this.gbxExtract.PerformLayout();
             this.gbxFQN.ResumeLayout(false);
             this.gbxFQN.PerformLayout();
             this.gbxPath.ResumeLayout(false);
             this.gbxPath.PerformLayout();
             this.gbxLogs.ResumeLayout(false);
             this.gbxTools.ResumeLayout(false);
+            this.gbxExtract.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -642,7 +702,6 @@
         private System.Windows.Forms.Button searchButton;
         private System.Windows.Forms.GroupBox gbxFormat;
         private System.Windows.Forms.GroupBox gbxDB;
-        private System.Windows.Forms.GroupBox gbxExtract;
         private System.Windows.Forms.GroupBox gbxFQN;
         private System.Windows.Forms.TextBox textBoxExtractFolder;
         private System.Windows.Forms.Label labelExtractFolder;
@@ -656,7 +715,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button extractButton;
-        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.CheckBox usePTSAssets;
         private System.Windows.Forms.Button buttonFindPrevAssets;
@@ -671,8 +729,15 @@
         private System.Windows.Forms.CheckBox chkBuildCompare;
         private System.Windows.Forms.Button btnUnloadAllData;
         private System.Windows.Forms.GroupBox gbxTools;
-        private System.Windows.Forms.Button fnfinderBtn;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Button btnNodeBrowser;
+        private System.Windows.Forms.Button btnWorldBrowser;
+        private System.Windows.Forms.Button btnModelBrowser;
+        private System.Windows.Forms.Button btnAssetBrowser;
+        private System.Windows.Forms.GroupBox gbxExtract;
+        private System.Windows.Forms.ComboBox comboBoxExtractTypes;
+        private System.Windows.Forms.Label label6;
     }
 }
 

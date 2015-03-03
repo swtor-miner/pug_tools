@@ -241,10 +241,10 @@ namespace GomLib.ModelLoader
                 reward._dom = _dom;
 
                 long unknownNum = qReward.Get<long>("4611686090803470052");
-                if (unknownNum != 1)
+                /*if (unknownNum != 1) //obsolete debugging code
                 {
                     var t = ""; //checking if always 1. Order of appearance in listing?!?
-                }
+                }*/
                 reward.UnknownNum = unknownNum;
 
                 bool isAlwaysProvided = qReward.ValueOrDefault<bool>("qstRewardIsAlwaysProvided", false);
@@ -263,10 +263,10 @@ namespace GomLib.ModelLoader
                 {
                     ClassSpec classy = _dom.classSpecLoader.Load((ulong)classLookup.Key);
                     reward.Classes.Add(classy);
-                    if (!(bool)classLookup.Value)
+                    /*if (!(bool)classLookup.Value)//obsolete debugging code
                     {
                         var t = "";
-                    }
+                    }*/
                 }
 
                 long numberOfItem = rewardLookup.Get<long>("qstRewardItemQty");

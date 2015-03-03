@@ -401,8 +401,8 @@ namespace GomLib
             if (this.Fqn != stb.Fqn)
                 return false;
 
-            //var ssComp = new Models.DictionaryComparer<long, StringTableEntry>();
-            //if (!ssComp.Equals(this.data, stb.data))
+            var ssComp = new Models.DictionaryComparer<long, StringTableEntry>();
+            if (!ssComp.Equals(this.data, stb.data))
             
             foreach (var entry in data)
             {
@@ -414,6 +414,16 @@ namespace GomLib
             }
 
             return true;
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = Fqn.GetHashCode();
+            hash ^= Version.GetHashCode();
+            if (fqnMap != null) { hash ^= fqnMap.GetHashCode(); }
+            if (data != null) { hash ^= data.GetHashCode(); }
+            if (failedFqns != null) { hash ^= failedFqns.GetHashCode(); }
+            return hash;
         }
     }
 }

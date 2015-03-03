@@ -178,10 +178,10 @@ namespace GomLib.ModelLoader
                     var quant = ((GomObjectData)gomDat).Get<long>("4611686297859444003");
                     var itemId = ((GomObjectData)gomDat).Get<ulong>("4611686297859444002");
                     GomObject rew = _dom.GetObject(itemId);
-                    if (rew.Name.Contains("itm.stronghold.") && !rew.Name.Contains(".trophy.") && !rew.Name.Contains("datacron_master_display"))
+                    /*if (rew.Name.Contains("itm.stronghold.") && !rew.Name.Contains(".trophy.") && !rew.Name.Contains("datacron_master_display")) //obsolete debugging code
                     {
                         string paushere = "";
-                    }
+                    }*/
                     ach.Rewards.ItemRewardList.Add(itemId, quant);
                 }
 

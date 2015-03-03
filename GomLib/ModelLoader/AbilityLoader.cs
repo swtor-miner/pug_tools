@@ -11,7 +11,7 @@ namespace GomLib.ModelLoader
         const long NameLookupKey = -2761358831308646330;
         const long DescLookupKey = 2806211896052149513;
         
-        int tokenNumber = 1;
+        //int tokenNumber = 1;
 
         Dictionary<ulong, Ability> idMap;
         Dictionary<string, Ability> nameMap;
@@ -204,7 +204,7 @@ namespace GomLib.ModelLoader
                     }
                     t++;
                 }
-                tokenNumber = 1;
+                //tokenNumber = 1;
                 if (tokenList.Count > 0)
                 {
                     abl.TalentTokens = returnStrings(tokenList, "'", ",");
@@ -298,10 +298,10 @@ namespace GomLib.ModelLoader
                                     foreach (var condition in ((List<object>)blah2).ConvertAll<GomObjectData>(x => (GomObjectData)x))
                                     {
                                         var logicOperator = condition.ValueOrDefault<object>("effConditionLogicOperator", "");
-                                        if (logicOperator.ToString() != "" && logicOperator.ToString() != "effLogicOpAnd")
+                                        /*if (logicOperator.ToString() != "" && logicOperator.ToString() != "effLogicOpAnd") //obsolete debugging code
                                         {
                                             bool complexLogicCanidate = true; //need more code here to sift out case of And + Or logic
-                                        }
+                                        }*/
                                     }
                                 }
                             }

@@ -58,7 +58,6 @@ namespace tor_tools
         private string AreaDataFromPrototype(Dictionary<object, object> areaList)
         {
             double i = 0;
-            double e = 0;
             string n = Environment.NewLine;
 
             var txtFile = new StringBuilder();
@@ -186,7 +185,6 @@ namespace tor_tools
         private List<string> AreaFileNamesFromPrototype(Dictionary<object, object> areaList)
         {
             double i = 0;
-            double e = 0;
             string n = Environment.NewLine;
 
             List<string> areas = new List<string>();
