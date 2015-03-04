@@ -13,7 +13,6 @@ namespace tor_tools
         public string name;
         public WEM_File obj;
         public int size;
-        public string displaySize;
 
         public List<NodeListItem> children = new List<NodeListItem>();
 
@@ -22,7 +21,6 @@ namespace tor_tools
             this.name = name;
             this.obj = (WEM_File)obj;
             this.size = (obj.data.Count() / 1024);
-            this.displaySize = this.size.ToString("#,##0");
          }
 
         public static void resetTreeListViewColumns(BrightIdeasSoftware.TreeListView tlv)
@@ -35,7 +33,7 @@ namespace tor_tools
             olvColumn1.Text = "Name";
             olvColumn1.Width = 167;
 
-            olvColumn2.AspectName = "displaySize";
+            olvColumn2.AspectName = "size";
             olvColumn2.CellPadding = null;
             olvColumn2.Text = "Size (KB)";
             olvColumn2.Width = 230;
