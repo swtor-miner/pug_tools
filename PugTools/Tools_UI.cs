@@ -181,8 +181,8 @@ namespace tor_tools
                         break;
                     case "Advanced Classes": t = () => getObjects("class.pc.advanced", "AdvancedClasses");
                         break;
-                    //case "test - GOM": t = new ThreadStart(testGom);
-                    //break;
+                    case "FindNewMtxImages": t = new ThreadStart(FindNewMtxImages);
+                        break;
                 }
                 if (t != null)
                 {

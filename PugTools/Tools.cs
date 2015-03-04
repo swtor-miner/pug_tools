@@ -74,16 +74,10 @@ namespace tor_tools
                 "String Tables",
                 "Schematics",
                 "Decorations",
-                "Fansite Data",
-                "Ability Effects",
                 "Strongholds",
                 "Conquests",                
-                "Reputation Groups & Ranks",
-                "Legacy Titles",
-                "Player Titles",
-                "Achievement Categories",
-                "Advanced Classes"//,
-                //"test - GOM"
+                "Advanced Classes",
+                "FindNewMtxImages"
             });
             comboBoxExtractTypes.SelectedIndex = 0;
             cbxExtractFormat.SelectedIndex = 0;
