@@ -128,16 +128,56 @@ namespace GomLib.Models
                     return false;
                 foreach (var kvp in this.RoomTable)
                 {
-                    var prevRoom = new Room();
-                    itm.RoomTable.TryGetValue(kvp.Key, out prevRoom);
-                    if (!kvp.Value.Equals(prevRoom))
+                    Room prevRoom;
+                    if (itm.RoomTable.TryGetValue(kvp.Key, out prevRoom))
+                    {
+                        if (!kvp.Value.Equals(prevRoom))
+                        {
+                            return false;
+                        }
+                    } else {
                         return false;
+                    }
                 }
             }
 
             if (this.Type != itm.Type)
                 return false;
             return true;
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = Name.GetHashCode();
+            hash ^= NameId.GetHashCode();
+            hash ^= Id.GetHashCode();
+            hash ^= Description.GetHashCode();
+            hash ^= DescId.GetHashCode();
+            hash ^= Fqn.GetHashCode();
+            hash ^= NodeId.GetHashCode();
+            hash ^= DefaultOccupancy.GetHashCode();
+            hash ^= DefGuildShOcc.GetHashCode();
+            hash ^= GuildShCost.GetHashCode();
+            hash ^= PlayerShCost.GetHashCode();
+            //hash ^= DiscountMtxSF.GetHashCode();//Needs its hash code implementation.
+            //hash ^= MtxStoreFront.GetHashCode();//Needs its hash code implementation.
+            hash ^= FactionPurchaseRestriction.GetHashCode();
+            hash ^= Icon.GetHashCode();
+            hash ^= PublicIcon.GetHashCode();
+            hash ^= MaxHooks.GetHashCode();
+            hash ^= DefaultHooks.GetHashCode();
+            hash ^= PhsId.GetHashCode();
+            hash ^= Type.GetHashCode();
+            if(RoomTable != null)
+            {
+                foreach(KeyValuePair<long, Room> kvp in RoomTable)
+                {
+                    hash = hash * 31 + kvp.Key.GetHashCode();
+                    hash = hash * 31 + kvp.Value.GetHashCode();
+                }
+            }
+
+            return hash;
         }
 
         public override string ToString(bool verbose)
@@ -311,6 +351,45 @@ namespace GomLib.Models
                 );
 
             return room;
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = DescId.GetHashCode();
+            hash ^= Description.GetHashCode();
+            hash ^= DiscountMtxSFId.GetHashCode();
+            hash ^= GldShCost.GetHashCode();
+            hash ^= GldShIncDecs.GetHashCode();
+            hash ^= GldShIncOcc.GetHashCode();
+            hash ^= Idx.GetHashCode();
+            hash ^= Name.GetHashCode();
+            hash ^= NameId.GetHashCode();
+            hash ^= PlayerShCost.GetHashCode();
+            hash ^= PlyrShIncDecs.GetHashCode();
+            hash ^= PlyrShIncOcc.GetHashCode();
+            hash ^= ReqItmToUnlockId.GetHashCode();
+            hash ^= ReqQty.GetHashCode();
+
+            if(LocalizedName != null && LocalizedName.Count > 0)
+            {
+                hash = hash * 3;
+                foreach(KeyValuePair<string, string> kvp in LocalizedName)
+                {
+                    hash = hash * 31 + kvp.Key.GetHashCode();
+                    hash = hash * 31 + kvp.Value.GetHashCode();
+                }
+            }
+            if (LocalizedDescription != null && LocalizedDescription.Count > 0)
+            {
+                hash = hash * 5;
+                foreach (KeyValuePair<string, string> kvp in LocalizedDescription)
+                {
+                    hash = hash * 31 + kvp.Key.GetHashCode();
+                    hash = hash * 31 + kvp.Value.GetHashCode();
+                }
+            }
+
+            return hash;
         }
     }
 

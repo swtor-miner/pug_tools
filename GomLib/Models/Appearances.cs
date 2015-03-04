@@ -470,5 +470,72 @@ namespace GomLib.Models
 
             return true;
         }
+
+        public override int GetHashCode()
+        {
+            int hash = Name.GetHashCode();
+            hash ^= WeaponType.GetHashCode();
+            hash ^= Model.GetHashCode();
+            hash ^= FxSpec.GetHashCode();
+            hash ^= BoneName.GetHashCode();
+            hash ^= DynamicData.GetHashCode();
+            hash ^= CombatStance.GetHashCode();
+            if(StowedScale != null)
+            {
+                //This ensures list order.
+                hash = hash * 13;
+                foreach(float value in StowedScale)
+                {
+                    hash = hash * 31 + value.GetHashCode();
+                }
+            }
+            if (StowedRotation != null)
+            {
+                //This ensures list order.
+                hash = hash * 2;
+                foreach (float value in StowedRotation)
+                {
+                    hash = hash * 31 + value.GetHashCode();
+                }
+            }
+            if (StowedOffset != null)
+            {
+                //This ensures list order.
+                hash = hash * 3;
+                foreach (float value in StowedOffset)
+                {
+                    hash = hash * 31 + value.GetHashCode();
+                }
+            }
+            if (DrawnScale != null)
+            {
+                //This ensures list order.
+                hash = hash * 5;
+                foreach (float value in DrawnScale)
+                {
+                    hash = hash * 31 + value.GetHashCode();
+                }
+            }
+            if (DrawnOffset != null)
+            {
+                //This ensures list order.
+                hash = hash * 7;
+                foreach (float value in DrawnOffset)
+                {
+                    hash = hash * 31 + value.GetHashCode();
+                }
+            }
+            if (DrawnRotation != null)
+            {
+                //This ensures list order.
+                hash = hash * 11;
+                foreach (float value in DrawnRotation)
+                {
+                    hash = hash * 31 + value.GetHashCode();
+                }
+            }
+
+            return hash;
+        }
     }
 }

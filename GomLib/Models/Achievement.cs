@@ -151,7 +151,8 @@ namespace GomLib.Models
                 new XElement("Name", Name),
                 new XElement("Description", Description),
                 new XElement("Fqn", Fqn),
-                new XAttribute("Id", Id));
+                new XAttribute("Id", Id),
+                new XElement("Icon", Icon));
 
             if (verbose)
             {
@@ -178,6 +179,16 @@ namespace GomLib.Models
                 achievement.Element("Fqn").Add(new XAttribute("Id", NodeId));
 
                 //new XAttribute("Hash", GetHashCode()),
+                if (AchId != 0)
+                {
+                    achievement.Add(new XElement("AchID", AchId));
+                }
+                else
+                {
+                    //Achivement broken. Bring this to the attention of people so it hopefully gets fixed before live.
+                    achievement.Add(new XElement("AchID", "Broken Achievement."));
+                }
+                
                 achievement.Add(new XElement("Rewards"),
                 new XElement("NonSpoilerDescription", NonSpoilerDesc,
                     new XAttribute("Id", nonSpoilerId)),

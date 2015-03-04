@@ -57,6 +57,30 @@ namespace GomLib.Models
                     return false;
                 return true;
             }
+
+            public override int GetHashCode()
+            {
+                //This verifies member data to which probably isn't ideal?
+                int hash = 2;
+                if(OffensiveStats != null)
+                {
+                    hash = hash * 3;
+                    foreach(StatData std in OffensiveStats)
+                    {
+                        hash = hash * 31 + std.GetHashCode();
+                    }
+                }
+                if (DefensiveStats != null)
+                {
+                    hash = hash * 5;
+                    foreach (StatData std in DefensiveStats)
+                    {
+                        hash = hash * 31 + std.GetHashCode();
+                    }
+                }
+
+                return hash;
+            }
         }
 
         public class StatData : IEquatable<StatData>
@@ -101,6 +125,25 @@ namespace GomLib.Models
                 if (this.Value != std.Value)
                     return false;
                 return true;
+            }
+
+            public override int GetHashCode()
+            {
+                int hash = StatId.GetHashCode();
+                hash ^= AffectedNodeId.GetHashCode();
+                hash ^= Enabled.GetHashCode();
+                hash ^= Value.GetHashCode();
+
+                if(Modifier != null)
+                {
+                    hash ^= Modifier.GetHashCode();
+                }
+                if(Stat != null)
+                {
+                    hash ^= Stat.GetHashCode();
+                }
+
+                return hash;
             }
         }
 
