@@ -613,7 +613,8 @@ namespace tor_tools
                     }
                     if (extensions.Contains("MISC"))
                     {
-                        /* nothing yet! */
+                        DisableButtons(); GC.Collect();
+                        FindNewMtxImages();
                     }
                     addtolist("Completed extraction of all supported objects.");
                 }

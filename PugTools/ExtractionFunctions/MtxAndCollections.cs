@@ -130,6 +130,8 @@ namespace tor_tools
                 lib.Load();
 
             Dictionary<string, string> names = MtxIcons();
+            HashDictionaryInstance hashData = HashDictionaryInstance.Instance;
+            hashData.dictionary.CreateHelpers();
 
             addtolist2("Extracting new Cartel Images");
             foreach (var arch in lib.archives)
@@ -150,7 +152,7 @@ namespace tor_tools
 
                             using (MemoryStream outputStream = new MemoryStream())
                             {
-                                if (dds.Width > 400 && dds.Height > 400) // needs cropped
+                                if (dds.Width >= 400 && dds.Height >= 400) // needs cropped
                                 {
                                     DevIL.ImageExporter exp = new DevIL.ImageExporter();
                                     exp.SaveImageToStream(dds, DevIL.ImageType.Png, outputStream); //save DDS to stream in PNG format
