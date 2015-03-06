@@ -171,12 +171,12 @@ namespace GomLib.ModelLoader
                 }*/
 
                 //TODO: This is not working, no items are being read.
-                var itemRew = rawRewards.Get<List<object>>("4611686297859444005");
+                var itemRew = rawRewards.Get<List<object>>("achRewardItems");
                 ach.Rewards.ItemRewardList = new Dictionary<ulong, long>();
                 foreach (var gomDat in itemRew)
                 {
-                    var quant = ((GomObjectData)gomDat).Get<long>("4611686297859444003");
-                    var itemId = ((GomObjectData)gomDat).Get<ulong>("4611686297859444002");
+                    var quant = ((GomObjectData)gomDat).Get<long>("achRewardItemQty");
+                    var itemId = ((GomObjectData)gomDat).Get<ulong>("achRewardItemId");
                     GomObject rew = _dom.GetObject(itemId);
                     /*if (rew.Name.Contains("itm.stronghold.") && !rew.Name.Contains(".trophy.") && !rew.Name.Contains("datacron_master_display")) //obsolete debugging code
                     {

@@ -32,28 +32,29 @@ namespace GomLib.ModelLoader
 
             model.Icon = obj.ValueOrDefault<string>("achCategoriesIcon", "");
             model.CodexIcon = obj.ValueOrDefault<string>("achCategoriesCodexIcon", "");
-            model.NameId = obj.ValueOrDefault<ulong>("4611686297612174002");
+            model.NameId = obj.ValueOrDefault<ulong>("achCategoriesStrRetrID");
             model.Name = _dom.stringTable.TryGetString("str.gui.achievementcategories", (long)(model.NameId), "enMale");
             model.LocalizedName = _dom.stringTable.TryGetLocalizedStrings("str.gui.achievementcategories", (long)(model.NameId));
-            model.Index = obj.ValueOrDefault<long>("4611686297612174003");
+            model.Index = obj.ValueOrDefault<long>("achCategoriesIndexPos");
 
             //Subcategories
             model.SubCategories=new List<long>();
-            foreach (long subcat in obj.Get<List<object>>("4611686297612174007")) {
+            foreach (long subcat in obj.Get<List<object>>("achCategoriesChildCatList"))
+            {
                 model.SubCategories.Add(subcat);
             }
-            model.ParentCategory = obj.ValueOrDefault<long>("4611686297698994000");
+            model.ParentCategory = obj.ValueOrDefault<long>("achCategoriesAchID");
 
             //Achievements
             model.Rows = new List<List<AchievementCategoryEntry>>();
-            foreach (KeyValuePair<object, object> achRow in obj.Get<Dictionary<object, object>>("4611686297880004003"))
+            foreach (KeyValuePair<object, object> achRow in obj.Get<Dictionary<object, object>>("achCategoriesAchTable"))
             {
                 List<AchievementCategoryEntry> tmpRow = new List<AchievementCategoryEntry>();
                 foreach (KeyValuePair<object, object> achievement in (Dictionary<object, object>)achRow.Value) 
                 {
                     AchievementCategoryEntry tmpEntry = new AchievementCategoryEntry();
-                    tmpEntry.Id=((GomObjectData)achievement.Value).ValueOrDefault<ulong>("4611686297880004000");
-                    tmpEntry.DrawArrow = ((GomObjectData)achievement.Value).ValueOrDefault<bool>("4611686297880004001");
+                    tmpEntry.Id = ((GomObjectData)achievement.Value).ValueOrDefault<ulong>("achCategoriesParentCat");
+                    tmpEntry.DrawArrow = ((GomObjectData)achievement.Value).ValueOrDefault<bool>("achCategoriesLinkedAch");
                     tmpRow.Add(tmpEntry);
                 }
                 model.Rows.Add(tmpRow);

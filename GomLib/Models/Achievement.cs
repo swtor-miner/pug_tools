@@ -248,7 +248,7 @@ namespace GomLib.Models
         }
     }
 
-    public class Rewards : GameObject, IEquatable<Rewards>
+    public class Rewards : PseudoGameObject, IEquatable<Rewards>
     {
         public Dictionary<string, string> LocalizedLegacyTitle { get; set; }
         public string LegacyTitle { get; set; }
@@ -293,8 +293,6 @@ namespace GomLib.Models
             if (this.AchievementPoints != rwd.AchievementPoints)
                 return false;
             if (this.CartelCoins != rwd.CartelCoins)
-                return false;
-            if (this.Fqn != rwd.Fqn)
                 return false;
             if (this.Id != rwd.Id)
                 return false;

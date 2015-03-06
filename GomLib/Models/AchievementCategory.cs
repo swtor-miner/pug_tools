@@ -5,7 +5,7 @@ using System.Text;
 
 namespace GomLib.Models
 {
-    public class AchievementCategory : GameObject, IEquatable<AchievementCategory>
+    public class AchievementCategory : PseudoGameObject, IEquatable<AchievementCategory>
     {
         //public Dictionary<string, string> LocalizedTitle { get; set; }
         //public string Title { get; set; }

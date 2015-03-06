@@ -10030,5 +10030,18 @@
   <gom_type Id="4611686295729130003" name="prfIntUnknown5" desc="Int ex 5315" />
   <gom_type Id="4611686345133720002" name="prfBundleSchemList" desc="List of Ids of the schematics in this bundle." />
 
+  <!-- achCategoriesTable_Prototype -->
+  <gom_type Id="4611686297612174002" name="achCategoriesStrRetrID" desc="The string id for the achievement category." />
+  <gom_type Id="4611686297612174003" name="achCategoriesIndexPos" desc="Index based posistion of the achievement category." />
+  <gom_type Id="4611686297612174007" name="achCategoriesChildCatList" desc="Achievement categories that are childs of this category." />
+  <gom_type Id="4611686297880004003" name="achCategoriesAchTable" desc="Achievements in this category. List of classes with a class for each row, classes from top to bottom and achievements left to right." />
+  <gom_type Id="4611686297880004000" name="achCategoriesAchID" desc="Achievement ID for the achievement node." />
+  <gom_type Id="4611686297698994000" name="achCategoriesParentCat" desc="ID of the parent category." />
+  <gom_type Id="4611686297880004001" name="achCategoriesLinkedAch" desc="The achievement in this class is linked to another, arrow drawn. Must be true on two achievements next to each other." />
+  
+  <!-- achRewardsTable_Prototype -->
+  <gom_type Id="4611686297859444002" name="achRewardItemId" desc="Item Id of item rewarded by achievement." />
+  <gom_type Id="4611686297859444003" name="achRewardItemQty" desc="Quantity of Item rewarded by achievement." />
+  <gom_type Id="4611686297859444005" name="achRewardItems" desc="Items rewarded by achievement." />
 
 </gom_types>
