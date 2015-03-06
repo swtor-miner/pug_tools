@@ -556,6 +556,7 @@ namespace tor_tools
             addtolist(String.Format("Generating Output {0}", outputTypeName));
             XDocument xmlDoc = new XDocument();
             XElement gomItems = new XElement("GOM_Items");
+            XElement z_effects = new XElement("Z_Effects");
             ClearProgress();
             i = 0;
             count = 0;
@@ -569,6 +570,7 @@ namespace tor_tools
                 progressUpdate(i, count);
                 foreach (var gomItm in itmList.Value)
                 {
+                    
                     XElement gomElement = new XElement("GOM_Item", new XAttribute("Id", gomItm));
                     if (itmList.Key != "") gomElement.Add(new XAttribute("Status", itmList.Key));
                     if (gomItm.References != null)
@@ -579,7 +581,10 @@ namespace tor_tools
                     {
                         gomElement.Add(ReferencesToXElement(gomItm.FullReferences));
                     }
-                    gomItems.Add(gomElement);
+                    if (gomItm.Name.Contains("/"))
+                        z_effects.Add(gomElement);
+                    else
+                        gomItems.Add(gomElement);
                     gomItm.Unload();
                 }
                 i++;
@@ -592,14 +597,19 @@ namespace tor_tools
                 gomItems.ReplaceNodes(gomItems.Elements("GOM_Item")
                             .OrderBy(x => (string)x.Attribute("Status"))
                             .ThenBy(x => (string)x.Attribute("Id")));
+                z_effects.ReplaceNodes(z_effects.Elements("GOM_Item")
+                            .OrderBy(x => (string)x.Attribute("Status"))
+                            .ThenBy(x => (string)x.Attribute("Id")));
             }
             else
             {
                 gomItems.ReplaceNodes(gomItems.Elements("GOM_Item")
                             .OrderBy(x => (string)x.Attribute("Id")));
+                z_effects.ReplaceNodes(z_effects.Elements("GOM_Item")
+                            .OrderBy(x => (string)x.Attribute("Id")));
             }
-            addtolist("GOM Items - " + gomItems.Elements("GOM_Item").Count());
-            xmlDoc.Add(gomItems);
+            addtolist("GOM Items - " + (gomItems.Elements("GOM_Item").Count() + z_effects.Elements("GOM_Item").Count()));
+            xmlDoc.Add(new XElement("Container", gomItems, z_effects));
             WriteFile(xmlDoc, filename, false, false);
 
             if (chkBuildCompare.Checked)
