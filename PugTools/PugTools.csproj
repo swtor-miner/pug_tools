@@ -441,7 +441,9 @@
     </Content>
     <Content Include="ColorCode.dll" />
     <Content Include="DevILNet.csproj" />
-    <Content Include="HashDictionary.dll" />
+    <Content Include="HashDictionary.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="ICSharpCode.SharpZipLib.dll" />
     <Content Include="NAudio.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

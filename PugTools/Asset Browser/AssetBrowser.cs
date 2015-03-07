@@ -68,12 +68,13 @@ namespace tor_tools
         private bool extractByExtensions = false;
         private HashSet<string> extractExtensions = new HashSet<string>();
         private int extractCount = 0;
+        private ulong modNewCount = 0;
 
         public AssetBrowser(string assetLocation, bool usePTS, string extractLocation)
         {
             InitializeComponent();
-
-             hashData = HashDictionaryInstance.Instance;
+            closing = false;
+            hashData = HashDictionaryInstance.Instance;
 
             Config.Load();
             txtExtractPath.Text = Config.ExtractAssetsPath;
@@ -122,7 +123,7 @@ namespace tor_tools
         {
             toolStripStatusLabel1.Text = "Loading Files ...";
             hashData = HashDictionaryInstance.Instance;
-            hashData.dictionary.CreateHelpers();
+            //hashData.dictionary.CreateHelpers();
             HashSet<string> fileDirs = new HashSet<string>();
             HashSet<string> allDirs = new HashSet<string>();
 
@@ -214,6 +215,8 @@ namespace tor_tools
                     }
                 }
             }
+
+            this.modNewCount = (ulong)(intModCount + intNewCount);
 
             HashFileInfo empty = new HashFileInfo(0, 0, null);
             assetDict.Add("/root", new TreeListItem("/root", "", "Root", empty));
@@ -1130,7 +1133,7 @@ namespace tor_tools
                     misc_world_parser.ParseMISC_WORLD(areaList2, areaList, currentDom);
                     areaList.Clear();
                     areaList2.Clear();
-                    GC.Collect();
+                    //GC.Collect();
                     misc_world_parser.WriteFile();
                     this.namesFound = misc_world_parser.found;
                     break;
@@ -1215,8 +1218,13 @@ namespace tor_tools
             }
         }
 
+        bool closing = false;
+
         private void AssetBrowser_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (closing) return; //this event handler was getting called repeatedly, this bool will prevent it from running multiple times.
+            closing = true;
+            this.Close();
             if (panelRender != null)
             {
                 panelRender.stopRender();             
@@ -1234,7 +1242,7 @@ namespace tor_tools
             assetKeys = null;
             fileDict.Clear();
             fileDict = null;
-            if (hashData.dictionary.needsSave)
+            if (hashData.dictionary.needsSave && this.modNewCount > 2)
             {   
                 DialogResult save = MessageBox.Show("The hash dictionary needs to be saved. \nSave the dictionary changes?", "Save Dictionary?", MessageBoxButtons.YesNo);
                 if (save == DialogResult.Yes)
@@ -1323,7 +1331,7 @@ namespace tor_tools
                     }
                     testLines.Clear();
                     lines = null;
-                    GC.Collect();
+                    //GC.Collect();
                 }
             }
         }
