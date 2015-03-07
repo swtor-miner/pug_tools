@@ -74,13 +74,7 @@ namespace TorLib
             if (file.FileInfo.Checksum < bytes.Length)
                 bytes = new byte[file.FileInfo.CompressedSize];
             fs.Read(bytes, 0, bytes.Length);
-
-            string str = "";
-            str = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
-            char[] separator = new char[] { ',' };
-            int length = str.Split(separator, 10).Length;
-            string str2 = Encoding.ASCII.GetString(bytes, 0, 4);
-            string str3 = "txt";
+            fs.Dispose();
 
             if (((bytes[0] == 0x01) && (bytes[1] == 0x00)) && (bytes[2] == 0x00))
             {
@@ -113,12 +107,8 @@ namespace TorLib
                 return "spt";
             }
 
-            if (length >= 10)
-            {
-                str3 = "csv";
-            }
-
-
+            string str = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
+            string str2 = Encoding.ASCII.GetString(bytes, 0, 4);
             foreach (var item in file_types)
             {
                 if (str2.IndexOf(item.Key) >= 0)
@@ -172,7 +162,15 @@ namespace TorLib
                 return "acb";
             }
 
-            return str3;
+            int length = str.Split(new char[] { ',' }, 10).Length;
+            if (length >= 10)
+            {
+                return "csv";
+            }
+            else
+            {
+                return "txt";
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ namespace TorLib
     {
         private static readonly HashDictionaryInstance instance = new HashDictionaryInstance();
         public HashDictionary dictionary = new HashDictionary();
+        public bool Loaded;
         //private bool disposed = false;
 
         static HashDictionaryInstance()
@@ -20,6 +21,7 @@ namespace TorLib
         HashDictionaryInstance()
         {
             this.dictionary.LoadHashList();
+            Loaded = true;
         }
 
         public static HashDictionaryInstance Instance
@@ -33,7 +35,20 @@ namespace TorLib
         public void Unload()
         {
             dictionary = new HashDictionary();
+            Loaded = false;
             GC.Collect();
-        }     
+        }
+
+        public void Load()
+        {
+            if(Loaded)
+            {
+                //Already loaded.
+                return;
+            }
+
+            dictionary.LoadHashList();
+            Loaded = true;
+        }
     }    
 }

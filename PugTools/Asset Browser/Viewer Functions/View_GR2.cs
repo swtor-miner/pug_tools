@@ -398,7 +398,7 @@ namespace tor_tools
                     ImmediateContext.DrawIndexed(((int)piece.numPieceFaces)*3, ((int)piece.startIndex)*3, 0);                                                
                 }                
             }
-            SwapChain.Present(0, PresentFlags.None);
+            SwapChain.Present(1, PresentFlags.None);
 
             if (makeScreenshot)
             {

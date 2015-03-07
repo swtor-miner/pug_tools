@@ -40,7 +40,6 @@ namespace tor_tools
         private HashDictionaryInstance hashData;
         private Dictionary<string, List<TorLib.FileInfo>> fileDict = new Dictionary<string, List<TorLib.FileInfo>>();
         private Dictionary<string, TreeListItem> assetDict = new Dictionary<string, TreeListItem>();
-        private List<string> assetKeys = new List<string>();
 
         private Stream inputStream;
         private MemoryStream memStream;
@@ -75,6 +74,10 @@ namespace tor_tools
             InitializeComponent();
             closing = false;
             hashData = HashDictionaryInstance.Instance;
+            if(!hashData.Loaded)
+            {
+                hashData.Load();
+            }
 
             Config.Load();
             txtExtractPath.Text = Config.ExtractAssetsPath;
@@ -83,7 +86,7 @@ namespace tor_tools
             List<object> args = new List<object>();
             args.Add(assetLocation);
             args.Add(usePTS);
-            toolStripStatusLabel1.Text = "Loading Assets ...";
+            toolStripStatusLabel1.Text = "Loading Assets...";
             showLoader();            
             treeListView1.CanExpandGetter = delegate(object x) 
             {
@@ -99,7 +102,6 @@ namespace tor_tools
             };
             treeListView1.ChildrenGetter = delegate(object x)
             {
-                object obj;
                 if (x.GetType() == typeof(NodeListItem))                
                     return new ArrayList(((NodeListItem)x).children);                
                 if (x.GetType() == typeof(WemListItem))
@@ -116,13 +118,12 @@ namespace tor_tools
             List<object> args = e.Argument as List<object>;
             this.currentAssets = AssetHandler.Instance.getCurrentAssets((string)args[0], (bool)args[1]);          
             //this.currentAssets = this.currentAssets.getCurrentAssets((string)args[0], (bool)args[1]);            
-            this.currentDom = DomHandler.Instance.getCurrentDOM(currentAssets);            
-        }
+            this.currentDom = DomHandler.Instance.getCurrentDOM(currentAssets);
 
-        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            toolStripStatusLabel1.Text = "Loading Files ...";
-            hashData = HashDictionaryInstance.Instance;
+            SetStripStatusText("Loading Files...");
+            //Keep the old value here so we can restore it later.
+            int oldSpeed = toolStripProgressBar1.MarqueeAnimationSpeed;
+            SetStripProgressBarAnimSpeed(0);
             //hashData.dictionary.CreateHelpers();
             HashSet<string> fileDirs = new HashSet<string>();
             HashSet<string> allDirs = new HashSet<string>();
@@ -132,29 +133,26 @@ namespace tor_tools
             int intNewCount = 0;
             int intUnnCount = 0;
 
-            string prefixAll = "/root/all";
-            string prefixNew = "/root/new";
-            string prefixMod = "/root/modified";
-            string prefixUnn = "/root/unnamed";
+            const string prefixAll = "/root/all";
+            const string prefixNew = "/root/new";
+            const string prefixMod = "/root/modified";
+            const string prefixUnn = "/root/unnamed";
 
-            /*this.Source = this.Archive.FileName.Split('\\').Last();
+            int libsDone = 0;
+            int maxLibs = currentAssets.libraries.Count;
+            SetStripProgressBarMax(maxLibs);
 
-            HashDictionaryInstance hashData = HashDictionaryInstance.Instance;
-
-           
-             */
-
-            
             foreach (var lib in currentAssets.libraries)
             {
                 string path = lib.Location;
-                if(!lib.Loaded)
+                if (!lib.Loaded)
                     lib.Load();
                 foreach (var arch in lib.archives)
                 {
                     foreach (var file in arch.Value.files)
                     {
                         HashFileInfo hashInfo = new HashFileInfo(file.FileInfo.ph, file.FileInfo.sh, file);
+                        string prefixDir = prefixAll + hashInfo.Directory;
 
                         if (hashInfo.IsNamed)
                         {
@@ -163,9 +161,9 @@ namespace tor_tools
                                 continue;
                             }
 
-                            TreeListItem assetAll = new TreeListItem(prefixAll + hashInfo.Directory + "/" + hashInfo.FileName, prefixAll + hashInfo.Directory, hashInfo.FileName, hashInfo);
-                            assetDict.Add(prefixAll + hashInfo.Directory + "/" + hashInfo.FileName, assetAll);
-                            fileDirs.Add(prefixAll + hashInfo.Directory);
+                            TreeListItem assetAll = new TreeListItem(prefixDir + "/" + hashInfo.FileName, prefixDir, hashInfo.FileName, hashInfo);
+                            assetDict.Add(prefixDir + "/" + hashInfo.FileName, assetAll);
+                            fileDirs.Add(prefixDir);
                             intAllCount++;
 
                             if (hashInfo.FileState == HashFileInfo.State.New)
@@ -185,11 +183,11 @@ namespace tor_tools
                         }
                         else
                         {
-                            hashInfo.Directory = "/unknown/" + hashInfo.Source.Replace(".tor", "");
+                            hashInfo.Directory = "/unknown/" + hashInfo.Source.Replace(".tor", string.Empty);
 
-                            TreeListItem assetAll = new TreeListItem(prefixAll + hashInfo.Directory + "/" + hashInfo.Extension + "/" + hashInfo.FileName + "." + hashInfo.Extension, prefixAll + hashInfo.Directory + "/" + hashInfo.Extension, hashInfo.FileName + "." + hashInfo.Extension, hashInfo);
-                            assetDict.Add(prefixAll + hashInfo.Directory + "/" + hashInfo.Extension + "/" + hashInfo.FileName + "." + hashInfo.Extension, assetAll);
-                            fileDirs.Add(prefixAll + hashInfo.Directory + "/" + hashInfo.Extension);
+                            TreeListItem assetAll = new TreeListItem(prefixDir + "/" + hashInfo.Extension + "/" + hashInfo.FileName + "." + hashInfo.Extension, prefixDir + "/" + hashInfo.Extension, hashInfo.FileName + "." + hashInfo.Extension, hashInfo);
+                            assetDict.Add(prefixDir + "/" + hashInfo.Extension + "/" + hashInfo.FileName + "." + hashInfo.Extension, assetAll);
+                            fileDirs.Add(prefixDir + "/" + hashInfo.Extension);
                             intAllCount++;
 
                             TreeListItem assetUnn = new TreeListItem(prefixUnn + hashInfo.Directory + "/" + hashInfo.Extension + "/" + hashInfo.FileName + "." + hashInfo.Extension, prefixUnn + hashInfo.Directory + "/" + hashInfo.Extension, hashInfo.FileName + "." + hashInfo.Extension, hashInfo);
@@ -214,12 +212,14 @@ namespace tor_tools
                         }
                     }
                 }
+                libsDone++;
+                SetStripProgressBarValue(libsDone);
             }
 
             this.modNewCount = (ulong)(intModCount + intNewCount);
 
             HashFileInfo empty = new HashFileInfo(0, 0, null);
-            assetDict.Add("/root", new TreeListItem("/root", "", "Root", empty));
+            assetDict.Add("/root", new TreeListItem("/root", string.Empty, "Root", empty));
             assetDict.Add("/root/all", new TreeListItem("/root/all", "/root", "All Files (" + intAllCount + ")", empty));
             assetDict.Add("/root/modified", new TreeListItem("/root/modified", "/root", "Modified Files (" + intModCount + ")", empty));
             assetDict.Add("/root/new", new TreeListItem("/root/new", "/root", "New Files (" + intNewCount + ")", empty));
@@ -227,34 +227,38 @@ namespace tor_tools
 
             foreach (var dir in fileDirs)
             {
-                string[] temp = dir.ToString().Split('/');
+                string[] temp = dir.Split('/');
                 int intLength = temp.Length;
                 for (int intCount2 = 0; intCount2 <= intLength; intCount2++)
                 {
                     string output = String.Join("/", temp, 0, intCount2);
-                    if (output != "")
+                    if (output.Length > 0)
                         allDirs.Add(output);
                 }
             }
-
             foreach (var dir in allDirs)
             {
-                string[] temp = dir.ToString().Split('/');
+                string[] temp = dir.Split('/');
                 string parentDir = String.Join("/", temp.Take(temp.Length - 1));
-                if (parentDir == "")
+                if (parentDir.Length == 0)
                     parentDir = "/root";
                 string display = temp.Last();
 
-                TreeListItem asset = new TreeListItem(dir.ToString(), parentDir, display, empty);
-                if (!assetDict.ContainsKey(dir.ToString()))
+                TreeListItem asset = new TreeListItem(dir, parentDir, display, empty);
+                if (!assetDict.ContainsKey(dir))
                     assetDict.Add(dir.ToString(), asset);
             }
 
-            this.assetKeys = this.assetDict.Keys.ToList();
-            this.assetKeys.Sort();
+            //Restore old progress bar values or the animation looks weird.
+            SetStripProgressBarAnimSpeed(oldSpeed);
+            SetStripProgressBarValue(0);
+            SetStripProgressBarMax(100);
+        }
 
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
             toolStripStatusLabel1.Text = "Loading Tree View Items ...";
-            this.Refresh();
+            //this.Refresh();
             backgroundWorker2.RunWorkerAsync();
         }
 
@@ -486,6 +490,50 @@ namespace tor_tools
             this.toolStripStatusLabel2.Text = bitPresentation;
 
             this.toolStripStatusLabel3.Text = bitInfo.ToString();
+        }
+
+        private void SetStripStatusText(string str)
+        {
+            if(InvokeRequired)
+            {
+                this.Invoke(new Action<string>(SetStripStatusText), new object[] { str });
+                return;
+            }
+
+            toolStripStatusLabel1.Text = str;
+        }
+
+        private void SetStripProgressBarValue(int prog)
+        {
+            if(InvokeRequired)
+            {
+                this.Invoke(new Action<int>(SetStripProgressBarValue), new object[] { prog });
+                return;
+            }
+
+            toolStripProgressBar1.Value = prog;
+        }
+
+        private void SetStripProgressBarMax(int max)
+        {
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action<int>(SetStripProgressBarMax), new object[] { max });
+                return;
+            }
+
+            toolStripProgressBar1.Maximum = max;
+        }
+
+        private void SetStripProgressBarAnimSpeed(int speed)
+        {
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action<int>(SetStripProgressBarAnimSpeed), new object[] { speed });
+                return;
+            }
+
+            toolStripProgressBar1.MarqueeAnimationSpeed = speed;
         }
 
     #endregion
@@ -945,7 +993,7 @@ namespace tor_tools
         private async void btnSearch_Click(object sender, EventArgs e)
         {
             this.toolStripStatusLabel1.Text = "Performing Search ...";
-            this.searchNodes = this.assetKeys.Where(d => d.Contains(txtSearch.Text)).ToList();
+            this.searchNodes = this.assetDict.Keys.Where(d => d.Contains(txtSearch.Text)).ToList();
             if (this.searchNodes.Count() > 0)
             {
                 this.btnClearSearch.Enabled = true;
@@ -1016,7 +1064,7 @@ namespace tor_tools
 
         private async void parseFiles(string extension)
         {
-            List<string> assetDictKeys = this.assetKeys.Where(d => d.Contains("." + extension.ToLower())).ToList();            
+            List<string> assetDictKeys = this.assetDict.Keys.Where(d => d.Contains("." + extension.ToLower())).ToList();            
             List<TreeListItem> matches = new List<TreeListItem>();
 
             this.filesSearched = 0;
@@ -1227,19 +1275,19 @@ namespace tor_tools
             this.Close();
             if (panelRender != null)
             {
-                panelRender.stopRender();             
-                if(render != null)
+                panelRender.stopRender();
+                if (render != null)
+                {
                     render.Join();
+                }
+                panelRender.Dispose();
             }
-            panelRender.Dispose();
             if(audioState != false)
                 waveOut.Stop();            
             audioState = false;
             _closing = true;
             assetDict.Clear();
             assetDict = null;
-            assetKeys.Clear();
-            assetKeys = null;
             fileDict.Clear();
             fileDict = null;
             if (hashData.dictionary.needsSave && this.modNewCount > 2)
@@ -1351,10 +1399,13 @@ namespace tor_tools
                 if (foundFiles.Count() > 0)
                 {
                     txtRawView.Text = "Found Files\r\n\r\n";
+                    StringBuilder sb = new StringBuilder(Text);
                     foreach (string file in foundFiles)
                     {
-                        txtRawView.Text += file + "\r\n";
+                        sb.Append(file);
+                        sb.Append("\r\n");
                     }
+                    txtRawView.Text = sb.ToString();
                     txtRawView.Visible = true;
                 }
                 hideLoader();

@@ -28,10 +28,11 @@ namespace TorLib
             if (ph == 0 && sh == 0 && file == null)
                 return;
             FileInfo info = file.FileInfo;
+            
             nsHashDictionary.HashData data = HashDictionaryInstance.Instance.dictionary.SearchHashList(ph, sh);
             this.file = file;
             this.Source = file.Archive.FileName.ToString().Split('\\').Last();
-            if ((data != null) && (data.filename != ""))
+            if (data != null && data.filename.Length > 0)
             {
                 this.IsNamed = true;
                 this.FileName = data.filename;
@@ -61,7 +62,7 @@ namespace TorLib
                 {
                     this.FileState = HashFileInfo.State.New;
                     //this.FileName = info.Checksum + "_" + String.Format(info.FileId.ToString();
-                    this.FileName = string.Format("{0:X8}", info.Checksum) + "_" + string.Format("{0:X16}", (long)info.FileId);
+                    this.FileName = string.Format("{0:X8}", info.Checksum) + "_" + string.Format("{0:X16}", info.FileId);
                     HashDictionaryInstance.Instance.dictionary.AddHash(info.ph, info.sh, "", info.CRC);
                 }
                 else if (info.CRC != data.crc)
@@ -75,7 +76,7 @@ namespace TorLib
                 }
                 if (this.FileName == null)
                 {
-                    this.FileName = string.Format("{0:X8}", info.Checksum) + "_" + string.Format("{0:X16}", (long)info.FileId);
+                    this.FileName = string.Format("{0:X8}", info.Checksum) + "_" + string.Format("{0:X16}", info.FileId);
                 }
             }
         }
