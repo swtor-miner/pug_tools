@@ -233,7 +233,7 @@ namespace GomLib.ModelLoader
                 npc.ProfessionTrained = ProfessionExtensions.ToProfession(profTrained);
             }
 
-            List<object> trainedPackages = obj.Data.ValueOrDefault<List<object>>("4611686061871131192", null);
+            List<object> trainedPackages = obj.Data.ValueOrDefault<List<object>>("npcTrainerPackages", null);
             if (trainedPackages == null)
             {
                 npc.IsClassTrainer = baseNpc.IsClassTrainer;

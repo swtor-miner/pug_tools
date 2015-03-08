@@ -170,7 +170,7 @@ namespace GomLib.ModelLoader
             }
             tal.Ranks = tal.RankStats.Count;
 
-            tal.UnknownEnum = obj.Data.ValueOrDefault<ScriptEnum>("4611686296953210017", new ScriptEnum()).Value;
+            tal.TalentVisibility = obj.Data.ValueOrDefault<ScriptEnum>("talTalentVisibility", new ScriptEnum()); //.Value;
             tal.Icon = obj.Data.ValueOrDefault<string>("talTalentIcon", String.Empty);
             _dom._assets.icons.Add(tal.Icon);
 

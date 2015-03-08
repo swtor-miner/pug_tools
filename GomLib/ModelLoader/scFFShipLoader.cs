@@ -260,12 +260,7 @@ namespace GomLib.ModelLoader
                     shp.Stats.Add(stat.Key.ToString(), (float)stat.Value);
                 }
             }
-            /*Dictionary<string, string> statNames = new Dictionary<string, string>()
-            {
-                { "4611686349353597005", "Yaw" },
-                { "4611686349353597009", "Pitch" },
-                { "4611686349353597000", "Engine Base Speed" }
-            }; */
+
             shp.engStatsNodeId = obj.Get<ulong>("scFFEngineStatsPackage"); //ex. 16140967054983465763 (Node spvp.eng.striker)
             GomObject engStatPackage = _dom.GetObject(shp.engStatsNodeId);
             if (engStatPackage != null)

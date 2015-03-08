@@ -10044,4 +10044,12 @@
   <gom_type Id="4611686297859444003" name="achRewardItemQty" desc="Quantity of Item rewarded by achievement." />
   <gom_type Id="4611686297859444005" name="achRewardItems" desc="Items rewarded by achievement." />
 
+  <!-- talent tal.-->
+  <gom_type Id="4611686296953210017" name="talTalentVisibility" desc="" />
+
+  <!-- placeable plc.-->
+  <gom_type Id="4611686062713031205" name="plcHydra" desc="" />
+
+  <!-- Npc npc.-->
+  <gom_type Id="4611686061871131192" name="npcTrainerPackages" desc="" />
 </gom_types>

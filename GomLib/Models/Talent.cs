@@ -21,7 +21,7 @@ namespace GomLib.Models
 
         public int Ranks { get; set; }
         public List<RankStatData> RankStats { get; set; }
-        public int UnknownEnum { get; set; } //0=Needs to be selected by Discipline; 1=Base talent, always available
+        public ScriptEnum TalentVisibility { get; set; } //0=Needs to be selected by Discipline; 1=Base talent, always available
         public string Icon { get; set; }
 
         public List<float> TokenList { get; set; }

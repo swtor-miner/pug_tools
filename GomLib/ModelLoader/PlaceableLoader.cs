@@ -117,7 +117,7 @@ namespace GomLib.ModelLoader
             plc.DifficultyFlags = (int)obj.Data.ValueOrDefault<long>("spnDifficultyLevelFlags", 0);
 
             //public HydraScript HydraScript { get; set; }
-            ulong hydNodeId = obj.Data.ValueOrDefault<ulong>("4611686062713031205", 0);
+            ulong hydNodeId = obj.Data.ValueOrDefault<ulong>("plcHydra", 0);
             if (hydNodeId > 0)
             {
                 //plc.HydraScript = HydraScriptLoader.Load(hydNodeId);

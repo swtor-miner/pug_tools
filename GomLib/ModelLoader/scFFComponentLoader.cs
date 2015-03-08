@@ -131,11 +131,6 @@ namespace GomLib.ModelLoader
                     //var damAblId = controller.Data.ValueOrDefault<ulong>("scFFControllerAbility", 0); // 16141065603985844578
 
                     var unknownBool = controller.Data.ValueOrDefault<bool>("4611686350202417000", false); // true
-
-                    /*if (unknownBool)
-                    {
-                        Console.WriteLine("field \"4611686350202417000\" = true for " + cmp.Name); // + " - " + cmp.Fqn);
-                    }*/
                 }
                 else
                 {
