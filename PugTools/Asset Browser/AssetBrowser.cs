@@ -535,6 +535,39 @@ namespace tor_tools
             toolStripProgressBar1.Value = e.ProgressPercentage;
         }
 
+       private void SetStripProgressBarValue(int prog)
+       {
+           if (InvokeRequired)
+           {
+               this.Invoke(new Action<int>(SetStripProgressBarValue), new object[] { prog });
+               return;
+           }
+
+           toolStripProgressBar1.Value = prog;
+       }
+
+       private void SetStripProgressBarMax(int prog)
+       {
+           if (InvokeRequired)
+           {
+               this.Invoke(new Action<int>(SetStripProgressBarMax), new object[] { prog });
+               return;
+           }
+
+           toolStripProgressBar1.Maximum = prog;
+       }
+
+       private void SetStripProgressBarStyle(ProgressBarStyle style)
+       {
+           if (InvokeRequired)
+           {
+               this.Invoke(new Action<ProgressBarStyle>(SetStripProgressBarStyle), new object[] { style });
+               return;
+           }
+
+           toolStripProgressBar1.Style = style;
+       }
+
     #endregion
 
     #region Preview Methods
@@ -1447,6 +1480,8 @@ namespace tor_tools
             if (this.audioState == false)            
             {
                 this.audioState = true;
+                SetStripProgressBarStyle(ProgressBarStyle.Continuous);
+                SetStripProgressBarMax((int)wem.vorbis.TotalTime.TotalMilliseconds);
                 waveOut.Play();
                 while (waveOut.PlaybackState != NAudio.Wave.PlaybackState.Stopped)
                 {
@@ -1457,9 +1492,14 @@ namespace tor_tools
                     }
                     else
                     {
+                            SetStripProgressBarValue((int)wem.vorbis.CurrentTime.TotalMilliseconds);
                         Thread.Sleep(100);
                     }
-                }                
+                }
+
+                SetStripProgressBarMax(100);
+                SetStripProgressBarValue(0);
+                SetStripProgressBarStyle(ProgressBarStyle.Marquee);
             }
         }
 
