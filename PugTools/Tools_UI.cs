@@ -30,6 +30,9 @@ namespace tor_tools
         delegate void ClearProgressCallback();
         delegate void ContinuousProgressCallback();
 
+        //Should probably replicate this for the model and node viewers.
+        Form AssetBrowser = null;
+
         #region UI Element Event Receivers
         #region Folder Find Buttons
         private void buttonFindAssets_Click(object sender, EventArgs e)
@@ -261,9 +264,23 @@ namespace tor_tools
 
         private void btnAssetBrowser_Click(object sender, EventArgs e)
         {
-            bool usePTS = this.usePTSAssets.Checked;
-            Form AssetBrowser = new AssetBrowser(this.textBoxAssetsFolder.Text, usePTS, this.textBoxExtractFolder.Text);
-            AssetBrowser.Show();
+            if (AssetBrowser == null || AssetBrowser.IsDisposed)
+            {
+                bool usePTS = this.usePTSAssets.Checked;
+                AssetBrowser = new AssetBrowser(this.textBoxAssetsFolder.Text, usePTS, this.textBoxExtractFolder.Text);
+                AssetBrowser.FormClosed += onAssetBrowserClosed;
+                AssetBrowser.Show();
+                AssetBrowser.Focus();
+            }
+            else
+            {
+                AssetBrowser.Focus();
+            }
+        }
+
+        public void onAssetBrowserClosed(object sender, FormClosedEventArgs e)
+        {
+            AssetBrowser = null;
         }
 
         private void btnNodeBrowser_Click(object sender, EventArgs e)

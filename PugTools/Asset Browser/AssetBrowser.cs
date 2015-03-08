@@ -72,6 +72,13 @@ namespace tor_tools
         public AssetBrowser(string assetLocation, bool usePTS, string extractLocation)
         {
             InitializeComponent();
+            FormClosed += AssetBrowser_FormClosed;
+            backgroundWorker2.ProgressChanged += backgroundWorker2_ProgressChanged;
+
+            //This should probably done by Designer?
+            backgroundWorker3.DoWork += backgroundWorker3_DoWork;
+            backgroundWorker3.RunWorkerCompleted += backgroundWorker3_RunWorkerCompleted;
+
             hashData = HashDictionaryInstance.Instance;
             if(!hashData.Loaded)
             {
@@ -114,15 +121,36 @@ namespace tor_tools
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
+            if(_closing)
+            {
+                return;
+            }
+
             List<object> args = e.Argument as List<object>;
             this.currentAssets = AssetHandler.Instance.getCurrentAssets((string)args[0], (bool)args[1]);          
             //this.currentAssets = this.currentAssets.getCurrentAssets((string)args[0], (bool)args[1]);            
             this.currentDom = DomHandler.Instance.getCurrentDOM(currentAssets);
+        }
 
-            SetStripStatusText("Loading Files...");
-            //Keep the old value here so we can restore it later.
-            int oldSpeed = toolStripProgressBar1.MarqueeAnimationSpeed;
-            SetStripProgressBarAnimSpeed(0);
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if(_closing)
+            {
+                return;
+            }
+
+            toolStripProgressBar1.Style = ProgressBarStyle.Continuous;
+            toolStripStatusLabel1.Text = "Loading Files...";
+            backgroundWorker2.RunWorkerAsync();
+        }
+
+        private void backgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
+        {
+            if (_closing)
+            {
+                return;
+            }
+
             //hashData.dictionary.CreateHelpers();
             HashSet<string> fileDirs = new HashSet<string>();
             HashSet<string> allDirs = new HashSet<string>();
@@ -139,7 +167,6 @@ namespace tor_tools
 
             int libsDone = 0;
             int maxLibs = currentAssets.libraries.Count;
-            SetStripProgressBarMax(maxLibs);
 
             foreach (var lib in currentAssets.libraries)
             {
@@ -212,7 +239,7 @@ namespace tor_tools
                     }
                 }
                 libsDone++;
-                SetStripProgressBarValue(libsDone);
+                backgroundWorker2.ReportProgress(libsDone * 100 / maxLibs);
             }
 
             this.modNewCount = (ulong)(intModCount + intNewCount);
@@ -247,22 +274,29 @@ namespace tor_tools
                 if (!assetDict.ContainsKey(dir))
                     assetDict.Add(dir.ToString(), asset);
             }
-
-            //Restore old progress bar values or the animation looks weird.
-            SetStripProgressBarAnimSpeed(oldSpeed);
-            SetStripProgressBarValue(0);
-            SetStripProgressBarMax(100);
         }
 
-        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void backgroundWorker2_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            if (_closing)
+            {
+                return;
+            }
+
+            toolStripProgressBar1.Value = 0;
+            toolStripProgressBar1.Style = ProgressBarStyle.Marquee;
+
             toolStripStatusLabel1.Text = "Loading Tree View Items ...";
-            //this.Refresh();
-            backgroundWorker2.RunWorkerAsync();
+            backgroundWorker3.RunWorkerAsync();
         }
 
-        private void backgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
+        private void backgroundWorker3_DoWork(object sender, DoWorkEventArgs e)
         {
+            if (_closing)
+            {
+                return;
+            }
+
             Func<TreeListItem, string> getId = (x => x.Id);
             Func<TreeListItem, string> getParentId = (x => x.parentId);
             Func<TreeListItem, string> getDisplayName = (x => x.displayName);
@@ -271,13 +305,18 @@ namespace tor_tools
             treeListView1.Sort();
         }
 
-        private void backgroundWorker2_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void backgroundWorker3_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            if (_closing)
+            {
+                return;
+            }
+
             treeViewFast1.EndUpdate();
             toolStripStatusLabel1.Text = "Loading Complete";
             treeViewFast1.Visible = true;
             panelRender = new View_GR2(this.Handle, this, "renderPanel");
-            panelRender.Init();            
+            panelRender.Init();
             hideLoader();
             enableUI();
             if (treeViewFast1.Nodes.Count > 0) treeViewFast1.Nodes[0].Expand();
@@ -491,48 +530,9 @@ namespace tor_tools
             this.toolStripStatusLabel3.Text = bitInfo.ToString();
         }
 
-        private void SetStripStatusText(string str)
+       private void backgroundWorker2_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            if(InvokeRequired)
-            {
-                this.Invoke(new Action<string>(SetStripStatusText), new object[] { str });
-                return;
-            }
-
-            toolStripStatusLabel1.Text = str;
-        }
-
-        private void SetStripProgressBarValue(int prog)
-        {
-            if(InvokeRequired)
-            {
-                this.Invoke(new Action<int>(SetStripProgressBarValue), new object[] { prog });
-                return;
-            }
-
-            toolStripProgressBar1.Value = prog;
-        }
-
-        private void SetStripProgressBarMax(int max)
-        {
-            if (InvokeRequired)
-            {
-                this.Invoke(new Action<int>(SetStripProgressBarMax), new object[] { max });
-                return;
-            }
-
-            toolStripProgressBar1.Maximum = max;
-        }
-
-        private void SetStripProgressBarAnimSpeed(int speed)
-        {
-            if (InvokeRequired)
-            {
-                this.Invoke(new Action<int>(SetStripProgressBarAnimSpeed), new object[] { speed });
-                return;
-            }
-
-            toolStripProgressBar1.MarqueeAnimationSpeed = speed;
+            toolStripProgressBar1.Value = e.ProgressPercentage;
         }
 
     #endregion
@@ -1267,7 +1267,22 @@ namespace tor_tools
 
         private void AssetBrowser_FormClosing(object sender, FormClosingEventArgs e)
         {
-            this.Hide();
+            _closing = true;
+
+            if (hashData.dictionary.needsSave && this.modNewCount > 2)
+            {   
+                DialogResult save = MessageBox.Show("The hash dictionary needs to be saved. \nSave the dictionary changes?", "Save Dictionary?", MessageBoxButtons.YesNo);
+                if (save == DialogResult.Yes)
+                {
+                    hashData.dictionary.SaveHashList();
+                }
+            }
+        }
+
+        public void AssetBrowser_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            HashDictionaryInstance.Instance.Unload();
+
             if (panelRender != null)
             {
                 panelRender.stopRender();
@@ -1277,29 +1292,14 @@ namespace tor_tools
                 }
                 panelRender.Dispose();
             }
-            if(audioState != false)
-                waveOut.Stop();            
-            audioState = false;
-            _closing = true;
-            assetDict.Clear();
+            if (audioState)
+            {
+                waveOut.Stop();
+            }
             assetDict = null;
-            fileDict.Clear();
             fileDict = null;
-            if (hashData.dictionary.needsSave && this.modNewCount > 2)
-            {   
-                DialogResult save = MessageBox.Show("The hash dictionary needs to be saved. \nSave the dictionary changes?", "Save Dictionary?", MessageBoxButtons.YesNo);
-                if (save == DialogResult.Yes)
-                {
-                    this.toolStripStatusLabel1.Text = "Saving Hash Dictionary";
-                    this.toolStripProgressBar1.Visible = true;
-                    showLoader();
-                    this.Refresh();
-                    hashData.dictionary.SaveHashList();
-                    hideLoader();
-                }				
-            }            
-            HashDictionaryInstance.Instance.Unload();
-            if(System.IO.Directory.Exists(@".\Temp\"))
+
+            if (System.IO.Directory.Exists(@".\Temp\"))
             {
                 var list = System.IO.Directory.GetFiles(@".\Temp\", "*.ogg");
                 foreach (var item in list)
@@ -1316,10 +1316,10 @@ namespace tor_tools
                     try
                     {
                         System.IO.File.Delete(item);
-                    } catch (IOException wemExcep) { }
+                    }
+                    catch (IOException wemExcep) { }
                 }
             }
-            this.Dispose();
         }
 
         private void renderPanel_MouseHover(object sender, EventArgs e)
