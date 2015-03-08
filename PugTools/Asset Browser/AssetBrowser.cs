@@ -944,11 +944,15 @@ namespace tor_tools
             }
             else
             {
-                WEM_File wem = new WEM_File(fileName, this.inputStream);                
-                await Task.Run(() => wem.convertWEM());             
+                WEM_File wem = new WEM_File(fileName, this.inputStream);
+                await Task.Run(() => wem.convertWEM());
                 this.btnAudioStop.Enabled = true;
+                this.toolStripStatusLabel1.Text = "Playing Audio...";
+                this.toolStripProgressBar1.Visible = true;
                 await Task.Run(() => playOgg(wem));                
-                this.audioState = false;                
+                this.audioState = false;
+                this.toolStripStatusLabel1.Text = "Audio Stopped.";
+                this.toolStripProgressBar1.Visible = false;
             }
 
         }
