@@ -72,7 +72,6 @@ namespace tor_tools
         public AssetBrowser(string assetLocation, bool usePTS, string extractLocation)
         {
             InitializeComponent();
-            closing = false;
             hashData = HashDictionaryInstance.Instance;
             if(!hashData.Loaded)
             {
@@ -1266,13 +1265,9 @@ namespace tor_tools
             }
         }
 
-        bool closing = false;
-
         private void AssetBrowser_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (closing) return; //this event handler was getting called repeatedly, this bool will prevent it from running multiple times.
-            closing = true;
-            this.Close();
+            this.Hide();
             if (panelRender != null)
             {
                 panelRender.stopRender();
