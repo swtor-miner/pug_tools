@@ -72,7 +72,7 @@ namespace GomLib.Tables
         private void LoadData()
         {
             GomObject table = _dom.GetObject(itmModifierPackageTablePrototypePath);
-            Dictionary<object, object> tableData = table.Data.Get<Dictionary<object, object>>("itmModifierPackages");
+            Dictionary<object, object> tableData = table.Data.Get<Dictionary<object, object>>("itmModifierPackagesList");
             item_modpkgprototype_data = new Dictionary<long, Dictionary<string, object>>();
             foreach (var kvp in tableData)
             {

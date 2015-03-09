@@ -131,6 +131,10 @@ namespace tor_tools
 
             Dictionary<string, string> names = MtxIcons();
             HashDictionaryInstance hashData = HashDictionaryInstance.Instance;
+            if (!hashData.Loaded)
+            {
+                hashData.Load();
+            }
             hashData.dictionary.CreateHelpers();
 
             addtolist2("Extracting new Cartel Images");

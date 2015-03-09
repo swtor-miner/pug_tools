@@ -79,7 +79,7 @@
     <gom_type Id="8712000013" name="GUILayoutEvent" desc="GUILayoutEvent" />
     <gom_type Id="11628000058" name="GUIPopupDelay" desc="timer to delay the appearance of GUI controls like popup submenus and tooltips" />
     <gom_type Id="14075000049" name="npc_class" desc="" />
-    <gom_type Id="15078000014" name="GUIAnimation" desc="The base class for GUI animations" />
+    <gom_type Id="15078000014" name="GUIAnimationBase" desc="The base class for GUI animations" />
     <gom_type Id="15078000021" name="GUIA_Interpolate" desc="The interpolation GUI animation class" />
     <gom_type Id="16480000008" name="GUIanimationInfo" desc="" />
     <gom_type Id="16869001165" name="genericTimer" desc="" />
@@ -126,7 +126,7 @@
     <gom_type Id="74866000055" name="KeyBoardModifiers" desc="" />
     <gom_type Id="77508000053" name="_RadioBoolean" desc="Handles a radioboolean control" />
     <gom_type Id="78163000076" name="showFileDialogButton" desc="" />
-    <gom_type Id="86567000239" name="GUISyncedAnimation" desc="" />
+    <gom_type Id="86567000239" name="GUISyncedAnimationUnknown" desc="" />
     <gom_type Id="89530002171" name="FxVisualizerSpecDecorator" desc="Handles fxVisualization based such as equip/hold items." />
     <gom_type Id="89530002173" name="FxVisualizable" desc="Handles visualizing an fx for an bucket visualizable item." />
     <gom_type Id="91905000097" name="Sound3D" desc="describes a 3d sound to be placed" />
@@ -217,7 +217,7 @@
     <gom_type Id="94065760025" name="_GUISpecOracleChooser" desc="Choose for spec oracles used to invoke the spec oracle spec selector gui for an oracle" />
     <gom_type Id="94113130529" name="_ConfirmDialog" desc="Class for generic confirmation dialogs." />
     <gom_type Id="94156210006" name="trTextureInformation" desc="" />
-    <gom_type Id="94156210008" name="TextureRegistry" desc="" />
+    <gom_type Id="94156210008" name="TextureRegistryOld" desc="" />
     <gom_type Id="94156210037" name="_GUINodeCollectionInterfaceWindow" desc="Window containing a single node collection interface" />
     <gom_type Id="94156210054" name="_GUINodePropertyEditor" desc="A generic property editor panel class methodized and sanitized for clean engine programming style." />
     <gom_type Id="94181690002" name="_GUIEditStatesInterface" desc="Handles the editing of state objects created by the states system including area states." />
@@ -297,7 +297,7 @@
     <gom_type Id="4611686018435310021" name="chrCompanionComponent" desc="component to indicate that an npc is the companion of a player character" />
     <gom_type Id="4611686018435310023" name="chrCompanionMasterComponent" desc="Component present on entities that can have companion characters. This is probably only player characters." />
     <gom_type Id="4611686018437240008" name="guiHud" desc="the wrangler for the whole hud" />
-    <gom_type Id="4611686018437240014" name="guiApi" desc="the base class for the guiApi" />
+    <gom_type Id="4611686018437240014" name="guiApiBase" desc="the base class for the guiApi" />
     <gom_type Id="4611686018437240015" name="guiApiGfx" desc="the ScaleForm GFx gui api" />
     <gom_type Id="4611686018437240017" name="guiApiFactory" desc="the factory for gui api.. exists as prototype GUI_API" />
     <gom_type Id="4611686018437327427" name="chrOracle" desc="character oracle (the $CHARACTER system node)" />
@@ -348,7 +348,7 @@
     <gom_type Id="4611686018469730048" name="cbtWeaponComponent" desc="component for entities that act as weapons" />
     <gom_type Id="4611686018469730049" name="cbtArmorComponent" desc="component for entities that act as armor" />
     <gom_type Id="4611686018469790168" name="effTimerComponent" desc="contains timer for effect" />
-    <gom_type Id="4611686018474340853" name="itmAppearanceDatatable" desc="front end to item appearance datatable" />
+    <gom_type Id="4611686018474340853" name="itmAppearanceFrontDatatable" desc="front end to item appearance datatable" />
     <gom_type Id="4611686018479690015" name="guiGfxCharacterSelection" desc="f" />
     <gom_type Id="4611686018482067557" name="utlSpatialComponent" desc="provides an interface to query spatial properties" />
     <gom_type Id="4611686018483436428" name="staCharacterComponent" desc="character state handling" />
@@ -416,7 +416,7 @@
     <gom_type Id="4611686019215470003" name="guiDeathScreenComponent" desc="Manages the death screen for a player character" />
     <gom_type Id="4611686019215770530" name="effConditionComponent" desc="handles conditions that control whether effect should be applied" />
     <gom_type Id="4611686019215770534" name="effParserComponent" desc="handles parsing effects schedule" />
-    <gom_type Id="4611686019220580007" name="guiDeathScreenAbility" desc="list of possible abilities to display on the death screen" />
+    <gom_type Id="4611686019220580007" name="guiDeathScreenAbilityPosList" desc="list of possible abilities to display on the death screen" />
     <gom_type Id="4611686019222040607" name="effActionComponent" desc="handles effect actions" />
     <gom_type Id="4611686019222040668" name="effExecuteComponent" desc="handles executing the effect" />
     <gom_type Id="4611686019236497558" name="spnMedCenterComponent" desc="medical center specific functionality" />
@@ -437,7 +437,7 @@
     <gom_type Id="4611686019453790042" name="sl" desc="Stefan's test class." />
     <gom_type Id="4611686019453826010" name="ablTemplate" desc="Template for creation of ability prototypes" />
     <gom_type Id="4611686019459100018" name="testGuiWatchOrder" desc="A test class to determine execution behavior in scaleform" />
-    <gom_type Id="4611686019459100091" name="utlProfile" desc="profiling" />
+    <gom_type Id="4611686019459100091" name="utlProfiler" desc="profiling" />
     <gom_type Id="4611686019459100108" name="cbtPreloader" desc="preloader" />
     <gom_type Id="4611686019559810017" name="guiApiGfxUpdate" desc="code that pushes updates to flash vars" />
     <gom_type Id="4611686019559810018" name="guiApiGfxUpdateChr" desc="character ui var updates" />
@@ -565,14 +565,14 @@
     <gom_type Id="4611686026175330002" name="cbtOracleCoverVisBuild" desc="class to glom on to the cbtOracle to do the cover build" />
     <gom_type Id="4611686026255090011" name="cvrSettings" desc="builder parameters" />
     <gom_type Id="4611686026255090027" name="cvrBuilderInstance" desc="an instance to build around" />
-    <gom_type Id="4611686026410550003" name="chrBehaviorCover" desc="cover" />
+    <gom_type Id="4611686026410550003" name="chrCoverBehavior" desc="cover" />
     <gom_type Id="4611686026525870001" name="cvrDebugger" desc="the debugger" />
-    <gom_type Id="4611686026539818818" name="hydScriptMap" desc="base prototype classe for hydraScripts made in the Hydra Script Editor" />
+    <gom_type Id="4611686026539818818" name="hydScriptMapBase" desc="base prototype classe for hydraScripts made in the Hydra Script Editor" />
     <gom_type Id="4611686026539819686" name="hydScript" desc="the hydra scrit assigned to a specific hook" />
     <gom_type Id="4611686026564830020" name="cvrDebuggerBuilder" desc="builder" />
     <gom_type Id="4611686026567366542" name="hydScriptBlock" desc="set of actionblocks that run if the condition is satisfied" />
     <gom_type Id="4611686026567369308" name="hydActionBlock" desc="list of actions to execute when an actionblock is called" />
-    <gom_type Id="4611686026567369496" name="hydConditionBlock" desc="conditions association with a Scriptblock" />
+    <gom_type Id="4611686026567369496" name="hydConditionsBlock" desc="conditions association with a Scriptblock" />
     <gom_type Id="4611686026567772027" name="hydOAV" desc="object, action, value triplet" />
     <gom_type Id="4611686026710280630" name="hydScriptComponent" desc="class for entities that can have hydra scripts run on them" />
     <gom_type Id="4611686026914850759" name="mpnMapNoteInfo" desc="Lightweight node that mirrors map note data shard wide from the server." />
@@ -602,13 +602,13 @@
     <gom_type Id="4611686028524370013" name="qaJason" desc="" />
     <gom_type Id="4611686028524370014" name="qaJason2" desc="" />
     <gom_type Id="4611686028572833796" name="phyBallisticParabola" desc="parabola" />
-    <gom_type Id="4611686028583292406" name="phyBallisticWaypointQueue" desc="ballistic" />
+    <gom_type Id="4611686028583292406" name="phyBallisticWaypointBallisticQueue" desc="ballistic" />
     <gom_type Id="4611686028583292851" name="phyBallisticWaypoint" desc="ballistic" />
     <gom_type Id="4611686028656170020" name="jrb" desc="jrb singleton" />
     <gom_type Id="4611686028656170042" name="guiApiGfxUpdateVeh" desc="vehicle gui api" />
     <gom_type Id="4611686028671875072" name="pthOracle" desc="Oracle class for $PATH system node" />
     <gom_type Id="4611686028733875075" name="phyBallisticSimulator" desc="simulator" />
-    <gom_type Id="4611686028739383686" name="chrBallisticSimulator" desc="sim" />
+    <gom_type Id="4611686028739383686" name="chrBallisticSimulatorUnknown" desc="sim" />
     <gom_type Id="4611686028781679182" name="tst_phyBallisticSimulator" desc="unit test" />
     <gom_type Id="4611686028926770005" name="staVehicleComponent" desc="state data for a vehicle" />
     <gom_type Id="4611686028926770018" name="itmContainer" desc="extends conSlotted for some item specific functionality" />
@@ -628,12 +628,12 @@
     <gom_type Id="4611686029813270015" name="davetest" desc="" />
     <gom_type Id="4611686029845070011" name="appGarmentHue" desc="Data for a single garment hue" />
     <gom_type Id="4611686029857367645" name="phsGateway" desc="Gateway trigger for instances." />
-    <gom_type Id="4611686029944370005" name="itmStackableComponent" desc="" />
+    <gom_type Id="4611686029944370005" name="itmStackableComponentUnknown" desc="" />
     <gom_type Id="4611686029995170000" name="jfSharedClass" desc="" />
     <gom_type Id="4611686030018770007" name="jshTest" desc="A test class" />
     <gom_type Id="4611686030018770013" name="conSlotted" desc="slotted container implementation" />
     <gom_type Id="4611686030028285359" name="aiHydraCommandState" desc="" />
-    <gom_type Id="4611686030163270030" name="hydTriggerBlock" desc="trigger options specific to a script from hydra editor" />
+    <gom_type Id="4611686030163270030" name="hydTriggerBlockOptions" desc="trigger options specific to a script from hydra editor" />
     <gom_type Id="4611686030311570002" name="tstSlottedReplication" desc="for unit testing conSlotted" />
     <gom_type Id="4611686030325460478" name="pthPathTemplate" desc="base prototype class for Path Templates" />
     <gom_type Id="4611686030368870000" name="hydObjectComponent" desc="component glommed to nodes that need to queue actions while waiting for another action to complete" />
@@ -658,7 +658,7 @@
     <gom_type Id="4611686031142870042" name="spnVehicleMovementInTunnel" desc="Movement class for space vehicles on a path" />
     <gom_type Id="4611686031142870063" name="spnVehicleMovementTurret" desc="Movement model for turret vehicles" />
     <gom_type Id="4611686031142870107" name="effSubEffectEppDetails" desc="details about a sub-effect's appearance" />
-    <gom_type Id="4611686031190870001" name="ablContainer" desc="replicated abilities container" />
+    <gom_type Id="4611686031190870001" name="ablContainerClone" desc="replicated abilities container" />
     <gom_type Id="4611686031293970002" name="utlVfxComponent" desc="component for managing VFX icons" />
     <gom_type Id="4611686031293970014" name="effContainer" desc="replicated effects container" />
     <gom_type Id="4611686031359470033" name="phsParticipant" desc="This object can own and join instances." />
@@ -761,7 +761,7 @@
     <gom_type Id="4611686035329870001" name="ikhClientClass" desc="" />
     <gom_type Id="4611686035329870002" name="ikhSharedClassParent" desc="" />
     <gom_type Id="4611686035329870003" name="ikhClientClassParent" desc="" />
-    <gom_type Id="4611686035382070005" name="chrBehaviorGhost" desc="" />
+    <gom_type Id="4611686035382070005" name="chrBehaviorGhostUnknown" desc="" />
     <gom_type Id="4611686035382070097" name="utlSkyNet" desc="" />
     <gom_type Id="4611686035399470000" name="rvpSharedClass" desc="" />
     <gom_type Id="4611686035399470001" name="rvpClientClass" desc="" />
@@ -788,7 +788,7 @@
     <gom_type Id="4611686036529370007" name="qckContainerComponent" desc="Component for nodes that have a quickslot container." />
     <gom_type Id="4611686036552770002" name="plcGomTest" desc="testing the gom editor" />
     <gom_type Id="4611686036620170002" name="conSlottedShared" desc="Container that can be accessed by multiple players." />
-    <gom_type Id="4611686036620170004" name="conLootContainer" desc="" />
+    <gom_type Id="4611686036620170004" name="conLootContainers" desc="" />
     <gom_type Id="4611686036620170082" name="vehSounds" desc="" />
     <gom_type Id="4611686036620170092" name="spnSpawnedAppearance" desc="" />
     <gom_type Id="4611686036819870029" name="qstPendingRewards" desc="Stores reward data that needs to be accepted by the player" />
@@ -1203,8 +1203,8 @@
     <gom_type Id="4611686050587171095" name="ssDmeschClientClassParent" desc="" />
     <gom_type Id="4611686050587171098" name="chrSocialScoreComponent" desc="Social score component for players" />
     <gom_type Id="4611686050587171116" name="socOracle" desc="Social Systems Oracle (Who List, Friends, Ignore, etc.)" />
-    <gom_type Id="4611686050587171120" name="chrSocialScoreTier" desc="" />
-    <gom_type Id="4611686050587171132" name="chrSocialScoreTiers" desc="" />
+    <gom_type Id="4611686050587171120" name="chrSocialScoreTierOld" desc="" />
+    <gom_type Id="4611686050587171132" name="chrSocialScoreTiersOld" desc="" />
     <gom_type Id="4611686050842271033" name="chrStandDebug" desc="" />
     <gom_type Id="4611686050892871038" name="socCharacterFriend" desc="friends list character container" />
     <gom_type Id="4611686050892871040" name="socComponent" desc="social data container (friends, ignore, etc.)" />
@@ -1294,7 +1294,7 @@
     <gom_type Id="4611686052492331209" name="itmEnhanceableComponent" desc="" />
     <gom_type Id="4611686052492331229" name="itmSetBonusManagerComponent" desc="Component that manages the benefits of equipped items that belong to sets" />
     <gom_type Id="4611686052492331238" name="itmGiftboxComponent" desc="" />
-    <gom_type Id="4611686052492331240" name="itmSetBonusesPrototype" desc="parsed data for set bonuses" />
+    <gom_type Id="4611686052492331240" name="itmSetBonusesPrototypeOld" desc="parsed data for set bonuses" />
     <gom_type Id="4611686052492331241" name="itmSetBonus" desc="information about a single set bonus" />
     <gom_type Id="4611686052492331313" name="itmPackageData" desc="" />
     <gom_type Id="4611686052492331314" name="itmSetTablePackage" desc="A set of items for a given package spec" />
@@ -1377,8 +1377,8 @@
     <gom_type Id="4611686054977131191" name="tstCowEmptyClass" desc="" />
     <gom_type Id="4611686055042431192" name="ssdaSharedClass" desc="" />
     <gom_type Id="4611686055272531191" name="chrGroundingDebug" desc="" />
-    <gom_type Id="4611686055272531256" name="fxUsedInScript" desc="class for the fxID to spec mapping prototype" />
-    <gom_type Id="4611686055272531300" name="qstIconDetailsPrototype" desc="" />
+    <gom_type Id="4611686055272531256" name="fxUsedInScriptClass" desc="class for the fxID to spec mapping prototype" />
+    <gom_type Id="4611686055272531300" name="qstIconDetailsPrototypeOld" desc="" />
     <gom_type Id="4611686055272531301" name="qstIconDetails" desc="" />
     <gom_type Id="4611686055432331195" name="phsInstanceDataProto" desc="" />
     <gom_type Id="4611686055441931201" name="chrStatAdjustmentsPrototype" desc="" />
@@ -1434,7 +1434,7 @@
     <gom_type Id="4611686057021031227" name="ahAuctionSearchList" desc="" />
     <gom_type Id="4611686058777031202" name="ahDepositTable" desc="Auction House datatable defining deposit fees as a function of auction duration." />
     <gom_type Id="4611686058911231210" name="chrValorComponent" desc="Character rank and experience in pvp" />
-    <gom_type Id="4611686058911231213" name="chrFactionPackagesPrototype" desc="" />
+    <gom_type Id="4611686058911231213" name="chrFactionPackagesPrototypeOld" desc="" />
     <gom_type Id="4611686059196731196" name="malMailContainer" desc="Holds items and money attached to a mail message" />
     <gom_type Id="4611686059383931200" name="tstSklOracle" desc="test component for skilltree oracle" />
     <gom_type Id="4611686059383931220" name="itmAuctionCategoryTable" desc="" />
@@ -1448,7 +1448,7 @@
     <gom_type Id="4611686060731431215" name="wzBadgeInfo" desc="Info for an individual badge" />
     <gom_type Id="4611686060793431194" name="guiApiGfxUpdateAuction" desc="Invokes and external interface calls for the auction house." />
     <gom_type Id="4611686061108531208" name="wnkPackage" desc="" />
-    <gom_type Id="4611686061108531210" name="wnkPackagesPrototype" desc="" />
+    <gom_type Id="4611686061108531210" name="wnkPackagesPrototypeOld" desc="" />
     <gom_type Id="4611686061108531213" name="wnkComponent" desc="" />
     <gom_type Id="4611686061152931192" name="scVOActor" desc="Class to keep helpful information about a given VO actor" />
     <gom_type Id="4611686061183631204" name="spnMedCenterInfo" desc="" />
@@ -1581,7 +1581,7 @@
     <gom_type Id="4611686087225169991" name="ccsStageDetails" desc="Information about a character creation stage" />
     <gom_type Id="4611686087225169994" name="ccsStageMarkDetails" desc="Details about stage marks for a given character creation stage" />
     <gom_type Id="4611686087428569991" name="dynPreviewPreviewInfo" desc="Lightweight data structure that stores information that pertains to a specific user's current Dyn Preview" />
-    <gom_type Id="4611686087481669994" name="ablCooldownTimer" desc="Timer that ticks when an ability's cooldown has finished" />
+    <gom_type Id="4611686087481669994" name="ablCooldownTimerOld" desc="Timer that ticks when an ability's cooldown has finished" />
     <gom_type Id="4611686088447169993" name="grpInviteeInfo" desc="info for the invitee" />
     <gom_type Id="4611686088523270016" name="cnvHolocomStageTable" desc="Maps character specs to stages for holocom calls" />
     <gom_type Id="4611686089161669991" name="dynPreviewPropSnapShot" desc="A snapshot of prop-specific information that can be compared to one from a previous time to determine changes to props' transforms" />
@@ -1706,7 +1706,7 @@
     <gom_type Id="4611686247038860001" name="lgcAccountLegacyData" desc="" />
     <gom_type Id="4611686247209800003" name="cmdCallScriptParams" desc="class to hold the cmd params" />
     <gom_type Id="4611686247269980000" name="itmEnhancementExtractionTable" desc="holds costs to extract mods from items, built from datatable" />
-    <gom_type Id="4611686250205590030" name="lgcLegacyRelationship" desc="" />
+    <gom_type Id="4611686250205590030" name="lgcLegacyRelationshipUnknown" desc="" />
     <gom_type Id="4611686250306040000" name="utlShipInfoProto" desc="Maps character class to information about the ship for that player class." />
     <gom_type Id="4611686250353070001" name="guiLoadingStages_Prototype" desc="Stores the various loading stages the client goes through while entering an area and their contribution to the total loading percentage." />
     <gom_type Id="4611686250376310001" name="utlShipInfoForCharacterClass" desc="Information about the player ship for one character class." />
@@ -1837,12 +1837,12 @@
     <gom_type Id="4611686026656750024" name="chrTypeId" desc="Type of character a node represents" />
     <gom_type Id="4611686027202943067" name="repTestEnum" desc="" />
     <gom_type Id="4611686027462984735" name="tstCowEnumType" desc="" />
-    <gom_type Id="4611686028440048708" name="qa2209" desc="" />
+    <gom_type Id="4611686028440048708" name="qa2209Unknown" desc="" />
     <gom_type Id="4611686028865570021" name="edgar_byf01" desc="" />
     <gom_type Id="4611686029082870038" name="FxLifetimeControlEnum" desc="Dictates how the FxPlaceable controls spawned Fx lifetimes" />
     <gom_type Id="4611686029292670017" name="chrAnimControlParameter" desc="" />
     <gom_type Id="4611686029944670000" name="itmStackableComponent" desc="component for items that can stacked in a container slot" />
-    <gom_type Id="4611686030163470000" name="hydTriggerBlock" desc="trigger properties for a specific hydraScript made in the Hydra editor" />
+    <gom_type Id="4611686030163470000" name="hydTriggerBlockProperties" desc="trigger properties for a specific hydraScript made in the Hydra editor" />
     <gom_type Id="4611686030312077300" name="pthTraversalStyle" desc="" />
     <gom_type Id="4611686030312077323" name="pthMoveDirection" desc="" />
     <gom_type Id="4611686030312152291" name="aiHydraCommandName" desc="" />
@@ -1973,7 +1973,7 @@
     <gom_type Id="4611686051065271175" name="chrCompanionVariablePostfixEnum" desc="Enumeration to keep track of precomputed companion variable names. IF YOU MODIFY THIS ENUMERATION YOU *MUST* REBUILD THE CHRCOMPANIONINFO PROTOTYPE. If you don't know how to do this you probably shouldn't be modifying this enumeration." />
     <gom_type Id="4611686051087871021" name="socFriendStatus" desc="" />
     <gom_type Id="4611686051087871038" name="socWinTabType" desc="Social Window Tab type for the GUI" />
-    <gom_type Id="4611686051087871043" name="prfProfessionSubtype" desc="profession subcategory" />
+    <gom_type Id="4611686051087871043" name="prfProfessionSubtypeOld" desc="profession subcategory" />
     <gom_type Id="4611686051156871021" name="trdResult" desc="Secure Trade result codes" />
     <gom_type Id="4611686051481371065" name="chrLocoAi_State" desc="" />
     <gom_type Id="4611686051563471026" name="dejaParameterEnum" desc="" />
@@ -1982,20 +1982,20 @@
     <gom_type Id="4611686051775571042" name="sndBankStatusEnum" desc="Load status of a sound bank" />
     <gom_type Id="4611686051880971050" name="strGuiMiscEnum" desc="Enums for strings in sts.gui.misc, mapped with the datatable strGuiMiscEnumToStringId" />
     <gom_type Id="4611686052136271091" name="qstCompanionGlobalVariableEnum" desc="" />
-    <gom_type Id="4611686052162972206" name="itmEnhancementCategory" desc="" />
+    <gom_type Id="4611686052162972206" name="itmEnhancementCategoryOld" desc="" />
     <gom_type Id="4611686052236571078" name="prfSchematicResearchChance" desc="" />
     <gom_type Id="4611686052350871026" name="qstStatusUpdateTypeEnum" desc="" />
-    <gom_type Id="4611686052492331194" name="itmEnhancementModificationType" desc="" />
+    <gom_type Id="4611686052492331194" name="itmEnhancementModificationTypeOld" desc="" />
     <gom_type Id="4611686052911731191" name="itmEnhancementResult" desc="" />
-    <gom_type Id="4611686053415631291" name="itmEnhancementStationType" desc="" />
+    <gom_type Id="4611686053415631291" name="itmEnhancementStationTypeOld" desc="" />
     <gom_type Id="4611686053680031193" name="msbSkin" desc="Mission board skin" />
     <gom_type Id="4611686053680031206" name="msbStateEnum" desc="Mission board state enum" />
-    <gom_type Id="4611686054011931193" name="itmGiftType" desc="" />
+    <gom_type Id="4611686054011931193" name="itmGiftTypeOld" desc="" />
     <gom_type Id="4611686054011931204" name="chrCompanionGiftInterest" desc="" />
     <gom_type Id="4611686054011931255" name="chrCompanionAffectionRank" desc="" />
     <gom_type Id="4611686054636331192" name="chrRegenTypeEnum" desc="The behavior of our regen. Generally there will be one per class" />
-    <gom_type Id="4611686055050031217" name="itmEnhancementSubCategory" desc="" />
-    <gom_type Id="4611686055272531254" name="fxUsedInScript" desc="Enumeration for mapping to hardcoded FX specs" />
+    <gom_type Id="4611686055050031217" name="itmEnhancementSubCategoryOld" desc="" />
+    <gom_type Id="4611686055272531254" name="fxHardUsedInScript" desc="Enumeration for mapping to hardcoded FX specs" />
     <gom_type Id="4611686055272531289" name="utlVfxKey" desc="" />
     <gom_type Id="4611686055466631194" name="mmsStatusEnum" desc="Players current status in the match making system" />
     <gom_type Id="4611686055741335190" name="cbtImpulseCenterEnum" desc="" />
@@ -2062,7 +2062,7 @@
     <gom_type Id="4611686082743523591" name="TreeBackgroundColorType" desc="" />
     <gom_type Id="4611686083182756194" name="cnvJoinState" desc="invited, local, holocom, declined" />
     <gom_type Id="4611686083611568191" name="pvpLocationTypeEnum" desc="Determines the pvp behavior for a location (region or area)" />
-    <gom_type Id="4611686083755877994" name="sysInputEvent" desc="" />
+    <gom_type Id="4611686083755877994" name="sysInputEventOld" desc="" />
     <gom_type Id="4611686084319687782" name="chrGenderEnum" desc="Supported Character Genders" />
     <gom_type Id="4611686084388592791" name="socSocialListType" desc="Who, Friends, Ignore, etc." />
     <gom_type Id="4611686084523098791" name="conDraggerTargets" desc="A listing of all possible dragger sources and destinations" />
@@ -2089,7 +2089,7 @@
     <gom_type Id="4611686124347725041" name="socMsgType" desc="signals to client for message and string table types" />
     <gom_type Id="4611686141819825041" name="chatChannelEnum" desc="An enumeration for the chat channels" />
     <gom_type Id="4611686141823655041" name="mapMapTypes" desc="Map types enum." />
-    <gom_type Id="4611686141849325041" name="qckLinkType" desc="" />
+    <gom_type Id="4611686141849325041" name="qckLinkTypeOld" desc="" />
     <gom_type Id="4611686141984440002" name="hcaAssetKeyEnum" desc="Key to be referenced in scripts for hardcoded asset mapping" />
     <gom_type Id="4611686142092720002" name="scUpgradeOperatorType" desc="Special operation action when applying a given upgrade" />
     <gom_type Id="4611686142609550000" name="tutTutorialEvent" desc="Tutorial enumeration" />
@@ -2728,7 +2728,7 @@
     <gom_type Id="4611686019453829666" name="ablTargetArc" desc="Arc the target of this ability must be in" />
     <gom_type Id="4611686019453829670" name="ablTargetRule" desc="Target rule type for this ability" />
     <gom_type Id="4611686019453829671" name="ablCombatMode" desc="Combat mode the user of this ability must be in" />
-    <gom_type Id="4611686019453829868" name="ablAutoAttackMode" desc="Auto attack action caused by this ability" />
+    <gom_type Id="4611686019453829868" name="ablAutoAttackAction" desc="Auto attack action caused by this ability" />
     <gom_type Id="4611686019459100011" name="chrSelectedTargetHighlightEnabled" desc="selection highlight enabled" />
     <gom_type Id="4611686019459100048" name="guiNameplatesEnabled" desc="show names or not" />
     <gom_type Id="4611686019459100104" name="ablUserCacheActionPointsF" desc="cache" />
@@ -2796,7 +2796,7 @@
     <gom_type Id="4611686020074012684" name="effEventCaster" desc="The caster of the subEffect" />
     <gom_type Id="4611686020074012687" name="effEventSubEffectNumber" desc="which sub effect" />
     <gom_type Id="4611686020074012691" name="effEventResult" desc="the total result" />
-    <gom_type Id="4611686020074012819" name="effEventTargetDetails" desc="list of results for each target" />
+    <gom_type Id="4611686020074012819" name="effEventTargetResults" desc="list of results for each target" />
     <gom_type Id="4611686020074012821" name="effEventTargetDetailsEffectId" desc="the id of the effect node" />
     <gom_type Id="4611686020074013135" name="effEventTargetDetailsTarget" desc="the target" />
     <gom_type Id="4611686020074013136" name="effEventTargetDetailsResult" desc="the result" />
@@ -2890,7 +2890,7 @@
     <gom_type Id="4611686022221010145" name="utlMeshEdgeVerts" desc="2 verts" />
     <gom_type Id="4611686022221010148" name="utlMeshTris" desc="some tris" />
     <gom_type Id="4611686022221010152" name="ctlCoverWasJumping" desc="jumping out of cover" />
-    <gom_type Id="4611686022221010158" name="utlMeshGenerator" desc="generator" />
+    <gom_type Id="4611686022221010158" name="utlMeshGenerator2" desc="generator" />
     <gom_type Id="4611686022347910004" name="effAppearanceTriggersOnAnimationNote" desc="OnAnimNote triggers" />
     <gom_type Id="4611686022347910005" name="effAppearanceTriggersGuaranteed" desc="anim note triggers that must always execute regardless" />
     <gom_type Id="4611686022347910010" name="effAppearanceSchedule" desc="parsed effect appearance schedule" />
@@ -2900,7 +2900,7 @@
     <gom_type Id="4611686022411690016" name="utlMeshCoverFwd_w" desc="normal forward" />
     <gom_type Id="4611686022411690017" name="utlMeshEdgeCovers" desc="covers" />
     <gom_type Id="4611686022411690018" name="utlMeshEdgeCoversEvaluated" desc="ok" />
-    <gom_type Id="4611686022411690037" name="utlMeshCoverGenerator" desc="cover generator" />
+    <gom_type Id="4611686022411690037" name="utlMeshCoverGenerator2" desc="cover generator" />
     <gom_type Id="4611686022411690038" name="utlMeshCoverGeneratorStartTime" desc="when started" />
     <gom_type Id="4611686022411690039" name="utlMeshCoverGeneratorStatus" desc="how far" />
     <gom_type Id="4611686022411690063" name="utlMeshLastPosition_w" desc="last position" />
@@ -2913,7 +2913,7 @@
     <gom_type Id="4611686022411690083" name="utlMeshCoverStandable" desc="ok" />
     <gom_type Id="4611686022411690084" name="qaMoveTestLocListIter" desc="Iterator for Loc List" />
     <gom_type Id="4611686022462471005" name="plcConvo" desc="Conversation resource for this placeable." />
-    <gom_type Id="4611686022465650004" name="chrBehavior" desc="chrBehavior" />
+    <gom_type Id="4611686022465650004" name="chrBehavior2" desc="chrBehavior" />
     <gom_type Id="4611686022465650042" name="chrBehaviorDesiredHeading" desc="degrees" />
     <gom_type Id="4611686022465650043" name="chrBehaviorDesiredPitch" desc="degrees" />
     <gom_type Id="4611686022465650044" name="chrBehaviorMoveVector" desc="normalized" />
@@ -3012,7 +3012,7 @@
     <gom_type Id="4611686023950190007" name="chrBehaviorRecorderStates" desc="a list of states that were either generated (local), or received (remote)" />
     <gom_type Id="4611686023950190008" name="chrBehaviorRecorderStartTime" desc="start time" />
     <gom_type Id="4611686023950190009" name="chrBehaviorRecorderPlaybackIndex" desc="index" />
-    <gom_type Id="4611686023950190012" name="chrBehaviorRecorder" desc="recorder" />
+    <gom_type Id="4611686023950190012" name="chrBehaviorRecorderUnknown" desc="recorder" />
     <gom_type Id="4611686023950190017" name="chrBehaviorRecorderMode" desc="state" />
     <gom_type Id="4611686023950190082" name="cnvQuestIsMultiplayer" desc="single/multiplayer toggle for a quest icon" />
     <gom_type Id="4611686024113010010" name="chrBehaviorPreCollisionPosition_w" desc="p" />
@@ -3161,7 +3161,7 @@
     <gom_type Id="4611686025529234898" name="tstFixtureIds" desc="dictionary of ids" />
     <gom_type Id="4611686025546395765" name="tstFixtureSetupCharacters" desc="the created characters" />
     <gom_type Id="4611686025546395774" name="tstFixtureSetupCharacterSpecFqns" desc="list of client characters to create" />
-    <gom_type Id="4611686025546397502" name="tstFixtureSetupState" desc="the state" />
+    <gom_type Id="4611686025546397502" name="tstFixtureState" desc="the state" />
     <gom_type Id="4611686025560974701" name="tstFixtureReferenceId" desc="id of account running test" />
     <gom_type Id="4611686025576605799" name="effEventOracleEventMap" desc="Shared DOM Placeholder" />
     <gom_type Id="4611686025576606990" name="utlTemplates" desc="Shared DOM Placeholder" />
@@ -3261,16 +3261,16 @@
     <gom_type Id="4611686026363970023" name="cvrBuilderInstanceHorizontals" desc="list of horizontals" />
     <gom_type Id="4611686026363970024" name="cvrBuilderInstanceCurrentEdge" desc="currently processing edge" />
     <gom_type Id="4611686026363970025" name="cvrBuilderInstanceEdgePairs" desc="edge pairs" />
-    <gom_type Id="4611686026363970026" name="cvrBuilder" desc="the cover builder" />
+    <gom_type Id="4611686026363970026" name="cvrCoverBuilder" desc="the cover builder" />
     <gom_type Id="4611686026363970028" name="cvrBuilderInstanceVertexes" desc="verts" />
     <gom_type Id="4611686026363970029" name="cvrBuilderInstanceIndexes" desc="the mesh" />
     <gom_type Id="4611686026363970071" name="cbtCoverChooseDebug" desc="whether to show the debug visualization of what cover point is being chosen" />
     <gom_type Id="4611686026381922606" name="cvrBuilderPointEdgePoint" desc="edge point" />
     <gom_type Id="4611686026410550004" name="chrBehaviorCover" desc="the cover behavior" />
-    <gom_type Id="4611686026410550037" name="chrBehaviorCoverState" desc="the state" />
+    <gom_type Id="4611686026410550037" name="chrCoverStateBehavior" desc="the state" />
     <gom_type Id="4611686026525870004" name="cvrDebuggerInstance" desc="the instance to debug" />
-    <gom_type Id="4611686026525870005" name="cvrDebugger" desc="the debugger" />
-    <gom_type Id="4611686026525870012" name="cvrDebuggerBuilder" desc="the builder" />
+    <gom_type Id="4611686026525870005" name="cvrDebugger2" desc="the debugger" />
+    <gom_type Id="4611686026525870012" name="cvrDebugBuilder" desc="the builder" />
     <gom_type Id="4611686026525870024" name="cvrDebuggerDirty" desc="is dirty" />
     <gom_type Id="4611686026525870025" name="cvrDebuggerDirtyTime" desc="time" />
     <gom_type Id="4611686026525870026" name="cvrDebuggerBox" desc="last box" />
@@ -3392,7 +3392,7 @@
     <gom_type Id="4611686028550591408" name="spnVehicleOwner" desc="the player who is controlling the vehicle" />
     <gom_type Id="4611686028572844847" name="phyParabolaP0" desc="parabola" />
     <gom_type Id="4611686028572844916" name="phyParabolaV0" desc="parabola" />
-    <gom_type Id="4611686028583293638" name="phyBallisticParabola" desc="ballistic" />
+    <gom_type Id="4611686028583293638" name="phyBallisticParabola2" desc="ballistic" />
     <gom_type Id="4611686028583293734" name="phyBallisticTime" desc="ballistic" />
     <gom_type Id="4611686028583294020" name="phyBallisticWaypoints" desc="ballistic" />
     <gom_type Id="4611686028601482738" name="effIsReverse" desc="whether to swap the caster and target or not" />
@@ -3415,7 +3415,7 @@
     <gom_type Id="4611686029003970030" name="plcPosition" desc="" />
     <gom_type Id="4611686029003970031" name="plcRotation" desc="" />
     <gom_type Id="4611686029003970036" name="plcModelAssetSpec" desc="" />
-    <gom_type Id="4611686029003970042" name="plcProp" desc="" />
+    <gom_type Id="4611686029003970042" name="plcProp2" desc="" />
     <gom_type Id="4611686029003970043" name="vehAngularVelocity" desc="Current angular velocity of the vehicle" />
     <gom_type Id="4611686029003970046" name="phyBallisticWaypointQueueMarshalled" desc="marshalled" />
     <gom_type Id="4611686029082870032" name="FxRandomDelay" desc="Random delay added to respawn time" />
@@ -3535,7 +3535,7 @@
     <gom_type Id="4611686031142870081" name="phyBallisticSkidDrag" desc="" />
     <gom_type Id="4611686031142870105" name="effSubEffectEppDependent" desc="Description" />
     <gom_type Id="4611686031142870106" name="effSubEffectEppSpec" desc="Appearance spec for the sub-effect" />
-    <gom_type Id="4611686031142870108" name="effSubEffectEppDetails" desc="map of sub effect number to appearance details" />
+    <gom_type Id="4611686031142870108" name="effSubEffectEppDetailsMap" desc="map of sub effect number to appearance details" />
     <gom_type Id="4611686031167597807" name="musPriorityLevel" desc="prioriity of current music" />
     <gom_type Id="4611686031239070001" name="m_chrLoco_Target_Duration" desc="How long should it take to get to the target in seconds" />
     <gom_type Id="4611686031239070002" name="m_chrLoco_Target_CurDuration" desc="The current time cursor" />
@@ -3550,7 +3550,7 @@
     <gom_type Id="4611686031327270073" name="ctlCameraShakeDecay" desc="" />
     <gom_type Id="4611686031327270082" name="m_chrLookAt_DidSupportCheck" desc="The version number the support check was done on." />
     <gom_type Id="4611686031359470029" name="spnQuestUseable" desc="can this item be used to advance a quest" />
-    <gom_type Id="4611686031359470042" name="stgActor" desc="" />
+    <gom_type Id="4611686031359470042" name="stgActorUnknown" desc="" />
     <gom_type Id="4611686031359470043" name="stgAppearanceSpec" desc="" />
     <gom_type Id="4611686031359470044" name="stgAssetSpecRequests" desc="" />
     <gom_type Id="4611686031359470068" name="stgAssetIsLeft" desc="" />
@@ -3611,7 +3611,7 @@
     <gom_type Id="4611686033453170000" name="vndCurrentVendorItems" desc="" />
     <gom_type Id="4611686033453370048" name="phsExitMapNoteID" desc="specifies the ID of the mapnote (within the area specified by insExitAreaName) you'll travel to when booted from an instance/flashpoint" />
     <gom_type Id="4611686033507470002" name="vehInstanceOwner" desc="" />
-    <gom_type Id="4611686033507470003" name="vehInstance" desc="" />
+    <gom_type Id="4611686033507470003" name="vehInstanceUnknown" desc="" />
     <gom_type Id="4611686033507470006" name="vehNewOwner" desc="replicated owner variable, can't use spnVehicleOwner or else we lose ability to detach from previous owner" />
     <gom_type Id="4611686033507470022" name="cbtWeaponAppearanceSpec" desc="Name of spec to use for weapon appearance" />
     <gom_type Id="4611686033507470034" name="chrBallisticSimulatorVelocitySpringForce" desc="the strength of the spring that keeps that character's pose matched with the instantaneous velocity, zero is infinite" />
@@ -3733,8 +3733,8 @@
     <gom_type Id="4611686035179770010" name="qstAbandonedBranch" desc="" />
     <gom_type Id="4611686035197170054" name="ablUserLastResult" desc="" />
     <gom_type Id="4611686035197170055" name="ablUserLastResultMessageTime" desc="" />
-    <gom_type Id="4611686035197170095" name="chrBehaviorDelegate" desc="" />
-    <gom_type Id="4611686035197170111" name="chrBehaviorDelegateType" desc="" />
+    <gom_type Id="4611686035197170095" name="chrBehaviorDelegateUnknown" desc="" />
+    <gom_type Id="4611686035197170111" name="chrBehaviorDelegateTypeUnknown" desc="" />
     <gom_type Id="4611686035197170148" name="cbtWeaponEpp" desc="" />
     <gom_type Id="4611686035199970002" name="stgCameraRedirectPrimaryCameraID" desc="the camera that must be active/selected in order for this stgCameraRedirect to be considered" />
     <gom_type Id="4611686035199970003" name="stgCameraRedirectFocalMarkID" desc="the actor mark upon which this stgCameraRedirect is based" />
@@ -3767,7 +3767,7 @@
     <gom_type Id="4611686035637570010" name="chrBehaviorJumpManShowDebug" desc="Flag to toggle jumping debug printing and drawing" />
     <gom_type Id="4611686035639970006" name="chrDisableForTimes" desc="holds the dateTime and id of placeables that disable for time" />
     <gom_type Id="4611686035676670006" name="hydOracleUtlHydraAnimationsDatatable" desc="" />
-    <gom_type Id="4611686035692070001" name="vehType" desc="" />
+    <gom_type Id="4611686035692070001" name="vehTypeUnknown" desc="" />
     <gom_type Id="4611686035692070004" name="chrBehavior_bearingDegrees_o" desc="" />
     <gom_type Id="4611686035727770007" name="plcInstigatorOnly" desc="true if using this placeable only disables it for the instigator" />
     <gom_type Id="4611686035768870001" name="effEndTime" desc="" />
@@ -3798,8 +3798,8 @@
     <gom_type Id="4611686036477270012" name="chrPlayerEntityLocks" desc="" />
     <gom_type Id="4611686036477270017" name="chrPlayerEntityLocksRepPrevious" desc="" />
     <gom_type Id="4611686036477270024" name="chrBehaviorIdleStartTime" desc="Time character started idling" />
-    <gom_type Id="4611686036501870013" name="tmrContainer" desc="" />
-    <gom_type Id="4611686036529370002" name="qckContainer" desc="" />
+    <gom_type Id="4611686036501870013" name="timerContainer" desc="" />
+    <gom_type Id="4611686036529370002" name="qckSltContainer" desc="" />
     <gom_type Id="4611686036553070037" name="svEvtPostCommand" desc="postsurveycommand" />
     <gom_type Id="4611686036553070049" name="slashBugCategories" desc="bug_list_categories" />
     <gom_type Id="4611686036596670008" name="svyListeners" desc="surveyListeners" />
@@ -3811,7 +3811,7 @@
     <gom_type Id="4611686036620170084" name="vehSoundStopEvent" desc="" />
     <gom_type Id="4611686036620170085" name="vehSoundSpeedVar" desc="" />
     <gom_type Id="4611686036620170086" name="vehSoundAccelVar" desc="" />
-    <gom_type Id="4611686036620170089" name="vehSounds" desc="" />
+    <gom_type Id="4611686036620170089" name="vehSoundsUnknown" desc="" />
     <gom_type Id="4611686036620170090" name="vehLastSpeed" desc="" />
     <gom_type Id="4611686036864570031" name="ctl_WasMoving" desc="" />
     <gom_type Id="4611686036864670106" name="mpnConnectionDist" desc="Distance from this map note to the one linked by mpnConnectionNoteRef." />
@@ -3907,7 +3907,7 @@
     <gom_type Id="4611686039264570002" name="dynFxSpawnVolume" desc="Respawn delay for the FX belonging to a dyn" />
     <gom_type Id="4611686039264570004" name="dynFxNameToProperty" desc="Field type says it all" />
     <gom_type Id="4611686039264570008" name="dynAttackableInstanceOwner" desc="Points to my owner dynAttackable" />
-    <gom_type Id="4611686039264570013" name="dynAttackableInstance" desc="Refers to my asset instance" />
+    <gom_type Id="4611686039264570013" name="dynAttackableInstanceRef" desc="Refers to my asset instance" />
     <gom_type Id="4611686039264570022" name="dynAttackableOwner" desc="dynPlaceable node that owns this attackable" />
     <gom_type Id="4611686039264570023" name="dynAttackableVisualIndex" desc="dindex of my visual index" />
     <gom_type Id="4611686039264570024" name="dynAttackablePosition" desc="Position of the dynamic attackable" />
@@ -3926,11 +3926,11 @@
     <gom_type Id="4611686039392670001" name="stgActorNameId" desc="Internationalized Name ID for the Actor" />
     <gom_type Id="4611686039392670011" name="chrForceAlignmentLight" desc="" />
     <gom_type Id="4611686039392670012" name="chrForceAlignmentDark" desc="" />
-    <gom_type Id="4611686039392670028" name="chrForceAlignmentTier" desc="" />
+    <gom_type Id="4611686039392670028" name="chrForceAlignmentTierUnknown" desc="" />
     <gom_type Id="4611686039392670032" name="chrBackground" desc="Background spec (stable ID) for this character" />
     <gom_type Id="4611686039404270002" name="effSubEffects" desc="" />
     <gom_type Id="4611686039404270011" name="effActions" desc="" />
-    <gom_type Id="4611686039404270014" name="effConditions" desc="" />
+    <gom_type Id="4611686039404270014" name="effConditionsOld" desc="" />
     <gom_type Id="4611686039404270022" name="effInitializers" desc="" />
     <gom_type Id="4611686039404270028" name="effActionName" desc="" />
     <gom_type Id="4611686039404270029" name="effConditionName" desc="" />
@@ -4051,7 +4051,7 @@
     <gom_type Id="4611686041303070007" name="npcTitlesLookupList" desc="" />
     <gom_type Id="4611686041303070012" name="mapCurrMinimapTitle" desc="Local map name or local Fog of War area name." />
     <gom_type Id="4611686041303070013" name="mapUpdateTimer" desc="" />
-    <gom_type Id="4611686041492170003" name="cbtToughnessEnum" desc="" />
+    <gom_type Id="4611686041492170003" name="cbtToughnessEnumeration" desc="" />
     <gom_type Id="4611686041502770004" name="lhSharedField" desc="" />
     <gom_type Id="4611686041502770005" name="lhClientField" desc="" />
     <gom_type Id="4611686041502770030" name="guiFlyTextEnabled" desc="" />
@@ -4131,7 +4131,7 @@
     <gom_type Id="4611686043620471524" name="guiApiGfxUpdateChr_OldHealthPercentageSelf" desc="" />
     <gom_type Id="4611686043620471525" name="guiApiGfxUpdateChr_OldHealthPercentageCompanion" desc="" />
     <gom_type Id="4611686043635770004" name="qstAllPlcPlaceables" desc="" />
-    <gom_type Id="4611686043635774652" name="tmrDatatable" desc="" />
+    <gom_type Id="4611686043635774652" name="timerDatatable" desc="" />
     <gom_type Id="4611686043635774654" name="itmWeaponType" desc="" />
     <gom_type Id="4611686043635774656" name="itmModel" desc="" />
     <gom_type Id="4611686043635774657" name="itmFxSpec" desc="" />
@@ -4318,7 +4318,7 @@
     <gom_type Id="4611686045688970004" name="sserSharedField" desc="" />
     <gom_type Id="4611686045688970005" name="sserClientField" desc="" />
     <gom_type Id="4611686045726370028" name="aniOracle_ShowMixerChars" desc="" />
-    <gom_type Id="4611686045726370043" name="tagTable" desc="" />
+    <gom_type Id="4611686045726370043" name="tagTableUnknown" desc="" />
     <gom_type Id="4611686045799970020" name="spnEncounterSpawnerFqnToProto" desc="lookuplist indexed by spnSpecId of spnDispenserTemplate" />
     <gom_type Id="4611686045896070027" name="sysBaseGuiComponentsToLoad" desc="Total number of GUI components to load (used for load system feedback)" />
     <gom_type Id="4611686045896070028" name="sysBaseGuiComponentsLoaded" desc="Current number of GUI components loaded (used for load system feedback)" />
@@ -4411,7 +4411,7 @@
     <gom_type Id="4611686048217870063" name="effAppPriorityDefenderImmune" desc="" />
     <gom_type Id="4611686048217870064" name="effAppPriorityAttackerResist" desc="" />
     <gom_type Id="4611686048217870065" name="effAppPriorityDefenderResist" desc="" />
-    <gom_type Id="4611686048217870067" name="effAppPriorityClasses" desc="" />
+    <gom_type Id="4611686048217870067" name="effAppPriorityClasses2" desc="" />
     <gom_type Id="4611686048217870069" name="effOracleEffectAppearancePriorities" desc="" />
     <gom_type Id="4611686048217870076" name="effAppStringListParams" desc="" />
     <gom_type Id="4611686048217870077" name="effAppIntListParams" desc="" />
@@ -4465,7 +4465,7 @@
     <gom_type Id="4611686050077771044" name="jww_Sub_strings" desc="" />
     <gom_type Id="4611686050077771045" name="jww_Sub_stringMap" desc="" />
     <gom_type Id="4611686050077771046" name="jww_Sub_String" desc="" />
-    <gom_type Id="4611686050077771047" name="jww_Sub" desc="" />
+    <gom_type Id="4611686050077771047" name="jww_Sub_" desc="" />
     <gom_type Id="4611686050077771048" name="jww_Subs" desc="" />
     <gom_type Id="4611686050077771061" name="cvrBuilder_Instance" desc="" />
     <gom_type Id="4611686050077771086" name="cvrBuilderInstanceWrapper_cbi" desc="" />
@@ -5029,7 +5029,7 @@
     <gom_type Id="4611686055272531303" name="qstIcon_Multi" desc="" />
     <gom_type Id="4611686055272531304" name="qstIconMap_Multi" desc="" />
     <gom_type Id="4611686055272531305" name="qstIconMap_Single" desc="" />
-    <gom_type Id="4611686055272531306" name="qstIconDetails" desc="" />
+    <gom_type Id="4611686055272531306" name="qstIconDetailsOld" desc="" />
     <gom_type Id="4611686055272531307" name="qstIconDetailsPrototype" desc="" />
     <gom_type Id="4611686055272531308" name="cvrVisualizerInUseAssetFXID" desc="the enum reference for the FX spec of an in use asset" />
     <gom_type Id="4611686055272531309" name="cvrVisualizerFxIds" desc="which hardcoded fx to use per state" />
@@ -5310,7 +5310,7 @@
     <gom_type Id="4611686061654031194" name="chrSpecPath" desc="character spec path" />
     <gom_type Id="4611686061654031195" name="chrSpecBounds" desc="bounds of a given character spec" />
     <gom_type Id="4611686061654031196" name="chrSpecMeleeDistance" desc="how far apart a character should be in melee combat" />
-    <gom_type Id="4611686061654031197" name="chrSpecPrototype" desc="prototype pointer for chrSpec datatable" />
+    <gom_type Id="4611686061654031197" name="chrSpecPrototypeRef" desc="prototype pointer for chrSpec datatable" />
     <gom_type Id="4611686061669731191" name="stgCameraOffsets" desc="" />
     <gom_type Id="4611686061701931192" name="effOraclePreviewEffectAppearanceEvent" desc="" />
     <gom_type Id="4611686061737531202" name="gldMemberAreaID" desc="Area ID of a guild member." />
@@ -5664,7 +5664,7 @@
     <gom_type Id="4611686067808231206" name="scUpgradeParamHash" desc="parameter hash for ship upgrades" />
     <gom_type Id="4611686067808231207" name="scUpgradeParamHashByID" desc="parameter hash for ship upgrades that can be stored as ids" />
     <gom_type Id="4611686067841531194" name="ablPushbackBase" desc="Base amount of pushback" />
-    <gom_type Id="4611686067841531195" name="ablPushbackPrototype" desc="reference to pushback prototype" />
+    <gom_type Id="4611686067841531195" name="ablPushbackPrototypeRef" desc="reference to pushback prototype" />
     <gom_type Id="4611686067858431191" name="scShipTypes" desc="map of ship types to specific ship ids" />
     <gom_type Id="4611686068023431251" name="cnvRewardForceAmount" desc="Amount of force to award" />
     <gom_type Id="4611686068023431252" name="qstRewardsPerLevelData" desc="Maps reward amounds ('low','high', etc.) and quest levels to the actual amount value" />
@@ -5789,7 +5789,7 @@
     <gom_type Id="4611686072943207391" name="phyBallisticTesterMode" desc="client, server, both, none" />
     <gom_type Id="4611686072977307391" name="qstInstanceNameID" desc="SID name of the instance of an instance variable" />
     <gom_type Id="4611686072996807391" name="effStartTime" desc="" />
-    <gom_type Id="4611686073013608592" name="itmRollState" desc="Group loot roll state." />
+    <gom_type Id="4611686073013608592" name="itmGrpRollState" desc="Group loot roll state." />
     <gom_type Id="4611686073044712791" name="guiGfxLoadingAssetTimeoutAt" desc="time to give up on loading assets and fade in" />
     <gom_type Id="4611686073077022391" name="chrSummaryUnifyColors" desc="Unify color setting for this character, for display in char select" />
     <gom_type Id="4611686073170845192" name="qstTaskMapIconLocalOnly" desc="Can the questgiver mapnote be seen on maps other than the map that the questgiver is on" />
@@ -5848,7 +5848,7 @@
     <gom_type Id="4611686073895619391" name="shdShardAddress" desc="shard address" />
     <gom_type Id="4611686073924219593" name="guiSSReady" desc="gui ready" />
     <gom_type Id="4611686073924219596" name="guiSSShardDictionary" desc="shard name to shard dictionary" />
-    <gom_type Id="4611686073936819591" name="cbtCreatureType" desc="Creature type used for dojo conditionals" />
+    <gom_type Id="4611686073936819591" name="cbtDojoCreatureType" desc="Creature type used for dojo conditionals" />
     <gom_type Id="4611686073936819592" name="ablEffectZero" desc="Cached noderef to the zero effect prototype" />
     <gom_type Id="4611686074004219791" name="stgActor_PendingActionBundles" desc="" />
     <gom_type Id="4611686074046124991" name="mapDefaultAOIsPrototype" desc="Holds map icon default AOI radius datatable." />
@@ -5931,7 +5931,7 @@
     <gom_type Id="4611686077114826992" name="chrForceAlignmentMin" desc="" />
     <gom_type Id="4611686077153527991" name="malCurrentUnreadCount" desc="How many unread mail messages the player currently has" />
     <gom_type Id="4611686077153527994" name="malShowNewMailChatOnLogin" desc="Gate to show new mail message on character login" />
-    <gom_type Id="4611686077163128792" name="itmModifierPackages" desc="lookuplist of modifier packages" />
+    <gom_type Id="4611686077163128792" name="itmModifierPackagesList" desc="lookuplist of modifier packages" />
     <gom_type Id="4611686077163128793" name="itmModifierPackagesPrototype" desc="cached prototype for itmModifierPackageTable" />
     <gom_type Id="4611686077163128794" name="itmModifierSetID" desc="stable ID of the modifier set for the item" />
     <gom_type Id="4611686077163128795" name="itmModPackage" desc="The chosen mod package for the item" />
@@ -7295,7 +7295,7 @@
     <gom_type Id="4611686330399300002" name="cbtArmorDetailsBySpec" desc="Maps combat armor specs to their details" />
     <gom_type Id="4611686330399300003" name="cbtArmorNameID" desc="Name ID for the armor type" />
     <gom_type Id="4611686330399300004" name="cbtArmorRequiredAbility" desc="The ability required to use this armor type" />
-    <gom_type Id="4611686330399300005" name="cbtArmorTable" desc="Cache of the cbtArmor prototype" />
+    <gom_type Id="4611686330399300005" name="cbtArmorTableCache" desc="Cache of the cbtArmor prototype" />
     <gom_type Id="4611686330399300006" name="itmArmorSpec" desc="Item armor spec" />
     <gom_type Id="4611686330399300007" name="cbtArmorDebugSpecName" desc="For debug use only, the spec as human readable string" />
     <gom_type Id="4611686330399300008" name="cbtArmorValues" desc="Maps spec, quality, level, and slots down to per level data" />
@@ -7418,7 +7418,7 @@
     <gom_type Id="16141019745737525101" name="CONTROL" desc="controls" />
     <gom_type Id="16141020332315262369" name="CHARACTERCREATIONSYSTEM" desc="Holds necessary data about the character creation system" />
     <gom_type Id="16141022180237260378" name="STATIC" desc="system node to hold any 'static' variables for other classes" />
-    <gom_type Id="16141023112002775963" name="jwwCombat" desc="jww" />
+    <gom_type Id="16141023112002775963" name="jwwCombat2" desc="jww" />
     <gom_type Id="16141025696891777027" name="SOCIAL" desc="Social Systems Prototype (Who List, Friends, Ignore, etc.)" />
     <gom_type Id="16141026023966054588" name="APPEARANCE" desc="System node for NPC and item appearance data" />
     <gom_type Id="16141026165165835286" name="TIMER" desc="timer system node" />
@@ -7469,7 +7469,7 @@
     <gom_type Id="16141121689785174488" name="Environmental" desc="" />
     <gom_type Id="16141125040755723030" name="COVER_SETTINGS" desc="settings" />
     <gom_type Id="16141127674883981753" name="JRB" desc="jrb prototype" />
-    <gom_type Id="16141129464067079453" name="Sound" desc="Implements utils for playing sounds" />
+    <gom_type Id="16141129464067079453" name="utilSound" desc="Implements utils for playing sounds" />
     <gom_type Id="16141137924345361739" name="TEMPLATE" desc="" />
     <gom_type Id="16141138481412995499" name="utlProfile" desc="" />
     <gom_type Id="16141139411753011786" name="SPAWNER" desc="" />
@@ -7512,1937 +7512,6 @@
     <gom_type Id="4611686251130980002" name="lgcExperienceMultiplierCodex" desc="Legacy Experience Multiplier used for codex unlocks" />
     <gom_type Id="4611686251130980003" name="lgcExperienceMultiplierDiscovery" desc="Legacy Experience Multiplier used for map discovery" />
     <gom_type Id="4611686252007270018" name="lgcExperienceMultiplierPvp" desc="Legacy Experience Multiplier used XP earned through Warzones" />
-    <gom_type Id="3775000055" name="enum_dockMode" desc="" />
-    <gom_type Id="17622000052" name="TargetTypes" desc="" />
-    <gom_type Id="18334000030" name="font" desc="" />
-    <gom_type Id="20348000056" name="soundSizes" desc="" />
-    <gom_type Id="24923000059" name="DraggableIconSources" desc="" />
-    <gom_type Id="24923000066" name="DraggableIconTypes" desc="" />
-    <gom_type Id="32967000054" name="WhoLaunchedBanner" desc="" />
-    <gom_type Id="35321000009" name="GraphStyle" desc="" />
-    <gom_type Id="53212000080" name="collectionEnums" desc="" />
-    <gom_type Id="53212000083" name="elementRemovalEnums" desc="" />
-    <gom_type Id="61787000078" name="SETTINGS_VALUE_TYPE" desc="" />
-    <gom_type Id="65959000097" name="IconDropTargetResponse" desc="" />
-    <gom_type Id="65959000106" name="specloadstatuses" desc="" />
-    <gom_type Id="69163000080" name="_PlayModeStates" desc="" />
-    <gom_type Id="72512000105" name="GUIalign" desc="" />
-    <gom_type Id="76877000171" name="AmbientSoundTypes" desc="" />
-    <gom_type Id="76877000462" name="FxStartMethods" desc="" />
-    <gom_type Id="76877000463" name="fxStopMethods" desc="" />
-    <gom_type Id="76877000470" name="LightTypes" desc="" />
-    <gom_type Id="76877000476" name="FlareModes" desc="" />
-    <gom_type Id="76877000477" name="FlarePlacements" desc="" />
-    <gom_type Id="76877000491" name="FxRunStates" desc="" />
-    <gom_type Id="76877000492" name="FxEvents" desc="" />
-    <gom_type Id="76877000493" name="FxStates" desc="" />
-    <gom_type Id="76877000532" name="FxTimerTypes" desc="" />
-    <gom_type Id="76877000729" name="InterpolationCurve" desc="" />
-    <gom_type Id="82478000216" name="TransformAxes" desc="" />
-    <gom_type Id="93331640555" name="ModelStartMethods" desc="" />
-    <gom_type Id="93331640556" name="ModelStopMethods" desc="" />
-    <gom_type Id="93348591256" name="AnimationModes" desc="" />
-    <gom_type Id="93490351854" name="_InputMouseTypes" desc="" />
-    <gom_type Id="93568141233" name="_StateActionExecutionLocations" desc="" />
-    <gom_type Id="93747400305" name="FxMultiTargetBehaviors" desc="" />
-    <gom_type Id="93753770619" name="FxCloneStartMethods" desc="" />
-    <gom_type Id="93756320001" name="WaterTypes" desc="" />
-    <gom_type Id="93859100077" name="windowResizeDirections" desc="" />
-    <gom_type Id="94113130532" name="_EnvironmentalEffects" desc="" />
-    <gom_type Id="94120480070" name="_nodeCollectionLocations" desc="" />
-    <gom_type Id="94154970254" name="MirrorShapes" desc="" />
-    <gom_type Id="94156210066" name="_GUICrudButtonLocations" desc="" />
-    <gom_type Id="94265900038" name="windowScrollDirections" desc="" />
-    <gom_type Id="94295900215" name="_AlertLocations" desc="" />
-    <gom_type Id="94447630112" name="sortableCollectionCellTypes" desc="" />
-    <gom_type Id="94447630114" name="_WaterCollision" desc="" />
-    <gom_type Id="95070802417" name="StringCaseTypes" desc="" />
-    <gom_type Id="4611686018435683028" name="chrCompanionPostureId" desc="" />
-    <gom_type Id="4611686018437791411" name="chrProfessionId_DEPRECATED" desc="" />
-    <gom_type Id="4611686018467551972" name="itmQuickslotActionType" desc="" />
-    <gom_type Id="4611686018486673510" name="staCharStateType" desc="" />
-    <gom_type Id="4611686018505192446" name="effResult" desc="" />
-    <gom_type Id="4611686018961469726" name="staMobilityType" desc="" />
-    <gom_type Id="4611686019004409225" name="staCombatModeType" desc="" />
-    <gom_type Id="4611686019038290010" name="staFxHandleType" desc="" />
-    <gom_type Id="4611686019066509676" name="cnvStateId" desc="" />
-    <gom_type Id="4611686019149850878" name="conResult" desc="" />
-    <gom_type Id="4611686019202030588" name="itmQualityType" desc="" />
-    <gom_type Id="4611686019354793237" name="cnvResult" desc="" />
-    <gom_type Id="4611686019383126693" name="spnType" desc="" />
-    <gom_type Id="4611686019685730780" name="cnvQuestIndication" desc="" />
-    <gom_type Id="4611686019754150195" name="aiAbilityType" desc="" />
-    <gom_type Id="4611686019792713003" name="ablAutoAttackMode" desc="" />
-    <gom_type Id="4611686021264611625" name="cbtRewardLockStateEnum" desc="" />
-    <gom_type Id="4611686022237305910" name="cbtAttitudeEnum" desc="" />
-    <gom_type Id="4611686022679359987" name="staStanceType" desc="" />
-    <gom_type Id="4611686023291411366" name="qstEligibility" desc="" />
-    <gom_type Id="4611686023350830630" name="TriggerClass" desc="" />
-    <gom_type Id="4611686028865570021" name="edgar_byf01" desc="" />
-    <gom_type Id="4611686029944670000" name="itmStackableComponent" desc="" />
-    <gom_type Id="4611686030163470000" name="hydTriggerBlock" desc="" />
-    <gom_type Id="4611686030312152291" name="aiHydraCommandName" desc="" />
-    <gom_type Id="4611686030367775504" name="pthTraversalSpeed" desc="" />
-    <gom_type Id="4611686031191328764" name="ActivatorShape" desc="" />
-    <gom_type Id="4611686031943201772" name="aiRallyBehaviorEnum" desc="" />
-    <gom_type Id="4611686034967270009" name="hydObjectSelfType" desc="" />
-    <gom_type Id="4611686035003170000" name="taxResult" desc="" />
-    <gom_type Id="4611686035258070007" name="YesNoUnset" desc="" />
-    <gom_type Id="4611686035390470000" name="maaClientNewEnum" desc="" />
-    <gom_type Id="4611686035926770011" name="_spera" desc="" />
-    <gom_type Id="4611686036226370230" name="sndFootstepType" desc="" />
-    <gom_type Id="4611686037691070008" name="ssAlexSharedEnum" desc="" />
-    <gom_type Id="4611686038430870017" name="cbtFactionEnum" desc="" />
-    <gom_type Id="4611686038542470005" name="edgar_my_styff_01" desc="" />
-    <gom_type Id="4611686039526870418" name="edgarisajerk" desc="" />
-    <gom_type Id="4611686041184270005" name="vtSharedEnum" desc="" />
-    <gom_type Id="4611686041563370000" name="cbtBuffTypeEnum" desc="" />
-    <gom_type Id="4611686041826970006" name="flytext_category" desc="" />
-    <gom_type Id="4611686042035370374" name="ssJnkmSharedEnum" desc="" />
-    <gom_type Id="4611686042712970005" name="ssJnkLSharedEnum" desc="" />
-    <gom_type Id="4611686043257070003" name="flytext_behavior" desc="" />
-    <gom_type Id="4611686046837870021" name="gmGalaxyMapErrors" desc="" />
-    <gom_type Id="4611686048741571021" name="effAppearanceBodyTypesEnum" desc="" />
-    <gom_type Id="4611686049896071020" name="effAppearanceImplicitVariableEnum" desc="" />
-    <gom_type Id="4611686049988871020" name="effAppearanceVariablyTypeEnum" desc="" />
-    <gom_type Id="4611686051156871021" name="trdResult" desc="" />
-    <gom_type Id="4611686051563471026" name="dejaParameterEnum" desc="" />
-    <gom_type Id="4611686052162972206" name="itmEnhancementCategory" desc="" />
-    <gom_type Id="4611686052911731191" name="itmEnhancementResult" desc="" />
-    <gom_type Id="4611686054636331192" name="chrRegenTypeEnum" desc="" />
-    <gom_type Id="4611686055466631194" name="mmsStatusEnum" desc="" />
-    <gom_type Id="4611686055741335190" name="cbtImpulseCenterEnum" desc="" />
-    <gom_type Id="4611686056165231245" name="PrototypeLoadingBehavior" desc="" />
-    <gom_type Id="4611686057050331192" name="cnvActionTypeEnum" desc="" />
-    <gom_type Id="4611686058678731223" name="scTargetingType" desc="" />
-    <gom_type Id="4611686059011431192" name="scDifficultyEnum" desc="" />
-    <gom_type Id="4611686059297231191" name="npcCreatureType" desc="" />
-    <gom_type Id="4611686065610531267" name="q_edgar_byf_07" desc="" />
-    <gom_type Id="4611686067285431218" name="qstRewardsType" desc="" />
-    <gom_type Id="4611686069586731191" name="fxTargetColors" desc="" />
-    <gom_type Id="4611686070436131191" name="ctlTargetSelectionEnum" desc="" />
-    <gom_type Id="4611686071546547391" name="conOwnerType" desc="" />
-    <gom_type Id="4611686071691153992" name="kynFacingModeType" desc="" />
-    <gom_type Id="4611686073860114791" name="cbtDemeanorEnum" desc="" />
-    <gom_type Id="4611686073930719591" name="cbtCreatureType" desc="" />
-    <gom_type Id="4611686074629095283" name="dynDoorPathState" desc="" />
-    <gom_type Id="4611686075692863391" name="arbTimerEnum" desc="" />
-    <gom_type Id="4611686075758872391" name="decelType" desc="" />
-    <gom_type Id="4611686077667233791" name="ahResult" desc="" />
-    <gom_type Id="4611686080942381593" name="cnvForceRewardTypeEnum" desc="" />
-    <gom_type Id="4611686081837036191" name="chrRelativeColor" desc="" />
-    <gom_type Id="4611686084319687782" name="chrGenderEnum" desc="" />
-    <gom_type Id="4611686084388592791" name="socSocialListType" desc="" />
-    <gom_type Id="4611686084660108191" name="cmdSlashCommandRestrictedConditionsEnum" desc="" />
-    <gom_type Id="4611686084928028391" name="trvTravelTypeEnum" desc="" />
-    <gom_type Id="4611686085950661591" name="grpMsgTypeEnum" desc="" />
-    <gom_type Id="4611686088490169991" name="qstRelativeDifficultyEnum" desc="" />
-    <gom_type Id="4611686090794369991" name="mntResult" desc="" />
-    <gom_type Id="4611686092875369992" name="rpcBand" desc="" />
-    <gom_type Id="4611686124347725041" name="socMsgType" desc="" />
-    <gom_type Id="4611686142092720002" name="scUpgradeOperatorType" desc="" />
-    <gom_type Id="4611686175682550001" name="chrAlignmentEnum" desc="" />
-    <gom_type Id="4611686188567180000" name="strWellKnownTextVariant" desc="" />
-    <gom_type Id="4611686188819843251" name="cbtOutcome" desc="" />
-    <gom_type Id="4611686198325860000" name="csrCmdIds" desc="" />
-    <gom_type Id="4611686226383610528" name="chrCurrencyTransactionTypeEnum" desc="" />
-    <gom_type Id="4611686226567770000" name="cdxTypeStyle" desc="" />
-    <gom_type Id="4611686227489920000" name="utlVfxAttachmentStyleEnum" desc="" />
-    <gom_type Id="4611686238648112311" name="phsRaidMemberPhaseEntryRule" desc="" />
-    <gom_type Id="4611686250044750000" name="phsShipLeavingMessage" desc="" />
-    <gom_type Id="4611686250306680000" name="csrTicketState" desc="" />
-    <gom_type Id="4611686252551980000" name="tutEnabledEnum" desc="" />
-    <gom_type Id="4611686281363400002" name="trvAreaInstanceTransferAllowedResultEnum" desc="" />
-    <gom_type Id="4611686282017990000" name="aitCharacterInstanceTransferStageEnum" desc="" />
-    <gom_type Id="9223372036862306550" name="cbtDamageType" desc="" />
-    <gom_type Id="9223372036862800329" name="tgtTargettingRule" desc="" />
-    <gom_type Id="3758000002" name="base_hard_association" desc="" />
-    <gom_type Id="11529000007" name="PopupParent" desc="" />
-    <gom_type Id="11628000001" name="_GUIDropDownListAssociation" desc="" />
-    <gom_type Id="15765000001" name="GUIAnimation" desc="" />
-    <gom_type Id="66944000113" name="ModalDialogToLayer" desc="" />
-    <gom_type Id="78163000051" name="ListeningForFileDialog" desc="" />
-    <gom_type Id="78163000052" name="ListeningForParamDialog" desc="" />
-    <gom_type Id="94051390077" name="ModalDialogAssociation" desc="" />
-    <gom_type Id="95314070081" name="GUISyncedAnimation" desc="" />
-    <gom_type Id="4611686030369070000" name="hydActionWaitAssociation" desc="" />
-    <gom_type Id="30002" name="maxCameraCollisionPitchDegrees" desc="" />
-    <gom_type Id="40005" name="InputCameraZoomTarget" desc="" />
-    <gom_type Id="40010" name="InputCameraForceFirstPerson" desc="" />
-    <gom_type Id="40020" name="InputCameraWheelStops" desc="" />
-    <gom_type Id="40021" name="InputCameraWheelZoomSpeed" desc="" />
-    <gom_type Id="40022" name="InputCameraVerticalMouseSpeed" desc="" />
-    <gom_type Id="3758000003" name="name" desc="" />
-    <gom_type Id="3758000004" name="Script" desc="" />
-    <gom_type Id="3758000006" name="_currentAreaInstance" desc="" />
-    <gom_type Id="3758000262" name="character_position" desc="" />
-    <gom_type Id="3758000263" name="character_rotation" desc="" />
-    <gom_type Id="3775000024" name="x" desc="" />
-    <gom_type Id="3775000025" name="y" desc="" />
-    <gom_type Id="3775000026" name="r" desc="" />
-    <gom_type Id="3775000027" name="g" desc="" />
-    <gom_type Id="3775000028" name="b" desc="" />
-    <gom_type Id="3775000029" name="a" desc="" />
-    <gom_type Id="3775000030" name="l" desc="" />
-    <gom_type Id="3775000031" name="min" desc="" />
-    <gom_type Id="3775000032" name="max" desc="" />
-    <gom_type Id="3775000033" name="top" desc="" />
-    <gom_type Id="3775000034" name="bottom" desc="" />
-    <gom_type Id="3775000035" name="left" desc="" />
-    <gom_type Id="3775000036" name="right" desc="" />
-    <gom_type Id="3775000042" name="guiColor" desc="" />
-    <gom_type Id="3775000043" name="guiPosition" desc="" />
-    <gom_type Id="3775000044" name="size" desc="" />
-    <gom_type Id="3775000045" name="set" desc="" />
-    <gom_type Id="3775000047" name="horizontal" desc="" />
-    <gom_type Id="3775000048" name="vertical" desc="" />
-    <gom_type Id="3775000050" name="center" desc="" />
-    <gom_type Id="3775000051" name="vcenter" desc="" />
-    <gom_type Id="3775000052" name="singleLine" desc="" />
-    <gom_type Id="3775000053" name="wordBreak" desc="" />
-    <gom_type Id="3775000060" name="visible" desc="" />
-    <gom_type Id="3775000061" name="enabled" desc="" />
-    <gom_type Id="3775000062" name="minimumSize" desc="" />
-    <gom_type Id="3775000063" name="maximumSize" desc="" />
-    <gom_type Id="3775000064" name="anchor" desc="" />
-    <gom_type Id="3775000065" name="dockMode" desc="" />
-    <gom_type Id="3775000067" name="opacityModifier" desc="" />
-    <gom_type Id="3775000068" name="texture" desc="" />
-    <gom_type Id="3775000069" name="guiScale" desc="" />
-    <gom_type Id="3775000071" name="tiling" desc="" />
-    <gom_type Id="3775000072" name="defaultStatePresentation" desc="" />
-    <gom_type Id="3775000073" name="disabledStatePresentation" desc="" />
-    <gom_type Id="3775000074" name="hoverStatePresentation" desc="" />
-    <gom_type Id="3775000075" name="selectedStatePresentation" desc="" />
-    <gom_type Id="3775000076" name="selectedDisabledStatePresentation" desc="" />
-    <gom_type Id="3775000077" name="children" desc="" />
-    <gom_type Id="3775000078" name="build" desc="" />
-    <gom_type Id="3775000080" name="ignoreMouseEvents" desc="" />
-    <gom_type Id="3775000081" name="parent" desc="" />
-    <gom_type Id="3775000082" name="type" desc="" />
-    <gom_type Id="3775000083" name="popup" desc="" />
-    <gom_type Id="3775000084" name="inheritDisabledState" desc="" />
-    <gom_type Id="3775000085" name="inheritSelectedState" desc="" />
-    <gom_type Id="3775000086" name="inheritHoveringState" desc="" />
-    <gom_type Id="3775000087" name="gotoTopOnMouseDown" desc="" />
-    <gom_type Id="3775000088" name="copy" desc="" />
-    <gom_type Id="3775000089" name="prototype" desc="" />
-    <gom_type Id="3775000090" name="inheritedFrom" desc="" />
-    <gom_type Id="3775000091" name="protoCopiedFrom" desc="" />
-    <gom_type Id="3775000092" name="treePath" desc="" />
-    <gom_type Id="3775000093" name="text" desc="" />
-    <gom_type Id="3775000094" name="textFormat" desc="" />
-    <gom_type Id="3775000095" name="autoSetHeight" desc="" />
-    <gom_type Id="3775000097" name="resize" desc="" />
-    <gom_type Id="3775000102" name="owner" desc="" />
-    <gom_type Id="3775000103" name="scrollDirection" desc="" />
-    <gom_type Id="3775000104" name="isHorizontal" desc="" />
-    <gom_type Id="3775000108" name="area" desc="" />
-    <gom_type Id="3775000109" name="guiOffset" desc="" />
-    <gom_type Id="3775000110" name="scrollsBy" desc="" />
-    <gom_type Id="3775000111" name="scrollButtonRepeat" desc="" />
-    <gom_type Id="3775000112" name="scrollbarAutoHide" desc="" />
-    <gom_type Id="3775000114" name="checked" desc="" />
-    <gom_type Id="3775000118" name="maxLen" desc="" />
-    <gom_type Id="3775000119" name="isMultiLine" desc="" />
-    <gom_type Id="3775000120" name="historySize" desc="" />
-    <gom_type Id="3775000122" name="guiRange" desc="" />
-    <gom_type Id="3775000123" name="increment" desc="" />
-    <gom_type Id="3775000124" name="forceInteger" desc="" />
-    <gom_type Id="3775000126" name="goesDown" desc="" />
-    <gom_type Id="3775000129" name="pos" desc="" />
-    <gom_type Id="3775000130" name="padding" desc="" />
-    <gom_type Id="3775000133" name="columns" desc="" />
-    <gom_type Id="3775000137" name="source" desc="" />
-    <gom_type Id="3775000139" name="lastPopup" desc="" />
-    <gom_type Id="3775000141" name="alt" desc="" />
-    <gom_type Id="3775000142" name="ctrl" desc="" />
-    <gom_type Id="3775000143" name="shift" desc="" />
-    <gom_type Id="3775000144" name="keyCode" desc="" />
-    <gom_type Id="3775000146" name="key" desc="" />
-    <gom_type Id="3777000002" name="TexturePartIndex" desc="" />
-    <gom_type Id="3777000004" name="TextureBankName" desc="" />
-    <gom_type Id="3777000013" name="TextureLayerName" desc="" />
-    <gom_type Id="3777000014" name="TexturePieceName" desc="" />
-    <gom_type Id="3777000015" name="TexturePaletteIndex" desc="" />
-    <gom_type Id="3777000016" name="TexturePaletteName" desc="" />
-    <gom_type Id="3777000026" name="wrappedControl" desc="" />
-    <gom_type Id="3777000027" name="cover" desc="" />
-    <gom_type Id="3777000028" name="newControl" desc="" />
-    <gom_type Id="3777000029" name="visFake" desc="" />
-    <gom_type Id="3777000031" name="modifier" desc="" />
-    <gom_type Id="3777000032" name="movebox" desc="" />
-    <gom_type Id="3777000033" name="selectedControl" desc="" />
-    <gom_type Id="3777000034" name="hover" desc="" />
-    <gom_type Id="3777000035" name="mouseDownPos" desc="" />
-    <gom_type Id="3777000036" name="bDrag" desc="" />
-    <gom_type Id="3777000037" name="updateInfo" desc="" />
-    <gom_type Id="3777000038" name="GUInodeList" desc="" />
-    <gom_type Id="3777000039" name="confirmDelete" desc="" />
-    <gom_type Id="3777000041" name="GUIeditorPtr" desc="" />
-    <gom_type Id="3876000001" name="gluedtonode" desc="" />
-    <gom_type Id="3876000002" name="worldspaceoffset" desc="" />
-    <gom_type Id="4492000013" name="toFunction" desc="" />
-    <gom_type Id="4492000014" name="args" desc="" />
-    <gom_type Id="4680000001" name="fadeDistance" desc="" />
-    <gom_type Id="6202000001" name="textPadding" desc="" />
-    <gom_type Id="6342000025" name="camOffset" desc="" />
-    <gom_type Id="6342000026" name="camName" desc="" />
-    <gom_type Id="6342000031" name="lookAtNextPause" desc="" />
-    <gom_type Id="6342000032" name="zoomPause" desc="" />
-    <gom_type Id="6342000033" name="panPause" desc="" />
-    <gom_type Id="6342000096" name="iconFQN" desc="" />
-    <gom_type Id="6342000106" name="camPath" desc="" />
-    <gom_type Id="6342000109" name="wheelDelta" desc="" />
-    <gom_type Id="8343000011" name="autosetarea" desc="" />
-    <gom_type Id="8343000025" name="textDefaultColor" desc="" />
-    <gom_type Id="8343000026" name="textDisabledColor" desc="" />
-    <gom_type Id="8518000002" name="cursorName" desc="" />
-    <gom_type Id="8636000001" name="readOnly" desc="" />
-    <gom_type Id="11628000030" name="allowMultipleSelections" desc="" />
-    <gom_type Id="11628000059" name="GUIPopupTimer" desc="" />
-    <gom_type Id="11628000060" name="GUIPopdownTimer" desc="" />
-    <gom_type Id="14774000143" name="toScript" desc="" />
-    <gom_type Id="15078000022" name="controlToAnimate" desc="" />
-    <gom_type Id="15078000023" name="timeIndex" desc="" />
-    <gom_type Id="15078000030" name="GUIanimationArgs" desc="" />
-    <gom_type Id="15567000005" name="GUIanimationMode" desc="" />
-    <gom_type Id="15765000002" name="animation" desc="" />
-    <gom_type Id="15848000020" name="repeatCnt" desc="" />
-    <gom_type Id="16311000015" name="GUIAnimationTimer" desc="" />
-    <gom_type Id="16720000006" name="originalFloatValue" desc="" />
-    <gom_type Id="16720000048" name="selected" desc="" />
-    <gom_type Id="16720000050" name="ignoredragdropevents" desc="" />
-    <gom_type Id="16869001164" name="myTimer" desc="" />
-    <gom_type Id="16869001166" name="timerData" desc="" />
-    <gom_type Id="17622000053" name="_tgtType" desc="" />
-    <gom_type Id="17622000054" name="_tgtID" desc="" />
-    <gom_type Id="17622000055" name="_tgtIDList" desc="" />
-    <gom_type Id="17622000056" name="_tgtBone" desc="" />
-    <gom_type Id="17622000057" name="_tgtPosition" desc="" />
-    <gom_type Id="17622000058" name="_tgtPositionList" desc="" />
-    <gom_type Id="18334000029" name="textureFilter" desc="" />
-    <gom_type Id="18334000031" name="displayfont" desc="" />
-    <gom_type Id="18334000081" name="skipTextureAlphaTest" desc="" />
-    <gom_type Id="21227000002" name="GUIPopupClosedTimer" desc="" />
-    <gom_type Id="21694000004" name="guiRotation" desc="" />
-    <gom_type Id="24923000040" name="allowMove" desc="" />
-    <gom_type Id="26343000142" name="handled" desc="" />
-    <gom_type Id="26343000143" name="LeftButton" desc="" />
-    <gom_type Id="26343000144" name="RightButton" desc="" />
-    <gom_type Id="27042000068" name="allowDuplicateSelectBoxItems" desc="" />
-    <gom_type Id="27042000071" name="autosortSelectBox" desc="" />
-    <gom_type Id="28802000001" name="allowStickyBottom" desc="" />
-    <gom_type Id="30667000018" name="fileName" desc="" />
-    <gom_type Id="30667000019" name="cineScript" desc="" />
-    <gom_type Id="30667000020" name="cineServerScript" desc="" />
-    <gom_type Id="30667000021" name="cinePath" desc="" />
-    <gom_type Id="30667000022" name="cineMusic" desc="" />
-    <gom_type Id="30667000023" name="cineBanner" desc="" />
-    <gom_type Id="30667000034" name="cineStatus" desc="" />
-    <gom_type Id="30667000060" name="bnTimer" desc="" />
-    <gom_type Id="30667000067" name="bnFadeInTime" desc="" />
-    <gom_type Id="30667000068" name="bnFadeOutTime" desc="" />
-    <gom_type Id="30667000069" name="bnDisplayTime" desc="" />
-    <gom_type Id="32102000009" name="_dfCaster" desc="" />
-    <gom_type Id="32102000010" name="_dfTarget" desc="" />
-    <gom_type Id="32102000011" name="_dfTimer" desc="" />
-    <gom_type Id="32102000019" name="moveResizeControlTimer" desc="" />
-    <gom_type Id="32102000021" name="currentCmd" desc="" />
-    <gom_type Id="32967000055" name="bnLaunchedFrom" desc="" />
-    <gom_type Id="40667000001" name="layer" desc="" />
-    <gom_type Id="41742000156" name="rowColor1" desc="" />
-    <gom_type Id="41742000157" name="rowColor2" desc="" />
-    <gom_type Id="41742000158" name="columnSortOrder" desc="" />
-    <gom_type Id="41742000159" name="reverseSortOrder" desc="" />
-    <gom_type Id="42148000005" name="firstGUIListItemClicked" desc="" />
-    <gom_type Id="42271000324" name="gmNoteDrawString" desc="" />
-    <gom_type Id="45220000005" name="dropShadowAlpha" desc="" />
-    <gom_type Id="45220000007" name="columnWidths" desc="" />
-    <gom_type Id="45220000012" name="autoCenter" desc="" />
-    <gom_type Id="45220000020" name="interrupt" desc="" />
-    <gom_type Id="46319000014" name="GUILayerStates" desc="" />
-    <gom_type Id="46319000015" name="GUILayerStack" desc="" />
-    <gom_type Id="46319000016" name="GUILayerPushedBy" desc="" />
-    <gom_type Id="46319000022" name="processMarkup" desc="" />
-    <gom_type Id="46721000004" name="alphamask" desc="" />
-    <gom_type Id="48817000019" name="proxyForID" desc="" />
-    <gom_type Id="48817000023" name="ccCollapsed" desc="" />
-    <gom_type Id="48817000204" name="LastMousePosition" desc="" />
-    <gom_type Id="48817000271" name="argsList" desc="" />
-    <gom_type Id="48817000272" name="animationScript" desc="" />
-    <gom_type Id="51295000079" name="anlScript" desc="" />
-    <gom_type Id="51295000081" name="anlAnimatingNodeID" desc="" />
-    <gom_type Id="51295000084" name="anlListeningNodeID" desc="" />
-    <gom_type Id="51295000087" name="anlNote" desc="" />
-    <gom_type Id="52230000021" name="_sndFadeTimer" desc="" />
-    <gom_type Id="52230000022" name="_sndFadeStart" desc="" />
-    <gom_type Id="52230000023" name="_sndFadeStop" desc="" />
-    <gom_type Id="52970000072" name="textInputTimer" desc="" />
-    <gom_type Id="52970000189" name="tabScrollingTimer" desc="" />
-    <gom_type Id="52970000191" name="LastControlID" desc="" />
-    <gom_type Id="52970000192" name="PathVisualizers" desc="" />
-    <gom_type Id="54314000073" name="_collectionID" desc="" />
-    <gom_type Id="54314000087" name="GUIListItemWithFocus" desc="" />
-    <gom_type Id="54314000116" name="command" desc="" />
-    <gom_type Id="61787000145" name="_dfDynData" desc="" />
-    <gom_type Id="63957000029" name="tooltip" desc="" />
-    <gom_type Id="63957000139" name="tooltipSingleton" desc="" />
-    <gom_type Id="65617000079" name="glomClass" desc="" />
-    <gom_type Id="65959000004" name="territoryCoreList" desc="" />
-    <gom_type Id="65959000060" name="ddtControlID" desc="" />
-    <gom_type Id="65959000074" name="ddtLastControlEntered" desc="" />
-    <gom_type Id="65959000077" name="ddtIsDragging" desc="" />
-    <gom_type Id="65959000306" name="ddtOffset" desc="" />
-    <gom_type Id="66944000077" name="LastControlPosition" desc="" />
-    <gom_type Id="66944000089" name="LastOffset" desc="" />
-    <gom_type Id="68019000075" name="NPEnode" desc="" />
-    <gom_type Id="68019000076" name="NPEfields" desc="" />
-    <gom_type Id="68019000094" name="SOPEtype" desc="" />
-    <gom_type Id="68019000104" name="baseGUIClass" desc="" />
-    <gom_type Id="69388000001" name="dormant" desc="" />
-    <gom_type Id="69388000316" name="trStageName" desc="" />
-    <gom_type Id="69388000317" name="trStartStageZoom" desc="" />
-    <gom_type Id="69388000318" name="trTargetStageZoom" desc="" />
-    <gom_type Id="69388000319" name="trIgnoreStageZoom" desc="" />
-    <gom_type Id="69388000320" name="trStartStageRotation" desc="" />
-    <gom_type Id="69388000321" name="trTargetStageRotation" desc="" />
-    <gom_type Id="69388000322" name="trIgnoreStageRotation" desc="" />
-    <gom_type Id="72512000095" name="_dfDelay" desc="" />
-    <gom_type Id="72512000106" name="justification" desc="" />
-    <gom_type Id="72512000139" name="anlSequence" desc="" />
-    <gom_type Id="72512000141" name="anlTime" desc="" />
-    <gom_type Id="73908000005" name="savedXML" desc="" />
-    <gom_type Id="74467000038" name="lastRacialMorphPosUpdate" desc="" />
-    <gom_type Id="74866000006" name="SOPEparentGUI" desc="" />
-    <gom_type Id="74866000052" name="altKey" desc="" />
-    <gom_type Id="74866000053" name="ctrlKey" desc="" />
-    <gom_type Id="74866000054" name="shiftKey" desc="" />
-    <gom_type Id="76877000730" name="_trCounter" desc="" />
-    <gom_type Id="76877000731" name="_trCurveType" desc="" />
-    <gom_type Id="76877000734" name="_trDuration" desc="" />
-    <gom_type Id="76877000738" name="_trName" desc="" />
-    <gom_type Id="76877000743" name="_trRepeatCount" desc="" />
-    <gom_type Id="76877000744" name="_trReverse" desc="" />
-    <gom_type Id="76877000745" name="_trReverseCurveType" desc="" />
-    <gom_type Id="76877000746" name="_trReversing" desc="" />
-    <gom_type Id="76877000751" name="_trTotalFrameTime" desc="" />
-    <gom_type Id="78163000077" name="showFileDialogTitle" desc="" />
-    <gom_type Id="78163000078" name="showFileDialogFilter" desc="" />
-    <gom_type Id="78163000079" name="showFileDialogStartPath" desc="" />
-    <gom_type Id="78163000080" name="showFileDialogIconView" desc="" />
-    <gom_type Id="78163000081" name="showFileDialogCallback" desc="" />
-    <gom_type Id="78844000144" name="opacity" desc="" />
-    <gom_type Id="79220000083" name="_dfSpecKey" desc="" />
-    <gom_type Id="79220000084" name="_dfPreloading" desc="" />
-    <gom_type Id="79220000109" name="anlMatchSequence" desc="" />
-    <gom_type Id="79220000110" name="anlMatchNote" desc="" />
-    <gom_type Id="84231000374" name="_tgtCenterPoint" desc="" />
-    <gom_type Id="84231000375" name="_tgtRadius" desc="" />
-    <gom_type Id="84231000376" name="_tgtStartPoint" desc="" />
-    <gom_type Id="84231000377" name="_tgtEndPoint" desc="" />
-    <gom_type Id="84377000127" name="_dfPreLoadScript" desc="" />
-    <gom_type Id="86567000240" name="syncedAnimationID" desc="" />
-    <gom_type Id="86567000243" name="controlsToAnimate" desc="" />
-    <gom_type Id="91905000098" name="sndVolume" desc="" />
-    <gom_type Id="91905000099" name="sndStartOffset" desc="" />
-    <gom_type Id="91905000100" name="sndFadeInLength" desc="" />
-    <gom_type Id="91905000101" name="sndFadeOutLength" desc="" />
-    <gom_type Id="91905000102" name="sndVolumeOutsideCones" desc="" />
-    <gom_type Id="91905000103" name="sndInnerAngle" desc="" />
-    <gom_type Id="91905000104" name="sndOuterAngle" desc="" />
-    <gom_type Id="91905000108" name="sndIs3D" desc="" />
-    <gom_type Id="91905000109" name="sndAmbientType" desc="" />
-    <gom_type Id="91905000110" name="sndSoundSize" desc="" />
-    <gom_type Id="91905000111" name="sndResource" desc="" />
-    <gom_type Id="91905000112" name="sndPosition" desc="" />
-    <gom_type Id="91905000113" name="sndRotation" desc="" />
-    <gom_type Id="91905000114" name="sndLoader" desc="" />
-    <gom_type Id="93305960023" name="_AreaName" desc="" />
-    <gom_type Id="93305960024" name="_RoomName" desc="" />
-    <gom_type Id="93385110014" name="anlInterrupted" desc="" />
-    <gom_type Id="93408070015" name="_lastLoadPercent" desc="" />
-    <gom_type Id="93468800113" name="_InputGameInvertMouseX" desc="" />
-    <gom_type Id="93468800114" name="_InputGameInvertMouseY" desc="" />
-    <gom_type Id="93468800115" name="_InputGameMouseSensitivity" desc="" />
-    <gom_type Id="93490351840" name="button4" desc="" />
-    <gom_type Id="93490351842" name="button5" desc="" />
-    <gom_type Id="93490351845" name="midbutton" desc="" />
-    <gom_type Id="93490351848" name="MouseTarget" desc="" />
-    <gom_type Id="93490351856" name="MouseEventType" desc="" />
-    <gom_type Id="93531460204" name="_SavedInputLayers" desc="" />
-    <gom_type Id="93531460244" name="_AreaID" desc="" />
-    <gom_type Id="93531460245" name="_InstanceID" desc="" />
-    <gom_type Id="93545621261" name="_cmiCategory" desc="" />
-    <gom_type Id="93545621264" name="_cmiDisplay" desc="" />
-    <gom_type Id="93545621268" name="_cmiData" desc="" />
-    <gom_type Id="93545621382" name="_cmiServerScript" desc="" />
-    <gom_type Id="93545621384" name="_cmiClientScript" desc="" />
-    <gom_type Id="93545621603" name="_cmiTarget" desc="" />
-    <gom_type Id="93580181132" name="_HeroicMouseEvent" desc="" />
-    <gom_type Id="93580181136" name="_HeroicMouseTargets" desc="" />
-    <gom_type Id="93615190075" name="editableDropdownBox" desc="" />
-    <gom_type Id="93631480238" name="_InputCameraStack" desc="" />
-    <gom_type Id="93631480297" name="layerStatePopWasDelayed" desc="" />
-    <gom_type Id="93631480322" name="allowTitlebar" desc="" />
-    <gom_type Id="93631480323" name="allowCloseButton" desc="" />
-    <gom_type Id="93631480440" name="_fadeAlertTimer" desc="" />
-    <gom_type Id="93631480477" name="_action" desc="" />
-    <gom_type Id="93631480482" name="_GUIEditorClassDefaultPrototypeForFieldCache" desc="" />
-    <gom_type Id="93631480510" name="_dirtySortOrder" desc="" />
-    <gom_type Id="93631480511" name="_selectBoxSortTImer" desc="" />
-    <gom_type Id="93631480529" name="_alertData" desc="" />
-    <gom_type Id="93664910025" name="_GUIEditorTypeHasFieldCache" desc="" />
-    <gom_type Id="93664910028" name="_GUIEditorExcludedFields" desc="" />
-    <gom_type Id="93664910031" name="searchableCollection" desc="" />
-    <gom_type Id="93664910050" name="_viewingGMNote" desc="" />
-    <gom_type Id="93729620028" name="allowDragging" desc="" />
-    <gom_type Id="93828480273" name="_whoAreaID" desc="" />
-    <gom_type Id="93828480274" name="_whoAreaInstanceID" desc="" />
-    <gom_type Id="93859100043" name="_cmgrSelectionTimer" desc="" />
-    <gom_type Id="93859100078" name="resizeable" desc="" />
-    <gom_type Id="93912340011" name="_iconMakerPathPrefix" desc="" />
-    <gom_type Id="93921220308" name="styleSetSpecKey" desc="" />
-    <gom_type Id="93934850025" name="cameraControllers" desc="" />
-    <gom_type Id="93934850026" name="CurrentCameraController" desc="" />
-    <gom_type Id="94051390057" name="_AiDebugTarget" desc="" />
-    <gom_type Id="94051390071" name="_AiDebugCloseAction" desc="" />
-    <gom_type Id="94051390076" name="_loadingIconTimer" desc="" />
-    <gom_type Id="94052891211" name="_mt_timerState" desc="" />
-    <gom_type Id="94052891222" name="_mt_realTime" desc="" />
-    <gom_type Id="94052891225" name="_mt_suspended" desc="" />
-    <gom_type Id="94052891231" name="_mt_startTime" desc="" />
-    <gom_type Id="94052891233" name="_mt_stopTime" desc="" />
-    <gom_type Id="94052891237" name="_mt_lastFired" desc="" />
-    <gom_type Id="94052891241" name="_mt_elapsedTime" desc="" />
-    <gom_type Id="94052891244" name="_mt_pausedTime" desc="" />
-    <gom_type Id="94052891249" name="_mt_script" desc="" />
-    <gom_type Id="94085530013" name="_sndFadeIncrement" desc="" />
-    <gom_type Id="94120480071" name="_nodeCollectionLocation" desc="" />
-    <gom_type Id="94156210007" name="trTextureList" desc="" />
-    <gom_type Id="94156210060" name="_showCrudButtons" desc="" />
-    <gom_type Id="94156210068" name="_GUICrudButtonLocation" desc="" />
-    <gom_type Id="94181690009" name="_GUIShowControlHeader" desc="" />
-    <gom_type Id="94220190015" name="_GUINodePropertyEditorCellFieldName" desc="" />
-    <gom_type Id="94265900039" name="scrollable" desc="" />
-    <gom_type Id="94283660010" name="_GUITextureViewerDefaultState" desc="" />
-    <gom_type Id="94283660011" name="_GUITextureViewerDisabledState" desc="" />
-    <gom_type Id="94283660012" name="_GUITextureViewerHoverState" desc="" />
-    <gom_type Id="94283660013" name="_GUITextureViewerSelectedState" desc="" />
-    <gom_type Id="94283660014" name="_GUITextureViewerSelectedDisabledState" desc="" />
-    <gom_type Id="94293410085" name="_NewControlType" desc="" />
-    <gom_type Id="94293410106" name="_marqueeStartingPosition" desc="" />
-    <gom_type Id="94293410114" name="_GUITextureViewerInvertedMarquee" desc="" />
-    <gom_type Id="94334620029" name="_fxHandle" desc="" />
-    <gom_type Id="94345480066" name="_dfHandle" desc="" />
-    <gom_type Id="94355830272" name="allowHelpButton" desc="" />
-    <gom_type Id="94355830273" name="allowMinimizeButton" desc="" />
-    <gom_type Id="94447630113" name="sortableCollectionColumnType" desc="" />
-    <gom_type Id="94501240140" name="_textureViewerDragStart" desc="" />
-    <gom_type Id="94769420092" name="_accountName" desc="" />
-    <gom_type Id="94819540064" name="_hotSpotItemCheckable" desc="" />
-    <gom_type Id="95075570006" name="_isAreaLoadComplete" desc="" />
-    <gom_type Id="95259791629" name="AdditiveBlending" desc="" />
-    <gom_type Id="95296300014" name="_hotSpotCheckableItems" desc="" />
-    <gom_type Id="95392302379" name="_cmiAction" desc="" />
-    <gom_type Id="95507470004" name="italic" desc="" />
-    <gom_type Id="95519150003" name="_marqueeStartingSize" desc="" />
-    <gom_type Id="95614700026" name="linktag" desc="" />
-    <gom_type Id="4611686018438380503" name="chrXpNeeded" desc="" />
-    <gom_type Id="4611686018444485471" name="grpMemberCompanionLevel" desc="" />
-    <gom_type Id="4611686018459190434" name="itmIsBound" desc="" />
-    <gom_type Id="4611686018459670028" name="sysInputHandlerStoredCameraRotation" desc="" />
-    <gom_type Id="4611686018461500053" name="sysInputHandlerMaxZoom" desc="" />
-    <gom_type Id="4611686018482710012" name="guiCSSReady" desc="" />
-    <gom_type Id="4611686018484027589" name="staFighting" desc="" />
-    <gom_type Id="4611686018484055532" name="effCustomData" desc="" />
-    <gom_type Id="4611686018500180755" name="jwwFlurryCount" desc="" />
-    <gom_type Id="4611686018513836101" name="grpMemberGroupId" desc="" />
-    <gom_type Id="4611686018752520001" name="ctlMinCameraPitch" desc="" />
-    <gom_type Id="4611686018935673126" name="staAutoAttack" desc="" />
-    <gom_type Id="4611686018961611415" name="staMobility" desc="" />
-    <gom_type Id="4611686019040940017" name="guiApiTargetRangeCache" desc="" />
-    <gom_type Id="4611686019055152666" name="chrGender" desc="" />
-    <gom_type Id="4611686019058500344" name="cnvIsPcNode" desc="" />
-    <gom_type Id="4611686019061601600" name="cnvIsMultiplayerConversation" desc="" />
-    <gom_type Id="4611686019066580597" name="grpMemberConversationState" desc="" />
-    <gom_type Id="4611686019085778356" name="grpMemberCompanionPosition" desc="" />
-    <gom_type Id="4611686019093994683" name="cnvIsEmpty" desc="" />
-    <gom_type Id="4611686019125220138" name="chrScale" desc="" />
-    <gom_type Id="4611686019175565953" name="qstIsRepeatable" desc="" />
-    <gom_type Id="4611686019251991207" name="cnvGenericNodeNumber" desc="" />
-    <gom_type Id="4611686019252400044" name="qstSequenceId" desc="" />
-    <gom_type Id="4611686019263330339" name="spnSpawnerType" desc="" />
-    <gom_type Id="4611686019288790006" name="strLoadVoiceoverOnParse" desc="" />
-    <gom_type Id="4611686019315790042" name="strTableStringHasVoiceover" desc="" />
-    <gom_type Id="4611686019329270617" name="effTargetId" desc="" />
-    <gom_type Id="4611686019389691022" name="effSlotType" desc="" />
-    <gom_type Id="4611686019433040026" name="guiActionChanged" desc="" />
-    <gom_type Id="4611686019433625837" name="tmrDuration" desc="" />
-    <gom_type Id="4611686019543460028" name="effDoesPersistAfterDeath" desc="" />
-    <gom_type Id="4611686019604800152" name="cnvRandomCondition" desc="" />
-    <gom_type Id="4611686019650361147" name="cnvBarkEventCondition" desc="" />
-    <gom_type Id="4611686019661482653" name="brkLastBarkTime" desc="" />
-    <gom_type Id="4611686019681780010" name="ctlLastCmdStart" desc="" />
-    <gom_type Id="4611686019699521188" name="cnvOracleMode" desc="" />
-    <gom_type Id="4611686019705520624" name="effTargetDefaultId" desc="" />
-    <gom_type Id="4611686019729670004" name="sysBaseClientEventLog" desc="" />
-    <gom_type Id="4611686019758530022" name="qaMoveDriverLocList" desc="" />
-    <gom_type Id="4611686019772720001" name="sysBaseClientLogEvents" desc="" />
-    <gom_type Id="4611686019793570009" name="qaMoveDriverPrintLevel" desc="" />
-    <gom_type Id="4611686019794470009" name="guiNameplatesShowIds" desc="" />
-    <gom_type Id="4611686019859710001" name="qaMoveTestCamSpeed" desc="" />
-    <gom_type Id="4611686019890580001" name="sysInputHandlerSetCameraRotation" desc="" />
-    <gom_type Id="4611686019920401430" name="grpMemberCompanionClass" desc="" />
-    <gom_type Id="4611686019985950022" name="qaMoveDriverPreviousDistance" desc="" />
-    <gom_type Id="4611686019993244790" name="qstTaskForceConversationAssociatedObject" desc="" />
-    <gom_type Id="4611686020816971584" name="ablIsValid" desc="" />
-    <gom_type Id="4611686020819688350" name="effEventTargetDetailsIsDeathBlow" desc="" />
-    <gom_type Id="4611686020838494329" name="ablIsHidden" desc="" />
-    <gom_type Id="4611686020865370756" name="ablIsCustom" desc="" />
-    <gom_type Id="4611686020953070756" name="ablAppearanceSpec" desc="" />
-    <gom_type Id="4611686021106980617" name="effEventTargetDetailsApplyAppearance" desc="" />
-    <gom_type Id="4611686021280890001" name="staCharacterCoverDirection" desc="" />
-    <gom_type Id="4611686021337056540" name="qstXpLevel" desc="" />
-    <gom_type Id="4611686021395495666" name="qstDifficulty" desc="" />
-    <gom_type Id="4611686021548492499" name="chrMeleeDistance" desc="" />
-    <gom_type Id="4611686021700750896" name="qstMapNoteAsset" desc="" />
-    <gom_type Id="4611686021702789823" name="staCharacterCoverObject" desc="" />
-    <gom_type Id="4611686021860902175" name="ablUserTarget" desc="" />
-    <gom_type Id="4611686022109610001" name="qaMoveTestLocList" desc="" />
-    <gom_type Id="4611686022146150487" name="plcDespawnOnUse" desc="" />
-    <gom_type Id="4611686022150193696" name="utlDatatableHeadingsIndex" desc="" />
-    <gom_type Id="4611686022462471005" name="plcConvo" desc="" />
-    <gom_type Id="4611686022537691174" name="staWeaponState" desc="" />
-    <gom_type Id="4611686022556292872" name="qstTaskHolocomConversation" desc="" />
-    <gom_type Id="4611686022562053433" name="ablUserClearCasting" desc="" />
-    <gom_type Id="4611686022574733965" name="staWeaponMode" desc="" />
-    <gom_type Id="4611686022629533167" name="npcHolocomConvStarter" desc="" />
-    <gom_type Id="4611686022647350004" name="effAppearanceSubScheduleHasTrigger" desc="" />
-    <gom_type Id="4611686022679362498" name="staStance" desc="" />
-    <gom_type Id="4611686022975970810" name="dbgPrimitive_points" desc="" />
-    <gom_type Id="4611686023039510004" name="chrSelectedTargetDisableFX" desc="" />
-    <gom_type Id="4611686023216136268" name="ablIsLineOfSightChecked" desc="" />
-    <gom_type Id="4611686023260530027" name="tstCombatCustom" desc="" />
-    <gom_type Id="4611686023806770000" name="effAppearanceSubAppearanceEverExecuted" desc="" />
-    <gom_type Id="4611686023814710003" name="effAppearanceTriggersRepeatable" desc="" />
-    <gom_type Id="4611686023947030000" name="effAppearanceCasterEverPlayedAnim" desc="" />
-    <gom_type Id="4611686024175945914" name="qstDebugFastForward" desc="" />
-    <gom_type Id="4611686024240234109" name="qstStepBranchAssociations" desc="" />
-    <gom_type Id="4611686024388435598" name="chrStealthIsStealthed" desc="" />
-    <gom_type Id="4611686024429024906" name="effEventTargetPosition" desc="" />
-    <gom_type Id="4611686024454077020" name="chrNPCStealthSuspicionLastToArouse" desc="" />
-    <gom_type Id="4611686024616496160" name="material" desc="" />
-    <gom_type Id="4611686024944730003" name="stgOracleDebugArgs" desc="" />
-    <gom_type Id="4611686025068830026" name="stgUnLockedStages" desc="" />
-    <gom_type Id="4611686025085150001" name="stgReloaded" desc="" />
-    <gom_type Id="4611686025120550007" name="staCharacterRectificationTimer" desc="" />
-    <gom_type Id="4611686025157507330" name="phsMapNote" desc="" />
-    <gom_type Id="4611686025228550038" name="effOraclePreviewEffectAppearanceDuration" desc="" />
-    <gom_type Id="4611686025383290039" name="stgPreviewCinematicMode" desc="" />
-    <gom_type Id="4611686025560974701" name="tstFixtureReferenceId" desc="" />
-    <gom_type Id="4611686025606270002" name="effAppearanceTriggersRepeatableMap" desc="" />
-    <gom_type Id="4611686025790290008" name="cvrBuilderFinished" desc="" />
-    <gom_type Id="4611686025929514679" name="tstFixtureEditRequests" desc="" />
-    <gom_type Id="4611686026042943103" name="cvrBuilderPoints" desc="" />
-    <gom_type Id="4611686026066640320" name="qstBranchIsAlternateEnding" desc="" />
-    <gom_type Id="4611686026218116286" name="cnvOverrideType" desc="" />
-    <gom_type Id="4611686026242697764" name="cnvConversationNameOverride" desc="" />
-    <gom_type Id="4611686026243774542" name="effStackLimitIsMultiTarget" desc="" />
-    <gom_type Id="4611686026247079264" name="qstIsBonusQuest" desc="" />
-    <gom_type Id="4611686026327490005" name="chrBehaviorBearingOffsetDegrees" desc="" />
-    <gom_type Id="4611686026381922606" name="cvrBuilderPointEdgePoint" desc="" />
-    <gom_type Id="4611686026544687792" name="grpMemberIsAFK" desc="" />
-    <gom_type Id="4611686026548753579" name="chrPlayerIsAFK" desc="" />
-    <gom_type Id="4611686026557990001" name="cvrSettingsHorizontalPitchThreshold" desc="" />
-    <gom_type Id="4611686026596290008" name="cvrBuilderInstanceRoom" desc="" />
-    <gom_type Id="4611686026642410002" name="effAppearanceProjectileInstance" desc="" />
-    <gom_type Id="4611686026643586509" name="hydActionTime" desc="" />
-    <gom_type Id="4611686026860770018" name="mpnDynamicMapNotes" desc="" />
-    <gom_type Id="4611686027086670008" name="mpnShowDevOnly" desc="" />
-    <gom_type Id="4611686027443270003" name="prePreviewFlags" desc="" />
-    <gom_type Id="4611686027607639355" name="effEventTargetDetailsTravelTime" desc="" />
-    <gom_type Id="4611686027705370053" name="vehPosition" desc="" />
-    <gom_type Id="4611686027795870010" name="effEventOracleDependentAppearances" desc="" />
-    <gom_type Id="4611686028344400366" name="dbgContext_remainingTime" desc="" />
-    <gom_type Id="4611686028407277365" name="vehRotation" desc="" />
-    <gom_type Id="4611686028425970004" name="staCharacterLastChooseCoverTarget" desc="" />
-    <gom_type Id="4611686028503684620" name="phsPhaseInfoOwner" desc="" />
-    <gom_type Id="4611686028550591408" name="spnVehicleOwner" desc="" />
-    <gom_type Id="4611686028601482738" name="effIsReverse" desc="" />
-    <gom_type Id="4611686028616175113" name="staCharacterOwnedVehicle" desc="" />
-    <gom_type Id="4611686028685279908" name="phyBallisticWaypointQueue" desc="" />
-    <gom_type Id="4611686028697086156" name="phsPhase" desc="" />
-    <gom_type Id="4611686028721175735" name="phyBallisticTimestamp" desc="" />
-    <gom_type Id="4611686028726270008" name="vehAutoShotTimer" desc="" />
-    <gom_type Id="4611686028729674514" name="phyBallisticDuration" desc="" />
-    <gom_type Id="4611686028765681170" name="chrBallisticLastReactionTime" desc="" />
-    <gom_type Id="4611686028828892042" name="phyBallisticG" desc="" />
-    <gom_type Id="4611686029434570001" name="hydOptions" desc="" />
-    <gom_type Id="4611686029523567024" name="effPreviousSubEffectResult" desc="" />
-    <gom_type Id="4611686029753870011" name="phyBallisticKnockdown" desc="" />
-    <gom_type Id="4611686029854284826" name="hydConditionArguments" desc="" />
-    <gom_type Id="4611686029901641252" name="phsPlayerJoinOverrideMap" desc="" />
-    <gom_type Id="4611686030083970004" name="conMaxSize" desc="" />
-    <gom_type Id="4611686030221870000" name="appPaletteSpecular" desc="" />
-    <gom_type Id="4611686030270570003" name="hydWait" desc="" />
-    <gom_type Id="4611686030311870000" name="hydAbilityTargets" desc="" />
-    <gom_type Id="4611686030340975013" name="cnvRootStageSpecList" desc="" />
-    <gom_type Id="4611686030566380010" name="cnvRootMirrorMap" desc="" />
-    <gom_type Id="4611686030687670006" name="jwwRingTargetIds" desc="" />
-    <gom_type Id="4611686030770595732" name="chrPets" desc="" />
-    <gom_type Id="4611686030773082021" name="chrCompanion" desc="" />
-    <gom_type Id="4611686030912475398" name="cnvIsAmbient" desc="" />
-    <gom_type Id="4611686031022477486" name="hydObjectSearchScope" desc="" />
-    <gom_type Id="4611686031029979983" name="vehRoom" desc="" />
-    <gom_type Id="4611686031079276726" name="hydObjectType" desc="" />
-    <gom_type Id="4611686031107278191" name="plcStatePackage" desc="" />
-    <gom_type Id="4611686031167597807" name="musPriorityLevel" desc="" />
-    <gom_type Id="4611686031412377564" name="plcAlwaysUsable" desc="" />
-    <gom_type Id="4611686031479070007" name="itmOracleFxHandlesByItem" desc="" />
-    <gom_type Id="4611686031753695688" name="cnvHydraCinematics" desc="" />
-    <gom_type Id="4611686031997970000" name="effStackLimitRelevantTags" desc="" />
-    <gom_type Id="4611686032159670028" name="conContainerDataSlots" desc="" />
-    <gom_type Id="4611686033453170000" name="vndCurrentVendorItems" desc="" />
-    <gom_type Id="4611686033453370048" name="phsExitMapNoteID" desc="" />
-    <gom_type Id="4611686033653670111" name="ablAbilityDataRanks" desc="" />
-    <gom_type Id="4611686033664870011" name="tstEventSimplePrivate" desc="" />
-    <gom_type Id="4611686033861770000" name="chrUsedPlaceables" desc="" />
-    <gom_type Id="4611686034028470000" name="appPcsCustomizationSlots" desc="" />
-    <gom_type Id="4611686034275370007" name="effReplicationDummy" desc="" />
-    <gom_type Id="4611686034302770005" name="vehBurstLength" desc="" />
-    <gom_type Id="4611686034398370001" name="plcConversationItemInitiator" desc="" />
-    <gom_type Id="4611686034497270003" name="qstIsHiddenQuest" desc="" />
-    <gom_type Id="4611686034570170001" name="hydOracleShowDebug" desc="" />
-    <gom_type Id="4611686034604970000" name="cnvIsTransmission" desc="" />
-    <gom_type Id="4611686034670170000" name="taxKnownTerminals" desc="" />
-    <gom_type Id="4611686034685070012" name="spnFamilyName2" desc="" />
-    <gom_type Id="4611686034720670003" name="spnFamilyToColor" desc="" />
-    <gom_type Id="4611686034816770000" name="chrQuickTravelForbidden" desc="" />
-    <gom_type Id="4611686034940470000" name="ablTrainerNPCId" desc="" />
-    <gom_type Id="4611686034956270012" name="effIsDurationHidden" desc="" />
-    <gom_type Id="4611686034963770041" name="spnEncounterSpawnerIdsToFqns" desc="" />
-    <gom_type Id="4611686034978572523" name="arl2Spheres" desc="" />
-    <gom_type Id="4611686034990370313" name="qstUsedPlaceables" desc="" />
-    <gom_type Id="4611686035041970001" name="plcDisableForTime" desc="" />
-    <gom_type Id="4611686035128171095" name="plcTaxiTerminalSpec" desc="" />
-    <gom_type Id="4611686035150170137" name="qstTaskObjects" desc="" />
-    <gom_type Id="4611686035155170005" name="chrBehaveRenderLoco" desc="" />
-    <gom_type Id="4611686035179770010" name="qstAbandonedBranch" desc="" />
-    <gom_type Id="4611686035222770009" name="qstFailObjects" desc="" />
-    <gom_type Id="4611686035369070001" name="guiTaxiSourceTerminal" desc="" />
-    <gom_type Id="4611686035372170000" name="guiTaxiLaunchedFromHydra" desc="" />
-    <gom_type Id="4611686035458470007" name="spnEncounterSelectedSpawners" desc="" />
-    <gom_type Id="4611686035528070006" name="vehPathTravelReverse" desc="" />
-    <gom_type Id="4611686035566570000" name="guiApiRotCache" desc="" />
-    <gom_type Id="4611686035619970012" name="plcUsableVFXHandle" desc="" />
-    <gom_type Id="4611686035639970006" name="chrDisableForTimes" desc="" />
-    <gom_type Id="4611686035676670006" name="hydOracleUtlHydraAnimationsDatatable" desc="" />
-    <gom_type Id="4611686035727770007" name="plcInstigatorOnly" desc="" />
-    <gom_type Id="4611686035840770012" name="svyGUID" desc="" />
-    <gom_type Id="4611686036061570000" name="mpnGhosted" desc="" />
-    <gom_type Id="4611686036103070001" name="ShowOffmapArrow" desc="" />
-    <gom_type Id="4611686036388570615" name="guiApiUpdateClockTimer" desc="" />
-    <gom_type Id="4611686036388870022" name="stgLiveCurrentStageList" desc="" />
-    <gom_type Id="4611686036431570000" name="guiApiTickPostLoadUpdate" desc="" />
-    <gom_type Id="4611686036462970002" name="staCharacterCanMove" desc="" />
-    <gom_type Id="4611686036596670008" name="svyListeners" desc="" />
-    <gom_type Id="4611686036619970029" name="ShowQuestBreadcrumbOnly" desc="" />
-    <gom_type Id="4611686036864570031" name="ctl_WasMoving" desc="" />
-    <gom_type Id="4611686036934670009" name="qstPendingRewardsList" desc="" />
-    <gom_type Id="4611686037069770001" name="cnvPosture" desc="" />
-    <gom_type Id="4611686037124970002" name="_GameState" desc="" />
-    <gom_type Id="4611686037216070003" name="vehPlayerAttached" desc="" />
-    <gom_type Id="4611686037275470001" name="vehSoundNode" desc="" />
-    <gom_type Id="4611686037290370012" name="stgActorName" desc="" />
-    <gom_type Id="4611686037350270016" name="chrBehavior_Paused" desc="" />
-    <gom_type Id="4611686037615570004" name="effEventIsExecuting" desc="" />
-    <gom_type Id="4611686037735970014" name="chrCompanionSummonable" desc="" />
-    <gom_type Id="4611686038188670018" name="ablUserEffectEvent_Client" desc="" />
-    <gom_type Id="4611686038485570001" name="ccsCharHeading" desc="" />
-    <gom_type Id="4611686038497370000" name="qstTaskIndicatorOverride" desc="" />
-    <gom_type Id="4611686038561170000" name="plcIsDoor" desc="" />
-    <gom_type Id="4611686038776181190" name="qstTaskMapNoteList" desc="" />
-    <gom_type Id="4611686038778370960" name="qstReqPrivacy" desc="" />
-    <gom_type Id="4611686039079570013" name="mapLastRequestedAreaXMLID" desc="" />
-    <gom_type Id="4611686039191370000" name="plcdynLootState" desc="" />
-    <gom_type Id="4611686039325670001" name="npcAppearanceOverride" desc="" />
-    <gom_type Id="4611686039407570017" name="qstTaskHideBannerText" desc="" />
-    <gom_type Id="4611686039443070000" name="qstTaskHolocomStringid" desc="" />
-    <gom_type Id="4611686039577370000" name="sklLayoutPos" desc="" />
-    <gom_type Id="4611686039825170001" name="guiApiGfxUpdateAbl_LastHighestTrainableSlot" desc="" />
-    <gom_type Id="4611686039879670004" name="qstIsClassQuest" desc="" />
-    <gom_type Id="4611686039912470001" name="modStatDisplayName" desc="" />
-    <gom_type Id="4611686041492170003" name="cbtToughnessEnum" desc="" />
-    <gom_type Id="4611686041615870509" name="cnvHasAutoGeneratedScript" desc="" />
-    <gom_type Id="4611686041734970002" name="cnvAbortConversation" desc="" />
-    <gom_type Id="4611686041932070001" name="cnvAmbientAudibility" desc="" />
-    <gom_type Id="4611686042048570000" name="hydConditionWeight" desc="" />
-    <gom_type Id="4611686042464870000" name="nppAppearanceSlotMap_ForPrototype" desc="" />
-    <gom_type Id="4611686042513270000" name="modStatDataPrototype" desc="" />
-    <gom_type Id="4611686042969670010" name="mapLastPCPositionWhenQuestMapIconsWereUpdated" desc="" />
-    <gom_type Id="4611686043204170001" name="phyOracleShowCharacterColliders" desc="" />
-    <gom_type Id="4611686043365970006" name="pltPath" desc="" />
-    <gom_type Id="4611686043478570000" name="cnvOracleShowSubtitles" desc="" />
-    <gom_type Id="4611686043588870010" name="chrForceAlignmentNeutralTier" desc="" />
-    <gom_type Id="4611686043836570000" name="hydCompletionCB" desc="" />
-    <gom_type Id="4611686043955470100" name="itmCombatStance" desc="" />
-    <gom_type Id="4611686043989870000" name="gmRegionParticleID" desc="" />
-    <gom_type Id="4611686044018370062" name="brkRoundRobinTable" desc="" />
-    <gom_type Id="4611686044095570000" name="conSlotByID" desc="" />
-    <gom_type Id="4611686044096170146" name="qstVariableGUIDs" desc="" />
-    <gom_type Id="4611686044138870002" name="conSlotsByTimer" desc="" />
-    <gom_type Id="4611686044249670056" name="cnvBarkRoundRobin" desc="" />
-    <gom_type Id="4611686044410170005" name="chrBehaviorMoveState" desc="" />
-    <gom_type Id="4611686044475570000" name="chrIsAlien" desc="" />
-    <gom_type Id="4611686045527170000" name="qstTaskMapNoteNodesLookupList" desc="" />
-    <gom_type Id="4611686045799970020" name="spnEncounterSpawnerFqnToProto" desc="" />
-    <gom_type Id="4611686045906970020" name="chrClassShortName" desc="" />
-    <gom_type Id="4611686046978570021" name="strTagMap" desc="" />
-    <gom_type Id="4611686047878370020" name="cbtVisRenderDebug" desc="" />
-    <gom_type Id="4611686048178170024" name="jrbTargetBone" desc="" />
-    <gom_type Id="4611686048317370711" name="effIgnoresCover" desc="" />
-    <gom_type Id="4611686048371470021" name="chrCompanionCurrentEqp" desc="" />
-    <gom_type Id="4611686048799671022" name="scRateOfFire" desc="" />
-    <gom_type Id="4611686049891271020" name="plcIsMailbox" desc="" />
-    <gom_type Id="4611686049985371033" name="jww_crashyList" desc="" />
-    <gom_type Id="4611686050166671054" name="qstTaskShipIndicatorOverride" desc="" />
-    <gom_type Id="4611686050166971027" name="chrCompanionMasterCompanionAwayUntil" desc="" />
-    <gom_type Id="4611686050250171020" name="dbsTestAreaInt" desc="" />
-    <gom_type Id="4611686050313771038" name="ablHeatCost" desc="" />
-    <gom_type Id="4611686050374471029" name="pltManualMode" desc="" />
-    <gom_type Id="4611686050427171030" name="optDescriptionDisplayOrder" desc="" />
-    <gom_type Id="4611686050442571022" name="cbtRenderBoneDebug" desc="" />
-    <gom_type Id="4611686050732571026" name="invBank" desc="" />
-    <gom_type Id="4611686050850971025" name="effIntListParams" desc="" />
-    <gom_type Id="4611686051060071021" name="cbtWarzoneTeam" desc="" />
-    <gom_type Id="4611686051061071103" name="chrCompanionInfoPrototypeHandle" desc="" />
-    <gom_type Id="4611686051188971021" name="grpMemberIdToInfoRepPrevious" desc="" />
-    <gom_type Id="4611686051463271021" name="sndFootstepOutfit" desc="" />
-    <gom_type Id="4611686051586371035" name="trdMoney" desc="" />
-    <gom_type Id="4611686051624071034" name="scTargettedEnemy" desc="" />
-    <gom_type Id="4611686051917971024" name="_cmiDisabled" desc="" />
-    <gom_type Id="4611686052136271089" name="cnvIsConversing" desc="" />
-    <gom_type Id="4611686052333771054" name="plcDisabledForEveryone" desc="" />
-    <gom_type Id="4611686052456831191" name="cnvAlienConversationsRequiredLookup" desc="" />
-    <gom_type Id="4611686052476131191" name="qstShouldScheduleAllStatusUpdate" desc="" />
-    <gom_type Id="4611686052487731192" name="spnVehicleDataPrototype" desc="" />
-    <gom_type Id="4611686052498831192" name="plcMissionBoardPkg" desc="" />
-    <gom_type Id="4611686052585031362" name="cnvAlienConvosRequiredLookup" desc="" />
-    <gom_type Id="4611686052927831194" name="trdRejectionTimes" desc="" />
-    <gom_type Id="4611686053579531208" name="chrBehaviorCover_CounterRotationComplete" desc="" />
-    <gom_type Id="4611686053710231192" name="npcTemplateVisualDataRadius" desc="" />
-    <gom_type Id="4611686053963331191" name="phsArbiterNodeRef" desc="" />
-    <gom_type Id="4611686053985331204" name="cnvMissionBoardIsMsbItem" desc="" />
-    <gom_type Id="4611686053986632118" name="socOnlineStatus" desc="" />
-    <gom_type Id="4611686054460631192" name="stgActorOriginalScale" desc="" />
-    <gom_type Id="4611686054781331192" name="cbtShowAblNamesEnabled" desc="" />
-    <gom_type Id="4611686054788931191" name="chrRegenHealthTimeAccumulator" desc="" />
-    <gom_type Id="4611686054918532354" name="tstCowClass" desc="" />
-    <gom_type Id="4611686054997933679" name="dynIsLockableChest" desc="" />
-    <gom_type Id="4611686055007031440" name="conSlottedSharedIsPublic" desc="" />
-    <gom_type Id="4611686055164532386" name="malMailWindowShowing" desc="" />
-    <gom_type Id="4611686055248332357" name="socWhoFilters_MatchBits" desc="" />
-    <gom_type Id="4611686055460731193" name="socAFKTimer" desc="" />
-    <gom_type Id="4611686055524431205" name="scDamageTrailFX" desc="" />
-    <gom_type Id="4611686055745631191" name="socOverheadChat_KillFlag" desc="" />
-    <gom_type Id="4611686055802031191" name="gmSpinAssetID" desc="" />
-    <gom_type Id="4611686056309031196" name="gmSpinObjResetZoom" desc="" />
-    <gom_type Id="4611686056317331203" name="scShipAttackRange" desc="" />
-    <gom_type Id="4611686056456531192" name="malUsingDebugSlashCommands" desc="" />
-    <gom_type Id="4611686056623931192" name="scBlasterSpeed" desc="" />
-    <gom_type Id="4611686056721531199" name="plcTemplateUseDistanceSq" desc="" />
-    <gom_type Id="4611686056853931195" name="cvrSettingsStringDataForConsolidation" desc="" />
-    <gom_type Id="4611686056958331191" name="FxUseTargetSpawnVolume" desc="" />
-    <gom_type Id="4611686057290331238" name="scShipTypesPrototype" desc="" />
-    <gom_type Id="4611686057331031195" name="gmSpinObjRotSpeed" desc="" />
-    <gom_type Id="4611686057526131191" name="effAppearanceTriggersOnProjectileTimeoutByName" desc="" />
-    <gom_type Id="4611686058411831532" name="qstIsHiddenFromOwnerQuest" desc="" />
-    <gom_type Id="4611686058435931191" name="scResponsiblePlayer" desc="" />
-    <gom_type Id="4611686058670731191" name="chrBehaviorJumpMan_InitialJumpMoveVectorXZ" desc="" />
-    <gom_type Id="4611686058671931193" name="mpnAssetID" desc="" />
-    <gom_type Id="4611686058774831191" name="mmsQueueStatus" desc="" />
-    <gom_type Id="4611686058850431192" name="prfMakersMark" desc="" />
-    <gom_type Id="4611686058892231205" name="cbtTemporaryFactions" desc="" />
-    <gom_type Id="4611686059140631206" name="taxFaction" desc="" />
-    <gom_type Id="4611686059197131691" name="npcFaction" desc="" />
-    <gom_type Id="4611686059229031191" name="scHighlightAppearance" desc="" />
-    <gom_type Id="4611686059276331199" name="wzScoreboardRewards" desc="" />
-    <gom_type Id="4611686059288731191" name="musAreaEntered" desc="" />
-    <gom_type Id="4611686059518031200" name="staConversationHidden" desc="" />
-    <gom_type Id="4611686059628631191" name="scLastPlayerAimPoint" desc="" />
-    <gom_type Id="4611686059893231199" name="stgInputStanceMapping" desc="" />
-    <gom_type Id="4611686060033632411" name="conSlotsBySpec" desc="" />
-    <gom_type Id="4611686060083431191" name="cnvChorRecordVOToSkynet" desc="" />
-    <gom_type Id="4611686060202131195" name="plcCnvChorNeedsOwner" desc="" />
-    <gom_type Id="4611686060850731191" name="chrCharacterActionBundleHandles" desc="" />
-    <gom_type Id="4611686060898231191" name="stgActorFoleyEnabled" desc="" />
-    <gom_type Id="4611686060901031216" name="scVOSelectionRules" desc="" />
-    <gom_type Id="4611686061132531191" name="wnkDestinationGUIDs" desc="" />
-    <gom_type Id="4611686061193531191" name="vndItemCost" desc="" />
-    <gom_type Id="4611686061669731191" name="stgCameraOffsets" desc="" />
-    <gom_type Id="4611686061701931192" name="effOraclePreviewEffectAppearanceEvent" desc="" />
-    <gom_type Id="4611686061737531202" name="gldMemberAreaID" desc="" />
-    <gom_type Id="4611686061754131192" name="hydAreaIdToPlanetAliasDataRef" desc="" />
-    <gom_type Id="4611686061934231203" name="scFirstShot" desc="" />
-    <gom_type Id="4611686061943231191" name="wnkRestrictedFloors" desc="" />
-    <gom_type Id="4611686061988131201" name="vehAppModel" desc="" />
-    <gom_type Id="4611686062099731191" name="chrCompanionTrackerFactionQuestID" desc="" />
-    <gom_type Id="4611686062112031192" name="vehAppScaleTable" desc="" />
-    <gom_type Id="4611686062125631191" name="chrClassContainerTablePrototype" desc="" />
-    <gom_type Id="4611686062385331192" name="cbtOverrideClientLos" desc="" />
-    <gom_type Id="4611686062405931193" name="gldRosterInitialized" desc="" />
-    <gom_type Id="4611686062608331191" name="chrSpecBlobShadowVec" desc="" />
-    <gom_type Id="4611686063131931191" name="guiAPiGfxNewFadeOut" desc="" />
-    <gom_type Id="4611686063186931193" name="pvpDuelingState" desc="" />
-    <gom_type Id="4611686063252231191" name="qstComponentHadRewardsOpen" desc="" />
-    <gom_type Id="4611686063286731191" name="gldMemberLastOnlineTime" desc="" />
-    <gom_type Id="4611686063297031191" name="gmDestAreaId" desc="" />
-    <gom_type Id="4611686063335631192" name="strPseudoLocalizationWidthRatio" desc="" />
-    <gom_type Id="4611686063403931191" name="ahSelectedAuctionId" desc="" />
-    <gom_type Id="4611686063525431192" name="guiFadeToBlackTimer" desc="" />
-    <gom_type Id="4611686063541731191" name="gldMemberRank" desc="" />
-    <gom_type Id="4611686063577631191" name="gldMemberID" desc="" />
-    <gom_type Id="4611686063798731191" name="cvrOccupyingCharacters" desc="" />
-    <gom_type Id="4611686063870231196" name="gldMembersRepPrevious" desc="" />
-    <gom_type Id="4611686063980631191" name="sndSoundsetPackageContinuousMovement" desc="" />
-    <gom_type Id="4611686064080231192" name="scBarrelRollDirection" desc="" />
-    <gom_type Id="4611686064088931191" name="simCombatProfileClientHSL" desc="" />
-    <gom_type Id="4611686064262831192" name="chrBgDataRaceIsAlien" desc="" />
-    <gom_type Id="4611686064380931191" name="itmNameEncoded" desc="" />
-    <gom_type Id="4611686064529431191" name="chrCreatureTypeList" desc="" />
-    <gom_type Id="4611686064622031192" name="gmUtlGMDatatableProtoRef" desc="" />
-    <gom_type Id="4611686064752931191" name="guiReloadUINextFrame" desc="" />
-    <gom_type Id="4611686065118631191" name="stgOracle_RecordStageAnimActions" desc="" />
-    <gom_type Id="4611686065370331191" name="gldMemberLevel" desc="" />
-    <gom_type Id="4611686065405431194" name="gldWindowTabIndex" desc="" />
-    <gom_type Id="4611686065431631191" name="cbtFaction" desc="" />
-    <gom_type Id="4611686065453431191" name="cbtFactionString" desc="" />
-    <gom_type Id="4611686065871431191" name="plcTemplateNoGlow" desc="" />
-    <gom_type Id="4611686065874331191" name="ctlSendGuiGameClicks" desc="" />
-    <gom_type Id="4611686065904731191" name="chrPreviousInteraction" desc="" />
-    <gom_type Id="4611686065957431191" name="gldMOTDDisplayed" desc="" />
-    <gom_type Id="4611686066037331192" name="cbtEnemiesAttackers" desc="" />
-    <gom_type Id="4611686066145831191" name="pcTargetList" desc="" />
-    <gom_type Id="4611686066196731192" name="guiApiGfxInterestBySpec" desc="" />
-    <gom_type Id="4611686066893031191" name="prfSchematicMaterialOrder" desc="" />
-    <gom_type Id="4611686066922131210" name="pvpDuelDistanceCheckTimer" desc="" />
-    <gom_type Id="4611686067050831191" name="scUpgradeData" desc="" />
-    <gom_type Id="4611686067118331193" name="scUpgradeSTAT" desc="" />
-    <gom_type Id="4611686067441531191" name="grpEmptyMemberInfoList" desc="" />
-    <gom_type Id="4611686067497031192" name="prfDisableDisassemble" desc="" />
-    <gom_type Id="4611686067523531192" name="chrCompanionSpecToSimpleNameIdentifier" desc="" />
-    <gom_type Id="4611686067600431191" name="chrCompanionSimpleNameToSpec" desc="" />
-    <gom_type Id="4611686067600831191" name="chrCompanionSimpleNameIdentifierToString" desc="" />
-    <gom_type Id="4611686067633131191" name="cbtLosShowCollisionMeshes" desc="" />
-    <gom_type Id="4611686067732031191" name="dynAssetWaitingCount" desc="" />
-    <gom_type Id="4611686067858431191" name="scShipTypes" desc="" />
-    <gom_type Id="4611686068222031193" name="phsPhasedInstanceToAnchor" desc="" />
-    <gom_type Id="4611686068399531191" name="chrCharacter_PreloadActionBundleHandles" desc="" />
-    <gom_type Id="4611686068408231191" name="chrCompanionCnvState" desc="" />
-    <gom_type Id="4611686069084231191" name="stgLiveStageCameoNpcs" desc="" />
-    <gom_type Id="4611686069184131191" name="arbScores" desc="" />
-    <gom_type Id="4611686069290331191" name="effEventHasHandledResponseCounter" desc="" />
-    <gom_type Id="4611686069367231191" name="chrSafeZoneOverride" desc="" />
-    <gom_type Id="4611686069677131192" name="scShipBehavior" desc="" />
-    <gom_type Id="4611686069923931369" name="cnvTreeNpcDataNpcInStartNodes" desc="" />
-    <gom_type Id="4611686069989931191" name="grpMemberGender" desc="" />
-    <gom_type Id="4611686070072131193" name="optGroupMapNotesMode" desc="" />
-    <gom_type Id="4611686070094731191" name="cnvIsVoteWinDisabledForHolocom" desc="" />
-    <gom_type Id="4611686070106231192" name="effIsInstant" desc="" />
-    <gom_type Id="4611686070113331191" name="guiActionResult" desc="" />
-    <gom_type Id="4611686070299431192" name="socOverheadChat_AttachPending" desc="" />
-    <gom_type Id="4611686070334031191" name="scPathError" desc="" />
-    <gom_type Id="4611686070908731191" name="effOraclePreviewEffectAppearanceNumAttacks" desc="" />
-    <gom_type Id="4611686071294936991" name="scAuthorizedTarget" desc="" />
-    <gom_type Id="4611686071495847391" name="chrCompanionInfo_portrait" desc="" />
-    <gom_type Id="4611686071571749259" name="phsPhasedInstanceToTrigger" desc="" />
-    <gom_type Id="4611686071691353992" name="chrBehaviorDestination_speed" desc="" />
-    <gom_type Id="4611686071693053993" name="kynMsg_MoveSpeed" desc="" />
-    <gom_type Id="4611686072613499031" name="prfSchematicCraftingTime" desc="" />
-    <gom_type Id="4611686072943207391" name="phyBallisticTesterMode" desc="" />
-    <gom_type Id="4611686072977307391" name="qstInstanceNameID" desc="" />
-    <gom_type Id="4611686072996807391" name="effStartTime" desc="" />
-    <gom_type Id="4611686073013608592" name="itmRollState" desc="" />
-    <gom_type Id="4611686073044712791" name="guiGfxLoadingAssetTimeoutAt" desc="" />
-    <gom_type Id="4611686073077022391" name="chrSummaryUnifyColors" desc="" />
-    <gom_type Id="4611686073276065791" name="chrPlayerCharacter_IsFollowingTarget" desc="" />
-    <gom_type Id="4611686073296565791" name="effIsInterruptible" desc="" />
-    <gom_type Id="4611686073377069991" name="guiChrBonusFromRtg" desc="" />
-    <gom_type Id="4611686073400671991" name="qstHideTimer" desc="" />
-    <gom_type Id="4611686073429173793" name="prfProfessionAbilityTag" desc="" />
-    <gom_type Id="4611686073430473991" name="scDumbMissileAbility" desc="" />
-    <gom_type Id="4611686073677294591" name="chrPlayerCharacter_targetToFollowLastPosition" desc="" />
-    <gom_type Id="4611686073709994591" name="chrPlayerCharacter_targetToFollow" desc="" />
-    <gom_type Id="4611686073736796391" name="spnMedCenterNameId" desc="" />
-    <gom_type Id="4611686073770901992" name="qa_EatTimeAmount" desc="" />
-    <gom_type Id="4611686073895619391" name="shdShardAddress" desc="" />
-    <gom_type Id="4611686074004219791" name="stgActor_PendingActionBundles" desc="" />
-    <gom_type Id="4611686074046124991" name="mapDefaultAOIsPrototype" desc="" />
-    <gom_type Id="4611686074246082991" name="prfProfessionSubtypePrototype" desc="" />
-    <gom_type Id="4611686074419694991" name="scAIRange" desc="" />
-    <gom_type Id="4611686074579794991" name="cbtDemeanorCacheMap" desc="" />
-    <gom_type Id="4611686074873607191" name="cnvIsJoinDisabledForHolocom" desc="" />
-    <gom_type Id="4611686074933907191" name="scUpgradeStringID" desc="" />
-    <gom_type Id="4611686074934407191" name="scUpgradeStatMap" desc="" />
-    <gom_type Id="4611686075066707591" name="stgActor_PostureSnappedFrameNumber" desc="" />
-    <gom_type Id="4611686075165020591" name="dcvPVPPrototype" desc="" />
-    <gom_type Id="4611686075193720591" name="chrLocoAi_PrevEndPos" desc="" />
-    <gom_type Id="4611686075379744391" name="plcFaction" desc="" />
-    <gom_type Id="4611686075601755667" name="qstAssociatedInstanceIDs" desc="" />
-    <gom_type Id="4611686075720169791" name="scLinearSpeed" desc="" />
-    <gom_type Id="4611686075730071591" name="phyBallisticFootHit" desc="" />
-    <gom_type Id="4611686076120584191" name="chrBgDataIcon" desc="" />
-    <gom_type Id="4611686076154898392" name="grpHopper" desc="" />
-    <gom_type Id="4611686076256069999" name="chrSpecColliderWidth" desc="" />
-    <gom_type Id="4611686076391498591" name="scFXHardcodedSpec" desc="" />
-    <gom_type Id="4611686076520224003" name="scBlasterTimeQueue" desc="" />
-    <gom_type Id="4611686076536125591" name="guiSSFirstConnect" desc="" />
-    <gom_type Id="4611686076660227391" name="chrStaminaImmunityEndGameTime" desc="" />
-    <gom_type Id="4611686077084026392" name="mpnPlaceableSpec" desc="" />
-    <gom_type Id="4611686077240356192" name="optDescriptionGUIOption" desc="" />
-    <gom_type Id="4611686077420191391" name="dcvPCAttacksNPCDefenseBonusMax" desc="" />
-    <gom_type Id="4611686077445813791" name="stgActorArmorType" desc="" />
-    <gom_type Id="4611686077961016393" name="prfSchematicZero" desc="" />
-    <gom_type Id="4611686077971716391" name="chrCompanionInfo_affectionMultiplier" desc="" />
-    <gom_type Id="4611686078087823191" name="chrBehaviorLocalPlayer_lastHeading" desc="" />
-    <gom_type Id="4611686078289578791" name="effAppearanceCasterEverPlayedHitProjectile" desc="" />
-    <gom_type Id="4611686078475872193" name="effEffectCasterRank" desc="" />
-    <gom_type Id="4611686079684826391" name="sysChatListenerTabIndex" desc="" />
-    <gom_type Id="4611686080036026791" name="brkResourceName" desc="" />
-    <gom_type Id="4611686080178955991" name="chrRequestLeaveShip" desc="" />
-    <gom_type Id="4611686080266183991" name="chrBehaviorDesiredVelocity" desc="" />
-    <gom_type Id="4611686080362381991" name="chrPlayerMoveState_SyncTime" desc="" />
-    <gom_type Id="4611686081031899591" name="conContainerDataSlotExpansionLevels" desc="" />
-    <gom_type Id="4611686081363236394" name="cnvRewardForceType" desc="" />
-    <gom_type Id="4611686081593566791" name="chrPreviousInteractionType" desc="" />
-    <gom_type Id="4611686081702393791" name="chrLooterUserOptionLootAll" desc="" />
-    <gom_type Id="4611686082427909791" name="effIsUseableOnTaxi" desc="" />
-    <gom_type Id="4611686082743523592" name="sklLayoutBackgroundColor" desc="" />
-    <gom_type Id="4611686083054250591" name="chrCharacterLoadedActionBundleHandles" desc="" />
-    <gom_type Id="4611686083191756191" name="cnvJoinOrganizerCurrentOrganizers" desc="" />
-    <gom_type Id="4611686083358661991" name="cnvJoinOrganizerParticipantStateRepPrevious" desc="" />
-    <gom_type Id="4611686083402866191" name="arbSharedTimers" desc="" />
-    <gom_type Id="4611686083420166191" name="pvpDuelingDialog" desc="" />
-    <gom_type Id="4611686083463867191" name="nppVoiceEffectSoundsetOverride" desc="" />
-    <gom_type Id="4611686083498367192" name="ccsCameraLookAt" desc="" />
-    <gom_type Id="4611686083611568192" name="pvpManuallyFlagged" desc="" />
-    <gom_type Id="4611686083663273392" name="conSrcSlotObjectID" desc="" />
-    <gom_type Id="4611686083853982396" name="npcParentSpecId" desc="" />
-    <gom_type Id="4611686083857282391" name="ablQueuedAbilitySpec" desc="" />
-    <gom_type Id="4611686084029482399" name="phsAuthorityID" desc="" />
-    <gom_type Id="4611686084048582391" name="ahDurationDefault" desc="" />
-    <gom_type Id="4611686084070382391" name="cnvJoinOrganizerStartNodeNumber" desc="" />
-    <gom_type Id="4611686084286387591" name="chrRestVolumeEnterTime" desc="" />
-    <gom_type Id="4611686084354288791" name="ahTweakablesMaxSales" desc="" />
-    <gom_type Id="4611686084769620591" name="sysDefaultBinding3" desc="" />
-    <gom_type Id="4611686084839221591" name="mpnFqnStableId" desc="" />
-    <gom_type Id="4611686085432054792" name="chrIsHelmetHidden" desc="" />
-    <gom_type Id="4611686085463654791" name="svyEnabled" desc="" />
-    <gom_type Id="4611686085469954791" name="chrNpcIsHolocom" desc="" />
-    <gom_type Id="4611686085478155191" name="scLastPositionSentTime" desc="" />
-    <gom_type Id="4611686085681761591" name="chrCharacterBallisticsHandle" desc="" />
-    <gom_type Id="4611686085709661591" name="chrSpecSupportsDynamicPortrait" desc="" />
-    <gom_type Id="4611686086136961591" name="guiDialogBindID" desc="" />
-    <gom_type Id="4611686086246461591" name="chrSummaryBackground" desc="" />
-    <gom_type Id="4611686086284461591" name="chrBgDataDisplayOrder" desc="" />
-    <gom_type Id="4611686086318461591" name="cvrBuilderPointLength" desc="" />
-    <gom_type Id="4611686086415761591" name="mphFlytextID" desc="" />
-    <gom_type Id="4611686086492261991" name="sndTestVerbose" desc="" />
-    <gom_type Id="4611686086526761991" name="sysDefaultCommandsByKeyHash" desc="" />
-    <gom_type Id="4611686086615061991" name="pvpCurrentLocationType" desc="" />
-    <gom_type Id="4611686086714667592" name="phyOracleBwqResults" desc="" />
-    <gom_type Id="4611686086964669991" name="cnvInstanceStartNodeNumber" desc="" />
-    <gom_type Id="4611686087170469992" name="ablLastQueueAttempt" desc="" />
-    <gom_type Id="4611686087199469991" name="kynMsg_FacingMode" desc="" />
-    <gom_type Id="4611686087201869991" name="guiCSSSelectedIndex" desc="" />
-    <gom_type Id="4611686087460869992" name="grpRaidPartiesComposition" desc="" />
-    <gom_type Id="4611686087463469994" name="ccsStageMarks" desc="" />
-    <gom_type Id="4611686087591269993" name="tmrAbilitiesCooldownTimer_Client" desc="" />
-    <gom_type Id="4611686087665069991" name="ablCooldownTimerContainer" desc="" />
-    <gom_type Id="4611686087681869991" name="stgActorLookat_Override" desc="" />
-    <gom_type Id="4611686088091969991" name="qstIsRaidShared" desc="" />
-    <gom_type Id="4611686088654869992" name="effEventTargetDetailsSideEffectList" desc="" />
-    <gom_type Id="4611686088688369991" name="staCharacterCoverPosition" desc="" />
-    <gom_type Id="4611686088733469991" name="cnvChoreographerPendingSoundBanks" desc="" />
-    <gom_type Id="4611686088758069991" name="trvDialogID" desc="" />
-    <gom_type Id="4611686088912969991" name="dcvAbilityMiniqueueThreshold" desc="" />
-    <gom_type Id="4611686089173269991" name="dynPreviewPropListSnapShotNewest" desc="" />
-    <gom_type Id="4611686089205969991" name="mapMountAllowed" desc="" />
-    <gom_type Id="4611686089415369991" name="prfMissionYieldDescriptionId" desc="" />
-    <gom_type Id="4611686089453169991" name="optDescriptionLocalizedTabTag" desc="" />
-    <gom_type Id="4611686089551970000" name="scCombatLODState" desc="" />
-    <gom_type Id="4611686089717369992" name="guiApiGfxUpdateAbl_GuiSkillTreePageDirtyFrame" desc="" />
-    <gom_type Id="4611686089854769992" name="cnvChoreographerSubtitleShown" desc="" />
-    <gom_type Id="4611686090266869991" name="itmDurability" desc="" />
-    <gom_type Id="4611686090576169994" name="scShadowSettingCache" desc="" />
-    <gom_type Id="4611686090669169991" name="plcUsableWarzoneTeam" desc="" />
-    <gom_type Id="4611686090819569991" name="chrCompanionInfo_gender_male" desc="" />
-    <gom_type Id="4611686090949969991" name="currentAreaID" desc="" />
-    <gom_type Id="4611686091593369992" name="itmPendingEnhancements" desc="" />
-    <gom_type Id="4611686091665470010" name="conContainerEventType" desc="" />
-    <gom_type Id="4611686091676369991" name="cvrBuilderPointEdgeDirection" desc="" />
-    <gom_type Id="4611686091678169991" name="appAppearanceSlotRandomWeight" desc="" />
-    <gom_type Id="4611686091772969991" name="cnvOracleForceConversation" desc="" />
-    <gom_type Id="4611686091890169995" name="chrClassDataShieldBonusStat" desc="" />
-    <gom_type Id="4611686091894269991" name="itmEnhancementTypeIconAsset" desc="" />
-    <gom_type Id="4611686091939270468" name="optOptionsDescriptionPrototype" desc="" />
-    <gom_type Id="4611686092034969991" name="optDescriptionDebugName" desc="" />
-    <gom_type Id="4611686092281669991" name="cnvControllerMultiInitiatorId" desc="" />
-    <gom_type Id="4611686092294169991" name="mmsQueuedWith" desc="" />
-    <gom_type Id="4611686092444369991" name="optDescriptions" desc="" />
-    <gom_type Id="4611686092486669992" name="ahPendingBuyoutExpectedCost" desc="" />
-    <gom_type Id="4611686092494669991" name="optKeybindingValues" desc="" />
-    <gom_type Id="4611686092943969991" name="prfProfessionTableNameIds" desc="" />
-    <gom_type Id="4611686092949869991" name="staCharacterUsingDynamicCover" desc="" />
-    <gom_type Id="4611686093234069991" name="sysInputBindingsRegistryPrototype" desc="" />
-    <gom_type Id="4611686093354369992" name="dynPreviewClientSpecId" desc="" />
-    <gom_type Id="4611686093422369991" name="grpRaidDifficultyLevel" desc="" />
-    <gom_type Id="4611686093523169992" name="grpGroupEjectionUpdateTimer" desc="" />
-    <gom_type Id="4611686093524569997" name="optEmptyKeybindingsList" desc="" />
-    <gom_type Id="4611686093538770006" name="grpScheduledGroupEjectionTime" desc="" />
-    <gom_type Id="4611686093556769991" name="dynPreviewInitializedNonReplicatedFields" desc="" />
-    <gom_type Id="4611686093620969991" name="plcPropState" desc="" />
-    <gom_type Id="4611686093707069992" name="ahPendingBuyoutAuction" desc="" />
-    <gom_type Id="4611686093961069991" name="chrRegionsByTags" desc="" />
-    <gom_type Id="4611686094019369991" name="mntDataChrMountAnimNetwork" desc="" />
-    <gom_type Id="4611686094146870003" name="chrDismountDelayTimer" desc="" />
-    <gom_type Id="4611686094214869991" name="chrRestCurrentModifier" desc="" />
-    <gom_type Id="4611686094233569991" name="cbtSpamFilterBitField" desc="" />
-    <gom_type Id="4611686094282269992" name="ahTweakablesCommissions" desc="" />
-    <gom_type Id="4611686094377769991" name="sysRegionTags" desc="" />
-    <gom_type Id="4611686094937969991" name="chrPlayerCanResurrectSelf" desc="" />
-    <gom_type Id="4611686095124769991" name="scCanTriggerHydra" desc="" />
-    <gom_type Id="4611686095341269991" name="itmModPkgNameId" desc="" />
-    <gom_type Id="4611686095700069991" name="staCharacterCoverPositionValid" desc="" />
-    <gom_type Id="4611686095799869991" name="vndItemUniqueId" desc="" />
-    <gom_type Id="4611686096378869991" name="mntDataRidingSkillRank" desc="" />
-    <gom_type Id="4611686096417569995" name="chrSpecWeaponVisibility" desc="" />
-    <gom_type Id="4611686096658169999" name="itmEnhanceableCache_Value" desc="" />
-    <gom_type Id="4611686096736969991" name="cnvPlaceableConversationName" desc="" />
-    <gom_type Id="4611686096743369991" name="cvrVisualizerInUseAssetStatusType" desc="" />
-    <gom_type Id="4611686097006369992" name="itmStatsCached" desc="" />
-    <gom_type Id="4611686097035269991" name="effEffectLoopingEppTimer" desc="" />
-    <gom_type Id="4611686097195869991" name="appPcsSkeletonRandomWeights" desc="" />
-    <gom_type Id="4611686097382970000" name="chrProfessionsToSchematics" desc="" />
-    <gom_type Id="4611686097704369992" name="mapUseParentMinimaps" desc="" />
-    <gom_type Id="4611686100503370021" name="spnReplicatedCompanionMap" desc="" />
-    <gom_type Id="4611686100567770021" name="gldMemberShowAreaInstance" desc="" />
-    <gom_type Id="4611686100592170156" name="scExperiencePoints" desc="" />
-    <gom_type Id="4611686100816670021" name="chrCompanionGroupLimitBlocked" desc="" />
-    <gom_type Id="4611686100913170021" name="trdAutoDecline" desc="" />
-    <gom_type Id="4611686101091170023" name="staShouldReviveInstantly" desc="" />
-    <gom_type Id="4611686101102470021" name="utlMoviePlayMovies" desc="" />
-    <gom_type Id="4611686101575270024" name="chrPlayerAppearanceSlotData" desc="" />
-    <gom_type Id="4611686101578370029" name="appEmptyAppearanceSlot" desc="" />
-    <gom_type Id="4611686101945370021" name="itmEnhancementTypeIsArmor" desc="" />
-    <gom_type Id="4611686101966170021" name="strLocalizedTextRetrieverCachedText" desc="" />
-    <gom_type Id="4611686102006770022" name="cssRenameList" desc="" />
-    <gom_type Id="4611686102225170021" name="wzScoreboardActivePlayers" desc="" />
-    <gom_type Id="4611686102431170021" name="strStringTrackingActive" desc="" />
-    <gom_type Id="4611686102434170023" name="grpMembersWhoseRemovalRequiresMyPhaseEjection" desc="" />
-    <gom_type Id="4611686102641970022" name="sysActiveKeyHashList" desc="" />
-    <gom_type Id="4611686102697970021" name="ablTrainableReqClass" desc="" />
-    <gom_type Id="4611686102719470022" name="conExpansionLevel" desc="" />
-    <gom_type Id="4611686102721270021" name="guiFadeEndTime" desc="" />
-    <gom_type Id="4611686102761070021" name="scBehaviorProperties" desc="" />
-    <gom_type Id="4611686102762170021" name="hydAnimationByDisplayName" desc="" />
-    <gom_type Id="4611686102770270021" name="phsDataImplicitAreaMap" desc="" />
-    <gom_type Id="4611686102790670021" name="sysInputCameraFovValueToRestore" desc="" />
-    <gom_type Id="4611686102881570021" name="chrProfessionsToSchematicsCached" desc="" />
-    <gom_type Id="4611686102887370022" name="prfSchematicVariationIDs" desc="" />
-    <gom_type Id="4611686103186370021" name="qstPendingRewardsAllItems" desc="" />
-    <gom_type Id="4611686103218270021" name="phsNameIdToDefinitionMap" desc="" />
-    <gom_type Id="4611686103580670021" name="phsPhaseInfoMode" desc="" />
-    <gom_type Id="4611686103773970021" name="chrEffectiveCurrentArea" desc="" />
-    <gom_type Id="4611686103878270022" name="sysCharacterSelectionConnectedCharacter" desc="" />
-    <gom_type Id="4611686103892070021" name="phsHydraLockPass" desc="" />
-    <gom_type Id="4611686103922570021" name="phsPhaseInfoPlayersRepPrevious" desc="" />
-    <gom_type Id="4611686104140570021" name="chrLevel" desc="" />
-    <gom_type Id="4611686104202070022" name="gwsInstancePositions" desc="" />
-    <gom_type Id="4611686104247270021" name="cnvParticipantControllerId" desc="" />
-    <gom_type Id="4611686113562070021" name="vndItemBeingSold" desc="" />
-    <gom_type Id="4611686113729270041" name="chrCurrentAreaIsShip" desc="" />
-    <gom_type Id="4611686113904025042" name="utlEmptyPhaseInfoList" desc="" />
-    <gom_type Id="4611686113904165043" name="grpRaidMemberActiveRaid" desc="" />
-    <gom_type Id="4611686113940565041" name="phsImplicitPhasedTravelQueue" desc="" />
-    <gom_type Id="4611686114075535041" name="itmEnhancementSlots" desc="" />
-    <gom_type Id="4611686114075765041" name="itmEnhancements" desc="" />
-    <gom_type Id="4611686114347625041" name="itmEligibleLootCharacters" desc="" />
-    <gom_type Id="4611686124014125041" name="qstAllowAbandonment" desc="" />
-    <gom_type Id="4611686124094575041" name="grpOwner" desc="" />
-    <gom_type Id="4611686124250195041" name="statResource_RepPrevious" desc="" />
-    <gom_type Id="4611686124250345041" name="statResource" desc="" />
-    <gom_type Id="4611686124250885042" name="cmdEmoteCombatActive" desc="" />
-    <gom_type Id="4611686124448245041" name="qstQuestResetCooldown" desc="" />
-    <gom_type Id="4611686124628325041" name="mpnBindPointsByFqnStableId" desc="" />
-    <gom_type Id="4611686124642925041" name="gldWindowGuiInitialized" desc="" />
-    <gom_type Id="4611686124732525041" name="chrStealthIsCSRStealthed" desc="" />
-    <gom_type Id="4611686127889025041" name="cnvJoinOrganizerRequestedState" desc="" />
-    <gom_type Id="4611686134214345041" name="cosTemplateVisualDataScale" desc="" />
-    <gom_type Id="4611686139569815042" name="scSecondaryTarget" desc="" />
-    <gom_type Id="4611686139893545041" name="aiHydraOwners" desc="" />
-    <gom_type Id="4611686141819825042" name="sysChatListenerActiveChannels" desc="" />
-    <gom_type Id="4611686141838445041" name="grpIsOpen" desc="" />
-    <gom_type Id="4611686141849325042" name="qckLinkType" desc="" />
-    <gom_type Id="4611686141853055041" name="chrRestXp" desc="" />
-    <gom_type Id="4611686141953720053" name="ablModalGroup" desc="" />
-    <gom_type Id="4611686141965620000" name="staAlertedRefCount" desc="" />
-    <gom_type Id="4611686142515820000" name="sysChatAudibleToneTimer" desc="" />
-    <gom_type Id="4611686142522600000" name="optDescriptionBitfieldBitIndex" desc="" />
-    <gom_type Id="4611686142526800000" name="conContainerDataSlotLookUp" desc="" />
-    <gom_type Id="4611686142546620000" name="chrCompanionUnlocked" desc="" />
-    <gom_type Id="4611686142636280000" name="ablUserModalActiveSpecs_Previous" desc="" />
-    <gom_type Id="4611686143414010004" name="csrHTTPPortalRequests" desc="" />
-    <gom_type Id="4611686160058060000" name="ablUserModalActiveSpecs" desc="" />
-    <gom_type Id="4611686160070590000" name="sysChatListenerName" desc="" />
-    <gom_type Id="4611686160080560000" name="sklSkillTreeEntryId" desc="" />
-    <gom_type Id="4611686170009670002" name="ablTrainerSet" desc="" />
-    <gom_type Id="4611686170044610001" name="cnvMissionBoardId" desc="" />
-    <gom_type Id="4611686170421340002" name="chrCompanionMasterCompanionAwayStatus" desc="" />
-    <gom_type Id="4611686170440380001" name="cdxFactionToClassToCategoryToPlanetToTotalLookupList" desc="" />
-    <gom_type Id="4611686172677080000" name="cnvChoreographerActivated" desc="" />
-    <gom_type Id="4611686175684740000" name="grpRaidNightmareMode" desc="" />
-    <gom_type Id="4611686180748080385" name="prfKnownCraftingProfession" desc="" />
-    <gom_type Id="4611686180749350002" name="scHighlightAbility" desc="" />
-    <gom_type Id="4611686180753490000" name="svyOracleCombatTimer" desc="" />
-    <gom_type Id="4611686188185230002" name="optOptionScopeToBitIndexToOptionName" desc="" />
-    <gom_type Id="4611686188192160000" name="guiDelayedFadeTime" desc="" />
-    <gom_type Id="4611686188204560000" name="cbtWpnDataSpecString" desc="" />
-    <gom_type Id="4611686188234570000" name="sysCCSFullyRandomCharacter" desc="" />
-    <gom_type Id="4611686188245260001" name="modStatDisplayNumberFormat" desc="" />
-    <gom_type Id="4611686188280560000" name="prfSchematicVariationsKnown" desc="" />
-    <gom_type Id="4611686188285380000" name="qstPendingRewardsListRepPrevious" desc="" />
-    <gom_type Id="4611686188309830027" name="prfSchematicVariationMasterList" desc="" />
-    <gom_type Id="4611686188338840000" name="qstPendingRewardsOneItems" desc="" />
-    <gom_type Id="4611686188464890000" name="spnClientAnchorsInProximity" desc="" />
-    <gom_type Id="4611686188470170003" name="hydQueueObject" desc="" />
-    <gom_type Id="4611686188565280001" name="customChatChannelServerId" desc="" />
-    <gom_type Id="4611686188568360000" name="ccsStageDetailPathName" desc="" />
-    <gom_type Id="4611686188593220000" name="grpRaidBossesInitiallyDefeated" desc="" />
-    <gom_type Id="4611686188651010047" name="ablIgnoreAlacrity" desc="" />
-    <gom_type Id="4611686188651060046" name="effIgnoreAlacrity" desc="" />
-    <gom_type Id="4611686188766590001" name="mapFowGroupGUID" desc="" />
-    <gom_type Id="4611686188776533250" name="csrUnreadTicketsList" desc="" />
-    <gom_type Id="4611686188846123250" name="optBitfieldValuesByScope" desc="" />
-    <gom_type Id="4611686188856823250" name="csrSavedTicketServerDate" desc="" />
-    <gom_type Id="4611686188864343325" name="prfSchematicDeprecated" desc="" />
-    <gom_type Id="4611686189063063250" name="sklSkillTreePosition" desc="" />
-    <gom_type Id="4611686189142673704" name="chrPlayerCharacterRespecNotifyCounter" desc="" />
-    <gom_type Id="4611686189149633250" name="gwsStringToInteger" desc="" />
-    <gom_type Id="4611686189170953281" name="platformAccountId" desc="" />
-    <gom_type Id="4611686189176593250" name="csrCSPortalTestInProgress" desc="" />
-    <gom_type Id="4611686190716040004" name="customChatChannelName" desc="" />
-    <gom_type Id="4611686198165410000" name="qstQuestBitIndex" desc="" />
-    <gom_type Id="4611686198352110000" name="qstMissionIcon" desc="" />
-    <gom_type Id="4611686198379680001" name="scHeadingAngles" desc="" />
-    <gom_type Id="4611686198471740000" name="scPathName" desc="" />
-    <gom_type Id="4611686198479220001" name="malMailTab" desc="" />
-    <gom_type Id="4611686198494950000" name="conLootHopperForceNoRoll" desc="" />
-    <gom_type Id="4611686198509340000" name="sysChatShowTimestamp" desc="" />
-    <gom_type Id="4611686198526690000" name="cnvInstanceUseOwnerAsSpeaker" desc="" />
-    <gom_type Id="4611686198652050000" name="chrCharacter_HasBeenDestroyed" desc="" />
-    <gom_type Id="4611686198670960000" name="taxNameId" desc="" />
-    <gom_type Id="4611686198686820000" name="guiDeathScreenRegionMedCenter" desc="" />
-    <gom_type Id="4611686198759720002" name="effEventIsSynthesized" desc="" />
-    <gom_type Id="4611686198784940000" name="plcReplicatedPlatforms" desc="" />
-    <gom_type Id="4611686198925910000" name="gwsCounter" desc="" />
-    <gom_type Id="4611686198956090000" name="kynMsg_InfoFlags" desc="" />
-    <gom_type Id="4611686199045900001" name="spnReplicatedAnchorlessNpcs" desc="" />
-    <gom_type Id="4611686199055360000" name="tutorialDefinitionTable" desc="" />
-    <gom_type Id="4611686199057660000" name="hydPrimaryScriptId" desc="" />
-    <gom_type Id="4611686199109030000" name="hydTimeToRuntimeExecutionIdMap" desc="" />
-    <gom_type Id="4611686220002230000" name="tutStatus" desc="" />
-    <gom_type Id="4611686221720560000" name="conContainerDataTypeToSlots" desc="" />
-    <gom_type Id="4611686221725340001" name="itmEnhancementDefaults" desc="" />
-    <gom_type Id="4611686221726130000" name="scProtonTorpedoesReady" desc="" />
-    <gom_type Id="4611686223207220000" name="sysChatProfanityFilter" desc="" />
-    <gom_type Id="4611686226083680000" name="hydAbilityTargetsList" desc="" />
-    <gom_type Id="4611686226097910000" name="phsHideReinforcementMessage" desc="" />
-    <gom_type Id="4611686226128920000" name="ablEffectZeroNode" desc="" />
-    <gom_type Id="4611686226130330001" name="scEncounterBoneEffectsQueue" desc="" />
-    <gom_type Id="4611686226185040000" name="chrProfessions" desc="" />
-    <gom_type Id="4611686226267360000" name="gldImportOfferMessage" desc="" />
-    <gom_type Id="4611686226317220000" name="hydPosition" desc="" />
-    <gom_type Id="4611686226457330000" name="titleCodex" desc="" />
-    <gom_type Id="4611686226561140000" name="scLastQuest" desc="" />
-    <gom_type Id="4611686226567930000" name="pvpToggleFlagTime" desc="" />
-    <gom_type Id="4611686226587350000" name="cnvCameraList" desc="" />
-    <gom_type Id="4611686226591990000" name="csrPendingTicketBody" desc="" />
-    <gom_type Id="4611686226603180000" name="mpnTaxiTerminalBreadcrumbTextList" desc="" />
-    <gom_type Id="4611686226614200000" name="chrCurrencyDetailsDistributeAsCash" desc="" />
-    <gom_type Id="4611686226721820000" name="cnvBaseFxaListProto" desc="" />
-    <gom_type Id="4611686226941400000" name="cnvRewardCreditType" desc="" />
-    <gom_type Id="4611686226948880001" name="qstPendingNonItemRewards" desc="" />
-    <gom_type Id="4611686227015390000" name="rddRaidInformationPrototype" desc="" />
-    <gom_type Id="4611686227316560000" name="utlStaticInitialized" desc="" />
-    <gom_type Id="4611686237954100040" name="vehBoneName" desc="" />
-    <gom_type Id="4611686237992280041" name="chrAdvancedClass_Cached" desc="" />
-    <gom_type Id="4611686238090090054" name="conCurrencyGrantedImmediately" desc="" />
-    <gom_type Id="4611686238100240040" name="itmConsumedOnUse" desc="" />
-    <gom_type Id="4611686238119270040" name="cssCanDeleteCharacters" desc="" />
-    <gom_type Id="4611686238321900831" name="cssMustRenameLegacy" desc="" />
-    <gom_type Id="4611686238391541110" name="phsRaidLockoutMaskPerDifficulty" desc="" />
-    <gom_type Id="4611686238502172255" name="grpWorldPhaseConflict" desc="" />
-    <gom_type Id="4611686238627792312" name="scDebugClientFireFlag" desc="" />
-    <gom_type Id="4611686238876022311" name="phsPhaseGuest" desc="" />
-    <gom_type Id="4611686239021552311" name="phsUniqueActiveFlashpointDifficulty" desc="" />
-    <gom_type Id="4611686241840920000" name="taxTeleportObjId" desc="" />
-    <gom_type Id="4611686244422020001" name="scAttemptedProtonTarget" desc="" />
-    <gom_type Id="4611686244647470001" name="conContainerSlot_db" desc="" />
-    <gom_type Id="4611686244765300003" name="brkEventMap" desc="" />
-    <gom_type Id="4611686244844110000" name="brkSummonQueue" desc="" />
-    <gom_type Id="4611686244902420001" name="scBlasterQueueMinTime" desc="" />
-    <gom_type Id="4611686244967040000" name="phsNormalModeAccessQuestIDs" desc="" />
-    <gom_type Id="4611686244974120000" name="cnvBaseFxaMap" desc="" />
-    <gom_type Id="4611686244988230000" name="dcvMinimumQueueLevel" desc="" />
-    <gom_type Id="4611686244997090000" name="cnvJoinOrganizerPhaseId" desc="" />
-    <gom_type Id="4611686245036440000" name="chrBackgroundUtilityToBackground" desc="" />
-    <gom_type Id="4611686245047800001" name="currentHyperlink" desc="" />
-    <gom_type Id="4611686245113400000" name="cdxTypeStyleType" desc="" />
-    <gom_type Id="4611686245133230001" name="qstStepJournalEntryStringIdList" desc="" />
-    <gom_type Id="4611686245292980000" name="guiSSFailedConnect" desc="" />
-    <gom_type Id="4611686245325250505" name="qstStepClientOnlySpawnerStateVariableId" desc="" />
-    <gom_type Id="4611686245327260001" name="qstTaskAutoCompleteVariable" desc="" />
-    <gom_type Id="4611686245341980000" name="tgtPrimaryTargetID_client" desc="" />
-    <gom_type Id="4611686245601370001" name="effIsPaused" desc="" />
-    <gom_type Id="4611686245656190000" name="mpnDoNotDisplayOnMinimap" desc="" />
-    <gom_type Id="4611686245661950037" name="scFiringDelay" desc="" />
-    <gom_type Id="4611686245745640000" name="staCharacterCanRotate" desc="" />
-    <gom_type Id="4611686245750220098" name="ippVOSoundTypeOverride" desc="" />
-    <gom_type Id="4611686245827200000" name="phsOwnerOfShipToBeBoarded" desc="" />
-    <gom_type Id="4611686246196570000" name="guiHoloCamDelayTimer" desc="" />
-    <gom_type Id="4611686246204860000" name="qstCategoryDisplayName" desc="" />
-    <gom_type Id="4611686246213320000" name="chrPetIsVanity" desc="" />
-    <gom_type Id="4611686246225250000" name="stbTableList" desc="" />
-    <gom_type Id="4611686246256580002" name="scAcceleration" desc="" />
-    <gom_type Id="4611686246298760000" name="chrClassDataAdvancedQuestID" desc="" />
-    <gom_type Id="4611686246337530130" name="cdxFactionToClassToPlanetToCategoryLookupList" desc="" />
-    <gom_type Id="4611686246443690001" name="conContainerType" desc="" />
-    <gom_type Id="4611686246487410000" name="dynPreviewUseSelectedSpawner" desc="" />
-    <gom_type Id="4611686246489530000" name="mpnBindpointsReverseMap" desc="" />
-    <gom_type Id="4611686246492530001" name="socLFGRepPrevious" desc="" />
-    <gom_type Id="4611686246783360000" name="csrMessageOfTheDayKBID" desc="" />
-    <gom_type Id="4611686246784220000" name="scPlayingEffects" desc="" />
-    <gom_type Id="4611686246807690000" name="scBaseFacingDirection" desc="" />
-    <gom_type Id="4611686246940640000" name="chrCharacterNameToID" desc="" />
-    <gom_type Id="4611686247017230000" name="cnvCurrentDebugBodyType" desc="" />
-    <gom_type Id="4611686247179240000" name="chrPlayerMoveState_Platform" desc="" />
-    <gom_type Id="4611686247188850000" name="chrSpecHeightOffset" desc="" />
-    <gom_type Id="4611686247258860000" name="phsHardModeAccessQuestIDs" desc="" />
-    <gom_type Id="4611686247260510000" name="bnkActiveTabIndex" desc="" />
-    <gom_type Id="4611686247282040001" name="ablUserCacheIsFrozen" desc="" />
-    <gom_type Id="4611686247306370001" name="cssLegacyName" desc="" />
-    <gom_type Id="4611686247405460000" name="cnvTreeRootNode_Prototype" desc="" />
-    <gom_type Id="4611686247415380000" name="scLowestFPS" desc="" />
-    <gom_type Id="4611686247443240002" name="chrLegacyDisplay" desc="" />
-    <gom_type Id="4611686247459340000" name="conSlottedBeingCreated" desc="" />
-    <gom_type Id="4611686247534080000" name="scDebugClientFireOnly" desc="" />
-    <gom_type Id="4611686247664520001" name="chrNPCGenderComplete" desc="" />
-    <gom_type Id="4611686247751560001" name="scCPOTracked" desc="" />
-    <gom_type Id="4611686247888620002" name="grpMemberFlashpointAccess" desc="" />
-    <gom_type Id="4611686250009090000" name="scParentBoneID" desc="" />
-    <gom_type Id="4611686250079470001" name="effEmptyAction" desc="" />
-    <gom_type Id="4611686250198740000" name="ldgOverlayName" desc="" />
-    <gom_type Id="4611686250208700000" name="mpnShowBreadcrumbPathLogs" desc="" />
-    <gom_type Id="4611686250267200026" name="scDeltaMultiplier" desc="" />
-    <gom_type Id="4611686250399240000" name="npcHolocomStageId" desc="" />
-    <gom_type Id="4611686250402560000" name="utlGM_SpaceCombatBreadcrumbQuests" desc="" />
-    <gom_type Id="4611686250432170000" name="hydNeedsRuntimeToolboxCompilation" desc="" />
-    <gom_type Id="4611686250542950000" name="cbtActiveAttitudesList" desc="" />
-    <gom_type Id="4611686250552270000" name="scDisableClientCPO" desc="" />
-    <gom_type Id="4611686250632530000" name="qstOracleTmpInts" desc="" />
-    <gom_type Id="4611686250678590000" name="prfSchematicsLastViewedForTarget" desc="" />
-    <gom_type Id="4611686250706130001" name="accountEntitlements" desc="" />
-    <gom_type Id="4611686250773920000" name="chrDestinationPlanetName" desc="" />
-    <gom_type Id="4611686250824680000" name="ablCachedAblPlayerVendor" desc="" />
-    <gom_type Id="4611686250933840000" name="chrSummaryIsHelmetHidden" desc="" />
-    <gom_type Id="4611686251165580001" name="chrLegacyUnlockMissionIdList" desc="" />
-    <gom_type Id="4611686251244340000" name="dcvCursorOverrideMinDistance" desc="" />
-    <gom_type Id="4611686251334950000" name="chrUpdateSocialCenterPlayerCountTimer" desc="" />
-    <gom_type Id="4611686252060770000" name="itmEnhanceableCache_Calculated" desc="" />
-    <gom_type Id="4611686252088150000" name="scVOExternalEventCookie" desc="" />
-    <gom_type Id="4611686252134110365" name="itmGenderRequired" desc="" />
-    <gom_type Id="4611686252283490000" name="conEquipmentSlotData_slotRequires" desc="" />
-    <gom_type Id="4611686252521330000" name="csrPendingTicketCategory" desc="" />
-    <gom_type Id="4611686252552210000" name="scClientTargetingArc" desc="" />
-    <gom_type Id="4611686252567000000" name="shdShardRegion" desc="" />
-    <gom_type Id="4611686252954520000" name="accEntitlementConsumed" desc="" />
-    <gom_type Id="4611686253024800000" name="sysChatReplyTarget" desc="" />
-    <gom_type Id="4611686253338080000" name="chrOldXp" desc="" />
-    <gom_type Id="4611686253727270000" name="ablCastDuration" desc="" />
-    <gom_type Id="4611686254354850000" name="contextMenuAdditionalCommands" desc="" />
-    <gom_type Id="4611686254510860000" name="chrPlayerCharacterMovementTetherLeashLength" desc="" />
-    <gom_type Id="4611686256561490000" name="cbtRewardQuestOnly" desc="" />
-    <gom_type Id="4611686280022760012" name="cvrVisualizerVisualizingBeforePause" desc="" />
-    <gom_type Id="4611686280229540000" name="csrLiveChatCSRHandle" desc="" />
-    <gom_type Id="4611686280230380000" name="chrLegacyData" desc="" />
-    <gom_type Id="4611686280425360000" name="cnvPlanetUtilityToName" desc="" />
-    <gom_type Id="4611686280510160000" name="tutTutorialMinLevel" desc="" />
-    <gom_type Id="4611686280579390001" name="grpInviteStatus" desc="" />
-    <gom_type Id="4611686280845750001" name="scVOSecondaryPredicate" desc="" />
-    <gom_type Id="4611686280974910000" name="optRenderScopeOptionDefaults" desc="" />
-    <gom_type Id="4611686280997560000" name="spnCLientCosFqnToAnchorRefCount" desc="" />
-    <gom_type Id="4611686281555440001" name="stgActorCurrentHoloState" desc="" />
-    <gom_type Id="4611686281557600000" name="trvAreaInstanceTransferAvailableAt" desc="" />
-    <gom_type Id="4611686282075160000" name="guiApiGfxVars_TimerDialogIDCache" desc="" />
-    <gom_type Id="4611686282750640000" name="logoutDialogID" desc="" />
-    <gom_type Id="4611686282807210000" name="sysShardSelectionConnectionError" desc="" />
-    <gom_type Id="4611686282850770000" name="csrSquelchTimer" desc="" />
-    <gom_type Id="4611686283583700000" name="sysShardSelectionAccountRegion" desc="" />
-    <gom_type Id="4611686296340730000" name="effIdListParams" desc="" />
-    <gom_type Id="4611686330223730000" name="ablUserPrecastingItem" desc="" />
-    <gom_type Id="4611686330398610000" name="spnReplicatedTaxiTerminals" desc="" />
-    <gom_type Id="4611686330497320000" name="tutIsEnabled" desc="" />
-    <gom_type Id="4611686330727240000" name="vehLocalPlayer" desc="" />
-    <gom_type Id="4611686330727540000" name="conLockedRef" desc="" />
-    <gom_type Id="4611686331171640000" name="cnvDebugDisplayVariantInfo" desc="" />
-    <gom_type Id="4611686331300930000" name="socWhoFilters_Filter" desc="" />
-    <gom_type Id="4611686331335820001" name="cnvAttemptingToPlayLine" desc="" />
-    <gom_type Id="4611686331340250000" name="prfOracleTrainersNeedRefresh" desc="" />
-    <gom_type Id="4611686331592870000" name="scCameraFOV" desc="" />
-    <gom_type Id="4611686331783910002" name="socCachedWhoList" desc="" />
-    <gom_type Id="4611686331853780000" name="scIsMissionActive" desc="" />
-    <gom_type Id="4611686331981570000" name="scIsFriendly" desc="" />
-    <gom_type Id="4611686332045050006" name="scHasActivated" desc="" />
-    <gom_type Id="4611686332315960095" name="chrPlayerCharacterMovementTetherAnchorPosition" desc="" />
-    <gom_type Id="9223372036865369663" name="effCasterId" desc="" />
-    <gom_type Id="9223372074108170013" name="ccsCreationSummary" desc="" />
-    <gom_type Id="9223372074163170000" name="chrSummaryId" desc="" />
-    <gom_type Id="9223372074258670003" name="ccsGUISelections" desc="" />
-    <gom_type Id="9223372077211970000" name="effEmptyTagList" desc="" />
-    <gom_type Id="9223372077281270000" name="chrBugPendingTakeScreenshot" desc="" />
-    <gom_type Id="9223372077309170012" name="bugTopicsDefault" desc="" />
-    <gom_type Id="9223372077354570005" name="svEvtIsVisible" desc="" />
-    <gom_type Id="9223372077681818800" name="chrCharacter_lastTransactionId" desc="" />
-    <gom_type Id="20001" name="sysCharacterSystem" desc="" />
-    <gom_type Id="40012" name="sysBaseClient" desc="" />
-    <gom_type Id="40027" name="BWDemo" desc="" />
-    <gom_type Id="40029" name="BWDemo2" desc="" />
-    <gom_type Id="40030" name="DamionDemo2" desc="" />
-    <gom_type Id="3758000007" name="character_class" desc="" />
-    <gom_type Id="3758000114" name="Instance" desc="" />
-    <gom_type Id="3758000125" name="TriggerInstance" desc="" />
-    <gom_type Id="3758000201" name="PathPointNode" desc="" />
-    <gom_type Id="3758000205" name="PathNode" desc="" />
-    <gom_type Id="3758000246" name="geometry_pair" desc="" />
-    <gom_type Id="3758000251" name="rgba" desc="" />
-    <gom_type Id="3758000255" name="texture_pair" desc="" />
-    <gom_type Id="3758000264" name="visible_character" desc="" />
-    <gom_type Id="3775000008" name="HBPath" desc="" />
-    <gom_type Id="3775000014" name="HBSpec" desc="" />
-    <gom_type Id="3775000015" name="AmbientSoundNode" desc="" />
-    <gom_type Id="3775000016" name="CharacterNode" desc="" />
-    <gom_type Id="3775000017" name="LightningNode" desc="" />
-    <gom_type Id="3775000018" name="LightNode" desc="" />
-    <gom_type Id="3775000019" name="PathFollowerNode" desc="" />
-    <gom_type Id="3775000020" name="ParticleEmitterNode" desc="" />
-    <gom_type Id="3775000021" name="SpeedTreeNode" desc="" />
-    <gom_type Id="3775000022" name="WaypointNode" desc="" />
-    <gom_type Id="3775000023" name="CameraNode" desc="" />
-    <gom_type Id="3775000037" name="windowSides" desc="" />
-    <gom_type Id="3775000038" name="xy" desc="" />
-    <gom_type Id="3775000046" name="uv" desc="" />
-    <gom_type Id="3775000049" name="hv" desc="" />
-    <gom_type Id="3775000054" name="justify" desc="" />
-    <gom_type Id="3775000056" name="minMax" desc="" />
-    <gom_type Id="3775000057" name="paddingLR" desc="" />
-    <gom_type Id="3775000058" name="GUIControl" desc="" />
-    <gom_type Id="3775000096" name="GUILabel" desc="" />
-    <gom_type Id="3775000098" name="GUIResizePanel" desc="" />
-    <gom_type Id="3775000099" name="GUIPanel" desc="" />
-    <gom_type Id="3775000100" name="GUIMovePanel" desc="" />
-    <gom_type Id="3775000101" name="GUIScaleAndAlphaPanel" desc="" />
-    <gom_type Id="3775000105" name="GUIScrollEndButton" desc="" />
-    <gom_type Id="3775000106" name="GUIScrollThumb" desc="" />
-    <gom_type Id="3775000107" name="GUIScrollPagePanel" desc="" />
-    <gom_type Id="3775000113" name="GUIScrollablePanel" desc="" />
-    <gom_type Id="3775000115" name="GUICheckBox" desc="" />
-    <gom_type Id="3775000116" name="GUIRadioButton" desc="" />
-    <gom_type Id="3775000121" name="GUITextInputBox" desc="" />
-    <gom_type Id="3775000125" name="GUINumericField" desc="" />
-    <gom_type Id="3775000127" name="GUINumericUpDownButton" desc="" />
-    <gom_type Id="3775000128" name="GUINumericUpDownDragZone" desc="" />
-    <gom_type Id="3775000131" name="GUISlider" desc="" />
-    <gom_type Id="3775000132" name="GUISliderEndButton" desc="" />
-    <gom_type Id="3775000134" name="GUICollection" desc="" />
-    <gom_type Id="3775000140" name="GUIMouseEvent" desc="" />
-    <gom_type Id="3775000145" name="GUIKeyboardEvent" desc="" />
-    <gom_type Id="3775000147" name="GUIKeyPressEvent" desc="" />
-    <gom_type Id="3775000148" name="GUIValueChangeEvent" desc="" />
-    <gom_type Id="3775000149" name="GUIFocusChangeEvent" desc="" />
-    <gom_type Id="3775000150" name="world_anchor" desc="" />
-    <gom_type Id="3777000030" name="GUIwrapper" desc="" />
-    <gom_type Id="3777000042" name="GUIeditorPtrClass" desc="" />
-    <gom_type Id="3777000043" name="GUIpropertiesControlItemClass" desc="" />
-    <gom_type Id="6342000028" name="CameraData" desc="" />
-    <gom_type Id="6342000034" name="MasterCameraData" desc="" />
-    <gom_type Id="6470000008" name="_TravelData" desc="" />
-    <gom_type Id="8712000013" name="GUILayoutEvent" desc="" />
-    <gom_type Id="11628000058" name="GUIPopupDelay" desc="" />
-    <gom_type Id="14075000049" name="npc_class" desc="" />
-    <gom_type Id="15078000014" name="GUIAnimation" desc="" />
-    <gom_type Id="15078000021" name="GUIA_Interpolate" desc="" />
-    <gom_type Id="16480000008" name="GUIanimationInfo" desc="" />
-    <gom_type Id="16869001165" name="genericTimer" desc="" />
-    <gom_type Id="17622000059" name="_Target" desc="" />
-    <gom_type Id="18334000061" name="SoundTimer" desc="" />
-    <gom_type Id="24923000035" name="IconPressedTracker" desc="" />
-    <gom_type Id="30667000024" name="Cinematic" desc="" />
-    <gom_type Id="30667000061" name="Banner" desc="" />
-    <gom_type Id="32102000012" name="_DelayedFx" desc="" />
-    <gom_type Id="32397000072" name="Scripted" desc="" />
-    <gom_type Id="35023000027" name="GUIGraph" desc="" />
-    <gom_type Id="36302000220" name="DebugThrottle" desc="" />
-    <gom_type Id="40667000030" name="GUIWizard" desc="" />
-    <gom_type Id="42271000325" name="gmNoteDrawStringData" desc="" />
-    <gom_type Id="46319000011" name="GUILayerState" desc="" />
-    <gom_type Id="46319000013" name="_GUILayerStateArchive" desc="" />
-    <gom_type Id="46721000003" name="textureWithUV" desc="" />
-    <gom_type Id="48817000205" name="MouseTracker" desc="" />
-    <gom_type Id="51295000082" name="AnimationNoteListener" desc="" />
-    <gom_type Id="52230000024" name="_SoundFader" desc="" />
-    <gom_type Id="52970000073" name="timeDelayedTextInput" desc="" />
-    <gom_type Id="52970000092" name="CollectionProxyElement" desc="" />
-    <gom_type Id="52970000193" name="MultiPathVisualizer" desc="" />
-    <gom_type Id="54314000072" name="CollectionInterfaceGUI" desc="" />
-    <gom_type Id="54314000117" name="keybinding" desc="" />
-    <gom_type Id="54314000260" name="GUIProxy" desc="" />
-    <gom_type Id="58075000029" name="heightmapnode" desc="" />
-    <gom_type Id="63957000057" name="GUITooltipEvent" desc="" />
-    <gom_type Id="63957000140" name="tooltipClass" desc="" />
-    <gom_type Id="63957000178" name="ScriptedAsString" desc="" />
-    <gom_type Id="65617000088" name="GUIFlowLayout" desc="" />
-    <gom_type Id="65617000192" name="IconContainerInterface" desc="" />
-    <gom_type Id="65959000003" name="TerritoryCoreData" desc="" />
-    <gom_type Id="65959000059" name="DragNDropTracker" desc="" />
-    <gom_type Id="68019000035" name="GUINodeDestroyEvent" desc="" />
-    <gom_type Id="68019000046" name="NodePropertyEditor" desc="" />
-    <gom_type Id="68019000091" name="SpecOraclePropertyEditor" desc="" />
-    <gom_type Id="68019000167" name="prototypeData" desc="" />
-    <gom_type Id="69388000323" name="TransformVirtualStage" desc="" />
-    <gom_type Id="71958000091" name="CCSColorPalette" desc="" />
-    <gom_type Id="72512000074" name="GUIDocker" desc="" />
-    <gom_type Id="72512000094" name="_DelayedFxContainer" desc="" />
-    <gom_type Id="73326000151" name="_racialMorphTool" desc="" />
-    <gom_type Id="74866000055" name="KeyBoardModifiers" desc="" />
-    <gom_type Id="77508000053" name="_RadioBoolean" desc="" />
-    <gom_type Id="78163000076" name="showFileDialogButton" desc="" />
-    <gom_type Id="86567000239" name="GUISyncedAnimation" desc="" />
-    <gom_type Id="89530002171" name="FxVisualizerSpecDecorator" desc="" />
-    <gom_type Id="89530002173" name="FxVisualizable" desc="" />
-    <gom_type Id="91905000097" name="Sound3D" desc="" />
-    <gom_type Id="92829000022" name="_BaseCharControl" desc="" />
-    <gom_type Id="92829000023" name="_BaseClient" desc="" />
-    <gom_type Id="92829000024" name="_CharacterSystem" desc="" />
-    <gom_type Id="93225000903" name="_MethodCallbacks" desc="" />
-    <gom_type Id="93348640968" name="_ChatHandler" desc="" />
-    <gom_type Id="93375580015" name="LastValueTracker" desc="" />
-    <gom_type Id="93406983324" name="_BehaveUtils" desc="" />
-    <gom_type Id="93408070051" name="_AreaOrganizer" desc="" />
-    <gom_type Id="93443661724" name="_CommandHandler" desc="" />
-    <gom_type Id="93451630011" name="CameraController" desc="" />
-    <gom_type Id="93483385956" name="_InputHandler" desc="" />
-    <gom_type Id="93490351863" name="_MouseEvent" desc="" />
-    <gom_type Id="93531460009" name="Sound" desc="" />
-    <gom_type Id="93531460023" name="_GUIButton" desc="" />
-    <gom_type Id="93531460024" name="_GUICloseButton" desc="" />
-    <gom_type Id="93531460025" name="_GUIBaseWindow" desc="" />
-    <gom_type Id="93531460040" name="_GUILayer" desc="" />
-    <gom_type Id="93531460048" name="_GUIMasterLayer" desc="" />
-    <gom_type Id="93531460049" name="_GUIModalLayer" desc="" />
-    <gom_type Id="93531460050" name="_GUIModalDialog" desc="" />
-    <gom_type Id="93531460053" name="_GUIPopupLayer" desc="" />
-    <gom_type Id="93531460058" name="_GUIClickShield" desc="" />
-    <gom_type Id="93531460113" name="_GUIPopupMenuItem" desc="" />
-    <gom_type Id="93531460114" name="_GUIPopupMenu" desc="" />
-    <gom_type Id="93531460115" name="_GUIPopupSubMenu" desc="" />
-    <gom_type Id="93531460196" name="_guixml_excluded_fields" desc="" />
-    <gom_type Id="93531460201" name="_GUI" desc="" />
-    <gom_type Id="93531460229" name="_ServerRequests" desc="" />
-    <gom_type Id="93545421054" name="_Debug" desc="" />
-    <gom_type Id="93545621273" name="_ContextMenuItem" desc="" />
-    <gom_type Id="93568780274" name="_FxSystem" desc="" />
-    <gom_type Id="93588621880" name="_AiAgent" desc="" />
-    <gom_type Id="93599380013" name="_GUITabScrollArrow" desc="" />
-    <gom_type Id="93599380015" name="_GUITab" desc="" />
-    <gom_type Id="93599380017" name="_EnvironmentalEventHandler" desc="" />
-    <gom_type Id="93615110431" name="_AiMethodCallbacks" desc="" />
-    <gom_type Id="93615190058" name="_GUIDropDownItem" desc="" />
-    <gom_type Id="93615190063" name="SmartNameValuePairInput" desc="" />
-    <gom_type Id="93615190066" name="_GUIDropDownList" desc="" />
-    <gom_type Id="93615190067" name="_GUIDropDownBox" desc="" />
-    <gom_type Id="93622590001" name="AnimationDebugger" desc="" />
-    <gom_type Id="93625440065" name="_GUIMethodCallbacks" desc="" />
-    <gom_type Id="93631480188" name="_GUIAnnotation" desc="" />
-    <gom_type Id="93631480403" name="FlareNode" desc="" />
-    <gom_type Id="93631480435" name="_GUISelectBox" desc="" />
-    <gom_type Id="93631480436" name="_GUISelectBoxItem" desc="" />
-    <gom_type Id="93631480437" name="_GUIListBuilder" desc="" />
-    <gom_type Id="93631480441" name="_FadeAlertBox" desc="" />
-    <gom_type Id="93631480487" name="_AlertButtonCall" desc="" />
-    <gom_type Id="93645630361" name="_AlertGUIs" desc="" />
-    <gom_type Id="93664910011" name="_GUISortableCollection" desc="" />
-    <gom_type Id="93664910026" name="_GUISortableCollectionRow" desc="" />
-    <gom_type Id="93664910027" name="_GUISortableCollectionCell" desc="" />
-    <gom_type Id="93664910029" name="GUIeditorClass" desc="" />
-    <gom_type Id="93664910030" name="_GUICollectionInterface" desc="" />
-    <gom_type Id="93664910035" name="_GUISortableCollectionHeader" desc="" />
-    <gom_type Id="93664980272" name="_CharacterCreationSystem" desc="" />
-    <gom_type Id="93677750630" name="_npc" desc="" />
-    <gom_type Id="93729620027" name="_iconMaker" desc="" />
-    <gom_type Id="93729620093" name="_snapshotMaker" desc="" />
-    <gom_type Id="93765480013" name="_GUITabbedParent" desc="" />
-    <gom_type Id="93765480027" name="CameraCommandBuilder" desc="" />
-    <gom_type Id="93790100030" name="_GUITabContentPanel" desc="" />
-    <gom_type Id="93790100039" name="_GUITabScrollArrows" desc="" />
-    <gom_type Id="93790100101" name="_HotSpotMenu" desc="" />
-    <gom_type Id="93829170021" name="_demoCMGR" desc="" />
-    <gom_type Id="93829170066" name="_GUISliderTracks" desc="" />
-    <gom_type Id="93829170082" name="_texturePartSelector" desc="" />
-    <gom_type Id="93859100020" name="_facegenSlider" desc="" />
-    <gom_type Id="93859100150" name="_textureColorPalette" desc="" />
-    <gom_type Id="93859100159" name="_sliderPanel" desc="" />
-    <gom_type Id="93859100342" name="_demoCMGRCamera" desc="" />
-    <gom_type Id="93912340020" name="_minimap" desc="" />
-    <gom_type Id="93928210007" name="_skinTonePalette" desc="" />
-    <gom_type Id="93934850021" name="StyleSetSpecData" desc="" />
-    <gom_type Id="94017860002" name="_showFileDialogButton" desc="" />
-    <gom_type Id="94035010011" name="_AiDebugger" desc="" />
-    <gom_type Id="94051390008" name="_AiDebugPropertyEditor" desc="" />
-    <gom_type Id="94051390044" name="_nodePropertyEditorMarshalTimer" desc="" />
-    <gom_type Id="94051390053" name="_GUITextureViewer" desc="" />
-    <gom_type Id="94051390074" name="_LoadingIcon" desc="" />
-    <gom_type Id="94052891266" name="_MarshalTimerField" desc="" />
-    <gom_type Id="94065760019" name="_GUISpecOracleGlomClassesDialog" desc="" />
-    <gom_type Id="94065760022" name="_GUISpecOracleAddSpec" desc="" />
-    <gom_type Id="94065760025" name="_GUISpecOracleChooser" desc="" />
-    <gom_type Id="94113130529" name="_ConfirmDialog" desc="" />
-    <gom_type Id="94156210006" name="trTextureInformation" desc="" />
-    <gom_type Id="94156210008" name="TextureRegistry" desc="" />
-    <gom_type Id="94156210037" name="_GUINodeCollectionInterfaceWindow" desc="" />
-    <gom_type Id="94156210054" name="_GUINodePropertyEditor" desc="" />
-    <gom_type Id="94181690002" name="_GUIEditStatesInterface" desc="" />
-    <gom_type Id="94181690024" name="_GUIGroupBox" desc="" />
-    <gom_type Id="94181690152" name="_GUINodePropertyEditorRow" desc="" />
-    <gom_type Id="94181690157" name="_GUINodePropertyEditorCell" desc="" />
-    <gom_type Id="94181690185" name="_GUINodePropertyEditorSortableCollection" desc="" />
-    <gom_type Id="94220190002" name="_GUINodePropertyEditorCellTextInputBox" desc="" />
-    <gom_type Id="94220190009" name="_GUINodePropertyEditorCellNumericField" desc="" />
-    <gom_type Id="94220190028" name="_GUINodePropertyEditorCellIDField" desc="" />
-    <gom_type Id="94220190033" name="_GUINodePropertyEditorCellBooleanField" desc="" />
-    <gom_type Id="94220190060" name="_GUINodePropertyEditorCellNumericInputBox" desc="" />
-    <gom_type Id="94220190068" name="_GUINodePropertyEditorCellList" desc="" />
-    <gom_type Id="94238580003" name="_GUINodePropertyEditorCellLookupList" desc="" />
-    <gom_type Id="94238580011" name="_GUINodePropertyEditorCellEnum" desc="" />
-    <gom_type Id="94238580041" name="_GUINodePropertyEditorCellClass" desc="" />
-    <gom_type Id="94265900024" name="_GUIScrollbar" desc="" />
-    <gom_type Id="94293410036" name="_GUINodePropertyEditorCellStateValue" desc="" />
-    <gom_type Id="94293410051" name="_GUITextureViewerMarquee" desc="" />
-    <gom_type Id="94293410118" name="_TextInputDialog" desc="" />
-    <gom_type Id="94293410166" name="_GUINewStateActionChooser" desc="" />
-    <gom_type Id="94334620040" name="_TextPromptDialog" desc="" />
-    <gom_type Id="94355830276" name="_GUIHelpButton" desc="" />
-    <gom_type Id="94355830277" name="_GUIMinimizeButton" desc="" />
-    <gom_type Id="94447630070" name="_GUISortableCollectionCellCheckbox" desc="" />
-    <gom_type Id="94447630089" name="_GUISortableCollectionCellDropdownbox" desc="" />
-    <gom_type Id="94447630103" name="_GUISortableCollectionCellNumericInputBox" desc="" />
-    <gom_type Id="94501240026" name="_morphSlidersGUI" desc="" />
-    <gom_type Id="94672014746" name="_Cursor" desc="" />
-    <gom_type Id="94705310082" name="BillboardNode" desc="" />
-    <gom_type Id="94769420060" name="_GUICCSNameSelection" desc="" />
-    <gom_type Id="94769507331" name="_cursorColor" desc="" />
-    <gom_type Id="94781991223" name="_animatedCursorSpecDecorator" desc="" />
-    <gom_type Id="94805440003" name="_GUISortableCollectionCellTextInputBox" desc="" />
-    <gom_type Id="94805440007" name="_GUISortableCollectionCellComboBox" desc="" />
-    <gom_type Id="94805440051" name="_GUICSSCharacterSelection" desc="" />
-    <gom_type Id="94819540049" name="_CollapsableCategory" desc="" />
-    <gom_type Id="94819540052" name="_hotSpotGUI" desc="" />
-    <gom_type Id="94819540063" name="_CollapsableCategoryItem" desc="" />
-    <gom_type Id="94837060021" name="_HotSpotItem" desc="" />
-    <gom_type Id="94857980003" name="_collapsableContainer" desc="" />
-    <gom_type Id="94872311415" name="_WritableInstanceProperties" desc="" />
-    <gom_type Id="94877200225" name="_SpecializedWritableInstanceProperties" desc="" />
-    <gom_type Id="94891460341" name="_HotSpot" desc="" />
-    <gom_type Id="95255260136" name="_GUIForm" desc="" />
-    <gom_type Id="95348550013" name="_colorPanel" desc="" />
-    <gom_type Id="4611686018428100015" name="deo" desc="" />
-    <gom_type Id="4611686018428250017" name="ELtestclass1" desc="" />
-    <gom_type Id="4611686018428510002" name="DamionTestGUI" desc="" />
-    <gom_type Id="4611686018428809994" name="BWDemoSpecDec" desc="" />
-    <gom_type Id="4611686018429050002" name="guiSliderField" desc="" />
-    <gom_type Id="4611686018431880001" name="guiCharacterCreation" desc="" />
-    <gom_type Id="4611686018432340006" name="sysTravel" desc="" />
-    <gom_type Id="4611686018433010010" name="sysCharacterSelection" desc="" />
-    <gom_type Id="4611686018433210001" name="guiCharacterSelection" desc="" />
-    <gom_type Id="4611686018433810005" name="guiJwwMagicGfx" desc="" />
-    <gom_type Id="4611686018434080005" name="chrSelectedTarget" desc="" />
-    <gom_type Id="4611686018434170015" name="sysInputHandler" desc="" />
-    <gom_type Id="4611686018434390016" name="utlDatatable" desc="" />
-    <gom_type Id="4611686018434460010" name="grpNode" desc="" />
-    <gom_type Id="4611686018434630022" name="grpMemberInfo" desc="" />
-    <gom_type Id="4611686018435240011" name="aiCharacterAgentComponent" desc="" />
-    <gom_type Id="4611686018437327427" name="chrOracle" desc="" />
-    <gom_type Id="4611686018437750512" name="chrLevelComponent" desc="" />
-    <gom_type Id="4611686018444231397" name="conContainableComponent" desc="" />
-    <gom_type Id="4611686018444653554" name="sysChatHandler" desc="" />
-    <gom_type Id="4611686018445965597" name="utlDatatableOracle" desc="" />
-    <gom_type Id="4611686018446150024" name="guiFlyText" desc="" />
-    <gom_type Id="4611686018446250607" name="guiFlyTextManager" desc="" />
-    <gom_type Id="4611686018446380378" name="conContainerData" desc="" />
-    <gom_type Id="4611686018446530049" name="conEquipmentComponent" desc="" />
-    <gom_type Id="4611686018446732371" name="itmUniqueComponent" desc="" />
-    <gom_type Id="4611686018454770016" name="guiNameplates" desc="" />
-    <gom_type Id="4611686018455170113" name="aiCharacterAgentOverrideComponent" desc="" />
-    <gom_type Id="4611686018456770059" name="spnSpawnedComponent" desc="" />
-    <gom_type Id="4611686018457350081" name="guiPaperDoll" desc="" />
-    <gom_type Id="4611686018458090036" name="spnOracle" desc="" />
-    <gom_type Id="4611686018458150258" name="spnAnchor" desc="" />
-    <gom_type Id="4611686018467350022" name="cbtEvent" desc="" />
-    <gom_type Id="4611686018468351610" name="cbtOracle" desc="" />
-    <gom_type Id="4611686018468630240" name="effEffect" desc="" />
-    <gom_type Id="4611686018468910518" name="utlOracle" desc="" />
-    <gom_type Id="4611686018469590226" name="ablAbility" desc="" />
-    <gom_type Id="4611686018469790168" name="effTimerComponent" desc="" />
-    <gom_type Id="4611686018474340853" name="itmAppearanceDatatable" desc="" />
-    <gom_type Id="4611686018479690015" name="guiGfxCharacterSelection" desc="" />
-    <gom_type Id="4611686018482067557" name="utlSpatialComponent" desc="" />
-    <gom_type Id="4611686018483436428" name="staCharacterComponent" desc="" />
-    <gom_type Id="4611686018763930068" name="guiLoading" desc="" />
-    <gom_type Id="4611686018996582751" name="staWeaponComponent" desc="" />
-    <gom_type Id="4611686019023338929" name="itmWearableComponent" desc="" />
-    <gom_type Id="4611686019030884741" name="cnvOracle" desc="" />
-    <gom_type Id="4611686019033156322" name="utlDelayedCall" desc="" />
-    <gom_type Id="4611686019044720539" name="cnvParticipantComponent" desc="" />
-    <gom_type Id="4611686019047840437" name="cnvOwnerComponent" desc="" />
-    <gom_type Id="4611686019052400024" name="terrainnode" desc="" />
-    <gom_type Id="4611686019052426993" name="ablEffectsComponent" desc="" />
-    <gom_type Id="4611686019056952207" name="cnvLogicNode" desc="" />
-    <gom_type Id="4611686019114963765" name="npcTemplate" desc="" />
-    <gom_type Id="4611686019119300138" name="spnDispenserTemplate" desc="" />
-    <gom_type Id="4611686019146800145" name="qstComponent" desc="" />
-    <gom_type Id="4611686019148686710" name="qstItemVariableDefinition" desc="" />
-    <gom_type Id="4611686019152400554" name="qstSimpleBoolVariableDefinition" desc="" />
-    <gom_type Id="4611686019175340468" name="effTargetComponent" desc="" />
-    <gom_type Id="4611686019176460964" name="effAppearanceDatatable" desc="" />
-    <gom_type Id="4611686019191269723" name="qstStringIdVariableDefinition" desc="" />
-    <gom_type Id="4611686019209900121" name="spnSpawner" desc="" />
-    <gom_type Id="4611686019215470003" name="guiDeathScreenComponent" desc="" />
-    <gom_type Id="4611686019220580007" name="guiDeathScreenAbility" desc="" />
-    <gom_type Id="4611686019236497558" name="spnMedCenterComponent" desc="" />
-    <gom_type Id="4611686019238860002" name="jamClientTest" desc="" />
-    <gom_type Id="4611686019240070384" name="itmUsableComponent" desc="" />
-    <gom_type Id="4611686019241776063" name="qstState" desc="" />
-    <gom_type Id="4611686019252632532" name="itmRestrictedComponent" desc="" />
-    <gom_type Id="4611686019310026634" name="sndEventDatatable" desc="" />
-    <gom_type Id="4611686019395700001" name="spnSpawnerAnchor" desc="" />
-    <gom_type Id="4611686019401391130" name="spnPlaceable" desc="" />
-    <gom_type Id="4611686019406021189" name="sysFxSystem" desc="" />
-    <gom_type Id="4611686019412350019" name="guiFlyTextNode" desc="" />
-    <gom_type Id="4611686019431920010" name="guiFlyTextData" desc="" />
-    <gom_type Id="4611686019453790042" name="sl" desc="" />
-    <gom_type Id="4611686019453826010" name="ablTemplate" desc="" />
-    <gom_type Id="4611686019564250024" name="utlTemplateOracle" desc="" />
-    <gom_type Id="4611686019631751166" name="brkOwnerComponent" desc="" />
-    <gom_type Id="4611686019706195778" name="ablCustomComponent" desc="" />
-    <gom_type Id="4611686019729550001" name="sndFootstepOwnerComponent" desc="" />
-    <gom_type Id="4611686019761970021" name="deo2" desc="" />
-    <gom_type Id="4611686019802850029" name="chrSpatialTrigger" desc="" />
-    <gom_type Id="4611686019907803020" name="chrClassComponent" desc="" />
-    <gom_type Id="4611686019993680001" name="qaMoveTest" desc="" />
-    <gom_type Id="4611686020010482530" name="qstUtilityIntVariableDefinition" desc="" />
-    <gom_type Id="4611686020015894512" name="plcOracle" desc="" />
-    <gom_type Id="4611686020039490760" name="chrExplorationComponent" desc="" />
-    <gom_type Id="4611686020211170560" name="effEventOracle" desc="" />
-    <gom_type Id="4611686020803420720" name="mpnMapNoteOracle" desc="" />
-    <gom_type Id="4611686020819070013" name="mapContainer" desc="" />
-    <gom_type Id="4611686020947656569" name="qstMapNoteVariableDefinition" desc="" />
-    <gom_type Id="4611686021108314370" name="cbtRewardComponent" desc="" />
-    <gom_type Id="4611686021169765940" name="conLootHopperComponent" desc="" />
-    <gom_type Id="4611686022034990028" name="staStunAnim" desc="" />
-    <gom_type Id="4611686022204890004" name="appOracle" desc="" />
-    <gom_type Id="4611686022543170028" name="chrBehave" desc="" />
-    <gom_type Id="4611686022576750013" name="qstHolocomCallState" desc="" />
-    <gom_type Id="4611686022624791177" name="npcHolocomComponent" desc="" />
-    <gom_type Id="4611686022713150009" name="kynEntityComponent" desc="" />
-    <gom_type Id="4611686022825710031" name="FxEventNode" desc="" />
-    <gom_type Id="4611686023023154852" name="itmConversationComponent" desc="" />
-    <gom_type Id="4611686023046591016" name="plcConversationItemComponent" desc="" />
-    <gom_type Id="4611686023225426206" name="chrLooterComponent" desc="" />
-    <gom_type Id="4611686023300350030" name="chrBehaveAnimCache" desc="" />
-    <gom_type Id="4611686023460934385" name="chrCharacter" desc="" />
-    <gom_type Id="4611686023628010029" name="cbtVisComponent" desc="" />
-    <gom_type Id="4611686023950190010" name="chrBehaviorRecorder" desc="" />
-    <gom_type Id="4611686024557010002" name="sndBankOracle" desc="" />
-    <gom_type Id="4611686024579070006" name="gpvViewable" desc="" />
-    <gom_type Id="4611686024974510006" name="stgActor" desc="" />
-    <gom_type Id="4611686025029775447" name="phsOracle" desc="" />
-    <gom_type Id="4611686025128290043" name="stgPreviewController" desc="" />
-    <gom_type Id="4611686025228662304" name="qstInstanceVariableDefinition" desc="" />
-    <gom_type Id="4611686025245195268" name="cvrOracle" desc="" />
-    <gom_type Id="4611686025295935111" name="tstOracle" desc="" />
-    <gom_type Id="4611686025546397780" name="tstFixture" desc="" />
-    <gom_type Id="4611686025669311862" name="HBNode" desc="" />
-    <gom_type Id="4611686025717630004" name="utlMeshTriIndexes" desc="" />
-    <gom_type Id="4611686025915590057" name="stgCameraInterface" desc="" />
-    <gom_type Id="4611686025961044684" name="qstLeaf" desc="" />
-    <gom_type Id="4611686026161350007" name="preOracle" desc="" />
-    <gom_type Id="4611686026175330002" name="cbtOracleCoverVisBuild" desc="" />
-    <gom_type Id="4611686026410550003" name="chrBehaviorCover" desc="" />
-    <gom_type Id="4611686026525870001" name="cvrDebugger" desc="" />
-    <gom_type Id="4611686026564830020" name="cvrDebuggerBuilder" desc="" />
-    <gom_type Id="4611686026567772027" name="hydOAV" desc="" />
-    <gom_type Id="4611686026710280630" name="hydScriptComponent" desc="" />
-    <gom_type Id="4611686026914850759" name="mpnMapNoteInfo" desc="" />
-    <gom_type Id="4611686027152384535" name="hydToolboxObject" desc="" />
-    <gom_type Id="4611686027462983798" name="tstCowFields" desc="" />
-    <gom_type Id="4611686027467660321" name="tstCowSubclass" desc="" />
-    <gom_type Id="4611686027621091409" name="tstReplication" desc="" />
-    <gom_type Id="4611686027752370007" name="guiPreviewWindow" desc="" />
-    <gom_type Id="4611686028139070003" name="jww" desc="" />
-    <gom_type Id="4611686028292780568" name="vehOracle" desc="" />
-    <gom_type Id="4611686028309870752" name="spnVehicle" desc="" />
-    <gom_type Id="4611686028410001183" name="phsEntity" desc="" />
-    <gom_type Id="4611686028439990439" name="chrCustomizationDatatable" desc="" />
-    <gom_type Id="4611686028440039955" name="FxPlaceableInstance" desc="" />
-    <gom_type Id="4611686028440041722" name="_FxPlaceableWritableInstanceProperties" desc="" />
-    <gom_type Id="4611686028455071780" name="qa2209" desc="" />
-    <gom_type Id="4611686028484870005" name="FxPlaceableNode" desc="" />
-    <gom_type Id="4611686028572833796" name="phyBallisticParabola" desc="" />
-    <gom_type Id="4611686028671875072" name="pthOracle" desc="" />
-    <gom_type Id="4611686028733875075" name="phyBallisticSimulator" desc="" />
-    <gom_type Id="4611686028739383686" name="chrBallisticSimulator" desc="" />
-    <gom_type Id="4611686028781679182" name="tst_phyBallisticSimulator" desc="" />
-    <gom_type Id="4611686029010975068" name="hydTrigger" desc="" />
-    <gom_type Id="4611686029248179278" name="tstReplicationServerOnly" desc="" />
-    <gom_type Id="4611686029292670010" name="effEffectSharedVarComponent" desc="" />
-    <gom_type Id="4611686029813270015" name="davetest" desc="" />
-    <gom_type Id="4611686029845070011" name="appGarmentHue" desc="" />
-    <gom_type Id="4611686029857367645" name="phsGateway" desc="" />
-    <gom_type Id="4611686029944370005" name="itmStackableComponent" desc="" />
-    <gom_type Id="4611686029995170000" name="jfSharedClass" desc="" />
-    <gom_type Id="4611686030028285359" name="aiHydraCommandState" desc="" />
-    <gom_type Id="4611686030163270030" name="hydTriggerBlock" desc="" />
-    <gom_type Id="4611686030311570002" name="tstSlottedReplication" desc="" />
-    <gom_type Id="4611686030325460478" name="pthPathTemplate" desc="" />
-    <gom_type Id="4611686030434370053" name="bwaConstNode" desc="" />
-    <gom_type Id="4611686030698670030" name="jasonfclient" desc="" />
-    <gom_type Id="4611686030912070002" name="cnvAmbientOracle" desc="" />
-    <gom_type Id="4611686030981070013" name="chrBehaviorLookAtMan_TargetInfo" desc="" />
-    <gom_type Id="4611686031032576518" name="jma" desc="" />
-    <gom_type Id="4611686031190870001" name="ablContainer" desc="" />
-    <gom_type Id="4611686031657870009" name="appModelData" desc="" />
-    <gom_type Id="4611686031658276470" name="cnvStartInvisibleClass" desc="" />
-    <gom_type Id="4611686032472970034" name="eqpContainer" desc="" />
-    <gom_type Id="4611686033020570003" name="utlSpatialInterface" desc="" />
-    <gom_type Id="4611686033280570004" name="vndOracle" desc="" />
-    <gom_type Id="4611686033352170000" name="vndVendorComponent" desc="" />
-    <gom_type Id="4611686033408270011" name="vndItem" desc="" />
-    <gom_type Id="4611686033846370009" name="tstReadOnlyFields" desc="" />
-    <gom_type Id="4611686033846670002" name="appPlayerCustomizationSet" desc="" />
-    <gom_type Id="4611686033861670002" name="guiApiGfxUpdateVnd" desc="" />
-    <gom_type Id="4611686033869670001" name="hydTriggerEntity" desc="" />
-    <gom_type Id="4611686033882170019" name="tstEventOther" desc="" />
-    <gom_type Id="4611686034008370011" name="aiBaseAgentComponent" desc="" />
-    <gom_type Id="4611686034088170000" name="zze" desc="" />
-    <gom_type Id="4611686034156670004" name="someTestClass5" desc="" />
-    <gom_type Id="4611686034343870057" name="pcc" desc="" />
-    <gom_type Id="4611686034569970001" name="hydOracle" desc="" />
-    <gom_type Id="4611686034583370005" name="PortalNode" desc="" />
-    <gom_type Id="4611686034592370034" name="simOracle" desc="" />
-    <gom_type Id="4611686034685270083" name="phsCheckpointComponent" desc="" />
-    <gom_type Id="4611686035170370051" name="chrPcMoveTest" desc="" />
-    <gom_type Id="4611686035199970001" name="stgCameraRedirect" desc="" />
-    <gom_type Id="4611686035289070002" name="chrBehaviorPlayer" desc="" />
-    <gom_type Id="4611686035320570051" name="tstTrainerOracle" desc="" />
-    <gom_type Id="4611686035468870006" name="appHairColor" desc="" />
-    <gom_type Id="4611686035566870007" name="chrAnimActions" desc="" />
-    <gom_type Id="4611686035768670000" name="svyEvent" desc="" />
-    <gom_type Id="4611686035927570010" name="maaDestroySelfTest" desc="" />
-    <gom_type Id="4611686035933570000" name="maaTryingToBreakStuff" desc="" />
-    <gom_type Id="4611686036278770004" name="qatestnewgfh" desc="" />
-    <gom_type Id="4611686036367970022" name="stgStageBase" desc="" />
-    <gom_type Id="4611686036431470001" name="tstReadOnlyFieldsChild" desc="" />
-    <gom_type Id="4611686036489970001" name="RegionNode" desc="" />
-    <gom_type Id="4611686036501870012" name="tmrContainer" desc="" />
-    <gom_type Id="4611686036552770002" name="plcGomTest" desc="" />
-    <gom_type Id="4611686036819870029" name="qstPendingRewards" desc="" />
-    <gom_type Id="4611686036848170482" name="aiHydraOwnerComponent" desc="" />
-    <gom_type Id="4611686037013770005" name="cnvPreset" desc="" />
-    <gom_type Id="4611686037160270006" name="stgActorLookat" desc="" />
-    <gom_type Id="4611686037216170001" name="mpnTaxiNoteConnectionData" desc="" />
-    <gom_type Id="4611686037731170002" name="utlEntityBase" desc="" />
-    <gom_type Id="4611686038132070411" name="aiNpcBaseCombatState" desc="" />
-    <gom_type Id="4611686038440070003" name="ssAlexmSharedClass" desc="" />
-    <gom_type Id="4611686038571370000" name="effStackLimitComponent" desc="" />
-    <gom_type Id="4611686038836870000" name="strTranslate" desc="" />
-    <gom_type Id="4611686038874870003" name="chrWhoDetails" desc="" />
-    <gom_type Id="4611686038906770029" name="chrLocoInertial" desc="" />
-    <gom_type Id="4611686039170170021" name="areaData" desc="" />
-    <gom_type Id="4611686039217670315" name="itmModifierPackage" desc="" />
-    <gom_type Id="4611686039318070000" name="dynAttackable" desc="" />
-    <gom_type Id="4611686039462170005" name="qstRewardsPerLevel" desc="" />
-    <gom_type Id="4611686039535570001" name="dynAbility" desc="" />
-    <gom_type Id="4611686039578270030" name="chrMapNoteData" desc="" />
-    <gom_type Id="4611686040391370000" name="mytestclass" desc="" />
-    <gom_type Id="4611686042359870008" name="appNPCAppearance_Prototype" desc="" />
-    <gom_type Id="4611686042703370021" name="scPlayerShipBehavior" desc="" />
-    <gom_type Id="4611686042742277292" name="stgTemplate_Prototype" desc="" />
-    <gom_type Id="4611686042956170001" name="areaDataContainer" desc="" />
-    <gom_type Id="4611686043721970011" name="scEnemyShipBehavior" desc="" />
-    <gom_type Id="4611686044354670004" name="aniOracle" desc="" />
-    <gom_type Id="4611686047709970027" name="aaClientClassParent" desc="" />
-    <gom_type Id="4611686047778370048" name="bnkContainer" desc="" />
-    <gom_type Id="4611686048526771022" name="bnkComponent" desc="" />
-    <gom_type Id="4611686048656071022" name="malMailboxComponent" desc="" />
-    <gom_type Id="4611686050054472574" name="cnvTree_Prototype" desc="" />
-    <gom_type Id="4611686052226471021" name="mmsOracle" desc="" />
-    <gom_type Id="4611686052468731191" name="grpMemberShadow" desc="" />
-    <gom_type Id="4611686052476631224" name="pvpParticipantComponent" desc="" />
-    <gom_type Id="4611686052988231192" name="sysGSS" desc="" />
-    <gom_type Id="4611686053977031194" name="socFriend" desc="" />
-    <gom_type Id="4611686054471931191" name="socIgnore" desc="" />
-    <gom_type Id="4611686054977131191" name="tstCowEmptyClass" desc="" />
-    <gom_type Id="4611686055042431192" name="ssdaSharedClass" desc="" />
-    <gom_type Id="4611686060454731192" name="guiGFxLoadingScreen" desc="" />
-    <gom_type Id="4611686061626631191" name="qstShareRequest" desc="" />
-    <gom_type Id="4611686063381831192" name="escrow_class" desc="" />
-    <gom_type Id="4611686068857831191" name="guiColorTable" desc="" />
-    <gom_type Id="4611686075142420591" name="dcvPVPData" desc="" />
-    <gom_type Id="4611686080454214191" name="guiApiGfxExternalInterfaceCommon" desc="" />
-    <gom_type Id="4611686081722933192" name="utlTweakableInfo" desc="" />
-    <gom_type Id="4611686083942582391" name="mpnDynMpnQuestInfo" desc="" />
-    <gom_type Id="4611686085433054791" name="phsRaidPrototype" desc="" />
-    <gom_type Id="4611686085654061591" name="cnvChoreographerCamera" desc="" />
-    <gom_type Id="4611686086309461592" name="trvTravelComponent" desc="" />
-    <gom_type Id="4611686086936169991" name="ccsStageTable" desc="" />
-    <gom_type Id="4611686086996869994" name="phsRaidPhaseInfo" desc="" />
-    <gom_type Id="4611686089830069991" name="csrOracle" desc="" />
-    <gom_type Id="4611686091587869991" name="phsShipHangarPhasedInstance" desc="" />
-    <gom_type Id="4611686092003469991" name="phsShipHangarPhaseInfo" desc="" />
-    <gom_type Id="4611686092299770020" name="cnvSelectedChoice" desc="" />
-    <gom_type Id="4611686097289969991" name="prfKnownSchematic" desc="" />
-    <gom_type Id="4611686097447569991" name="grpWarzoneRaidNode" desc="" />
-    <gom_type Id="4611686101506370022" name="sysDeveloperCommands" desc="" />
-    <gom_type Id="4611686113623470021" name="sklSkillTreeData" desc="" />
-    <gom_type Id="4611686133737785041" name="chrClientCharacter" desc="" />
-    <gom_type Id="4611686142641680000" name="csrPlayerCharacter" desc="" />
-    <gom_type Id="4611686198470200000" name="effAbsorbDamageComponent" desc="" />
-    <gom_type Id="4611686226006690000" name="guiApiGfxFacialReconstruction" desc="" />
-    <gom_type Id="4611686226320920000" name="itmCurrencyComponent" desc="" />
-    <gom_type Id="4611686226321530000" name="cnvBaseFxaListPrototype" desc="" />
-    <gom_type Id="4611686237770420043" name="phsExteriorShipDoorComponent" desc="" />
-    <gom_type Id="4611686245047550000" name="hypOracle" desc="" />
-    <gom_type Id="4611686250413470000" name="guiGfxCredits" desc="" />
-    <gom_type Id="4611686250677990002" name="accEntitlementData" desc="" />
-    <gom_type Id="4611686250740650000" name="cbtAttitudeComponent" desc="" />
-    <gom_type Id="9223372036862100082" name="ablUserComponent" desc="" />
-    <gom_type Id="9223372036862140149" name="effCustomComponent" desc="" />
-    <gom_type Id="9223372036864833110" name="cbtEnemiesComponent" desc="" />
-    <gom_type Id="9223372072822270000" name="guiApiGfxUpdateChrCompanion" desc="" />
-    <gom_type Id="9223372077100370000" name="cbtCombatProfiler" desc="" />
-    <gom_type Id="9223372077276270000" name="chrBugTrackerComponent" desc="" />
-    <gom_type Id="9223372077285670005" name="bugTopicsTable" desc="" />
     <gom_type Id="4611686092973969997" name="ablDeactivateReason" desc="" />
     <gom_type Id="4611686030670470000" name="utlBarrierFxSpec" desc="" />
     <gom_type Id="4611686052773831194" name="scFiringLOD" desc="" />
@@ -9518,8 +7587,6 @@
     <gom_type Id="4611686052631131197" name="npcAggroPackage" desc="" />
     <gom_type Id="4611686060028531234" name="npclootPackage" desc="" />
     <gom_type Id="4611686061871131196" name="npcAbilityPackage" desc="reference to apn node with list of abilities" />
-    <gom_type Id="4611686062713031205" name="plcHydraRef" desc="" />
-    <gom_type Id="4611686031667369998" name="spnDifficultyLevelFlags" desc="WRONG ID ???" />
     <gom_type Id="4611686295973200011" name="macrobinocularId" desc="" />
     <gom_type Id="4611686068023431258" name="creditRewardType" desc="" />
     <gom_type Id="4611686029683576633" name="spawnType" desc="" />
@@ -9739,7 +7806,6 @@
   <!-- <gom_type Id="4611686301449164014" name="" desc="" />
   <gom_type Id="4611686302046414082" name="" desc="" /> -->
   <gom_type Id="4611686351490967000" name="decIsAllCategory" desc="Whether this is the All category" />
-  <gom_type Id="4611686351490967000" name="decIsAllSubCategory" desc="Whether this is an All subcategory" />
   <gom_type Id="4611686351516047000" name="decParentCategory" desc="Id of the parent category of this subcategory" />
   <!-- decorationsPrototype -->
   <gom_type Id="4611686301449164014" name="decUnlockedViaItemTable" desc="Boolean list of decorations unlocked via item" />

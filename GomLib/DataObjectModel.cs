@@ -15,7 +15,8 @@ namespace GomLib
         public Dictionary<Type, Dictionary<string, DomType>> nodeLookup = new Dictionary<Type, Dictionary<string, DomType>>();
         public Dictionary<ulong, DomType> DomTypeMap { get; set; }
         private DomTypeLoaders.FileInstanceLoader prototypeLoader = new DomTypeLoaders.FileInstanceLoader();
-        private Dictionary<ulong, string> StoredNameMap { get; set; }
+        private Dictionary<string, ulong> StoredNameMap { get; set; }
+        private Dictionary<ulong, string> StoredIdMap { get; set; }
         public Dictionary<ulong, HashSet<string>> UnNamedMap { get; set; }
 
         private List<string> BucketFiles { get; set; }
@@ -43,9 +44,9 @@ namespace GomLib
             AddTypeLoader(new DomTypeLoaders.ClassLoader());
             AddTypeLoader(new DomTypeLoaders.InstanceLoader());
 
-            StoredNameMap = new Dictionary<ulong, string>();
+            StoredNameMap = new Dictionary<string, ulong>();
+            StoredIdMap = new Dictionary<ulong, string>();
             UnNamedMap = new Dictionary<ulong, HashSet<string>>();
-            LoadTypeNames();
         }
 
         public Data data;
@@ -174,19 +175,19 @@ namespace GomLib
         public string GetStoredTypeName(ulong id)
         {
             string result;
-            if (StoredNameMap.TryGetValue(id, out result))
+            if (StoredIdMap.TryGetValue(id, out result))
             {
                 return result;
             }
 
             return null;
         }
-        public ulong GetStoredTypeId(string name) {
-            foreach (KeyValuePair<ulong, string> obj in StoredNameMap)
-            {
-                if (obj.Value == name) return obj.Key;
-            }
-            return 0UL;
+        public ulong GetStoredTypeId(string name)
+        {
+            ulong id = 0;
+            StoredNameMap.TryGetValue(name, out id);
+
+            return id;
         }
 
         private void LoadTypeNames()
@@ -204,7 +205,9 @@ namespace GomLib
                     node.MoveToParent();
                     node.MoveToAttribute("name", "");
                     string name = node.Value;
-                    StoredNameMap[id] = name;
+
+                    StoredNameMap.Add(name, id);
+                    StoredIdMap.Add(id, name);
                 }
             }
         }
@@ -355,7 +358,8 @@ namespace GomLib
                 nodeLookup = new Dictionary<Type, Dictionary<string, DomType>>();
                 DomTypeMap = new Dictionary<ulong, DomType>();
                 prototypeLoader = new DomTypeLoaders.FileInstanceLoader();
-                StoredNameMap = new Dictionary<ulong, string>();
+                StoredNameMap = new Dictionary<string, ulong>();
+                StoredIdMap = new Dictionary<ulong, string>();
 
                 BucketFiles = new List<string>();
 
@@ -581,7 +585,7 @@ namespace GomLib
                             if (String.IsNullOrEmpty(domType.Name))
                             {
                                 string storedTypeName;
-                                if (StoredNameMap.TryGetValue(domType.Id, out storedTypeName))
+                                if (StoredIdMap.TryGetValue(domType.Id, out storedTypeName))
                                 {
                                     domType.Name = storedTypeName;
                                 }
