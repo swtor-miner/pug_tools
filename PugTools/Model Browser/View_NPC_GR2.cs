@@ -185,7 +185,7 @@ namespace tor_tools
             this.globalBoxMin = new Vector3(focus.global_box.minX, focus.global_box.minY, focus.global_box.minZ);
             this.globalBoxMax = new Vector3(focus.global_box.maxX, focus.global_box.maxY, focus.global_box.maxZ);
             this.globalBoxCenter = globalBoxMin + (globalBoxMax - globalBoxMin) / 2;
-            this.cameraPos = new Vector3(globalBoxCenter.X, globalBoxCenter.Y, (globalBoxCenter.Z + 1.0f));
+            this.cameraPos = new Vector3(globalBoxCenter.X * 2.5f, globalBoxCenter.Y* 2.5f, (Math.Max(Math.Max(globalBoxMax.X, globalBoxMax.Y), globalBoxMax.Z) * 2.5f /*+ 1.0f*/));
 
             this._useFpsCamera = false;
             this._cam.Reset();
