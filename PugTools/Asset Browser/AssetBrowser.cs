@@ -156,12 +156,12 @@ namespace tor_tools
             HashSet<string> fileDirs = new HashSet<string>();
             HashSet<string> allDirs = new HashSet<string>();
 
-            int intAllCount = 0;
+            int intNamCount = 0;
             int intModCount = 0;
             int intNewCount = 0;
             int intUnnCount = 0;
 
-            const string prefixAll = "/root/all";
+            const string prefixNam = "/root/named";
             const string prefixNew = "/root/new";
             const string prefixMod = "/root/modified";
             const string prefixUnn = "/root/unnamed";
@@ -179,7 +179,7 @@ namespace tor_tools
                     foreach (var file in arch.Value.files)
                     {
                         HashFileInfo hashInfo = new HashFileInfo(file.FileInfo.ph, file.FileInfo.sh, file);
-                        string prefixDir = prefixAll + hashInfo.Directory;
+                        string prefixDir = prefixNam + hashInfo.Directory;
 
                         if (hashInfo.IsNamed)
                         {
@@ -191,7 +191,7 @@ namespace tor_tools
                             TreeListItem assetAll = new TreeListItem(prefixDir + "/" + hashInfo.FileName, prefixDir, hashInfo.FileName, hashInfo);
                             assetDict.Add(prefixDir + "/" + hashInfo.FileName, assetAll);
                             fileDirs.Add(prefixDir);
-                            intAllCount++;
+                            intNamCount++;
 
                             if (hashInfo.FileState == HashFileInfo.State.New)
                             {
@@ -210,13 +210,8 @@ namespace tor_tools
                         }
                         else
                         {
-                            hashInfo.Directory = "/unknown/" + hashInfo.Source.Replace(".tor", string.Empty);
-
-                            TreeListItem assetAll = new TreeListItem(prefixDir + "/" + hashInfo.Extension + "/" + hashInfo.FileName + "." + hashInfo.Extension, prefixDir + "/" + hashInfo.Extension, hashInfo.FileName + "." + hashInfo.Extension, hashInfo);
-                            assetDict.Add(prefixDir + "/" + hashInfo.Extension + "/" + hashInfo.FileName + "." + hashInfo.Extension, assetAll);
-                            fileDirs.Add(prefixDir + "/" + hashInfo.Extension);
-                            intAllCount++;
-
+                            hashInfo.Directory = "/" + hashInfo.Source.Replace(".tor", string.Empty);
+                           
                             TreeListItem assetUnn = new TreeListItem(prefixUnn + hashInfo.Directory + "/" + hashInfo.Extension + "/" + hashInfo.FileName + "." + hashInfo.Extension, prefixUnn + hashInfo.Directory + "/" + hashInfo.Extension, hashInfo.FileName + "." + hashInfo.Extension, hashInfo);
                             assetDict.Add(prefixUnn + hashInfo.Directory + "/" + hashInfo.Extension + "/" + hashInfo.FileName + "." + hashInfo.Extension, assetUnn);
                             fileDirs.Add(prefixUnn + hashInfo.Directory + "/" + hashInfo.Extension);
@@ -247,7 +242,7 @@ namespace tor_tools
 
             HashFileInfo empty = new HashFileInfo(0, 0, null);
             assetDict.Add("/root", new TreeListItem("/root", string.Empty, "Root", empty));
-            assetDict.Add("/root/all", new TreeListItem("/root/all", "/root", "All Files (" + intAllCount + ")", empty));
+            assetDict.Add("/root/named", new TreeListItem("/root/named", "/root", "Named Files (" + intNamCount + ")", empty));
             assetDict.Add("/root/modified", new TreeListItem("/root/modified", "/root", "Modified Files (" + intModCount + ")", empty));
             assetDict.Add("/root/new", new TreeListItem("/root/new", "/root", "New Files (" + intNewCount + ")", empty));
             assetDict.Add("/root/unnamed", new TreeListItem("/root/unnamed", "/root", "Unnamed Files (" + intUnnCount + ")", empty));
