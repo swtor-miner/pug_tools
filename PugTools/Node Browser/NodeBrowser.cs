@@ -624,7 +624,7 @@ namespace tor_tools
             if(result == DialogResult.Yes)
             {
                 DialogResult resultBuild = MessageBox.Show("Build CSV File?", "Build CSV", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result == DialogResult.Yes)
+                if (resultBuild == DialogResult.Yes)
                 {
                     BuildCSV = true;
                 }
