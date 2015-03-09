@@ -875,7 +875,7 @@ namespace tor_tools
                 case "GomLib.Models.Schematic": return SchematicToXElement((GomLib.Models.Schematic)item);*/
                 case "GomLib.Models.Decoration": 
                 //case "GomLib.Models.ItemAppearance": return ItemAppearanceToXElement((GomLib.Models.ItemAppearance)item);*/
-                case "GomLib.Models.Conquest": return ((GomLib.Models.GameObject)item).ToString(!overrideVerbose);
+                case "GomLib.Models.Conquest": return ((GomLib.Models.PseudoGameObject)item).ToString(!overrideVerbose);
                 default: break;
             }
             return null;
