@@ -68,6 +68,7 @@ namespace tor_tools
         private HashSet<string> extractExtensions = new HashSet<string>();
         private int extractCount = 0;
         private ulong modNewCount = 0;
+        private int foundNewFileCount = 0;
 
         public AssetBrowser(string assetLocation, bool usePTS, string extractLocation)
         {
@@ -1259,6 +1260,8 @@ namespace tor_tools
             if (result == System.Windows.Forms.DialogResult.OK)
             {
                 disableUI();
+                this.totalFilesSearched = 0;
+                this.totalNamesFound = 0;
                 this.dataGridView1.Enabled = true;
                 List<string> extensions = new List<string>();                
                 extensions = testFile.getTypes();                
@@ -1297,6 +1300,7 @@ namespace tor_tools
                 dt.Rows.Add(new string[] { "Total Files Found", this.foundFiles.Count().ToString("n0") });
                 hideLoader();
                 string finished = "Parsed " + this.totalNamesFound.ToString("n0") + " Potential File Names\r\n\r\nFound " + this.foundFiles.Count().ToString("n0") + " New Files";
+                this.foundNewFileCount += this.foundFiles.Count();
                 this.toolStripStatusLabel1.Text = finished;
                 MessageBox.Show(finished, "File Finder Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -1306,9 +1310,9 @@ namespace tor_tools
         {
             _closing = true;
 
-            if (hashData.dictionary.needsSave && this.modNewCount > 2)
+            if (hashData.dictionary.needsSave && (this.modNewCount > 2 || this.foundNewFileCount > 0))
             {   
-                DialogResult save = MessageBox.Show("The hash dictionary needs to be saved. \nSave the dictionary changes?", "Save Dictionary?", MessageBoxButtons.YesNo);
+                DialogResult save = MessageBox.Show("The hash dictionary needs to be saved. \nThere were " + this.foundNewFileCount.ToString() + " new files found this session.\n\nSave the dictionary changes?", "Save Dictionary?", MessageBoxButtons.YesNo);
                 if (save == DialogResult.Yes)
                 {
                     hashData.dictionary.SaveHashList();
@@ -1442,6 +1446,7 @@ namespace tor_tools
                 }
                 hideLoader();
                 string finished = "Found " + this.foundFiles.Count().ToString("n0") + " New Files";
+                this.foundNewFileCount += this.foundFiles.Count();
                 this.toolStripStatusLabel1.Text = finished;
                 MessageBox.Show(finished, "Test Hash File Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 enableUI();
