@@ -1147,9 +1147,7 @@ namespace tor_tools
                 case "PRT":
                     Format_PRT prt_reader = new Format_PRT(this.extractPath, extension);
                     foreach (TreeListItem asset in matches)
-                    {
-                        if (asset.hashInfo.IsNamed)
-                            continue;
+                    {                        
                         this.filesSearched++;
                         Stream assetStream = asset.hashInfo.file.OpenCopyInMemory();
                         prt_reader.parsePRT(assetStream, asset.hashInfo.Directory + "/" + asset.hashInfo.FileName);                
@@ -1174,9 +1172,7 @@ namespace tor_tools
                 case "BNK":
                     Format_BNK bnk_reader = new Format_BNK(this.extractPath, extension);
                     foreach (TreeListItem asset in matches)
-                    {
-                        if (asset.hashInfo.IsNamed)
-                            continue;
+                    {                        
                         this.filesSearched++;
                         Stream assetStream = asset.hashInfo.file.OpenCopyInMemory();
                         bnk_reader.parseBNK(assetStream, asset.hashInfo.Directory + "/" + asset.hashInfo.FileName);

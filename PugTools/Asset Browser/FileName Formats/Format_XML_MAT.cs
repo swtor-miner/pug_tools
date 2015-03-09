@@ -93,8 +93,21 @@ namespace tor_tools
                                 }
                             }
                         }
-                        actionName += ".jba";                          
-                        fileNames.Add(fullDirectory + actionName);
+                        actionName += ".jba";
+                        if (fullDirectory.Contains("/humanoid/humanoid/"))
+                        {                            
+                            fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfanew/") + actionName);
+                            fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfbnew/") + actionName);
+                            fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfnnew/") + actionName);
+                            fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfsnew/") + actionName);
+
+                            fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmanew/") + actionName);
+                            fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmfnew/") + actionName);
+                            fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmnnew/") + actionName);
+                            fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmsnew/") + actionName);
+                        }
+                        else
+                            fileNames.Add(fullDirectory + actionName);
                     }
                     var networkList = doc.Element("aam").Element("networks").Descendants("literal");
                     foreach (var network in networkList)

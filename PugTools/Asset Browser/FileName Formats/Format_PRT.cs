@@ -30,18 +30,42 @@ namespace tor_tools
                 test = test.Replace("Name=", "");
                 test = test.Replace("EmitSpec=", "");
                 test = test.Replace("Trail", "");
-                test = test.Replace("Texture", "/");
+                test = test.Replace("Texture_Purple", "");
+                test = test.Replace("Texture_Blue", "");
+                test = test.Replace("Texture_Red", "");
+                test = test.Replace("Texture_Green", "");
+                test = test.Replace("Texture_White", "");
+                test = test.Replace("Texture_Yellow", "");
+                test = test.Replace("Texture_Orange", "");
+                test = test.Replace("Texture", "/");                
+                test = test.Replace("GrannyFile", "");
+                test = test.Replace("EmitFXSpec=", "");
+                test = test.Replace("EmitAtDeathSpec=", "");
                 test = test.Replace("=", "");
                 test = test.Replace("\\", "/");
                 test = test.Replace("//", "/");
+                test = test.ToLower();
 
                 if (test.Contains(".prt"))
-                    fileNames.Add("/resources" + test);
+                {
+                    if (!test.Contains("/art/fx/particles/"))
+                        fileNames.Add("/resources/art/fx/particles/" + test);
+                    else
+                        fileNames.Add("/resources" + test);
+                }
                 else if (test.Contains(".dds"))
                 {
                     fileNames.Add("/resources" + test);
                     fileNames.Add("/resources" + test.Replace(".dds", ".tiny.dds"));
                     fileNames.Add("/resources" + test.Replace(".dds", ".tex"));
+                }
+                else if (test.Contains(".fxspec"))
+                {
+                    fileNames.Add("/resources" + test);
+                }
+                else if (test.Contains(".gr2"))
+                {
+                    fileNames.Add("/resources" + test);
                 }
             }        
         }
