@@ -1439,7 +1439,7 @@ namespace tor_tools
             SQLInitStore transInit;
             if (initTable.TryGetValue(xmlRoot, out transInit)) //verify that there is an SQL Transaction Query for this object type
             {
-                WriteFile(transInit.InitBegin + n, filename, false);
+                WriteFile(transInit.InitBegin + "(" + n, filename, false);
                 if (sql)
                     sqlTransactionsInitialize(transInit.InitBegin, transInit.InitEnd); //initialize the SQL tranaction if direct SQL output is enabled.
             }
@@ -1452,7 +1452,7 @@ namespace tor_tools
             foreach (var itm in itmList)
             {
                 if (i == count - 1)
-                    joiner = ";";
+                    joiner = ");";
                 progressUpdate(i, count);
 
                 if (e > 10000)

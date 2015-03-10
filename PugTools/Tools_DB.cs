@@ -161,7 +161,7 @@ Pushback = IF(@update_record, VALUES(Pushback), Pushback),
 IgnoreAlacrity = IF(@update_record, VALUES(IgnoreAlacrity), IgnoreAlacrity),
 Hash = IF(@update_record, VALUES(Hash), Hash);")},
                     {"AchCategories", new SQLInitStore(
-                    "INSERT INTO `achcategories` (`current_version`, `previous_version`, `CatId`, `Name`, NameId`, `Index`, `ParentCatId`, `CodexIcon`, `Icon`, `SubCategories`, `Rows`, `Hash`) VALUES ",
+                    "INSERT INTO `achcategories` (`current_version`, `previous_version`, `CatId`, `Name`, `NameId`, `Index`, `ParentCatId`, `CodexIcon`, `Icon`, `SubCategories`, `Rows`, `Hash`) VALUES ",
                     @"ON DUPLICATE KEY UPDATE 
 previous_version = IF((@update_record := (Hash <> VALUES(Hash))), current_version, previous_version),
 current_version = IF(@update_record, VALUES(current_version), current_version),
