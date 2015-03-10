@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
@@ -74,6 +76,26 @@ namespace GomLib.Models
             //TODO: Achievements
 
             return true;
+        }
+
+        public override string ToSQL(string patchVersion)
+        {
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            settings.NullValueHandling = NullValueHandling.Ignore;
+            string subcat = JsonConvert.SerializeObject(SubCategories, settings);
+            string rows = JsonConvert.SerializeObject(Rows, settings);
+
+            string s = "', '";
+            string value = "('" + sqlSani(patchVersion) + s + s + CatId + s + sqlSani(Name) + s + NameId + s + Index + s + ParentCategory + s + sqlSani(CodexIcon) + s + sqlSani(Icon) + s + sqlSani(subcat) + s + sqlSani(rows) + s + GetHashCode() + "')";
+            return value;
+        }
+
+        public override XElement ToXElement(bool verbose)
+        {
+            XElement item = new XElement("AchievementCategory");
+
+            item.Add(new XElement("UnImplemented"));
+            return item;
         }
     }
     public class AchievementCategoryEntry

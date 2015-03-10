@@ -8,7 +8,7 @@ namespace GomLib.ModelLoader
 {
     public class AchievementCategoryLoader
     {
-        Dictionary<object, object> idLookup;
+        public Dictionary<object, object> achCategoriesData;
 
         DataObjectModel _dom;
 
@@ -20,16 +20,30 @@ namespace GomLib.ModelLoader
 
         public void Flush()
         {
-            idLookup = new Dictionary<object, object>();
+            achCategoriesData = new Dictionary<object, object>();
         }
 
-        public Models.AchievementCategory Load(Models.AchievementCategory model, GomObjectData obj)
+        public Models.AchievementCategory Load(long id)
+        {
+            if (achCategoriesData.Count == 0)
+            {
+                achCategoriesData = _dom.GetObject("achCategoriesTable_Prototype").Data.Get<Dictionary<object, object>>("achCategoriesData");
+            }
+            object achData = new object();
+            achCategoriesData.TryGetValue(id, out achData);
+
+            Models.AchievementCategory ach = new AchievementCategory();
+            return Load(ach, id, (GomObjectData)achData);
+        }
+
+        public Models.AchievementCategory Load(Models.AchievementCategory model, long Id, GomObjectData obj)
         {
             if (obj == null) { return model; }
             if (model == null) { return null; }
 
             //model.NodeId = obj.ValueOrDefault<long>("repGroupInfoId", 0);
 
+            model.CatId = Id;
             model.Icon = obj.ValueOrDefault<string>("achCategoriesIcon", "");
             model.CodexIcon = obj.ValueOrDefault<string>("achCategoriesCodexIcon", "");
             model.NameId = obj.ValueOrDefault<ulong>("achCategoriesStrRetrID");
@@ -43,7 +57,7 @@ namespace GomLib.ModelLoader
             {
                 model.SubCategories.Add(subcat);
             }
-            model.ParentCategory = obj.ValueOrDefault<long>("achCategoriesAchID");
+            model.ParentCategory = obj.ValueOrDefault<long>("achCategoriesParentCat");
 
             //Achievements
             model.Rows = new List<List<AchievementCategoryEntry>>();
@@ -53,7 +67,7 @@ namespace GomLib.ModelLoader
                 foreach (KeyValuePair<object, object> achievement in (Dictionary<object, object>)achRow.Value) 
                 {
                     AchievementCategoryEntry tmpEntry = new AchievementCategoryEntry();
-                    tmpEntry.Id = ((GomObjectData)achievement.Value).ValueOrDefault<ulong>("achCategoriesParentCat");
+                    tmpEntry.Id = ((GomObjectData)achievement.Value).ValueOrDefault<ulong>("achCategoriesAchID");
                     tmpEntry.DrawArrow = ((GomObjectData)achievement.Value).ValueOrDefault<bool>("achCategoriesLinkedAch");
                     tmpRow.Add(tmpEntry);
                 }

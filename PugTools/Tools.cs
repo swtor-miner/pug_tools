@@ -77,7 +77,8 @@ namespace tor_tools
                 "Strongholds",
                 "Conquests",                
                 "Advanced Classes",
-                "FindNewMtxImages"
+                "FindNewMtxImages",
+                "AchCategories"
             });
             comboBoxExtractTypes.SelectedIndex = 0;
             cbxExtractFormat.SelectedIndex = 0;

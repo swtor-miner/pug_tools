@@ -211,7 +211,7 @@ namespace tor_tools
                 progressUpdate(i, count);
                 object curData;
                 mtxDataProto.TryGetValue(id, out curData);
-                GomLib.Models.PseudoGameObject curObj = LoadProtoObject("MtxStoreFronts", currentDom, id, curData);
+                GomLib.Models.PseudoGameObject curObj = PseudoGameObject.Load("MtxStoreFronts", currentDom, id, curData);
                 string filename = String.Format("/resources/gfx/mtxstore/{0}_400x400.dds", ((MtxStorefrontEntry)curObj).Icon);
                 if (!icons.ContainsValue(filename)) icons.Add(FileNameToHash(filename), filename);
                 i++;
@@ -221,7 +221,7 @@ namespace tor_tools
                 progressUpdate(i, count);
                 object curData;
                 colDataProto.TryGetValue(id, out curData);
-                GomLib.Models.PseudoGameObject curObj = LoadProtoObject("Collections", currentDom, id, curData);
+                GomLib.Models.PseudoGameObject curObj = PseudoGameObject.Load("Collections", currentDom, id, curData);
                 string filename = String.Format("/resources/gfx/mtxstore/{0}.dds", ((Collection)curObj).Icon);
                 if (!icons.ContainsValue(filename)) icons.Add(FileNameToHash(filename), filename);
                 i++;

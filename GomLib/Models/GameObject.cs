@@ -163,12 +163,57 @@ namespace GomLib.Models
         public override string ToString() { return ToString(true); }
         public virtual string ToString(bool verbose) { return ""; }
 
+        public virtual string ToSQL(string patchVersion) { return "Unsupported"; }
+
         public virtual XElement ToXElement() { return ToXElement(true); }
         public virtual XElement ToXElement(bool verbose) { return new XElement("NotImplemented", this.GetType().ToString()); }
+
+        public static PseudoGameObject Load(string xmlRoot, DataObjectModel dom, object id, object gomObjectData)
+        {
+            switch (xmlRoot)
+            {
+                case "MtxStoreFronts":
+                    GomLib.Models.MtxStorefrontEntry mtx = new GomLib.Models.MtxStorefrontEntry();
+                    dom.mtxStorefrontEntryLoader.Load(mtx, (long)id, (GomObjectData)gomObjectData);
+                    return mtx;
+                case "Collections":
+                    GomLib.Models.Collection col = new GomLib.Models.Collection();
+                    dom.collectionLoader.Load(col, (long)id, (GomObjectData)gomObjectData);
+                    return col;
+                case "Companions":
+                    GomLib.Models.Companion cmp = new GomLib.Models.Companion();
+                    dom.companionLoader.Load(cmp, (ulong)id, (GomObjectData)gomObjectData);
+                    return cmp;
+                case "Ships":
+                    GomLib.Models.scFFShip ship = new GomLib.Models.scFFShip();
+                    dom.scFFShipLoader.Load(ship, (long)id, (GomObjectData)gomObjectData);
+                    return ship;
+                case "Conquests":
+                    GomLib.Models.Conquest cnq = new GomLib.Models.Conquest();
+                    dom.conquestLoader.Load(cnq, (long)id, (GomObjectData)gomObjectData);
+                    return cnq;
+                /*case "AdvancedClasses":
+                    GomLib.Models.PlayerClass dis = new GomLib.Models.PlayerClass();
+                    dom.disciplineLoader.LoadClass(dis, (ulong)id, ((List<Object>)gomObjectData).ToList().ConvertAll(x => (GomObjectData)x));
+                    return dis;*/
+                case "AchCategories":
+                    GomLib.Models.AchievementCategory ach = new GomLib.Models.AchievementCategory();
+                    dom.achievementCategoryLoader.Load(ach, (long)id, (GomObjectData)gomObjectData);
+                    return ach;
+                default:
+                    throw new IndexOutOfRangeException();
+            }
+        }
 
         public virtual HashSet<string> GetDependencies()
         {
             return new HashSet<string>();
+        }
+
+        public static string sqlSani(string str)
+        {
+            if (str == null) return "";
+            return MySql.Data.MySqlClient.MySqlHelper.EscapeString(str);
         }
     }
 

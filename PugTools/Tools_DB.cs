@@ -58,7 +58,7 @@ namespace tor_tools
             public static Dictionary<string, SQLInitStore> initTable = new Dictionary<string, SQLInitStore>
             {
                 {"Items", new SQLInitStore(
-                    "INSERT INTO item (current_version, previous_version, Name, NodeId, NameId, Fqn, ItemLevel, RequiredLevel, AppearanceColor, ArmorSpec, Binding, CombinedRating, CombinedRequiredLevel, CombinedStatModifiers, ConsumedOnUse, Conversation, ConversationFqn, DamageType, Description, DescriptionId, DisassembleCategory, Durability, EnhancementCategory, EnhancementSlots, EnhancementSubCategory, EnhancementType, EquipAbilityId, GiftRank, GiftType, Icon, IsModdable, MaxStack, ModifierSpec, MountSpec, Quality, Rating, RequiredAlignmentInverted, RequiredClasses, RequiredGender, RequiredProfession, RequiredProfessionLevel, RequiredSocialTier, RequiredValorRank, RequiresAlignment, RequiresSocial, Schematic, SchematicId, ShieldSpec, Slots, StatModifiers, SubCategory, TreasurePackageId, TreasurePackageSpec, UniqueLimit, UseAbilityId, Value, VendorStackSize, WeaponSpec, TypeBitSet, Hash, StackCount, MaxDurability, WeaponAppSpec, Model, ImperialVOModulation, RepublicVOModulation) VALUES ",
+                    "INSERT INTO item (current_version, previous_version, Name, NodeId, NameId, Fqn, ItemLevel, RequiredLevel, AppearanceColor, ArmorSpec, Binding, CombinedRating, CombinedRequiredLevel, CombinedStatModifiers, ConsumedOnUse, ConversationFqn, DamageType, Description, DescriptionId, DisassembleCategory, Durability, EnhancementCategory, EnhancementSlots, EnhancementSubCategory, EnhancementType, EquipAbilityId, GiftRank, GiftType, Icon, IsModdable, MaxStack, ModifierSpec, MountSpec, Quality, Rating, RequiredAlignmentInverted, RequiredClasses, RequiredGender, RequiredProfession, RequiredProfessionLevel, RequiredSocialTier, RequiredValorRank, RequiresAlignment, RequiresSocial, SchematicId, ShieldSpec, Slots, StatModifiers, SubCategory, TreasurePackageId, TreasurePackageSpec, UniqueLimit, UseAbilityId, Value, VendorStackSize, WeaponSpec, TypeBitSet, Hash, StackCount, MaxDurability, WeaponAppSpec, Model, ImperialVOModulation, RepublicVOModulation) VALUES ",
                     @"ON DUPLICATE KEY UPDATE 
 previous_version = IF((@update_record := (Hash <> VALUES(Hash))), current_version, previous_version),
 current_version = IF(@update_record, VALUES(current_version), current_version),
@@ -75,7 +75,6 @@ CombinedRating = IF(@update_record, VALUES(CombinedRating), CombinedRating),
 CombinedRequiredLevel = IF(@update_record, VALUES(CombinedRequiredLevel), CombinedRequiredLevel),
 CombinedStatModifiers = IF(@update_record, VALUES(CombinedStatModifiers), CombinedStatModifiers),
 ConsumedOnUse = IF(@update_record, VALUES(ConsumedOnUse), ConsumedOnUse),
-Conversation = IF(@update_record, VALUES(Conversation), Conversation),
 ConversationFqn = IF(@update_record, VALUES(ConversationFqn), ConversationFqn),
 DamageType = IF(@update_record, VALUES(DamageType), DamageType),
 Description = IF(@update_record, VALUES(Description), Description),
@@ -105,7 +104,6 @@ RequiredSocialTier = IF(@update_record, VALUES(RequiredSocialTier), RequiredSoci
 RequiredValorRank = IF(@update_record, VALUES(RequiredValorRank), RequiredValorRank),
 RequiresAlignment = IF(@update_record, VALUES(RequiresAlignment), RequiresAlignment),
 RequiresSocial = IF(@update_record, VALUES(RequiresSocial), RequiresSocial),
-Schematic = IF(@update_record, VALUES(Schematic), Schematic),
 SchematicId = IF(@update_record, VALUES(SchematicId), SchematicId),
 ShieldSpec = IF(@update_record, VALUES(ShieldSpec), ShieldSpec),
 Slots = IF(@update_record, VALUES(Slots), Slots),
@@ -161,8 +159,22 @@ TargetRule = IF(@update_record, VALUES(TargetRule), TargetRule),
 LineOfSightCheck = IF(@update_record, VALUES(LineOfSightCheck), LineOfSightCheck),
 Pushback = IF(@update_record, VALUES(Pushback), Pushback),
 IgnoreAlacrity = IF(@update_record, VALUES(IgnoreAlacrity), IgnoreAlacrity),
+Hash = IF(@update_record, VALUES(Hash), Hash);")},
+                    {"AchCategories", new SQLInitStore(
+                    "INSERT INTO `achcategories` (`current_version`, `previous_version`, `CatId`, `Name`, NameId`, `Index`, `ParentCatId`, `CodexIcon`, `Icon`, `SubCategories`, `Rows`, `Hash`) VALUES ",
+                    @"ON DUPLICATE KEY UPDATE 
+previous_version = IF((@update_record := (Hash <> VALUES(Hash))), current_version, previous_version),
+current_version = IF(@update_record, VALUES(current_version), current_version),
+CatId = IF(@update_record, VALUES(CatId), CatId),
+Name = IF(@update_record, VALUES(Name), Name),
+NameId = IF(@update_record, VALUES(NameId), NameId),
+Index = IF(@update_record, VALUES(Index), Index),
+ParentCatId = IF(@update_record, VALUES(ParentCatId), ParentCatId),
+CodexIcon = IF(@update_record, VALUES(CodexIcon), CodexIcon),
+Icon = IF(@update_record, VALUES(Icon), Icon),
+SubCategories = IF(@update_record, VALUES(SubCategories), SubCategories),
+Rows = IF(@update_record, VALUES(Rows), Rows),
 Hash = IF(@update_record, VALUES(Hash), Hash);")}
-                    
             };
 
             #endregion
@@ -353,6 +365,20 @@ Hash = IF(@update_record, VALUES(Hash), Hash);")}
             //Quests
 
             addtolist("Database Tables created.");
+        }
+
+        private string ToSQL(object obj)
+        {
+            if (obj is GomLib.Models.GameObject)
+            {
+                return ((GomLib.Models.GameObject)obj).ToSQL(patchVersion);
+            }
+            else if (obj is GomLib.Models.PseudoGameObject)
+            {
+                return ((GomLib.Models.PseudoGameObject)obj).ToSQL(patchVersion);
+            }
+
+            return "";
         }
         #endregion 
     }

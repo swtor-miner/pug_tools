@@ -186,6 +186,9 @@ namespace tor_tools
                         break;
                     case "FindNewMtxImages": t = new ThreadStart(FindNewMtxImages);
                         break;
+                    case "AchCategories": t = () => getPrototypeObjects("AchCategories", "achCategoriesTable_Prototype", "achCategoriesData");
+                        break;
+                        
                 }
                 if (t != null)
                 {

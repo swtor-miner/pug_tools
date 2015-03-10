@@ -18,6 +18,7 @@ using System.IO;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using GomLib;
+using GomLib.Models;
 
 namespace tor_tools
 {
@@ -167,7 +168,7 @@ namespace tor_tools
                 else if (outputTypeName == "Text")
                     GameObjectListAsText(String.Join("", itmList.Key, xmlRoot), itmList.Value);
                 else if (outputTypeName == "SQL")
-                    GameObjectListAsSql(itmList.Key, xmlRoot, itmList.Value);
+                    ObjectListAsSql(itmList.Key, xmlRoot, itmList.Value);
                 else
                 {
                     if (itmList.Key == "Changed")
@@ -244,7 +245,7 @@ namespace tor_tools
 
         public void ProcessProtoData(string xmlRoot, string prototype, string dataTable)
         {
-            if (!OutputCompatible("xmlRoot"))
+            if (!OutputCompatible(xmlRoot))
             {
                 ClearProgress();
                 FlushTempTables();
@@ -273,31 +274,6 @@ namespace tor_tools
                 if (previousDataObject != null) //fix to ensure old game assets don't throw exceptions.
                 {
                     previousDataProto = previousDataObject.Data.Get<Dictionary<object, object>>(dataTable);
-                    /*switch (xmlRoot)
-                    {
-                        case "MtxStoreFronts":
-                            previousDataObject = previousDom.GetObject("mtxStorefrontInfoPrototype");
-                            if (previousDataObject != null) //fix to ensure old game assets don't throw exceptions.
-                                previousDataProto = previousDataObject.Data.Get<Dictionary<object, object>>("mtxStorefrontData");
-                            break;
-                        case "Collections":
-                            previousDataObject = previousDom.GetObject("colCollectionItemsPrototype");
-                            if (previousDataObject != null)
-                                previousDataProto = previousDataObject.Data.Get<Dictionary<object, object>>("colCollectionItemsData");
-                            break;
-                        case "Companions":
-                            previousDataObject = previousDom.GetObject("chrCompanionInfo_Prototype");
-                            if (previousDataObject != null)
-                                previousDataProto = previousDataObject.Data.Get<Dictionary<object, object>>("chrCompanionInfoData");
-                            break;
-                        case "Ships":
-                            previousDataObject = previousDom.GetObject("scFFShipsDataPrototype");
-                            if (previousDataObject != null)
-                                previousDataProto = previousDataObject.Data.Get<Dictionary<object, object>>("scFFShipsData");
-                            break;
-                        default:
-                            throw new IndexOutOfRangeException();
-                    }*/
                     previousDataObject.Unload();
                 }
 
@@ -316,11 +292,11 @@ namespace tor_tools
                     progressUpdate(i, count);
                     object curData;
                     currentDataProto.TryGetValue(id, out curData);
-                    GomLib.Models.PseudoGameObject curObj = LoadProtoObject(xmlRoot, currentDom, id, curData);
+                    GomLib.Models.PseudoGameObject curObj = PseudoGameObject.Load(xmlRoot, currentDom, id, curData);
 
                     object prevData;
                     previousDataProto.TryGetValue(id, out prevData);
-                    GomLib.Models.PseudoGameObject prevObj = LoadProtoObject(xmlRoot, previousDom, id, prevData);
+                    GomLib.Models.PseudoGameObject prevObj = PseudoGameObject.Load(xmlRoot, previousDom, id, prevData);
 
                     if (prevObj.Id != 0)
                     {
@@ -345,7 +321,7 @@ namespace tor_tools
 
                     object prevData;
                     previousDataProto.TryGetValue(removedId, out prevData);
-                    GomLib.Models.PseudoGameObject prevObj = LoadProtoObject(xmlRoot, previousDom, removedId, prevData);
+                    GomLib.Models.PseudoGameObject prevObj = PseudoGameObject.Load(xmlRoot, previousDom, removedId, prevData);
 
                     addtolist2(String.Join("", "Removed: ", prevObj.Name));
                     remItems.Add(prevObj);
@@ -368,7 +344,7 @@ namespace tor_tools
                     progressUpdate(i, count);
                     object curData;
                     currentDataProto.TryGetValue(id, out curData);
-                    GomLib.Models.PseudoGameObject curObj = LoadProtoObject(xmlRoot, currentDom, id, curData);
+                    GomLib.Models.PseudoGameObject curObj = PseudoGameObject.Load(xmlRoot, currentDom, id, curData);
                     newItems.Add(curObj);
                     i++;
                 }
@@ -393,6 +369,8 @@ namespace tor_tools
                     PseudoGameObjectListAsJSON(String.Join("", itmList.Key, xmlRoot), itmList.Value);
                 else if (outputTypeName == "Text")
                     PseudoGameObjectListAsText(String.Join("", itmList.Key, xmlRoot), itmList.Value);
+                else if (outputTypeName == "SQL")
+                    ObjectListAsSql(itmList.Key, xmlRoot, itmList.Value);
                 else
                 {
                     if (itmList.Key == "Changed")
@@ -1447,7 +1425,7 @@ namespace tor_tools
         }
         #endregion
         #region SQL Functions
-        private void GameObjectListAsSql(string prefix, string xmlRoot, IEnumerable<GomLib.Models.GameObject> itmList)
+        private void ObjectListAsSql(string prefix, string xmlRoot, IEnumerable<object> itmList)
         {
             if (prefix == "Removed") return; //not supported as of yet.
             int i = 0;
@@ -1470,8 +1448,11 @@ namespace tor_tools
                 addtolist2(String.Format("Output type not supported for: {1}", xmlRoot));
                 return;
             }
+            string joiner = ",";
             foreach (var itm in itmList)
             {
+                if (i == count - 1)
+                    joiner = ";";
                 progressUpdate(i, count);
 
                 if (e > 10000)
@@ -1481,15 +1462,16 @@ namespace tor_tools
                     e = 0;
                 }
 
-                addtolist2(String.Format("{0}: {1}", prefix, itm.Fqn));
+                addtolist2(String.Format("{0}: {1}", prefix, GetObjectText(itm)));
 
-                string sqlString = itm.ToSQL(patchVersion);
+                string sqlString = ToSQL(itm);
                 if (sql)
                     sqlAddTransactionValue(sqlString); //Add to current SQL Transaction if direct SQL output is enabled.
-                txtFile.Append(String.Join(",", sqlString, n)); //Append it with a newline to the output.
+                txtFile.Append(String.Join(joiner, sqlString, n)); //Append it with a newline to the output.
                 i++;
                 e++;
             }
+            txtFile.Append(transInit.InitEnd);
             addtolist(String.Format("The {0} sql file has been generated; there were {1} {0}", prefix, i));
             WriteFile(txtFile.ToString(), filename, true);
             sqlTransactionsFlush(); //flush the transaction queue
@@ -1500,75 +1482,20 @@ namespace tor_tools
             ClearProgress();
         }
 
-        /*private void PseudoGameObjectListAsSql(string prefix, IEnumerable<GomLib.Models.PseudoGameObject> itmList)
+        private string GetObjectText(object obj)
         {
-            int i = 0;
-            short e = 0;
-            string n = Environment.NewLine;
-            var txtFile = new StringBuilder();
-            string filename = String.Format("{0}{1}", prefix, ".json");
-            WriteFile("", filename, false);
-            var count = itmList.Count();
-            foreach (var itm in itmList)
+            if(obj is GomLib.Models.GameObject)
             {
-                progressUpdate(i, count);
-                if (e % 1000 == 1)
-                {
-                    WriteFile(txtFile.ToString(), filename, true);
-                    txtFile.Clear();
-                    e = 0;
-                }
-
-                addtolist2(String.Format("{0}: {1}", prefix, itm.Name));
-
-                string jsonString = itm.ToJSON();
-                txtFile.Append(jsonString + Environment.NewLine); //Append it with a newline to the output.
-                i++;
-                e++;
+                return ((GomLib.Models.GameObject)obj).Fqn;
             }
-            addtolist(String.Format("The {0} json file has been generated; there were {1} {0}", prefix, i));
-            WriteFile(txtFile.ToString(), filename, true);
-            DeleteEmptyFile(filename);
-            itmList = null;
-            GC.Collect();
-            CreateGzip(filename);
-            ClearProgress();
+            else if (obj is GomLib.Models.PseudoGameObject)
+            {
+                return ((GomLib.Models.PseudoGameObject)obj).Name;
+            }
+
+            return "";
         }
-
-        private void GomObjectListAsSql(string prefix, IEnumerable<GomLib.GomObject> itmList)
-        {
-            int i = 0;
-            short e = 0;
-            string n = Environment.NewLine;
-            var txtFile = new StringBuilder();
-            string filename = String.Join("", prefix, ".json");
-            WriteFile("", filename, false);
-            var count = itmList.Count();
-            foreach (var itm in itmList)
-            {
-                progressUpdate(i, count);
-                if (e % 1000 == 1)
-                {
-                    WriteFile(txtFile.ToString(), filename, true);
-                    txtFile.Clear();
-                    e = 0;
-                }
-
-                addtolist2(String.Format("{0}: {1}", prefix, itm.Name));
-
-                string jsonString = LoadGameObject(itm._dom, itm).ToJSON(); // ConvertToJson(itm); //added method in Tools.cs
-                txtFile.Append(jsonString + Environment.NewLine); //Append it with a newline to the output.
-                i++;
-                e++;
-            }
-            addtolist(String.Format("The {0} json file has been generated; there were {1} {0}", prefix, i));
-            WriteFile(txtFile.ToString(), filename, true);
-            DeleteEmptyFile(filename);
-            itmList = null;
-            GC.Collect();
-            CreateGzip(filename);
-            ClearProgress();
-        }*/
+        
         #endregion
     }
 }
