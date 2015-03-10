@@ -40,7 +40,6 @@ CREATE TABLE `item` (
   `CombinedRequiredLevel` int(11) NOT NULL,
   `CombinedStatModifiers` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `ConsumedOnUse` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `Conversation` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `ConversationFqn` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `DamageType` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `Description` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -70,7 +69,6 @@ CREATE TABLE `item` (
   `RequiredValorRank` int(11) NOT NULL,
   `RequiresAlignment` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `RequiresSocial` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `Schematic` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `SchematicId` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `ShieldSpec` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `Slots` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -121,7 +119,7 @@ FOR EACH ROW
 BEGIN
   IF ((NOT EXISTS(SELECT 1 FROM item_old_versions WHERE NodeId =  OLD.NodeId AND Hash = OLD.Hash)) AND (NOT (OLD.Hash = NEW.Hash))) THEN
 	INSERT INTO `item_old_versions` (version, Name, NodeId, NameId, Fqn, ItemLevel, RequiredLevel, AppearanceColor, ArmorSpec, Binding, CombinedRating, CombinedRequiredLevel, CombinedStatModifiers, ConsumedOnUse, Conversation, ConversationFqn, DamageType, Description, DescriptionId, DisassembleCategory, Durability, EnhancementCategory, EnhancementSlots, EnhancementSubCategory, EnhancementType, EquipAbilityId, GiftRank, GiftType, Icon, IsModdable, MaxStack, ModifierSpec, MountSpec, Quality, Rating, RequiredAlignmentInverted, RequiredClasses, RequiredGender, RequiredProfession, RequiredProfessionLevel, RequiredSocialTier, RequiredValorRank, RequiresAlignment, RequiresSocial, Schematic, SchematicId, ShieldSpec, Slots, StatModifiers, SubCategory, TreasurePackageId, TreasurePackageSpec, UniqueLimit, UseAbilityId, Value, VendorStackSize, WeaponSpec, TypeBitSet, Hash, StackCount, MaxDurability, WeaponAppSpec, Model, ImperialVOModulation, RepublicVOModulation)
-	VALUES (OLD.current_version, OLD.Name, OLD.NodeId, OLD.NameId, OLD.Fqn, OLD.ItemLevel, OLD.RequiredLevel, OLD.AppearanceColor, OLD.ArmorSpec, OLD.Binding, OLD.CombinedRating, OLD.CombinedRequiredLevel, OLD.CombinedStatModifiers, OLD.ConsumedOnUse, OLD.Conversation, OLD.ConversationFqn, OLD.DamageType, OLD.Description, OLD.DescriptionId, OLD.DisassembleCategory, OLD.Durability, OLD.EnhancementCategory, OLD.EnhancementSlots, OLD.EnhancementSubCategory, OLD.EnhancementType, OLD.EquipAbilityId, OLD.GiftRank, OLD.GiftType, OLD.Icon, OLD.IsModdable, OLD.MaxStack, OLD.ModifierSpec, OLD.MountSpec, OLD.Quality, OLD.Rating, OLD.RequiredAlignmentInverted, OLD.RequiredClasses, OLD.RequiredGender, OLD.RequiredProfession, OLD.RequiredProfessionLevel, OLD.RequiredSocialTier, OLD.RequiredValorRank, OLD.RequiresAlignment, OLD.RequiresSocial, OLD.Schematic, OLD.SchematicId, OLD.ShieldSpec, OLD.Slots, OLD.StatModifiers, OLD.SubCategory, OLD.TreasurePackageId, OLD.TreasurePackageSpec, OLD.UniqueLimit, OLD.UseAbilityId, OLD.Value, OLD.VendorStackSize, OLD.WeaponSpec, OLD.TypeBitSet, OLD.Hash, OLD.StackCount, OLD.MaxDurability, OLD.WeaponAppSpec, OLD.Model, OLD.ImperialVOModulation, OLD.RepublicVOModulation);
+	VALUES (OLD.current_version, OLD.Name, OLD.NodeId, OLD.NameId, OLD.Fqn, OLD.ItemLevel, OLD.RequiredLevel, OLD.AppearanceColor, OLD.ArmorSpec, OLD.Binding, OLD.CombinedRating, OLD.CombinedRequiredLevel, OLD.CombinedStatModifiers, OLD.ConsumedOnUse, OLD.ConversationFqn, OLD.DamageType, OLD.Description, OLD.DescriptionId, OLD.DisassembleCategory, OLD.Durability, OLD.EnhancementCategory, OLD.EnhancementSlots, OLD.EnhancementSubCategory, OLD.EnhancementType, OLD.EquipAbilityId, OLD.GiftRank, OLD.GiftType, OLD.Icon, OLD.IsModdable, OLD.MaxStack, OLD.ModifierSpec, OLD.MountSpec, OLD.Quality, OLD.Rating, OLD.RequiredAlignmentInverted, OLD.RequiredClasses, OLD.RequiredGender, OLD.RequiredProfession, OLD.RequiredProfessionLevel, OLD.RequiredSocialTier, OLD.RequiredValorRank, OLD.RequiresAlignment, OLD.RequiresSocial, OLD.SchematicId, OLD.ShieldSpec, OLD.Slots, OLD.StatModifiers, OLD.SubCategory, OLD.TreasurePackageId, OLD.TreasurePackageSpec, OLD.UniqueLimit, OLD.UseAbilityId, OLD.Value, OLD.VendorStackSize, OLD.WeaponSpec, OLD.TypeBitSet, OLD.Hash, OLD.StackCount, OLD.MaxDurability, OLD.WeaponAppSpec, OLD.Model, OLD.ImperialVOModulation, OLD.RepublicVOModulation);
   END IF;
 END */;;
 DELIMITER ;
@@ -146,7 +144,6 @@ CREATE TABLE `item_old_versions` (
   `CombinedRequiredLevel` int(11) NOT NULL,
   `CombinedStatModifiers` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `ConsumedOnUse` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `Conversation` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `ConversationFqn` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `DamageType` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `Description` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -176,7 +173,6 @@ CREATE TABLE `item_old_versions` (
   `RequiredValorRank` int(11) NOT NULL,
   `RequiresAlignment` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `RequiresSocial` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `Schematic` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `SchematicId` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `ShieldSpec` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `Slots` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
