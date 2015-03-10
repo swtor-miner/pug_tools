@@ -297,8 +297,7 @@ namespace tor_tools
             Func<TreeListItem, string> getParentId = (x => x.parentId);
             Func<TreeListItem, string> getDisplayName = (x => x.displayName);
             treeViewFast1.BeginUpdate();
-            treeViewFast1.LoadItems<TreeListItem>(assetDict, getId, getParentId, getDisplayName);
-            treeListView1.Sort();
+            treeViewFast1.LoadItems<TreeListItem>(assetDict, getId, getParentId, getDisplayName);            
         }
 
         private void backgroundWorker3_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -592,7 +591,8 @@ namespace tor_tools
                 switch (asset.hashInfo.Extension.ToUpper())
                 {
                     case "DDS":                        
-                        await Task.Run(() => previewDDS());                        
+                        await Task.Run(() => previewDDS());
+                        checkDDSPath(asset.hashInfo.Directory);
                         pictureBox1.Visible = true;
                         break;
                     case "PNG":
@@ -706,9 +706,27 @@ namespace tor_tools
                 DevIL.ImageImporter imp = new ImageImporter();
                 DevIL.ImageExporter exp = new ImageExporter();
                 DevIL.Image dds = imp.LoadImageFromStream(DevIL.ImageType.Dds, this.inputStream);
-                exp.SaveImageToStream(dds, ImageType.Bmp, this.memStream);
+                exp.SaveImageToStream(dds, ImageType.Png, this.memStream);
                 Bitmap bm = new Bitmap(this.memStream);
                 pictureBox1.Image = bm;
+            }
+        }
+
+        private void checkDDSPath(string directory)
+        {
+            if (directory.Contains("codex") ||                
+                directory.Contains("reputation") ||
+                directory.Contains("tutorials"))
+            {
+                pictureBox1.BackgroundImageLayout = ImageLayout.None;
+                pictureBox1.BackgroundImage = null;
+                pictureBox1.BackColor = System.Drawing.Color.Black;
+            }
+            else
+            {
+                pictureBox1.BackgroundImageLayout = ImageLayout.Tile;
+                pictureBox1.BackColor = System.Drawing.Color.White;
+                pictureBox1.BackgroundImage = global::PugTools.Properties.Resources.Transparent;
             }
         }
 
