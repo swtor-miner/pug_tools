@@ -64,7 +64,7 @@ CREATE TABLE `ability` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `item`
+-- Dumping data for table `ability`
 --
 
 LOCK TABLES `ability` WRITE;
@@ -87,8 +87,8 @@ BEFORE UPDATE ON `ability`
 FOR EACH ROW
 BEGIN
   IF ((NOT EXISTS(SELECT 1 FROM ability_old_versions WHERE NodeId =  OLD.NodeId AND Hash = OLD.Hash)) AND (NOT (OLD.Hash = NEW.Hash))) THEN
-	INSERT INTO `ability_old_versions` (version, Name, NodeId, NameId, Description, DescriptionId, Fqn, Level, Icon, Hash)
-	VALUES (OLD.current_version, OLD.Name, OLD.NodeId, OLD.NameId, OLD.Description, OLD.DescriptionId, OLD.Fqn, OLD.Level, OLD.Icon, OLD.Hash);
+	INSERT INTO `ability_old_versions` (version, Name, NodeId, NameId, Description, DescriptionId, Fqn, Level, Icon, IsHidden, IsPassive, Cooldown, CastingTime, ForceCost, EnergyCost, ApCost, ApType, MinRange, MaxRange, Gcd, GcdOverride, ModalGroup, SharedCooldown, TalentTokens, AbilityTokens, TargetArc, TargetArcOffset, TargetRule, LineOfSightCheck, Pushback, IgnoreAlacrity, Hash)
+	VALUES (OLD.current_version, OLD.Name, OLD.NodeId, OLD.NameId, OLD.Description, OLD.DescriptionId, OLD.Fqn, OLD.Level, OLD.Icon, OLD.IsHidden, OLD.IsPassive, OLD.Cooldown, OLD.CastingTime, OLD.ForceCost, OLD.EnergyCost, OLD.ApCost, OLD.ApType, OLD.MinRange, OLD.MaxRange, OLD.Gcd, OLD.GcdOverride, OLD.ModalGroup, OLD.SharedCooldown, OLD.TalentTokens, OLD.AbilityTokens, OLD.TargetArc, OLD.TargetArcOffset, OLD.TargetRule, OLD.LineOfSightCheck, OLD.Pushback, OLD.IgnoreAlacrity, OLD.Hash);
   END IF;
 END */;;
 DELIMITER ;
