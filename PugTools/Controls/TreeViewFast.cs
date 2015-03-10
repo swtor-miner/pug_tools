@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using tor_tools;
 
 namespace TreeViewFast.Controls
 {
+
     public class TreeViewFast : TreeView
     {
         private readonly Dictionary<string, TreeNode> _treeNodes = new Dictionary<string, TreeNode>();
@@ -132,14 +135,27 @@ namespace TreeViewFast.Controls
             return items;
         }
 
-        internal void LoadItems<T1>(Dictionary<string, tor_tools.TreeListItem> testDict, Func<tor_tools.TreeListItem, string> getId, Func<tor_tools.TreeListItem, string> getParentId, Func<tor_tools.TreeListItem, string> getDisplayName)
+        internal void LoadItems<T1>(Dictionary<string, TreeListItem> testDict, Func<TreeListItem, string> getId, Func<TreeListItem, string> getParentId, Func<TreeListItem, string> getDisplayName)
         {
             // Clear view and internal dictionary
             Nodes.Clear();
             _treeNodes.Clear();
 
             List<string> keys = testDict.Keys.ToList();
-            keys.Sort();
+            keys.Sort(delegate(string x, string y)
+            {
+                TreeListItem tx = testDict[x];
+                TreeListItem ty = testDict[y];
+                
+                if (tx.hashInfo.file == null && ty.hashInfo.file != null)
+                    return -1;
+                else if (tx.hashInfo.file != null && ty.hashInfo.file == null)
+                    return 1;
+                else if (tx.hashInfo.file == null && ty.hashInfo.file == null)
+                    return string.Compare(x, y);
+                else
+                    return string.Compare(x, y);
+            });
 
             // Load internal dictionary with nodes
             foreach (var key in keys)
