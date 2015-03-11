@@ -541,7 +541,7 @@ namespace GomLib.Models
                         new SQLProperty("TypeBitSet", "TypeBitSet", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("StackCount", "StackCount", "int(11) NOT NULL"),
                         new SQLProperty("MaxDurability", "MaxDurability", "int(11) NOT NULL"),
-                        new SQLProperty("WeaponAppSpec", "WeaponAppSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL, "),
+                        new SQLProperty("WeaponAppSpec", "WeaponAppSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Model", "Model", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("ImperialVOModulation", "ImperialVOModulation", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("RepublicVOModulation", "RepublicVOModulation", "varchar(255) COLLATE utf8_unicode_ci NOT NULL")
