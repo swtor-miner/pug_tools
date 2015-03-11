@@ -36,13 +36,16 @@ namespace GomLib.Models
 
         public override int GetHashCode()
         {
-            int hash = LocalizedName.GetHashCode();
-            hash ^= LocalizedDescription.GetHashCode();
-            hash ^= Level.GetHashCode();
+            int hash = Level.GetHashCode();
+            if (LocalizedName != null) foreach (var x in LocalizedName) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (LocalizedDescription != null) foreach (var x in LocalizedDescription) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
             if (Image != null) { hash ^= Image.GetHashCode(); }
             hash ^= CategoryId.GetHashCode();
             hash ^= Faction.GetHashCode();
             hash ^= IsHidden.GetHashCode();
+            hash ^= ClassRestricted.GetHashCode();
+            hash ^= IsPlanet.GetHashCode();
+            hash ^= HasPlanets.GetHashCode();
             if (ClassRestricted) { foreach (var x in Classes) { hash ^= x.Fqn.GetHashCode(); } }
             if (HasPlanets) { foreach (var x in Planets) { hash ^= x.Id.GetHashCode(); } }
             return hash;
