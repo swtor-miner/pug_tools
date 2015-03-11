@@ -383,11 +383,11 @@ namespace GomLib.ModelLoader
 
             itm.Value = (int)gom.Data.ValueOrDefault<long>("itmValue", 0);
             itm.VendorStackSize = (int)gom.Data.ValueOrDefault<long>("itmStackVendor", 0);
-            itm.weaponAppearanceSpec = WeaponSpecExtensions.ToWeaponSpec((ulong)gom.Data.ValueOrDefault<ulong>("cbtWeaponSpec", 0));
+            itm.WeaponSpec = WeaponSpecExtensions.ToWeaponSpec((ulong)gom.Data.ValueOrDefault<ulong>("cbtWeaponSpec", 0));
 
             //ulong dmgType = (ulong)gom.Data.ValueOrDefault<ulong>("cbtDamageType", 0);
             //itm.DamageType = ItemDamageTypeExtensions.ToItemDamageType(dmgType);
-            switch (itm.weaponAppearanceSpec)
+            switch (itm.WeaponSpec)
             {
                 case WeaponSpec.Lightsaber:
                 case WeaponSpec.Polesaber:
@@ -411,7 +411,7 @@ namespace GomLib.ModelLoader
 
             ItemSubCategoryExtensions.SetCategory(itm);
 
-            if (itm.weaponAppearanceSpec != WeaponSpec.Undefined)
+            if (itm.WeaponSpec != WeaponSpec.Undefined)
             {
                 itm.WeaponAppSpec = gom.Data.ValueOrDefault<string>("cbtWeaponAppearanceSpec", "");
                 if (itm.WeaponAppSpec != "")

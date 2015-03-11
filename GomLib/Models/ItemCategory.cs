@@ -100,7 +100,7 @@ namespace GomLib.Models
                 default: break;
             }
 
-            switch (itm.weaponAppearanceSpec)
+            switch (itm.WeaponSpec)
             {
                 case WeaponSpec.AssaultCannon: itm.SubCategory = ItemSubCategory.WeaponAssaultCannon; break;
                 case WeaponSpec.Electrostaff: itm.SubCategory = ItemSubCategory.WeaponElectrostaff; break;

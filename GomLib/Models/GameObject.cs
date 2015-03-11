@@ -31,7 +31,13 @@ namespace GomLib.Models
         public override string ToString() { return ToString(true); }
         public virtual string ToString(bool verbose) { return ""; }
 
-        public virtual string ToSQL(string patchVersion) { return "Unsupported"; }
+        public string ToSQL(string patchVersion) //rewrote the code to allow creation of new outputs faster.
+        {
+            if (SQLProperties == null)
+                return "Unsupported";
+            else
+                return SQLHelpers.ToSQL(this, SQLInfo(), patchVersion);
+        }
 
         public virtual XElement ToXElement(GomObject gomItm) { return ToXElement(gomItm, true); }
         public virtual XElement ToXElement(GomObject gomItm, bool verbose)
@@ -132,11 +138,12 @@ namespace GomLib.Models
             return references;
         }
 
-        public static string sqlSani(string str)
+        public SQLData SQLInfo()
         {
-            if (str == null) return "";
-            return MySql.Data.MySqlClient.MySqlHelper.EscapeString(str);
+            return new SQLData(SQLProperties);
         }
+
+        public virtual List<SQLProperty> SQLProperties { get; set; }
     }
 
     public class PseudoGameObject : Dependencies
@@ -163,7 +170,13 @@ namespace GomLib.Models
         public override string ToString() { return ToString(true); }
         public virtual string ToString(bool verbose) { return ""; }
 
-        public virtual string ToSQL(string patchVersion) { return "Unsupported"; }
+        public string ToSQL(string patchVersion) //rewrote the code to allow creation of new outputs faster.
+        {
+            if (SQLProperties == null)
+                return "Unsupported";
+            else
+                return SQLHelpers.ToSQL(this, SQLInfo(), patchVersion);
+        }
 
         public virtual XElement ToXElement() { return ToXElement(true); }
         public virtual XElement ToXElement(bool verbose) { return new XElement("NotImplemented", this.GetType().ToString()); }
@@ -210,11 +223,12 @@ namespace GomLib.Models
             return new HashSet<string>();
         }
 
-        public static string sqlSani(string str)
+        public SQLData SQLInfo()
         {
-            if (str == null) return "";
-            return MySql.Data.MySqlClient.MySqlHelper.EscapeString(str);
+            return new SQLData(SQLProperties);
         }
+
+        public virtual List<SQLProperty> SQLProperties {get; set;}
     }
 
     interface Dependencies

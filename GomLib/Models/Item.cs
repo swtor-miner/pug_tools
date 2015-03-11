@@ -41,7 +41,7 @@ namespace GomLib.Models
         public int Durability { get; set; }
         public int MaxStack { get; set; }
         public int UniqueLimit { get; set; }
-        public WeaponSpec weaponAppearanceSpec { get; set; }
+        public WeaponSpec WeaponSpec { get; set; }
         public ArmorSpec ArmorSpec { get; set; }
         public ArmorSpec ShieldSpec { get; set; }
         public ItemBindingRule Binding { get; set; }
@@ -352,12 +352,12 @@ namespace GomLib.Models
                 return false;
             if (this.WeaponAppSpec != itm.WeaponAppSpec)
                 return false;
-            if (this.weaponAppearanceSpec != itm.weaponAppearanceSpec)
+            if (this.WeaponSpec != itm.WeaponSpec)
                 return false;
             return true;
         }
 
-        public override int GetHashCode()
+        public override int GetHashCode() //needs fixed, it's changing for the same data
         {
             int hash = (LocalizedName ?? new Dictionary<string, string>()).GetHashCode();
             hash ^= (LocalizedDescription ?? new Dictionary<string, string>()).GetHashCode();
@@ -402,7 +402,7 @@ namespace GomLib.Models
             hash ^= this.UseAbility.GetHashCode();
             hash ^= this.Value.GetHashCode();
             hash ^= this.VendorStackSize.GetHashCode();
-            hash ^= this.weaponAppearanceSpec.GetHashCode();
+            hash ^= this.WeaponSpec.GetHashCode();
             foreach (var x in this.CombinedStatModifiers) { hash ^= x.GetHashCode(); }
             foreach (var x in this.EnhancementSlots) { hash ^= x.GetHashCode(); }
             foreach (var x in this.RequiredClasses) { hash ^= x.Id.GetHashCode(); }
@@ -472,17 +472,81 @@ namespace GomLib.Models
                 txtFile.Append("  UseAbilityId: " + UseAbilityId + n);
                 txtFile.Append("  Value: " + Value + n);
                 txtFile.Append("  VendorStackSize: " + VendorStackSize + n);
-                txtFile.Append("  WeaponSpec: " + weaponAppearanceSpec + n);
+                txtFile.Append("  WeaponSpec: " + WeaponSpec + n);
                 txtFile.Append("------------------------------------------------------------" + n + n);
             }
             return txtFile.ToString();
         }
 
-        public override string ToSQL(string patchVersion)
+        public override List<SQLProperty> SQLProperties
         {
-            string s = "', '";
-            string value = "('" + sqlSani(patchVersion) + s + s + sqlSani(Name) + s + NodeId + s + NameId + s + sqlSani(Fqn) + s + ItemLevel + s + RequiredLevel + s + AppearanceColor + s + ArmorSpec + s + Binding + s + CombinedRating + s + CombinedRequiredLevel + s + CombinedStatModifiers + s + ConsumedOnUse + s + ConversationFqn + s + DamageType + s + sqlSani(Description) + s + DescriptionId + s + DisassembleCategory + s + Durability + s + EnhancementCategory + s + sqlSani(EnhancementSlots.ToString()) + s + EnhancementSubCategory + s + EnhancementType + s + EquipAbilityId + s + GiftRank + s + GiftType + s + sqlSani(Icon) + s + IsModdable + s + MaxStack + s + ModifierSpec + s + MountSpec + s + Quality + s + Rating + s + RequiredAlignmentInverted + s + sqlSani(RequiredClasses.ToString()) + s + RequiredGender + s + RequiredProfession + s + RequiredProfessionLevel + s + RequiredSocialTier + s + RequiredValorRank + s + RequiresAlignment + s + RequiresSocial + s + SchematicId + s + ShieldSpec + s + Slots + s + StatModifiers + s + SubCategory + s + TreasurePackageId + s + TreasurePackageSpec + s + UniqueLimit + s + UseAbilityId + s + Value + s + VendorStackSize + s + weaponAppearanceSpec + s + TypeBitSet + s + GetHashCode() + s + StackCount + s + MaxDurability + s + WeaponAppSpec + s + Model + s + ImperialVOModulation + s + RepublicVOModulation + "')";
-            return value;
+            get
+            {
+                return new List<SQLProperty>
+                    {                //(SQL Column Name, C# Property Name, SQL Column type statement, isUnique/PrimaryKey, Serialize value to json)
+                        new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("NodeId", "NodeId", "bigint(20) unsigned NOT NULL", true),
+                        new SQLProperty("NameId", "NameId", "bigint(20) NOT NULL"),
+                        new SQLProperty("Fqn", "Fqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("ItemLevel", "ItemLevel", "int(11) NOT NULL"),
+                        new SQLProperty("RequiredLevel", "RequiredLevel", "int(11) NOT NULL"),
+                        new SQLProperty("AppearanceColor", "AppearanceColor", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("ArmorSpec", "ArmorSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Binding", "Binding", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("CombinedRating", "CombinedRating", "int(11) NOT NULL"),
+                        new SQLProperty("CombinedRequiredLevel", "CombinedRequiredLevel", "int(11) NOT NULL"),
+                        new SQLProperty("CombinedStatModifiers", "CombinedStatModifiers", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("ConsumedOnUse", "ConsumedOnUse", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("ConversationFqn", "ConversationFqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("DamageType", "DamageType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Description", "Description", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("DescriptionId", "DescriptionId", "bigint(20) NOT NULL"),
+                        new SQLProperty("DisassembleCategory", "DisassembleCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Durability", "Durability", "int(11) NOT NULL"),
+                        new SQLProperty("EnhancementCategory", "EnhancementCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("EnhancementSlots", "EnhancementSlots", "text COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("EnhancementSubCategory", "EnhancementSubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("EnhancementType", "EnhancementType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("EquipAbilityId", "EquipAbilityId", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("GiftRank", "GiftRank", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("GiftType", "GiftType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Icon", "Icon", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("IsModdable", "IsModdable", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("MaxStack", "MaxStack", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("ModifierSpec", "ModifierSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("MountSpec", "MountSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Quality", "Quality", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Rating", "Rating", "int(11) NOT NULL"),
+                        new SQLProperty("RequiredAlignmentInverted", "RequiredAlignmentInverted", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("RequiredClasses", "RequiredClasses", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("RequiredGender", "RequiredGender", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("RequiredProfession", "RequiredProfession", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("RequiredProfessionLevel", "RequiredProfessionLevel", "int(11) NOT NULL"),
+                        new SQLProperty("RequiredSocialTier", "RequiredSocialTier", "int(11) NOT NULL"),
+                        new SQLProperty("RequiredValorRank", "RequiredValorRank", "int(11) NOT NULL"),
+                        new SQLProperty("RequiresAlignment", "RequiresAlignment", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("RequiresSocial", "RequiresSocial", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("SchematicId", "SchematicId", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("ShieldSpec", "ShieldSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Slots", "Slots", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("StatModifiers", "StatModifiers", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("SubCategory", "SubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("TreasurePackageId", "TreasurePackageId", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("TreasurePackageSpec", "TreasurePackageSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("UniqueLimit", "UniqueLimit", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("UseAbilityId", "UseAbilityId", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Value", "Value", "int(11) NOT NULL"),
+                        new SQLProperty("VendorStackSize", "VendorStackSize", "bigint(20) NOT NULL"),
+                        new SQLProperty("WeaponSpec", "WeaponSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("TypeBitSet", "TypeBitSet", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("StackCount", "StackCount", "int(11) NOT NULL"),
+                        new SQLProperty("MaxDurability", "MaxDurability", "int(11) NOT NULL"),
+                        new SQLProperty("WeaponAppSpec", "WeaponAppSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL, "),
+                        new SQLProperty("Model", "Model", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("ImperialVOModulation", "ImperialVOModulation", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("RepublicVOModulation", "RepublicVOModulation", "varchar(255) COLLATE utf8_unicode_ci NOT NULL")
+                    };
+            }
         }
 
         public override XElement ToXElement(bool verbose)
@@ -607,7 +671,7 @@ namespace GomLib.Models
                     new XElement("UniqueLimit", UniqueLimit),
                     new XElement("Value", Value),
                     new XElement("VendorStackSize", VendorStackSize),
-                    new XElement("WeaponSpec", weaponAppearanceSpec));
+                    new XElement("WeaponSpec", WeaponSpec));
                 if (ImperialVOModulation != null)
                 {
                     item.Add(new XElement("ImpVoiceModulation", ImperialVOModulation),

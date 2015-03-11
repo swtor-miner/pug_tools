@@ -71,7 +71,7 @@ namespace GomLib.Tables
             }
         }
 
-        public float GetStat(Item i, Stat stat) { return GetStat(i.weaponAppearanceSpec, i.ItemLevel, i.Quality, stat); }
+        public float GetStat(Item i, Stat stat) { return GetStat(i.WeaponSpec, i.ItemLevel, i.Quality, stat); }
         public float GetStat(WeaponSpec spec, int level, ItemQuality quality, Stat stat)
         {
             if (level <= 0) { return 0; }

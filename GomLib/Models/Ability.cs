@@ -63,7 +63,7 @@ namespace GomLib.Models
         public ulong UnknownInt2 { get; set; }
         public Dictionary<int, ulong> CooldownTimerSpecs { get; set; }
 
-        public override int GetHashCode()
+        public override int GetHashCode()  //needs fixed, it's changing for the same data
         {
             int hash = Level.GetHashCode();
             if (LocalizedDescription != null) { hash ^= LocalizedDescription.GetHashCode(); }
@@ -272,11 +272,44 @@ namespace GomLib.Models
             return txtFile.ToString();
         }
 
-        public override string ToSQL(string patchVersion)
+        public override List<SQLProperty> SQLProperties
         {
-            string s = "', '";
-            string value = "('" + sqlSani(patchVersion) + s + s + sqlSani(Name) + s + NodeId + s + NameId + s + sqlSani(Description) + s + DescriptionId + s + Fqn + s + Level + s + sqlSani(Icon) + s + IsHidden + s + IsPassive + s + Cooldown + s + CastingTime + s + ForceCost + s + EnergyCost + s + ApCost + s + ApType.ToString() + s + MinRange + s + MaxRange + s + GCD + s + GcdOverride + s + ModalGroup + s + SharedCooldown + s + sqlSani(TalentTokens) + s + sqlSani(AbilityTokens) + s + TargetArc + s + TargetArcOffset + s + (GomLib.Models.TargetRule)TargetRule + s + LineOfSightCheck + s + Pushback + s + IgnoreAlacrity + s + GetHashCode() + "')";
-            return value;
+            get
+            {
+                return new List<SQLProperty>
+                    {                //(SQL Column Name, C# Property Name, SQL Column type statement, isUnique/PrimaryKey, Serialize value to json)
+                        new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("NodeId", "NodeId", "bigint(20) unsigned NOT NULL", true),
+                        new SQLProperty("NameId", "NameId", "bigint(20) NOT NULL"),
+                        new SQLProperty("Description", "Description", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("DescriptionId", "DescriptionId", "bigint(20) NOT NULL"),
+                        new SQLProperty("Fqn", "Fqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Level", "Level", "int(11) NOT NULL"),
+                        new SQLProperty("Icon", "Icon", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("IsHidden", "IsHidden", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsPassive", "IsPassive", "tinyint(1) NOT NULL"),
+                        new SQLProperty("Cooldown", "Cooldown", "float NOT NULL"),
+                        new SQLProperty("CastingTime", "CastingTime", "float NOT NULL"),
+                        new SQLProperty("ForceCost", "ForceCost", "float NOT NULL"),
+                        new SQLProperty("EnergyCost", "EnergyCost", "float NOT NULL"),
+                        new SQLProperty("ApCost", "ApCost", "float NOT NULL"),
+                        new SQLProperty("ApType", "ApType", "varchar(25) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("MinRange", "MinRange", "float NOT NULL"),
+                        new SQLProperty("MaxRange", "MaxRange", "float NOT NULL"),
+                        new SQLProperty("Gcd", "GCD", "int(11) NOT NULL"),
+                        new SQLProperty("GcdOverride", "GcdOverride", "tinyint(1) NOT NULL"),
+                        new SQLProperty("ModalGroup", "ModalGroup", "bigint(20) NOT NULL"),
+                        new SQLProperty("SharedCooldown", "SharedCooldown", "bigint(20) unsigned NOT NULL"),
+                        new SQLProperty("TalentTokens", "TalentTokens", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("AbilityTokens", "AbilityTokens", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("TargetArc", "TargetArc", "float NOT NULL"),
+                        new SQLProperty("TargetArcOffset", "TargetArcOffset", "float NOT NULL"),
+                        new SQLProperty("TargetRule", "TargetRule", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("LineOfSightCheck", "LineOfSightCheck", "tinyint(1) NOT NULL"),
+                        new SQLProperty("Pushback", "Pushback", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IgnoreAlacrity", "IgnoreAlacrity", "tinyint(1) NOT NULL")
+                    };
+            }
         }
 
         public override XElement ToXElement(bool verbose)

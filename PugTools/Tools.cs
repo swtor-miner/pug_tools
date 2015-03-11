@@ -83,7 +83,6 @@ namespace tor_tools
             comboBoxExtractTypes.SelectedIndex = 0;
             cbxExtractFormat.SelectedIndex = 0;
             formOpen = false;
-            textBox1.Enabled = false;
             textBox2.Enabled = false;
             textBox3.Enabled = false;
             textBox4.Enabled = false;

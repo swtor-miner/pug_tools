@@ -6,6 +6,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using System.Text.RegularExpressions;
 using System.Xml;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
@@ -36,7 +37,7 @@ namespace GomLib.Models
             Description = "";
         }
 
-        public override int GetHashCode()
+        public override int GetHashCode() //needs fixed, it's changing for the same data
         {
             int hash = Level.GetHashCode();
             if (LocalizedDescription != null) { hash ^= LocalizedDescription.GetHashCode(); }
@@ -141,6 +142,27 @@ namespace GomLib.Models
             if (this.Visibility != ach.Visibility)
                 return false;
             return true;
+        }
+
+        public override List<SQLProperty> SQLProperties
+        {
+            get
+            {
+                return new List<SQLProperty>
+                    {                //(SQL Column Name, C# Property Name, SQL Column type statement, isUnique/PrimaryKey, Serialize value to json)
+                        new SQLProperty("NodeId", "NodeId", "bigint(20) unsigned NOT NULL", true),
+                        new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("NameId", "NameId", "bigint(20) NOT NULL"),
+                        new SQLProperty("Description", "Description", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("DescriptionId", "DescriptionId", "bigint(20) NOT NULL"),
+                        new SQLProperty("AchId", "AchId", "bigint(20) NOT NULL"),
+                        new SQLProperty("Visibility", "Visibility", "varchar(15) NOT NULL"),
+                        new SQLProperty("Icon", "Icon", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Tasks", "Tasks", "varchar(100) COLLATE utf8_unicode_ci NOT NULL", false, true),
+                        new SQLProperty("Conditions", "Conditions", "varchar(1000) COLLATE utf8_unicode_ci NOT NULL", false, true),
+                        new SQLProperty("Rewards", "Rewards", "varchar(1000) COLLATE utf8_unicode_ci NOT NULL", false, true)
+                    };
+            }
         }
 
         public override XElement ToXElement(bool verbose)

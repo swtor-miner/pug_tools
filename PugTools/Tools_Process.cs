@@ -394,7 +394,7 @@ namespace tor_tools
                         foreach (var itm in itmList.Value)
                         {
                             progressUpdate(i, count);
-                            XElement itemElement = ConvertToXElement(itm);
+                            XElement itemElement = itm.ToXElement();
                             if (itmList.Key != "Full") itemElement.Add(new XAttribute("Status", itmList.Key));
                             //itemElement.Add(ReferencesToXElement(itm.References));
                             elements.Add(itemElement);
@@ -1439,7 +1439,7 @@ namespace tor_tools
             SQLInitStore transInit;
             if (initTable.TryGetValue(xmlRoot, out transInit)) //verify that there is an SQL Transaction Query for this object type
             {
-                WriteFile(transInit.InitBegin + "(" + n, filename, false);
+                WriteFile(transInit.InitBegin + n, filename, false);
                 if (sql)
                     sqlTransactionsInitialize(transInit.InitBegin, transInit.InitEnd); //initialize the SQL tranaction if direct SQL output is enabled.
             }
@@ -1452,7 +1452,7 @@ namespace tor_tools
             foreach (var itm in itmList)
             {
                 if (i == count - 1)
-                    joiner = ");";
+                    joiner = "";
                 progressUpdate(i, count);
 
                 if (e > 10000)
@@ -1474,6 +1474,7 @@ namespace tor_tools
             txtFile.Append(transInit.InitEnd);
             addtolist(String.Format("The {0} sql file has been generated; there were {1} {0}", prefix, i));
             WriteFile(txtFile.ToString(), filename, true);
+            initTable[xmlRoot].OutputCreationSQL(); //output the creation sql file for this table
             sqlTransactionsFlush(); //flush the transaction queue
             DeleteEmptyFile(filename);
             itmList = null;

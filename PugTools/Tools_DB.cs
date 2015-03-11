@@ -57,124 +57,10 @@ namespace tor_tools
             #region InitQueries
             public static Dictionary<string, SQLInitStore> initTable = new Dictionary<string, SQLInitStore>
             {
-                {"Items", new SQLInitStore(
-                    "INSERT INTO item (current_version, previous_version, Name, NodeId, NameId, Fqn, ItemLevel, RequiredLevel, AppearanceColor, ArmorSpec, Binding, CombinedRating, CombinedRequiredLevel, CombinedStatModifiers, ConsumedOnUse, ConversationFqn, DamageType, Description, DescriptionId, DisassembleCategory, Durability, EnhancementCategory, EnhancementSlots, EnhancementSubCategory, EnhancementType, EquipAbilityId, GiftRank, GiftType, Icon, IsModdable, MaxStack, ModifierSpec, MountSpec, Quality, Rating, RequiredAlignmentInverted, RequiredClasses, RequiredGender, RequiredProfession, RequiredProfessionLevel, RequiredSocialTier, RequiredValorRank, RequiresAlignment, RequiresSocial, SchematicId, ShieldSpec, Slots, StatModifiers, SubCategory, TreasurePackageId, TreasurePackageSpec, UniqueLimit, UseAbilityId, Value, VendorStackSize, WeaponSpec, TypeBitSet, Hash, StackCount, MaxDurability, WeaponAppSpec, Model, ImperialVOModulation, RepublicVOModulation) VALUES ",
-                    @"ON DUPLICATE KEY UPDATE 
-previous_version = IF((@update_record := (Hash <> VALUES(Hash))), current_version, previous_version),
-current_version = IF(@update_record, VALUES(current_version), current_version),
-Name = IF(@update_record, VALUES(Name), Name),
-NodeId = IF(@update_record, VALUES(NodeId), NodeId),
-NameId = IF(@update_record, VALUES(NameId), NameId),
-Fqn = IF(@update_record, VALUES(Fqn), Fqn),
-ItemLevel = IF(@update_record, VALUES(ItemLevel), ItemLevel),
-RequiredLevel = IF(@update_record, VALUES(RequiredLevel), RequiredLevel),
-AppearanceColor = IF(@update_record, VALUES(AppearanceColor), AppearanceColor),
-ArmorSpec = IF(@update_record, VALUES(ArmorSpec), ArmorSpec),
-Binding = IF(@update_record, VALUES(Binding), Binding),
-CombinedRating = IF(@update_record, VALUES(CombinedRating), CombinedRating),
-CombinedRequiredLevel = IF(@update_record, VALUES(CombinedRequiredLevel), CombinedRequiredLevel),
-CombinedStatModifiers = IF(@update_record, VALUES(CombinedStatModifiers), CombinedStatModifiers),
-ConsumedOnUse = IF(@update_record, VALUES(ConsumedOnUse), ConsumedOnUse),
-ConversationFqn = IF(@update_record, VALUES(ConversationFqn), ConversationFqn),
-DamageType = IF(@update_record, VALUES(DamageType), DamageType),
-Description = IF(@update_record, VALUES(Description), Description),
-DescriptionId = IF(@update_record, VALUES(DescriptionId), DescriptionId),
-DisassembleCategory = IF(@update_record, VALUES(DisassembleCategory), DisassembleCategory),
-Durability = IF(@update_record, VALUES(Durability), Durability),
-EnhancementCategory = IF(@update_record, VALUES(EnhancementCategory), EnhancementCategory),
-EnhancementSlots = IF(@update_record, VALUES(EnhancementSlots), EnhancementSlots),
-EnhancementSubCategory = IF(@update_record, VALUES(EnhancementSubCategory), EnhancementSubCategory),
-EnhancementType = IF(@update_record, VALUES(EnhancementType), EnhancementType),
-EquipAbilityId = IF(@update_record, VALUES(EquipAbilityId), EquipAbilityId),
-GiftRank = IF(@update_record, VALUES(GiftRank), GiftRank),
-GiftType = IF(@update_record, VALUES(GiftType), GiftType),
-Icon = IF(@update_record, VALUES(Icon), Icon),
-IsModdable = IF(@update_record, VALUES(IsModdable), IsModdable),
-MaxStack = IF(@update_record, VALUES(MaxStack), MaxStack),
-ModifierSpec = IF(@update_record, VALUES(ModifierSpec), ModifierSpec),
-MountSpec = IF(@update_record, VALUES(MountSpec), MountSpec),
-Quality = IF(@update_record, VALUES(Quality), Quality),
-Rating = IF(@update_record, VALUES(Rating), Rating),
-RequiredAlignmentInverted = IF(@update_record, VALUES(RequiredAlignmentInverted), RequiredAlignmentInverted),
-RequiredClasses = IF(@update_record, VALUES(RequiredClasses), RequiredClasses),
-RequiredGender = IF(@update_record, VALUES(RequiredGender), RequiredGender),
-RequiredProfession = IF(@update_record, VALUES(RequiredProfession), RequiredProfession),
-RequiredProfessionLevel = IF(@update_record, VALUES(RequiredProfessionLevel), RequiredProfessionLevel),
-RequiredSocialTier = IF(@update_record, VALUES(RequiredSocialTier), RequiredSocialTier),
-RequiredValorRank = IF(@update_record, VALUES(RequiredValorRank), RequiredValorRank),
-RequiresAlignment = IF(@update_record, VALUES(RequiresAlignment), RequiresAlignment),
-RequiresSocial = IF(@update_record, VALUES(RequiresSocial), RequiresSocial),
-SchematicId = IF(@update_record, VALUES(SchematicId), SchematicId),
-ShieldSpec = IF(@update_record, VALUES(ShieldSpec), ShieldSpec),
-Slots = IF(@update_record, VALUES(Slots), Slots),
-StatModifiers = IF(@update_record, VALUES(StatModifiers), StatModifiers),
-SubCategory = IF(@update_record, VALUES(SubCategory), SubCategory),
-TreasurePackageId = IF(@update_record, VALUES(TreasurePackageId), TreasurePackageId),
-TreasurePackageSpec = IF(@update_record, VALUES(TreasurePackageSpec), TreasurePackageSpec),
-UniqueLimit = IF(@update_record, VALUES(UniqueLimit), UniqueLimit),
-UseAbilityId = IF(@update_record, VALUES(UseAbilityId), UseAbilityId),
-Value = IF(@update_record, VALUES(Value), Value),
-VendorStackSize = IF(@update_record, VALUES(VendorStackSize), VendorStackSize),
-WeaponSpec = IF(@update_record, VALUES(WeaponSpec), WeaponSpec),
-TypeBitSet = IF(@update_record, VALUES(TypeBitSet), TypeBitSet),
-Hash = IF(@update_record, VALUES(Hash), Hash),
-StackCount = IF(@update_record, VALUES(StackCount), StackCount),
-MaxDurability = IF(@update_record, VALUES(MaxDurability), MaxDurability),
-WeaponAppSpec = IF(@update_record, VALUES(WeaponAppSpec), WeaponAppSpec),
-Model = IF(@update_record, VALUES(Model), Model),
-ImperialVOModulation = IF(@update_record, VALUES(ImperialVOModulation), ImperialVOModulation),
-RepublicVOModulation = IF(@update_record, VALUES(RepublicVOModulation), RepublicVOModulation);")},
-                {"Abilities", new SQLInitStore(
-                    "INSERT INTO `ability` (`current_version`, `previous_version`, `Name`, `NodeId`, `NameId`, `Description`, `DescriptionId`, `Fqn`, `Level`, `Icon`, `IsHidden`, `IsPassive`, `Cooldown`, `CastingTime`, `ForceCost`, `EnergyCost`, `ApCost`, `ApType`, `MinRange`, `MaxRange`, `Gcd`, `GcdOverride`, `ModalGroup`, `SharedCooldown`, `TalentTokens`, `AbilityTokens`, `TargetArc`, `TargetArcOffset`, `TargetRule`, `LineOfSightCheck`, `Pushback`, `IgnoreAlacrity`, `Hash`) VALUES ",
-                    @"ON DUPLICATE KEY UPDATE 
-previous_version = IF((@update_record := (Hash <> VALUES(Hash))), current_version, previous_version),
-current_version = IF(@update_record, VALUES(current_version), current_version),
-Name = IF(@update_record, VALUES(Name), Name),
-NodeId = IF(@update_record, VALUES(NodeId), NodeId),
-NameId = IF(@update_record, VALUES(NameId), NameId),
-Description = IF(@update_record, VALUES(Description), Description),
-DescriptionId = IF(@update_record, VALUES(DescriptionId), DescriptionId),
-Fqn = IF(@update_record, VALUES(Fqn), Fqn),
-Level = IF(@update_record, VALUES(Level), Level),
-Icon = IF(@update_record, VALUES(Icon), Icon),
-IsHidden = IF(@update_record, VALUES(IsHidden), IsHidden),
-IsPassive = IF(@update_record, VALUES(IsPassive), IsPassive),
-Cooldown = IF(@update_record, VALUES(Cooldown), Cooldown),
-CastingTime = IF(@update_record, VALUES(CastingTime), CastingTime),
-ForceCost = IF(@update_record, VALUES(ForceCost), ForceCost),
-EnergyCost = IF(@update_record, VALUES(EnergyCost), EnergyCost),
-ApCost = IF(@update_record, VALUES(ApCost), ApCost),
-ApType = IF(@update_record, VALUES(ApType), ApType),
-MinRange = IF(@update_record, VALUES(MinRange), MinRange),
-MaxRange = IF(@update_record, VALUES(MaxRange), MaxRange),
-Gcd = IF(@update_record, VALUES(Gcd), Gcd),
-GcdOverride = IF(@update_record, VALUES(GcdOverride), GcdOverride),
-ModalGroup = IF(@update_record, VALUES(ModalGroup), ModalGroup),
-SharedCooldown = IF(@update_record, VALUES(SharedCooldown), SharedCooldown),
-TalentTokens = IF(@update_record, VALUES(TalentTokens), TalentTokens),
-AbilityTokens = IF(@update_record, VALUES(AbilityTokens), AbilityTokens),
-TargetArc = IF(@update_record, VALUES(TargetArc), TargetArc),
-TargetArcOffset = IF(@update_record, VALUES(TargetArcOffset), TargetArcOffset),
-TargetRule = IF(@update_record, VALUES(TargetRule), TargetRule),
-LineOfSightCheck = IF(@update_record, VALUES(LineOfSightCheck), LineOfSightCheck),
-Pushback = IF(@update_record, VALUES(Pushback), Pushback),
-IgnoreAlacrity = IF(@update_record, VALUES(IgnoreAlacrity), IgnoreAlacrity),
-Hash = IF(@update_record, VALUES(Hash), Hash);")},
-                    {"AchCategories", new SQLInitStore(
-                    "INSERT INTO `achcategories` (`current_version`, `previous_version`, `CatId`, `Name`, `NameId`, `Index`, `ParentCatId`, `CodexIcon`, `Icon`, `SubCategories`, `Rows`, `Hash`) VALUES ",
-                    @"ON DUPLICATE KEY UPDATE 
-previous_version = IF((@update_record := (Hash <> VALUES(Hash))), current_version, previous_version),
-current_version = IF(@update_record, VALUES(current_version), current_version),
-CatId = IF(@update_record, VALUES(CatId), CatId),
-Name = IF(@update_record, VALUES(Name), Name),
-NameId = IF(@update_record, VALUES(NameId), NameId),
-Index = IF(@update_record, VALUES(Index), Index),
-ParentCatId = IF(@update_record, VALUES(ParentCatId), ParentCatId),
-CodexIcon = IF(@update_record, VALUES(CodexIcon), CodexIcon),
-Icon = IF(@update_record, VALUES(Icon), Icon),
-SubCategories = IF(@update_record, VALUES(SubCategories), SubCategories),
-Rows = IF(@update_record, VALUES(Rows), Rows),
-Hash = IF(@update_record, VALUES(Hash), Hash);")}
+                {"Abilities", new SQLInitStore("ability", new GomLib.Models.Ability())},
+                {"AchCategories", new SQLInitStore("achcategories", new GomLib.Models.AchievementCategory())},
+                {"Achievements", new SQLInitStore("achievement", new GomLib.Models.Achievement())},
+                {"Items", new SQLInitStore("item", new GomLib.Models.Item())},
             };
 
             #endregion
@@ -346,7 +232,7 @@ Hash = IF(@update_record, VALUES(Hash), Hash);")}
 
         private void textBox1_TextChanged_1(object sender, EventArgs e)
         {
-            patchVersion = textBox1.Text;
+            patchVersion = versionTexBox.Text;
         }
 
         public void SqlCreate()
@@ -391,7 +277,67 @@ Hash = IF(@update_record, VALUES(Hash), Hash);")}
             InitEnd = e;
         }
 
+        public SQLInitStore(string name, object obj) 
+        {
+            Table = name;
+            SqlData = new SQLData(); //this has been  redesigned to elminate most of the grunt work to make new sql outputs.
+            if (obj is GomLib.Models.GameObject)
+            {
+                SqlData = ((GomLib.Models.GameObject)obj).SQLInfo(); //not implemented yet
+            }
+            else if (obj is GomLib.Models.PseudoGameObject)
+            {
+                SqlData = ((GomLib.Models.PseudoGameObject)obj).SQLInfo(); //returns the SQLInfo related to the type. It's just a list of SQLProperties right now.
+            }
+            var names = SqlData.SQLProperties.Select(x => x.Name).ToList(); //Use linq to suck all the sql column names into a list.
+            InitBegin = String.Format("INSERT INTO `{0}` (`current_version`, `previous_version`, `{1}`, `Hash`) VALUES ", name, String.Join("`, `", names)); //join the name list together and create a basic insert query for the type
+            InitEnd = String.Format(@"ON DUPLICATE KEY UPDATE 
+previous_version = IF((@update_record := (Hash <> VALUES(Hash))), current_version, previous_version),
+current_version = IF(@update_record, VALUES(current_version), current_version),
+{0}
+Hash = IF(@update_record, VALUES(Hash), Hash);", String.Join(Environment.NewLine, names.Select(x => String.Format("`{0}` = IF(@update_record, VALUES(`{0}`), `{0}`),", x)))); //same thing, but slightly reversed. Use linq to take the name list and turn it into a formatted string for each row, then join those lines together with with a newline. It's better to use the String.Join/Format options so you're not spawning a billion new strings like when you + them together.
+        }
+        internal SQLData SqlData;
+
         public string InitBegin = "";
         public string InitEnd = "";
+
+        public string Table = "";
+
+        public void OutputCreationSQL()
+        {
+            string defaultQuery = File.ReadAllText("SQL Files\\default_create.sql");
+
+            string columnTypes = String.Join(Environment.NewLine, SqlData.SQLProperties.Select(x => String.Format("  `{0}` {1},", x.Name, x.Type)));
+            string priunikey = SqlData.SQLProperties.Where(x => x.IsPrimaryKey).Select(x => x.Name).First();
+            string keyString = "  PRIMARY KEY (`{0}`),\r\n  UNIQUE KEY `id_UNIQUE` (`{0}`)";
+            string priString = String.Format(keyString, priunikey);
+            string oldString = String.Format(keyString, String.Format("{0}`, `version", priunikey));
+
+            List<string> columnNames = SqlData.SQLProperties.Select(x => x.Name).ToList();
+            string columns = String.Join("`, `", columnNames);
+            string oldColumns = String.Join("`, OLD.`", columnNames);
+
+            /*
+             * {0} = table name
+             * {1} = primarykey
+             * {2} = column names
+             * {3} = Old.column names
+             */
+            string trigger = String.Format(@"((NOT EXISTS(SELECT 1 FROM {0}_old_versions WHERE `{1}` =  OLD.`{1}` AND `Hash` = OLD.`Hash`)) AND (NOT (OLD.`Hash` = NEW.`Hash`))) THEN
+	INSERT INTO `{0}_old_versions` (`version`, `{2}`, `Hash`)
+	VALUES (OLD.`current_version`, OLD.`{3}`, OLD.`Hash`)", Table, priunikey, columns, oldColumns);
+
+            /*
+             * {0} = table name
+             * {1} = column types minus version and hash
+             * {2} = regular primary unique key statements
+             * {3} = trigger if statement
+             * {4} = old_versions primary unique key statements
+             */
+            string creationQuery = String.Format(defaultQuery, Table, columnTypes, priString, trigger, oldString);
+
+            tor_tools.Tools.WriteFile(creationQuery, String.Format("SQL Creation Files\\{0}_create.sql", Table), false);
+        }
     }
 }

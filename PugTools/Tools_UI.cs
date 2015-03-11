@@ -101,7 +101,6 @@ namespace tor_tools
             {
                 listBox1.Items.Add("Mysql is now OFF");
                 buttonToggleDatabase.Text = "Mysql OFF";
-                textBox1.Enabled = false;
                 textBox2.Enabled = false;
                 textBox3.Enabled = false;
                 textBox4.Enabled = false;
@@ -112,7 +111,6 @@ namespace tor_tools
             {
                 listBox1.Items.Add("Mysql is now ON");
                 buttonToggleDatabase.Text = "Mysql ON";
-                textBox1.Enabled = true;
                 textBox2.Enabled = true;
                 textBox3.Enabled = true;
                 textBox4.Enabled = true;
@@ -127,6 +125,12 @@ namespace tor_tools
             try
             {
                 string selected = comboBoxExtractTypes.SelectedItem.ToString();
+                if (cbxExtractFormat.SelectedItem.ToString() == "SQL" && versionTexBox.Text == "")
+                {
+                    System.Windows.Forms.MessageBox.Show("A patch version number is required for SQL Output.");
+                    EnableButtons();
+                    return;
+                }
                 if (!System.IO.Directory.Exists(Config.ExtractPath + prefix)) { System.IO.Directory.CreateDirectory(Config.ExtractPath + prefix); }
                 /*ThreadStart t = new ThreadStart(getAll);
                 Thread oGetItems = new Thread(t);

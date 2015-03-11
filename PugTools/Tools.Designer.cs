@@ -51,7 +51,7 @@
             this.chkVerbose = new System.Windows.Forms.CheckBox();
             this.gbxDB = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.versionTexBox = new System.Windows.Forms.TextBox();
             this.extractButton = new System.Windows.Forms.Button();
             this.gbxFQN = new System.Windows.Forms.GroupBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -225,6 +225,8 @@
             // 
             // gbxFormat
             // 
+            this.gbxFormat.Controls.Add(this.versionTexBox);
+            this.gbxFormat.Controls.Add(this.label1);
             this.gbxFormat.Controls.Add(this.chkBuildCompare);
             this.gbxFormat.Controls.Add(this.chkRemoveElements);
             this.gbxFormat.Controls.Add(this.cbxExtractFormat);
@@ -294,8 +296,6 @@
             // 
             // gbxDB
             // 
-            this.gbxDB.Controls.Add(this.label1);
-            this.gbxDB.Controls.Add(this.textBox1);
             this.gbxDB.Controls.Add(this.label4);
             this.gbxDB.Controls.Add(this.textBox2);
             this.gbxDB.Controls.Add(this.label2);
@@ -315,19 +315,19 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 101);
+            this.label1.Location = new System.Drawing.Point(462, 18);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(45, 13);
             this.label1.TabIndex = 13;
             this.label1.Text = "Version.";
             // 
-            // textBox1
+            // versionTexBox
             // 
-            this.textBox1.Location = new System.Drawing.Point(55, 98);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(62, 20);
-            this.textBox1.TabIndex = 12;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged_1);
+            this.versionTexBox.Location = new System.Drawing.Point(512, 15);
+            this.versionTexBox.Name = "versionTexBox";
+            this.versionTexBox.Size = new System.Drawing.Size(62, 20);
+            this.versionTexBox.TabIndex = 12;
+            this.versionTexBox.TextChanged += new System.EventHandler(this.textBox1_TextChanged_1);
             // 
             // extractButton
             // 
@@ -713,7 +713,7 @@
         private System.Windows.Forms.Button buttonPreviousBuildFolder;
         private System.Windows.Forms.CheckBox chkRemoveElements;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox versionTexBox;
         private System.Windows.Forms.Button extractButton;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.CheckBox usePTSAssets;
