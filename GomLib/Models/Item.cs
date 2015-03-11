@@ -174,6 +174,67 @@ namespace GomLib.Models
             return returnList;
         }
 
+        public override int GetHashCode() //needs fixed, it's changing for the same data
+        {
+            int hash = Id.GetHashCode();
+            if (LocalizedName != null) foreach (var x in LocalizedName) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (LocalizedDescription != null) foreach (var x in LocalizedDescription) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            hash ^= AppearanceColor.GetHashCode();
+            hash ^= ArmorSpec.GetHashCode();
+            hash ^= Binding.GetHashCode();
+            hash ^= Category.GetHashCode();
+            hash ^= CombinedRating.GetHashCode();
+            hash ^= CombinedRequiredLevel.GetHashCode();
+            hash ^= ConsumedOnUse.GetHashCode();
+            hash ^= DisassembleCategory.GetHashCode();
+            hash ^= Durability.GetHashCode();
+            hash ^= EnhancementCategory.GetHashCode();
+            hash ^= EnhancementSubCategory.GetHashCode();
+            hash ^= EnhancementType.GetHashCode();
+            hash ^= EquipAbility.GetHashCode();
+            hash ^= GiftRank.GetHashCode();
+            hash ^= GiftType.GetHashCode();
+            hash ^= Icon.GetHashCode();
+            hash ^= IsModdable.GetHashCode();
+            hash ^= ItemLevel.GetHashCode();
+            hash ^= MaxStack.GetHashCode();
+            hash ^= ModifierSpec.GetHashCode();
+            hash ^= MountSpec.GetHashCode();
+            hash ^= Quality.GetHashCode();
+            hash ^= Rating.GetHashCode();
+            hash ^= RequiredAlignmentInverted.GetHashCode();
+            hash ^= RequiredAlignmentTier.GetHashCode();
+            hash ^= RequiredGender.GetHashCode();
+            hash ^= RequiredLevel.GetHashCode();
+            hash ^= RequiredProfession.GetHashCode();
+            hash ^= RequiredProfessionLevel.GetHashCode();
+            hash ^= RequiredSocialTier.GetHashCode();
+            hash ^= RequiredValorRank.GetHashCode();
+            hash ^= RequiresAlignment.GetHashCode();
+            hash ^= RequiresSocial.GetHashCode();
+            hash ^= SchematicId.GetHashCode();
+            hash ^= ShieldSpec.GetHashCode();
+            hash ^= SubCategory.GetHashCode();
+            hash ^= TypeBitSet.GetHashCode();
+            hash ^= UniqueLimit.GetHashCode();
+            hash ^= UseAbility.GetHashCode();
+            hash ^= Value.GetHashCode();
+            hash ^= VendorStackSize.GetHashCode();
+            hash ^= WeaponSpec.GetHashCode();
+            foreach (var x in CombinedStatModifiers) { hash ^= x.GetHashCode(); }
+            foreach (var x in EnhancementSlots) { hash ^= x.GetHashCode(); }
+            foreach (var x in RequiredClasses) { hash ^= x.Id.GetHashCode(); }
+            foreach (var x in Slots) { hash ^= x.GetHashCode(); }
+            foreach (var x in StatModifiers) { hash ^= x.GetHashCode(); }
+            hash ^= StackCount.GetHashCode();
+            hash ^= MaxDurability.GetHashCode();
+            if (WeaponAppSpec != null) hash ^= WeaponAppSpec.GetHashCode();
+            if (Model != null) hash ^= Model.GetHashCode();
+            if (ImperialVOModulation != null) hash ^= ImperialVOModulation.GetHashCode();
+            if (RepublicVOModulation != null) hash ^= RepublicVOModulation.GetHashCode();
+            return hash;
+        }
+
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
@@ -355,66 +416,6 @@ namespace GomLib.Models
             if (this.WeaponSpec != itm.WeaponSpec)
                 return false;
             return true;
-        }
-
-        public override int GetHashCode() //needs fixed, it's changing for the same data
-        {
-            int hash = (LocalizedName ?? new Dictionary<string, string>()).GetHashCode();
-            hash ^= (LocalizedDescription ?? new Dictionary<string, string>()).GetHashCode();
-            hash ^= this.AppearanceColor.GetHashCode();
-            hash ^= this.ArmorSpec.GetHashCode();
-            hash ^= this.Binding.GetHashCode();
-            hash ^= this.Category.GetHashCode();
-            hash ^= this.CombinedRating.GetHashCode();
-            hash ^= this.CombinedRequiredLevel.GetHashCode();
-            hash ^= this.ConsumedOnUse.GetHashCode();
-            hash ^= this.DisassembleCategory.GetHashCode();
-            hash ^= this.Durability.GetHashCode();
-            hash ^= this.EnhancementCategory.GetHashCode();
-            hash ^= this.EnhancementSubCategory.GetHashCode();
-            hash ^= this.EnhancementType.GetHashCode();
-            hash ^= this.EquipAbility.GetHashCode();
-            hash ^= this.GiftRank.GetHashCode();
-            hash ^= this.GiftType.GetHashCode();
-            hash ^= this.Icon.GetHashCode();
-            hash ^= this.IsModdable.GetHashCode();
-            hash ^= this.ItemLevel.GetHashCode();
-            hash ^= this.MaxStack.GetHashCode();
-            hash ^= this.ModifierSpec.GetHashCode();
-            hash ^= this.MountSpec.GetHashCode();
-            hash ^= this.Quality.GetHashCode();
-            hash ^= this.Rating.GetHashCode();
-            hash ^= this.RequiredAlignmentInverted.GetHashCode();
-            hash ^= this.RequiredAlignmentTier.GetHashCode();
-            hash ^= this.RequiredGender.GetHashCode();
-            hash ^= this.RequiredLevel.GetHashCode();
-            hash ^= this.RequiredProfession.GetHashCode();
-            hash ^= this.RequiredProfessionLevel.GetHashCode();
-            hash ^= this.RequiredSocialTier.GetHashCode();
-            hash ^= this.RequiredValorRank.GetHashCode();
-            hash ^= this.RequiresAlignment.GetHashCode();
-            hash ^= this.RequiresSocial.GetHashCode();
-            hash ^= this.SchematicId.GetHashCode();
-            hash ^= this.ShieldSpec.GetHashCode();
-            hash ^= this.SubCategory.GetHashCode();
-            hash ^= this.TypeBitSet.GetHashCode();
-            hash ^= this.UniqueLimit.GetHashCode();
-            hash ^= this.UseAbility.GetHashCode();
-            hash ^= this.Value.GetHashCode();
-            hash ^= this.VendorStackSize.GetHashCode();
-            hash ^= this.WeaponSpec.GetHashCode();
-            foreach (var x in this.CombinedStatModifiers) { hash ^= x.GetHashCode(); }
-            foreach (var x in this.EnhancementSlots) { hash ^= x.GetHashCode(); }
-            foreach (var x in this.RequiredClasses) { hash ^= x.Id.GetHashCode(); }
-            foreach (var x in this.Slots) { hash ^= x.GetHashCode(); }
-            foreach (var x in this.StatModifiers) { hash ^= x.GetHashCode(); }
-            hash ^= this.StackCount.GetHashCode();
-            hash ^= this.MaxDurability.GetHashCode();
-            if (this.WeaponAppSpec != null) hash ^= this.WeaponAppSpec.GetHashCode();
-            if (this.Model != null) hash ^= this.Model.GetHashCode();
-            if (this.ImperialVOModulation != null) hash ^= this.ImperialVOModulation.GetHashCode();
-            if (this.RepublicVOModulation != null) hash ^= this.RepublicVOModulation.GetHashCode();
-            return hash;
         }
 
         public override string ToString(bool verbose)
