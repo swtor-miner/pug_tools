@@ -77,7 +77,7 @@ namespace GomLib.ModelLoader
 
             var dec = (Models.Decoration)obj;
 
-            dec.NodeId = gom.Id;
+            dec.Id = gom.Id;
             dec.Fqn = gom.Name;
             dec._dom = _dom;
             dec.References = obj.References;
@@ -116,7 +116,7 @@ namespace GomLib.ModelLoader
                 dec.LocalizedName = ((Item)dec.UnlockingItem).LocalizedName;
             }
 
-            dec.Id = (ulong)(dec.NameId >> 32);
+            //dec.Id = (ulong)(dec.NameId >> 32);
 
             dec.DecorationId = gom.Data.ValueOrDefault<ulong>("decDecorationId", 0);
 
@@ -229,7 +229,7 @@ namespace GomLib.ModelLoader
                 {
                     var decProto = _dom.GetObject("decorationsPrototype");
                     Dictionary<object, object> decCompanionHoloTable = decProto.Data.ValueOrDefault<Dictionary<object, object>>("decCompanionHoloTable", new Dictionary<object, object>());
-                    var results = decCompanionHoloTable.Where(x => (ulong)x.Value == dec.NodeId);
+                    var results = decCompanionHoloTable.Where(x => (ulong)x.Value == dec.Id);
                     if (results.Count() > 1)
                     {
                         throw new IndexOutOfRangeException();

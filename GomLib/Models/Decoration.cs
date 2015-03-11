@@ -16,7 +16,6 @@ namespace GomLib.Models
         public float decPrevObjRotationX;
         public float decPrevObjRotationY;
         public bool a;
-        public ulong NodeId { get; set; }
         public bool UseItemName { get; set; }
         public ulong UnlockingItemId { get; set; }
 
@@ -40,6 +39,47 @@ namespace GomLib.Models
         public string StubType { get; set; }
         public bool RequiresAbilityUnlocked { get; set; }
         public long GuildPurchaseCost { get; set; }
+        public long CategoryNameId { get; set; }
+        public string CategoryName { get; set; }
+        public long SubCategoryNameId { get; set; }
+        public string SubCategoryName { get; set; }
+        public Dictionary<long, string> SourceDict { get; set; }
+        public bool UniquePerLegacy { get; set; }
+
+        public override int GetHashCode()
+        {
+            int hash = Id.GetHashCode();
+            if (LocalizedName != null) foreach (var x in LocalizedName) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (Hooks != null) foreach (var x in Hooks) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (AvailableHooks != null) foreach (var x in AvailableHooks) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (SourceDict != null) foreach (var x in SourceDict) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            hash ^= decPrevObjRotationX.GetHashCode();
+            hash ^= decPrevObjRotationY.GetHashCode();
+            hash ^= a.GetHashCode();
+            hash ^= UseItemName.GetHashCode();
+            hash ^= UnlockingItemId.GetHashCode();
+            hash ^= DecorationId.GetHashCode();
+            if (State != null) hash ^= State.GetHashCode();
+            if (DecorationFqn != null) hash ^= DecorationFqn.GetHashCode();
+            if (DefaultAnimation != null) hash ^= DefaultAnimation.GetHashCode();
+            hash ^= MaxUnlockLimit.GetHashCode();
+            hash ^= F2PLimit.GetHashCode();
+            if (FactionPlacementRestriction != null) hash ^= FactionPlacementRestriction.GetHashCode();
+            hash ^= CategoryId.GetHashCode();
+            hash ^= SubCategoryId.GetHashCode();
+            hash ^= PrevCamHeightOff.GetHashCode();
+            hash ^= PrevCamDisOff.GetHashCode();
+            if (StubType != null) hash ^= StubType.GetHashCode();
+            hash ^= RequiresAbilityUnlocked.GetHashCode();
+            hash ^= GuildPurchaseCost.GetHashCode();
+            hash ^= CategoryNameId.GetHashCode();
+            if (CategoryName != null) hash ^= CategoryName.GetHashCode();
+            hash ^= SubCategoryNameId.GetHashCode();
+            if (SubCategoryName != null) hash ^= SubCategoryName.GetHashCode();
+            hash ^= UniquePerLegacy.GetHashCode();
+
+            return hash;
+        }
         
         public override bool Equals(object obj)
         {
@@ -52,6 +92,7 @@ namespace GomLib.Models
 
             return Equals(itm);
         }
+
 
         public bool Equals(Decoration itm)
         {
@@ -99,7 +140,7 @@ namespace GomLib.Models
                 return false;
             if (this.NameId != itm.NameId)
                 return false;
-            if (this.NodeId != itm.NodeId)
+            if (this.Id != itm.Id)
                 return false;
             if (this.RequiresAbilityUnlocked != itm.RequiresAbilityUnlocked)
                 return false;
@@ -128,81 +169,6 @@ namespace GomLib.Models
                 return false; 
             return true;
         }
-            /*
-        public override int GetHashCode()
-        {
-            int hash = LocalizedName.GetHashCode();
-            hash ^= LocalizedDescription.GetHashCode();
-            hash ^= this.AppearanceColor.GetHashCode();
-            hash ^= this.ArmorSpec.GetHashCode();
-            hash ^= this.Binding.GetHashCode();
-            hash ^= this.Category.GetHashCode();
-            hash ^= this.CombinedRating.GetHashCode();
-            hash ^= this.CombinedRequiredLevel.GetHashCode();
-            hash ^= this.ConsumedOnUse.GetHashCode();
-            hash ^= this.DisassembleCategory.GetHashCode();
-            hash ^= this.Durability.GetHashCode();
-            hash ^= this.EnhancementCategory.GetHashCode();
-            hash ^= this.EnhancementSubCategory.GetHashCode();
-            hash ^= this.EnhancementType.GetHashCode();
-            hash ^= this.EquipAbility.GetHashCode();
-            hash ^= this.GiftRank.GetHashCode();
-            hash ^= this.GiftType.GetHashCode();
-            hash ^= this.Icon.GetHashCode();
-            hash ^= this.IsModdable.GetHashCode();
-            hash ^= this.ItemLevel.GetHashCode();
-            hash ^= this.MaxStack.GetHashCode();
-            hash ^= this.ModifierSpec.GetHashCode();
-            hash ^= this.MountSpec.GetHashCode();
-            hash ^= this.Quality.GetHashCode();
-            hash ^= this.Rating.GetHashCode();
-            hash ^= this.RequiredAlignmentInverted.GetHashCode();
-            hash ^= this.RequiredAlignmentTier.GetHashCode();
-            hash ^= this.RequiredGender.GetHashCode();
-            hash ^= this.RequiredLevel.GetHashCode();
-            hash ^= this.RequiredProfession.GetHashCode();
-            hash ^= this.RequiredProfessionLevel.GetHashCode();
-            hash ^= this.RequiredSocialTier.GetHashCode();
-            hash ^= this.RequiredValorRank.GetHashCode();
-            hash ^= this.RequiresAlignment.GetHashCode();
-            hash ^= this.RequiresSocial.GetHashCode();
-            hash ^= this.SchematicId.GetHashCode();
-            hash ^= this.ShieldSpec.GetHashCode();
-            hash ^= this.SubCategory.GetHashCode();
-            hash ^= this.TypeBitSet.GetHashCode();
-            hash ^= this.UniqueLimit.GetHashCode();
-            hash ^= this.UseAbility.GetHashCode();
-            hash ^= this.Value.GetHashCode();
-            hash ^= this.VendorStackSize.GetHashCode();
-            hash ^= this.WeaponSpec.GetHashCode();
-            foreach (var x in this.CombinedStatModifiers) { hash ^= x.GetHashCode(); }
-            foreach (var x in this.EnhancementSlots) { hash ^= x.GetHashCode(); }
-            foreach (var x in this.RequiredClasses) { hash ^= x.Id.GetHashCode(); }
-            foreach (var x in this.Slots) { hash ^= x.GetHashCode(); }
-            foreach (var x in this.StatModifiers) { hash ^= x.GetHashCode(); }
-            hash ^= this.StackCount.GetHashCode();
-            hash ^= this.MaxDurability.GetHashCode();
-            if (this.WeaponAppSpec != null) hash ^= this.WeaponAppSpec.GetHashCode();
-            if (this.Model != null) hash ^= this.Model.GetHashCode();
-            if (this.ImperialVOModulation != null) hash ^= this.ImperialVOModulation.GetHashCode();
-            if (this.RepublicVOModulation != null) hash ^= this.RepublicVOModulation.GetHashCode();
-            return hash;
-        }*/
-
-
-
-
-        public long CategoryNameId { get; set; }
-
-        public string CategoryName { get; set; }
-
-        public long SubCategoryNameId { get; set; }
-
-        public string SubCategoryName { get; set; }
-
-        public Dictionary<long, string> SourceDict { get; set; }
-
-        public bool UniquePerLegacy { get; set; }
 
         public override string ToString(bool verbose)
         {
@@ -228,7 +194,7 @@ namespace GomLib.Models
 
             decoration.Add(new XElement("Name", Name, new XAttribute("Id", NameId)),
                 new XAttribute("Id", Id),
-                new XElement("Fqn", Fqn, new XAttribute("Id", NodeId)),
+                new XElement("Fqn", Fqn, new XAttribute("Id", Id)),
                 new XElement("PreviewWindowValues", String.Join(", ", decPrevObjRotationX, decPrevObjRotationY, PrevCamDisOff, PrevCamHeightOff))
                 );
             if (State != null) decoration.Add(new XElement("DynamicState", State));
