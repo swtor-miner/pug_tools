@@ -37,17 +37,19 @@ namespace GomLib.Models
             Description = "";
         }
 
-        public override int GetHashCode() //needs fixed, it's changing for the same data
+        public override int GetHashCode() //should be fixed
         {
             int hash = Level.GetHashCode();
-            if (LocalizedDescription != null) { hash ^= LocalizedDescription.GetHashCode(); }
-            if (LocalizedNonSpoilerDesc != null) { hash ^= LocalizedNonSpoilerDesc.GetHashCode(); }
-            if (LocalizedName != null) { hash ^= LocalizedName.GetHashCode(); }
+            foreach (var x in LocalizedDescription) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            foreach (var x in LocalizedNonSpoilerDesc) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            foreach (var x in LocalizedName) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
             if (Icon != null) { hash ^= Icon.GetHashCode(); }
+            hash ^= Visibility.GetHashCode();
+            hash ^= AchId.GetHashCode();
             hash ^= RewardsId.GetHashCode();
-            //hash ^= Rewards.GetHashCode();
-            //hash ^= Tasks.GetHashCode();
-            //hash ^= Conditions.GetHashCode();
+            if (Rewards != null) { hash ^= Rewards.GetHashCode(); }
+            if (Tasks != null) foreach (var x in Tasks) { hash ^= x.GetHashCode(); }
+            if (Conditions != null) foreach (var x in Conditions) { hash ^= x.GetHashCode(); }
             return hash;
         }
 
@@ -282,10 +284,11 @@ namespace GomLib.Models
 
         public override int GetHashCode()
         {
-            int hash = LocalizedLegacyTitle.GetHashCode();
-            hash ^= CartelCoins.GetHashCode();
+            int hash = CartelCoins.GetHashCode();
             hash ^= AchievementPoints.GetHashCode();
             hash ^= Requisition.GetHashCode();
+            if (LocalizedLegacyTitle != null) foreach (var x in LocalizedLegacyTitle) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (ItemRewardList != null) foreach (var x in ItemRewardList) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
             return hash;
         }
 
@@ -351,8 +354,8 @@ namespace GomLib.Models
             hash ^= Index2.GetHashCode();
             hash ^= Count.GetHashCode();
             hash ^= Name.GetHashCode();
-            hash ^= LocalizedNames.GetHashCode();
-            hash ^= Events.GetHashCode();
+            foreach (var x in LocalizedNames) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            foreach (var x in Events) { hash ^= x.GetHashCode(); }
             return hash;
         }
 
