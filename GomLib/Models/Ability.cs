@@ -14,11 +14,9 @@ namespace GomLib.Models
         public ulong NodeId { get; set; }
 
         public long NameId { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
         public long DescriptionId { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         public string Description { get; set; }
         public Dictionary<string, string> LocalizedDescription { get; set; }
 
@@ -63,14 +61,18 @@ namespace GomLib.Models
         public ulong UnknownInt2 { get; set; }
         public Dictionary<int, ulong> CooldownTimerSpecs { get; set; }
 
-        public override int GetHashCode()  //needs fixed, it's changing for the same data
+        public override int GetHashCode()  //should be fixed.
         {
             int hash = Level.GetHashCode();
-            if (LocalizedDescription != null) { hash ^= LocalizedDescription.GetHashCode(); }
-            if (LocalizedName != null) { hash ^= LocalizedName.GetHashCode(); }
+            if (LocalizedDescription != null) foreach (var x in LocalizedDescription) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (LocalizedName != null) foreach (var x in LocalizedName) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
             if (Icon != null) { hash ^= Icon.GetHashCode(); }
+            if (EffectIds != null) foreach (var x in EffectIds) { hash ^= x.GetHashCode(); }
+            hash ^= Level.GetHashCode();
+            hash ^= EffectZero.GetHashCode();
             hash ^= IsHidden.GetHashCode();
             hash ^= IsPassive.GetHashCode();
+            hash ^= Version.GetHashCode();
             hash ^= Cooldown.GetHashCode();
             hash ^= CastingTime.GetHashCode();
             hash ^= ChannelingTime.GetHashCode();
@@ -82,6 +84,9 @@ namespace GomLib.Models
             hash ^= MaxRange.GetHashCode();
             hash ^= GCD.GetHashCode();
             hash ^= GcdOverride.GetHashCode();
+            hash ^= ModalGroup.GetHashCode();
+            hash ^= SharedCooldown.GetHashCode();
+            if (TalentTokens != null) { hash ^= TalentTokens.GetHashCode(); }
             if (AbilityTokens != null) { hash ^= AbilityTokens.GetHashCode(); }
             hash ^= TargetArc.GetHashCode();
             hash ^= TargetArcOffset.GetHashCode();
@@ -89,6 +94,18 @@ namespace GomLib.Models
             hash ^= LineOfSightCheck.GetHashCode();
             hash ^= Pushback.GetHashCode();
             hash ^= IgnoreAlacrity.GetHashCode();
+            if (DescriptionTokens != null) foreach (var x in DescriptionTokens) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            hash ^= AiType.GetHashCode();
+            hash ^= CombatMode.GetHashCode();
+            hash ^= AutoAttackMode.GetHashCode();
+            hash ^= IsValid.GetHashCode();
+            hash ^= IsCustom.GetHashCode();
+            if (AppearanceSpec != null) { hash ^= AppearanceSpec.GetHashCode(); }
+            hash ^= UnknownInt.GetHashCode();
+            hash ^= UnknownBool.GetHashCode();
+            hash ^= UnknownInt2.GetHashCode();
+            if (CooldownTimerSpecs != null) foreach (var x in CooldownTimerSpecs) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            
             return hash;
         }
 
