@@ -399,6 +399,8 @@
     </Compile>
     <Content Include="SQL Files\default_create.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Include="Resources\Transparent.png" />    
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Tools\packed_codebooks_aoTuV_603.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

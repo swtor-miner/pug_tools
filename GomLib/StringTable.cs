@@ -211,22 +211,28 @@ namespace GomLib
                             fs.Position = streamPos;
                         }
 
-                        if (!data.ContainsKey(entryId)) { data[entryId] = entry; }
+                        if (!data.ContainsKey(entryId))
+                        {
+                            data[entryId] = entry;
+                        }
 
-                        if (localization == "en-us" && text != "")
+                        if (text.Length > 0)
                         {
-                            if (entry_t1 == 65 || entry_t1 == 80) { data[entryId].localizedText["enMale"] = text; }
-                            if (entry_t1 == 70 || entry_t1 == 81) { data[entryId].localizedText["enFemale"] = text; }
-                        }
-                        else if (localization == "de-de" && text != "")
-                        {
-                            if (entry_t1 == 65 || entry_t1 == 80) { data[entryId].localizedText["deMale"] = text; }
-                            if (entry_t1 == 70 || entry_t1 == 81) { data[entryId].localizedText["deFemale"] = text; }
-                        }
-                        else if (localization == "fr-fr" && text != "")
-                        {
-                            if (entry_t1 == 65 || entry_t1 == 80) { data[entryId].localizedText["frMale"] = text; }
-                            if (entry_t1 == 70 || entry_t1 == 81) { data[entryId].localizedText["frFemale"] = text; }
+                            if (localization == "en-us")
+                            {
+                                if (entry_t1 == 65 || entry_t1 == 80) { data[entryId].localizedText["enMale"] = text; }
+                                if (entry_t1 == 70 || entry_t1 == 81) { data[entryId].localizedText["enFemale"] = text; }
+                            }
+                            else if (localization == "de-de")
+                            {
+                                if (entry_t1 == 65 || entry_t1 == 80) { data[entryId].localizedText["deMale"] = text; }
+                                if (entry_t1 == 70 || entry_t1 == 81) { data[entryId].localizedText["deFemale"] = text; }
+                            }
+                            else if (localization == "fr-fr")
+                            {
+                                if (entry_t1 == 65 || entry_t1 == 80) { data[entryId].localizedText["frMale"] = text; }
+                                if (entry_t1 == 70 || entry_t1 == 81) { data[entryId].localizedText["frFemale"] = text; }
+                            }
                         }
                     }
                 }
