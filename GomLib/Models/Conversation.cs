@@ -45,6 +45,8 @@ namespace GomLib.Models
         public ulong DefaultSpeakerId { get; set; }
         public GameObject DefaultSpeaker { get; set; }
 
+        public string stb { get; set; }
+
         public Conversation()
         {
             SpeakersIds = new List<ulong>();
@@ -60,6 +62,22 @@ namespace GomLib.Models
             NodeLookup = new Dictionary<long, DialogNode>();
             NodeLinkList = new Dictionary<long,long>();
             AudioLanguageState = new Dictionary<string, bool>();
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = DefaultSpeakerId.GetHashCode();
+            if (stb != null) hash ^= stb.GetHashCode();
+            if (AudioLanguageState != null) foreach (var x in AudioLanguageState) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (SpeakersIds != null) foreach (var x in SpeakersIds) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (Placeables != null) foreach (var x in Placeables) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (QuestStarted != null) foreach (var x in QuestStarted) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (QuestEnded != null) foreach (var x in QuestEnded) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (QuestProgressed != null) foreach (var x in QuestProgressed) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (RootNodes != null) foreach (var x in RootNodes) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (NodeLookup != null) foreach (var x in NodeLookup) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (NodeLinkList != null) foreach (var x in NodeLinkList) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            return hash;
         }
 
         public override bool Equals(object obj)
@@ -82,7 +100,7 @@ namespace GomLib.Models
 
             if (this.DefaultSpeakerId != cnv.DefaultSpeakerId)
                 return false;
-            if (this.DialogNodes != null)
+            /*if (this.DialogNodes != null) //these are the same nodes as on the NodeLookup list
             {
                 if (cnv.DialogNodes == null)
                 {
@@ -95,7 +113,7 @@ namespace GomLib.Models
                 }
             }
             else if (cnv.DialogNodes != null)
-                return false;
+                return false;*/
 
             if (this.Fqn != cnv.Fqn)
                 return false;
@@ -110,7 +128,7 @@ namespace GomLib.Models
             if (!lDNComp.Equals(this.NodeLookup, cnv.NodeLookup)) //dunno if this will work
                 return false; 
 
-            if (this.NodeLookup != null)
+            /*if (this.NodeLookup != null) //this was being done right above this
             {
                 if (cnv.NodeLookup == null)
                     return false;
@@ -125,7 +143,7 @@ namespace GomLib.Models
                 }
             }
             else if (cnv.NodeLookup != null)
-                return false;
+                return false;*/ 
 
             if (this.Placeables != null)
             {
@@ -208,8 +226,6 @@ namespace GomLib.Models
 
             return true;
         }
-
-        public string stb { get; set; }
 
         public override string ToString(bool verbose)
         {

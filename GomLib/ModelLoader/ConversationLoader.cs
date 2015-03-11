@@ -159,7 +159,7 @@ namespace GomLib.ModelLoader
             return null;
         }
 
-        Npc CompanionBySimpleNameId(long nameId)
+        public Npc CompanionBySimpleNameId(long nameId)
         {
             if (companionShortNameMap.Count == 0)
             {
@@ -205,7 +205,6 @@ namespace GomLib.ModelLoader
 
             // Load Companion Affection Results
             var affectionGains = data.ValueOrDefault<Dictionary<object, object>>("cnvRewardAffectionRewards", null);
-            result.AffectionRewards = new Dictionary<Npc, ConversationAffection>();
             result.AffectionRewardsIds = new Dictionary<long, ConversationAffection>();
             if (affectionGains != null)
             {
@@ -213,10 +212,7 @@ namespace GomLib.ModelLoader
                 {
                     long companionShortNameId = (long)companionGain.Key;
                     ConversationAffection affectionGain = ConversationAffectionExtensions.ToConversationAffection((long)companionGain.Value);
-                    result.AffectionRewardsIds[companionShortNameId] = affectionGain; 
-                    Npc companion = CompanionBySimpleNameId(companionShortNameId);
-                    if (companion != null)
-                        result.AffectionRewards[companion] = affectionGain;
+                    result.AffectionRewardsIds[companionShortNameId] = affectionGain;
                 }
             }
 

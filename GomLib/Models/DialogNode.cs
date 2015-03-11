@@ -41,7 +41,24 @@ namespace GomLib.Models
         public string Text { get; set; }
         public Dictionary<string, string> LocalizedText { get; set; }
 
-        public Dictionary<Npc, ConversationAffection> AffectionRewards { get; set; }
+        internal Dictionary<Npc, ConversationAffection> _AffectionRewards { get; set; }
+        public Dictionary<Npc, ConversationAffection> AffectionRewards
+        {
+            get
+            {
+                if (_AffectionRewards == null)
+                {
+                    _AffectionRewards = new Dictionary<Npc, ConversationAffection>();
+                    foreach (var kvp in AffectionRewardsIds)
+                    {
+                        Npc companion = Conversation._dom.conversationLoader.CompanionBySimpleNameId(kvp.Key);
+                        if (companion != null)
+                            _AffectionRewards[companion] = kvp.Value;
+                    }
+                }
+                return _AffectionRewards;
+            }
+        }
         public Dictionary<long, ConversationAffection> AffectionRewardsIds { get; set; }
 
         /// <summary>Doesn't trigger conversation mode - just speaks dialog and prints text to chat tab</summary>
@@ -49,6 +66,35 @@ namespace GomLib.Models
 
         public List<int> ChildIds { get; set; }
         public List<DialogNode> ChildNodes { get; set; }
+
+        public string stb { get; set; }
+
+        public override int GetHashCode()
+        {
+            int hash = QuestReward.GetHashCode();
+            if (stb != null) hash ^= stb.GetHashCode();
+            if (QuestsGranted != null) foreach (var x in QuestsGranted) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (QuestsEnded != null) foreach (var x in QuestsEnded) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (QuestsProgressed != null) foreach (var x in QuestsProgressed) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            hash ^= ActionQuest.GetHashCode();
+            hash ^= ActionHook.GetHashCode();
+            hash ^= MinLevel.GetHashCode();
+            hash ^= MaxLevel.GetHashCode();
+            hash ^= AlignmentGain.GetHashCode();
+            hash ^= CreditsGained.GetHashCode();
+            hash ^= IsEmpty.GetHashCode();
+            hash ^= JoinDisabledForHolocom.GetHashCode();
+            hash ^= ChoiceDisabledForHolocom.GetHashCode();
+            hash ^= AbortsConversation.GetHashCode();
+            hash ^= IsPlayerNode.GetHashCode();
+            hash ^= SpeakerId.GetHashCode();
+            if (Text != null) hash ^= Text.GetHashCode();
+            if (LocalizedText != null) foreach (var x in LocalizedText) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (AffectionRewardsIds != null) foreach (var x in AffectionRewardsIds) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            hash ^= IsAmbient.GetHashCode();
+            if (ChildIds != null) foreach (var x in ChildIds) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            return hash;
+        }
 
         public override bool Equals(object obj)
         {
@@ -201,8 +247,6 @@ namespace GomLib.Models
                 return false;
             return true;
         }
-
-        public string stb { get; set; }
 
         public XElement ToXElement(ref List<int> childs, long id, bool verbose)
         {
