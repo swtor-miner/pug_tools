@@ -14,7 +14,26 @@ namespace TorLib
         public string Extension;
         public string Directory;
         public State FileState;
-        public File file;
+        public File file
+        {
+            get
+            {
+                File tmpObj;
+                if(_FileRef != null && _FileRef.TryGetTarget(out tmpObj))
+                {
+                    return tmpObj;
+                }
+
+                return null;
+            }
+
+            set
+            {
+                _FileRef = new WeakReference<File>(value);
+            }
+        }
+
+        private WeakReference<File> _FileRef;
 
         public enum State
         {
@@ -30,7 +49,7 @@ namespace TorLib
             FileInfo info = file.FileInfo;
             
             nsHashDictionary.HashData data = HashDictionaryInstance.Instance.dictionary.SearchHashList(ph, sh);
-            this.file = file;
+            this._FileRef = new WeakReference<File>(file);
             this.Source = file.Archive.FileName.ToString().Split('\\').Last();
             if (data != null && data.filename.Length > 0)
             {

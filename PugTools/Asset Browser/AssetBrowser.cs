@@ -31,11 +31,10 @@ namespace tor_tools
 {  
     public partial class AssetBrowser : Form
     {   
-        private TorLib.Assets currentAssets;
-        private DataObjectModel currentDom;        
         private bool autoPreview = true;
         private string extractPath;
-        private bool invalidXML = false;
+        private string assetLocation;
+        private bool usePTS;
 
         private HashDictionaryInstance hashData;
         private Dictionary<string, List<TorLib.FileInfo>> fileDict = new Dictionary<string, List<TorLib.FileInfo>>();
@@ -70,7 +69,7 @@ namespace tor_tools
         private ulong modNewCount = 0;
         private int foundNewFileCount = 0;
 
-        public AssetBrowser(string assetLocation, bool usePTS, string extractLocation)
+        public AssetBrowser(string assetLocation, bool usePTS)
         {
             InitializeComponent();
             FormClosed += AssetBrowser_FormClosed;
@@ -85,6 +84,9 @@ namespace tor_tools
             {
                 hashData.Load();
             }
+
+            this.assetLocation = assetLocation;
+            this.usePTS = usePTS;
 
             Config.Load();
             txtExtractPath.Text = Config.ExtractAssetsPath;
@@ -127,10 +129,11 @@ namespace tor_tools
                 return;
             }
 
-            List<object> args = e.Argument as List<object>;
-            this.currentAssets = AssetHandler.Instance.getCurrentAssets((string)args[0], (bool)args[1]);          
+            //Make sure the DOM is loaded.
+            Assets assets = AssetHandler.Instance.getCurrentAssets(assetLocation, usePTS);
+            DomHandler.Instance.getCurrentDOM(assets);
+            
             //this.currentAssets = this.currentAssets.getCurrentAssets((string)args[0], (bool)args[1]);            
-            this.currentDom = DomHandler.Instance.getCurrentDOM(currentAssets);
         }
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -166,6 +169,8 @@ namespace tor_tools
             const string prefixMod = "/root/modified";
             const string prefixUnn = "/root/unnamed";
 
+
+            Assets currentAssets = AssetHandler.Instance.getCurrentAssets(assetLocation, usePTS);
             int libsDone = 0;
             int maxLibs = currentAssets.libraries.Count;
 
@@ -571,7 +576,6 @@ namespace tor_tools
         {
             if(asset.hashInfo.file != null)
             {
-                this.invalidXML = false;
                 hideViewers();                                
                 showLoader();
                 this.toolStripStatusLabel1.Text = "Loading File";
@@ -1116,6 +1120,7 @@ namespace tor_tools
         {
             List<string> assetDictKeys = this.assetDict.Keys.Where(d => d.Contains("." + extension.ToLower())).ToList();            
             List<TreeListItem> matches = new List<TreeListItem>();
+            DataObjectModel dom = DomHandler.Instance.getCurrentDOM();
 
             this.filesSearched = 0;
             
@@ -1146,7 +1151,7 @@ namespace tor_tools
                     break;
                 case "EPP":
                     Format_EPP epp_reader = new Format_EPP(this.extractPath, extension);
-                    List<GomObject> eppNodes = currentDom.GetObjectsStartingWith("epp.");
+                    List<GomObject> eppNodes = dom.GetObjectsStartingWith("epp.");
                     foreach (TreeListItem asset in matches)
                     {
                         this.filesSearched++;
@@ -1205,7 +1210,7 @@ namespace tor_tools
                     this.namesFound = dat_reader.fileNames.Count();
                     break;
                 case "CNV":
-                    List<GomObject> cnvNodes = currentDom.GetObjectsStartingWith("cnv.");
+                    List<GomObject> cnvNodes = dom.GetObjectsStartingWith("cnv.");
                     Format_CNV cnv_node_parser = new Format_CNV(this.extractPath, extension);
                     cnv_node_parser.ParseCNVNodes(cnvNodes);
                     cnv_node_parser.WriteFile();
@@ -1213,18 +1218,18 @@ namespace tor_tools
                     break;
                 case "MISC":
                     Format_MISC misc_parser = new Format_MISC(this.extractPath, extension);
-                    List<GomObject> ippNodes = currentDom.GetObjectsStartingWith("ipp.");                    
+                    List<GomObject> ippNodes = dom.GetObjectsStartingWith("ipp.");                    
                     misc_parser.ParseMISC_IPP(ippNodes);
-                    List<GomObject> cdxNodes = currentDom.GetObjectsStartingWith("cdx.");
+                    List<GomObject> cdxNodes = dom.GetObjectsStartingWith("cdx.");
                     misc_parser.ParseMISC_CDX(cdxNodes);                    
                     misc_parser.WriteFile();
                     this.namesFound = misc_parser.found;
                     break;
                 case "MISC_WORLD":
                     Format_MISC misc_world_parser = new Format_MISC(this.extractPath, extension);                    
-                    Dictionary<object, object> areaList = currentDom.GetObject("mapAreasDataProto").Data.Get<Dictionary<object, object>>("mapAreasDataObjectList");
-                    List<GomObject> areaList2 = currentDom.GetObjectsStartingWith("world.areas.");
-                    misc_world_parser.ParseMISC_WORLD(areaList2, areaList, currentDom);
+                    Dictionary<object, object> areaList = dom.GetObject("mapAreasDataProto").Data.Get<Dictionary<object, object>>("mapAreasDataObjectList");
+                    List<GomObject> areaList2 = dom.GetObjectsStartingWith("world.areas.");
+                    misc_world_parser.ParseMISC_WORLD(areaList2, areaList, dom);
                     areaList.Clear();
                     areaList2.Clear();
                     //GC.Collect();
@@ -1342,6 +1347,12 @@ namespace tor_tools
                 }
                 panelRender.Dispose();
             }
+            if (treeViewFast1 != null)
+            {
+                treeViewFast1.Dispose();
+                treeViewFast1 = null;
+            }
+
             if (audioState)
             {
                 waveOut.Stop();
@@ -1360,8 +1371,8 @@ namespace tor_tools
                     }
                     catch (IOException oggExcep) { }
                 }
-                var list2 = System.IO.Directory.GetFiles(@".\Temp\", "*.wem");
-                foreach (var item in list2)
+                list = System.IO.Directory.GetFiles(@".\Temp\", "*.wem");
+                foreach (var item in list)
                 {
                     try
                     {

@@ -62,31 +62,28 @@ namespace GomLib.ModelLoader
             cmp.Npc = _dom.npcLoader.Load(npcId);
             cmp.Name = cmp.Npc.Name;
             cmp.uId = cmp.Npc.Id;
-            try
+
+            object portrait;
+            if(obj.Dictionary.TryGetValue("chrCompanionInfo_portrait", out portrait))
             {
-                cmp.Portrait = ParsePortrait((string)obj.Dictionary["chrCompanionInfo_portrait"]);
-            }
-            catch
-            {
-                cmp.Portrait = "";
+                cmp.Portrait = ParsePortrait((string)portrait);
             }
             cmp.ConversationMultiplier = (float)obj.Dictionary["chrCompanionInfo_affectionMultiplier"];
             cmp.IsGenderMale = (bool)obj.Dictionary.ContainsKey("chrCompanionInfo_gender_male");
             cmp.Classes = new ClassSpecList();
 
-            try
+            
+            var companionTable = _dom.GetObject("chrCompanionTable_Prototype").Data.Get<Dictionary<object, object>>("chrCompanionClassesData");
+            object listObj;
+            if(companionTable.TryGetValue(npcId, out listObj))
             {
-                var companionTable = _dom.GetObject("chrCompanionTable_Prototype").Data.Get<Dictionary<object, object>>("chrCompanionClassesData");
-                foreach (var clas in (List<object>)companionTable[npcId])
+                foreach (object clas in (List<object>)listObj)
                 {
                     ClassSpec c = _dom.classSpecLoader.Load((ulong)clas);
                     cmp.Classes.Add(c);
                 }
             }
-            catch
-            {
-                //This companion isn't used by any classes, or this table is missing.
-            }
+
             Dictionary<object, object> profMods = (Dictionary<object,object>)obj.Dictionary["chrCompanionInfo_profession_modifiers"];
             cmp.ProfessionModifiers = new List<CompanionProfessionModifier>();
             foreach (var profKvp in profMods)

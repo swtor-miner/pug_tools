@@ -270,7 +270,7 @@ namespace tor_tools
             if (AssetBrowser == null || AssetBrowser.IsDisposed)
             {
                 bool usePTS = this.usePTSAssets.Checked;
-                AssetBrowser = new AssetBrowser(this.textBoxAssetsFolder.Text, usePTS, this.textBoxExtractFolder.Text);
+                AssetBrowser = new AssetBrowser(this.textBoxAssetsFolder.Text, usePTS);
                 AssetBrowser.FormClosed += onAssetBrowserClosed;
                 AssetBrowser.Show();
                 AssetBrowser.Focus();
@@ -284,6 +284,7 @@ namespace tor_tools
         public void onAssetBrowserClosed(object sender, FormClosedEventArgs e)
         {
             AssetBrowser = null;
+            GC.Collect();
         }
 
         private void btnNodeBrowser_Click(object sender, EventArgs e)
