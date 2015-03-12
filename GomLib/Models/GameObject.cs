@@ -218,6 +218,27 @@ namespace GomLib.Models
             }
         }
 
+        public static PseudoGameObject LoadFromProtoName(string protoName, DataObjectModel dom, object id, object gomObjectData)
+        {
+            switch (protoName)
+            {
+                case "mtxStorefrontInfoPrototype":
+                    return Load("MtxStoreFronts", dom, id, gomObjectData);
+                case "colCollectionItemsPrototype":
+                    return Load("Collections", dom, id, gomObjectData);
+                case "chrCompanionInfo_Prototype":
+                    return Load("Companions", dom, id, gomObjectData);
+                case "scFFShipsDataPrototype":
+                    return Load("Ships", dom, id, gomObjectData);
+                case "wevConquestInfosPrototype":
+                    return Load("Conquests", dom, id, gomObjectData);
+                case "achCategoriesTable_Prototype":
+                    return Load("AchCategories", dom, id, gomObjectData);
+                default:
+                    throw new IndexOutOfRangeException();
+            }
+        }
+
         public virtual HashSet<string> GetDependencies()
         {
             return new HashSet<string>();

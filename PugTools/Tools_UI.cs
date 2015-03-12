@@ -192,6 +192,8 @@ namespace tor_tools
                         break;
                     case "AchCategories": t = () => getPrototypeObjects("AchCategories", "achCategoriesTable_Prototype", "achCategoriesData");
                         break;
+                    case "testHashes": t = new ThreadStart(testHashes);
+                        break;
                         
                 }
                 if (t != null)
