@@ -60,6 +60,33 @@ namespace GomLib.Models
         public bool HasAlternateUnlocks { get; set; }
         public Dictionary<ulong, List<ulong>> AlternateUnlocksMap { get; set; }
 
+        public override int GetHashCode()
+        {
+            int hash = Id.GetHashCode();
+            if (Icon != null) hash ^= Icon.GetHashCode();
+            hash ^= CreationIndex.GetHashCode();
+            hash ^= linkedId.GetHashCode();
+            hash ^= CategoryId.GetHashCode();
+            hash ^= RequiredLevel.GetHashCode();
+            hash ^= IsFoundInPacks.GetHashCode();
+            hash ^= unknowntextId.GetHashCode();
+            hash ^= RarityDescId.GetHashCode();
+            hash ^= HasAlternateUnlocks.GetHashCode();
+            if (LocalizedName != null) foreach (var x in LocalizedName) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (LocalizedRarityDesc != null) foreach (var x in LocalizedRarityDesc) { hash ^= x.GetHashCode(); }
+            if (Localizedunknowntext != null) foreach (var x in Localizedunknowntext) { hash ^= x.GetHashCode(); }
+            if (AbilityIdsList != null) foreach (var x in AbilityIdsList) { hash ^= x.GetHashCode(); }
+            if (LocalizedBulletPoints != null) foreach (var x in LocalizedBulletPoints) foreach (var y in x) { hash ^= y.GetHashCode(); }
+            if (ItemIdsList != null) foreach (var x in ItemIdsList) { hash ^= x.GetHashCode(); }
+            if (AlternateUnlocksMap != null) foreach (var x in AlternateUnlocksMap)
+            {
+                hash ^= x.Key.GetHashCode();
+                foreach (var y in x.Value) { hash ^= y.GetHashCode(); }
+            }
+
+            return hash;
+        }
+
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
