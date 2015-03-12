@@ -29,6 +29,27 @@ namespace GomLib.Models
         public List<Planet> ImperialActivePlanets { get; set; }
         public List<ConquestData> ActiveData { get; set; }
 
+        public override int GetHashCode()
+        {
+            int hash = Id.GetHashCode();
+            hash ^= NameId.GetHashCode();
+            hash ^= DescId.GetHashCode();
+            if (Icon != null) hash ^= Icon.GetHashCode();
+            hash ^= ParticipateGoal.GetHashCode();
+            if (DesignName != null) hash ^= DesignName.GetHashCode();
+            if (LocalizedName != null) foreach (var x in LocalizedName) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (LocalizedDescription != null) foreach (var x in LocalizedDescription) { hash ^= x.GetHashCode(); }
+            if (RepeatableObjectivesList != null) foreach (var x in RepeatableObjectivesList) { hash ^= x.GetHashCode(); }
+            if (OneTimeObjectivesList != null) foreach (var x in OneTimeObjectivesList) { hash ^= x.GetHashCode(); }
+            if (ActivePlanets != null) foreach (var x in ActivePlanets) { hash ^= x.GetHashCode(); }
+            if (ActivePlanetObjects != null) foreach (var x in ActivePlanetObjects) { hash ^= x.GetHashCode(); }
+            if (RepublicActivePlanets != null) foreach (var x in RepublicActivePlanets) { hash ^= x.GetHashCode(); }
+            if (ImperialActivePlanets != null) foreach (var x in ImperialActivePlanets) { hash ^= x.GetHashCode(); }
+            if (ActiveData != null) foreach (var x in ActiveData) { hash ^= x.GetHashCode(); }
+
+            return hash;
+        }
+
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
@@ -372,6 +393,19 @@ namespace GomLib.Models
             ObjectiveList = new Dictionary<Achievement, Dictionary<Planet, float>>();
         }
 
+        public override int GetHashCode()
+        {
+            int hash = Id.GetHashCode();
+            if (ObjectiveList != null)
+                foreach (var x in ObjectiveList)
+                {
+                    hash ^= x.Key.GetHashCode();
+                    foreach (var y in x.Value) { hash ^= y.GetHashCode(); }
+                }
+
+            return hash;
+        }
+
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
@@ -472,7 +506,26 @@ namespace GomLib.Models
         public Dictionary<string, string> LocalizedInvasionBonus { get; set; }
         public string InvasionBonus { get; set; }
         public long InvasionBonusId { get; set; }
-        
+
+        public override int GetHashCode()
+        {
+            int hash = Id.GetHashCode();
+            hash ^= NameId.GetHashCode();
+            hash ^= DescId.GetHashCode();
+            if (Icon != null) hash ^= Icon.GetHashCode();
+            hash ^= PrimaryAreaId.GetHashCode();
+            hash ^= TransportCost.GetHashCode();
+            hash ^= OrbtSupportCost.GetHashCode();
+            hash ^= OrbtSupportAblId.GetHashCode();
+            hash ^= InvasionBonusId.GetHashCode();
+            if (LocalizedName != null) foreach (var x in LocalizedName) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (LocalizedDescription != null) foreach (var x in LocalizedDescription) { hash ^= x.GetHashCode(); }
+            if (ExitList != null) foreach (var x in ExitList) { hash ^= x.GetHashCode(); }
+            if (LocalizedInvasionBonus != null) foreach (var x in LocalizedInvasionBonus) { hash ^= x.GetHashCode(); }
+
+            return hash;
+        }
+
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
