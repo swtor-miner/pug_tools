@@ -72,7 +72,7 @@ namespace GomLib.ModelLoader
             _dom._assets.icons.AddMtx(mtx.Icon);
 
             mtx.unknownNumber = obj.ValueOrDefault<long>("4611686296598030002", 0);
-            mtx.categories = obj.ValueOrDefault<Dictionary<object, object>>("mtxCategories", new Dictionary<object,object>());
+            mtx.Categories = obj.ValueOrDefault<Dictionary<object, object>>("mtxCategories", new Dictionary<object,object>());
 
             mtx.DiscountCost = obj.ValueOrDefault<long>("mtxDiscountPrice", 0);
             mtx.FullPriceCost = obj.ValueOrDefault<long>("mtxFullPrice", 0);

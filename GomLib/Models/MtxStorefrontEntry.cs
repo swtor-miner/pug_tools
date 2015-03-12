@@ -8,10 +8,8 @@ namespace GomLib.Models
 {
     public class MtxStorefrontEntry : PseudoGameObject, IEquatable<MtxStorefrontEntry>
     {
-        //public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
         public string Icon { get; set; }
-        //public long Id { get; set; }
         public long unknowntextId { get; set; }
         public string unknowntext { get; set; }
         public Dictionary<string, string> Localizedunknowntext { get; set; }
@@ -21,7 +19,7 @@ namespace GomLib.Models
         public List<string> BulletPoints { get; set; }
         public List<Dictionary<string, string>> LocalizedBulletPoints { get; set; }
         public long unknownNumber { get; set; }
-        public Dictionary<object, object> categories { get; set; }
+        public Dictionary<object, object> Categories { get; set; }
         public long DiscountCost { get; set; }
         public long FullPriceCost { get; set; }
         public long CategoryId { get; set; }
@@ -44,6 +42,29 @@ namespace GomLib.Models
         public bool IsAccountUnlock { get; set; }
         public bool unknownBool2 { get; set; }
         public long LinkedMTXEntryId { get; set; }
+
+        public override int GetHashCode()
+        {
+            int hash = Id.GetHashCode();
+            hash ^= unknowntextId.GetHashCode();
+            if (Icon != null) hash ^= Icon.GetHashCode();
+            hash ^= RarityDescId.GetHashCode();
+            hash ^= unknownNumber.GetHashCode();
+            hash ^= DiscountCost.GetHashCode();
+            hash ^= FullPriceCost.GetHashCode();
+            hash ^= CategoryId.GetHashCode();
+            hash ^= IsAccountUnlock.GetHashCode();
+            hash ^= unknownBool2.GetHashCode();
+            hash ^= LinkedMTXEntryId.GetHashCode();
+            if (LocalizedName != null) foreach (var x in LocalizedName) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (Localizedunknowntext != null) foreach (var x in Localizedunknowntext) { hash ^= x.GetHashCode(); }
+            if (LocalizedRarityDesc != null) foreach (var x in LocalizedRarityDesc) { hash ^= x.GetHashCode(); }
+            if (LocalizedBulletPoints != null) foreach (var x in LocalizedBulletPoints) if (x != null) foreach (var y in x) { hash ^= y.GetHashCode(); }
+            if (Categories != null) foreach (var x in Categories) { hash ^= x.GetHashCode(); }
+            if (ItemIdsList != null) foreach (var x in ItemIdsList) { hash ^= x.GetHashCode(); }
+            
+            return hash;
+        }
 
         public override bool Equals(object obj)
         {
