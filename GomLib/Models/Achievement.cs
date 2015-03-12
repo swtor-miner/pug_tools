@@ -40,9 +40,9 @@ namespace GomLib.Models
         public override int GetHashCode() //should be fixed
         {
             int hash = Level.GetHashCode();
-            foreach (var x in LocalizedDescription) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
-            foreach (var x in LocalizedNonSpoilerDesc) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
-            foreach (var x in LocalizedName) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (LocalizedDescription != null) foreach (var x in LocalizedDescription) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (LocalizedNonSpoilerDesc != null) foreach (var x in LocalizedNonSpoilerDesc) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (LocalizedName != null) foreach (var x in LocalizedName) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
             if (Icon != null) { hash ^= Icon.GetHashCode(); }
             hash ^= Visibility.GetHashCode();
             hash ^= AchId.GetHashCode();
