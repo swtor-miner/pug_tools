@@ -12,6 +12,13 @@ namespace GomLib.Models
         public Companion Companion { get; set; }
         public int Rank { get; set; }
 
+        public override int GetHashCode()
+        {
+            int hash = Affection.GetHashCode();
+            hash ^= Rank.GetHashCode();
+            return hash;
+        }
+
         public override bool Equals(object obj)
         {
             if (obj == null) return false;

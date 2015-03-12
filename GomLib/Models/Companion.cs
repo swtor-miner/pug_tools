@@ -28,6 +28,7 @@ namespace GomLib.Models
         public bool IsRomanceable { get; set; }
         public Dictionary<string, string> LocalizedDescription { get; set; }
         //public string Name { get; set; }
+        public Dictionary<string, string> LocalizedName { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         public Npc Npc { get; set; }
         public string Portrait { get; set; }
@@ -37,6 +38,30 @@ namespace GomLib.Models
         public ulong SpaceAbilityId { get; set; }
         public string SpaceIcon { get; set; }
         public ulong uId { get; set; }
+
+        public override int GetHashCode()
+        {
+            int hash = Id.GetHashCode();
+            if (Classes != null) hash ^= Classes.GetHashCode();
+            hash ^= ConversationMultiplier.GetHashCode();
+            if (Faction != null) hash ^= Faction.GetHashCode();
+            hash ^= FactionId.GetHashCode();
+            hash ^= IsGenderMale.GetHashCode();
+            hash ^= IsRomanceable.GetHashCode();
+            hash ^= Npc.GetHashCode();
+            if (Portrait != null) hash ^= Portrait.GetHashCode();
+            hash ^= SpaceAbilityId.GetHashCode();
+            if (SpaceIcon != null) hash ^= SpaceIcon.GetHashCode();
+            hash ^= uId.GetHashCode();
+            if (AffectionRanks != null) foreach (var x in AffectionRanks) { hash ^= x.GetHashCode(); }
+            if (CrewAbilities != null) foreach (var x in CrewAbilities) { hash ^= x.GetHashCode(); }
+            if (CrewPositions != null) foreach (var x in CrewPositions) { hash ^= x.GetHashCode(); }
+            if (GiftInterest != null) foreach (var x in GiftInterest) { hash ^= x.GetHashCode(); }
+            if (LocalizedDescription != null) foreach (var x in LocalizedDescription) { hash ^= x.GetHashCode(); }
+            if (LocalizedName != null) foreach (var x in LocalizedName) { hash ^= x.GetHashCode(); }
+            if (ProfessionModifiers != null) foreach (var x in ProfessionModifiers) { hash ^= x.GetHashCode(); }
+            return hash;
+        }
 
         public override bool Equals(object obj)
         {

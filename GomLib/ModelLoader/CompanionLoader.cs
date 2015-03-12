@@ -61,6 +61,7 @@ namespace GomLib.ModelLoader
             IDictionary<string, object> objAsDict = obj.Dictionary;
             cmp.Npc = _dom.npcLoader.Load(npcId);
             cmp.Name = cmp.Npc.Name;
+            cmp.LocalizedName = cmp.Npc.LocalizedName;
             cmp.uId = cmp.Npc.Id;
 
             object portrait;

@@ -13,6 +13,14 @@ namespace GomLib.Models
         public GiftInterest Reaction { get; set; }
         public GiftInterest RomancedReaction { get; set; }
 
+        public override int GetHashCode()
+        {
+            int hash = GiftType.GetHashCode();
+            hash ^= Reaction.GetHashCode();
+            hash ^= RomancedReaction.GetHashCode();
+            return hash;
+        }
+
         public override bool Equals(object obj)
         {
             if (obj == null) return false;

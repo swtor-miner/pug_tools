@@ -12,6 +12,13 @@ namespace GomLib.Models
         public string Stat { get; set; }
         public int Modifier { get; set; }
 
+        public override int GetHashCode()
+        {
+            int hash = Modifier.GetHashCode();
+            hash ^= Stat.GetHashCode();
+            return hash;
+        }
+
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
