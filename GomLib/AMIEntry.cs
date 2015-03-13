@@ -52,6 +52,8 @@ namespace GomLib
         {
             KeyValuePair<string, string> material;
 
+            if(MaterialList == null)
+                return new KeyValuePair<string, string>("", "");
             Dictionary<long, string> matDict;
             if (!MaterialList.TryGetValue(id, out matDict))
                 material = new KeyValuePair<string,string>("","");
