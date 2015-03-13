@@ -171,6 +171,31 @@ namespace GomLib.Models
             return returnList;
         }
 
+        public override int GetHashCode()
+        {
+            int hash = Id.GetHashCode();
+            if (BodyType != null) hash ^= BodyType.GetHashCode();
+            if (Type != null) hash ^= Type.GetHashCode();
+            hash ^= ModelID.GetHashCode();
+            //if (AMI != null) hash ^= AMI.GetHashCode(); //this can change without changing the appearance
+            hash ^= MaterialIndex.GetHashCode();
+            if (Material0 != null) hash ^= Material0.GetHashCode();
+            if (MaterialMirror != null) hash ^= MaterialMirror.GetHashCode();
+            if (Material0 != null) hash ^= Material0.GetHashCode();
+            if (Material0 != null) hash ^= Material0.GetHashCode();
+            if (Material0 != null) hash ^= Material0.GetHashCode();
+            if (Material0 != null) hash ^= Material0.GetHashCode();
+            if (Attachments != null) foreach (var x in Attachments) { hash ^= x.GetHashCode(); }
+            if (AttachedModels != null) foreach (var x in AttachedModels) { hash ^= x.GetHashCode(); }
+            hash ^= PrimaryHueId.GetHashCode();
+            if (PrimaryHue != null) hash ^= PrimaryHue.GetHashCode();
+            hash ^= SecondaryHueId.GetHashCode();
+            if (SecondaryHue != null) hash ^= SecondaryHue.GetHashCode();
+            hash ^= RandomWeight.GetHashCode();
+
+            return hash;
+        }
+
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
@@ -260,6 +285,16 @@ namespace GomLib.Models
         public long ColorScheme { get; set; } 
         public string VOSoundTypeOverride { get; set; } //only found on IPPs of type appSlotFace
 
+        public override int GetHashCode()
+        {
+            int hash = Id.GetHashCode();
+            if (IPP != null) hash ^= IPP.GetHashCode();
+            hash ^= ColorScheme.GetHashCode();
+            if (VOSoundTypeOverride != null) hash ^= VOSoundTypeOverride.GetHashCode();
+
+            return hash;
+        }
+
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
@@ -319,6 +354,25 @@ namespace GomLib.Models
         public string SoundPackage { get; set; }
         public string ArmorSoundsetOverride { get; set; }
         public Dictionary<long, string> VocalSoundsetOverride { get; set; }
+
+        public override int GetHashCode() //needs fixed, it's changing for the same data
+        {
+            int hash = Id.GetHashCode();
+            if (BodyType != null) hash ^= BodyType.GetHashCode();
+            if (AppearanceSlotMap != null)
+                foreach (var x in AppearanceSlotMap)
+                {
+                    if (x.Key != null) hash ^= x.Key.GetHashCode();
+                    foreach (var y in x.Value)
+                    { hash ^= y.GetHashCode(); }
+                }
+            if (NppType != null) hash ^= NppType.GetHashCode();
+            if (SoundPackage != null) hash ^= SoundPackage.GetHashCode();
+            if (ArmorSoundsetOverride != null) hash ^= ArmorSoundsetOverride.GetHashCode();
+            if (VocalSoundsetOverride != null) foreach (var x in VocalSoundsetOverride) { hash ^= x.GetHashCode(); }
+
+            return hash;
+        }
 
         public override bool Equals(object obj)
         {
