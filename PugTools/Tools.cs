@@ -696,7 +696,12 @@ namespace tor_tools
                 {"tal.", true},
                 {"sche", true},
                 {"dec.", true},
-                {"itm.", true}
+                {"itm.", true},
+                {"apt.", true},
+                {"apc.", true},
+                {"class.",true},
+                {"ipp.",true},
+                {"npp.",true}
             };
             for(int f = 0; f < gameObjects.Count; f++)
             {
@@ -723,7 +728,10 @@ namespace tor_tools
                 if (gameObjects[gameObj.Key])
                     addtolist2(String.Format("Passed: {0}", gameObj.Key));
             }
-            addtolist(String.Format("Verification Complete: {0}", gameObjects.Values.ToList().TrueForAll(x => x)));
+            string completeString = "Failed.";
+            if(gameObjects.Values.ToList().TrueForAll(x => x))
+                completeString = "Passed.";
+            addtolist(completeString);
             
             addtolist("Verifying GameObject Hashes");
             bool failed = false;
@@ -771,7 +779,10 @@ namespace tor_tools
                 if (!localfail)
                     addtolist2(String.Format("Passed: {0}", gameObj.Key));
             }
-            addtolist(String.Format("Verification Passed?: {0}", !failed));
+            completeString = "Passed.";
+            if (failed)
+                completeString = "Failed.";                
+            addtolist(completeString);
 
             EnableButtons();
         }
