@@ -1037,10 +1037,10 @@ namespace tor_tools
                     "illum 2\n" + 
                     "map_Ka " + mat.diffuseDDS.Substring(mat.diffuseDDS.LastIndexOf('/') + 1).Replace(".dds", ".png") + "\n" +
                     "map_Kd " + mat.diffuseDDS.Substring(mat.diffuseDDS.LastIndexOf('/') + 1).Replace(".dds", ".png") + "\n" +
-                    "map_Ks " + mat.glossDDS.Substring(mat.glossDDS.LastIndexOf('/') + 1).Replace(".dds", ".png") + "\n" +
-                    "map_Ns " + mat.glossDDS.Substring(mat.glossDDS.LastIndexOf('/') + 1).Replace("_s.", "_si.").Replace(".dds", ".png") + "\n" +
-                    ((mat.useEmissive) ? "map_Ke " + mat.glossDDS.Substring(mat.glossDDS.LastIndexOf('/') + 1).Replace("_s.", "_emis.").Replace(".dds", ".png") + "\n" : "") +
-                    /*"map_bump " + mat.rotationDDS.Substring(mat.rotationDDS.LastIndexOf('/') + 1) +*/ "\n\n"
+                    ((mat.glossDDS != null) ? ("map_Ks " + mat.glossDDS.Substring(mat.glossDDS.LastIndexOf('/') + 1).Replace(".dds", ".png") + "\n" +
+                    "map_Ns " + (mat.glossDDS ?? "gloss_s.dds").Substring(mat.glossDDS.LastIndexOf('/') + 1).Replace("_s.", "_si.").Replace(".dds", ".png") + "\n") : "") +
+                    ((mat.useEmissive && mat.glossDDS != null) ? "map_Ke " + mat.glossDDS.Substring(mat.glossDDS.LastIndexOf('/') + 1).Replace("_s.", "_emis.").Replace(".dds", ".png") + "\n" : "") +
+                    ((mat.rotationDDS != null) ? ("map_Normal " + mat.rotationDDS.Substring(mat.rotationDDS.LastIndexOf('/') + 1)) : "") + "\n\n"
                     , mtlFile, true);
 
                     var file = ((tor_tools.ModelBrowser)Window).currentAssets.FindFile(mat.diffuseDDS);

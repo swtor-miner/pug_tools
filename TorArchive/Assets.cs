@@ -155,6 +155,7 @@ namespace TorLib
         {
             //if (!Loaded) { Load(); }
 
+            if (path == null) return null;
             // path = String.Format("/resources{0}", path.Replace('\\', '/'));
             path = path.Replace('\\', '/');
 
