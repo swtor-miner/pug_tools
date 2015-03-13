@@ -56,6 +56,7 @@
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.btnFileTable = new System.Windows.Forms.Button();
             this.btnHashStatus = new System.Windows.Forms.Button();
             this.btnHelp = new System.Windows.Forms.Button();
             this.btnTestFile = new System.Windows.Forms.Button();
@@ -420,6 +421,7 @@
             // 
             // splitContainer3.Panel2
             // 
+            this.splitContainer3.Panel2.Controls.Add(this.btnFileTable);
             this.splitContainer3.Panel2.Controls.Add(this.btnHashStatus);
             this.splitContainer3.Panel2.Controls.Add(this.btnHelp);
             this.splitContainer3.Panel2.Controls.Add(this.btnTestFile);
@@ -433,7 +435,7 @@
             this.splitContainer3.Panel2.Controls.Add(this.btnExtract);
             this.splitContainer3.Panel2.Controls.Add(this.btnPreview);
             this.splitContainer3.Size = new System.Drawing.Size(225, 633);
-            this.splitContainer3.SplitterDistance = 431;
+            this.splitContainer3.SplitterDistance = 403;
             this.splitContainer3.TabIndex = 0;
             // 
             // dataGridView1
@@ -448,9 +450,20 @@
             this.dataGridView1.Enabled = false;
             this.dataGridView1.Location = new System.Drawing.Point(3, 3);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(215, 421);
+            this.dataGridView1.Size = new System.Drawing.Size(215, 393);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.VirtualMode = true;
+            // 
+            // btnFileTable
+            // 
+            this.btnFileTable.Enabled = false;
+            this.btnFileTable.Location = new System.Drawing.Point(5, 189);
+            this.btnFileTable.Name = "btnFileTable";
+            this.btnFileTable.Size = new System.Drawing.Size(98, 23);
+            this.btnFileTable.TabIndex = 11;
+            this.btnFileTable.Text = "File Table";
+            this.btnFileTable.UseVisualStyleBackColor = true;
+            this.btnFileTable.Click += new System.EventHandler(this.btnFileTable_Click);
             // 
             // btnHashStatus
             // 
@@ -596,7 +609,7 @@
             this.extractToolStripMenuItem,
             this.extractByExtensionToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(179, 70);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(179, 48);
             // 
             // extractToolStripMenuItem
             // 
@@ -699,5 +712,6 @@
         private System.Windows.Forms.Button btnHashStatus;
         private System.Windows.Forms.ToolStripMenuItem extractByExtensionToolStripMenuItem;
         private System.ComponentModel.BackgroundWorker backgroundWorker3;
+        private System.Windows.Forms.Button btnFileTable;
     }
 }

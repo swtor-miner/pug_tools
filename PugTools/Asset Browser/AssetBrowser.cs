@@ -483,6 +483,7 @@ namespace tor_tools
             this.btnTestFile.Enabled = true;
             this.btnHelp.Enabled = true;
             this.btnHashStatus.Enabled = true;
+            this.btnFileTable.Enabled = true;
         }
 
         private void disableUI()
@@ -502,6 +503,7 @@ namespace tor_tools
             this.btnTestFile.Enabled = false;
             this.btnHelp.Enabled = false;
             this.btnHashStatus.Enabled = false;
+            this.btnFileTable.Enabled = false;
         }
 
         private void Position_Changed(object sender, EventArgs e)
@@ -1581,6 +1583,12 @@ namespace tor_tools
                 this.extractExtensions = frmExt.getExtensions();
                 btnExtract_Click(this, null);
             }
+        }
+
+        private void btnFileTable_Click(object sender, EventArgs e)
+        {
+            AssetBrowserFileTable frmFileTable = new AssetBrowserFileTable();
+            frmFileTable.Show();
         }
 
     }    

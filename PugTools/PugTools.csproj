@@ -171,6 +171,14 @@
     <Compile Include="Asset Browser\AssetBrowserTestFile.Designer.cs">
       <DependentUpon>AssetBrowserTestFile.cs</DependentUpon>
     </Compile>
+    <Compile Include="Asset Browser\AssetBrowserFileTable.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Asset Browser\AssetBrowserFileTable.Designer.cs">
+      <DependentUpon>AssetBrowserFileTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Asset Browser\ArchTreeListItem.cs" />
+    <Compile Include="Asset Browser\FileListItem.cs" />
     <Compile Include="Asset Browser\FileName Formats\Format_AMX.cs" />
     <Compile Include="Asset Browser\FileName Formats\Format_BNK.cs" />
     <Compile Include="Asset Browser\FileName Formats\Format_CNV.cs" />
@@ -349,6 +357,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Asset Browser\AssetBrowserTestFile.resx">
       <DependentUpon>AssetBrowserTestFile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Asset Browser\AssetBrowserFileTable.resx">
+      <DependentUpon>AssetBrowserFileTable.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ExtractCheckForm.resx">
       <DependentUpon>ExtractCheckForm.cs</DependentUpon>

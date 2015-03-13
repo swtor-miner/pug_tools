@@ -291,5 +291,51 @@ namespace TreeViewFast.Controls
                 }
             }
         }
+
+        internal void LoadItems<T1>(Dictionary<string, ArchTreeListItem> testDict, Func<ArchTreeListItem, string> getId, Func<ArchTreeListItem, string> getParentId, Func<ArchTreeListItem, string> getDisplayName)
+        {
+            // Clear view and internal dictionary
+            Nodes.Clear();
+            _treeNodes.Clear();
+
+            List<string> keys = testDict.Keys.ToList();
+            keys.Sort(delegate(string x, string y)
+            {
+                ArchTreeListItem tx = testDict[x];
+                ArchTreeListItem ty = testDict[y];               
+
+                return string.Compare(x, y);
+            });
+
+            // Load internal dictionary with nodes
+            foreach (var key in keys)
+            {
+                var item = testDict[key];
+                var id = getId(item);
+                var displayName = getDisplayName(item);
+                var node = new TreeNode { Name = id.ToString(), Text = displayName, Tag = item };
+                node.ImageIndex = 1;
+                node.SelectedImageIndex = 1;                
+                _treeNodes.Add(getId(item), node);
+            }
+
+            // Create hierarchy and load into view
+            foreach (var id in _treeNodes.Keys)
+            {
+                var node = GetNode(id);
+                var obj = (tor_tools.ArchTreeListItem)node.Tag;
+                var parentId = getParentId(obj);
+
+                if (parentId != "")
+                {
+                    var parentNode = GetNode(parentId);
+                    parentNode.Nodes.Add(node);
+                }
+                else
+                {
+                    Nodes.Add(node);
+                }
+            }
+        }
     }
 }
