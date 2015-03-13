@@ -82,7 +82,7 @@ namespace GomLib.ModelLoader
                 }
             }
 
-            pkg.NppType = ((ScriptEnum)obj.Data.ValueOrDefault<object>("nppNppType")).ToString();
+            pkg.NppType = ((ScriptEnum)obj.Data.ValueOrDefault<object>("nppNppType") ?? new ScriptEnum()).ToString();
             pkg.SoundPackage = obj.Data.ValueOrDefault<string>("nppSoundPackage", "");
             pkg.ArmorSoundsetOverride = obj.Data.ValueOrDefault<string>("nppArmorSoundsetOverride", "");
 
