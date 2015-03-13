@@ -145,6 +145,13 @@ namespace GomLib.ModelLoader
             return Load(itm, obj);
         }
 
+        public Models.Stronghold Load(GomObject obj)
+        {
+            if (obj == null) { return null; }
+            Models.Stronghold itm = new Stronghold();
+            return Load(itm, obj);
+        }
+
         public Room LoadRoom(GomObjectData gom)
         {
             if (gom == null) { return new Room(); }

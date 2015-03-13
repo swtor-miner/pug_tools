@@ -101,6 +101,10 @@ namespace GomLib.Models
                 case "sche": return gomItm._dom.schematicLoader.Load(gomItm);
                 case "dec.": return gomItm._dom.decorationLoader.Load(gomItm);
                 case "itm.": return gomItm._dom.itemLoader.Load(gomItm);
+                case "apt.": return gomItm._dom.strongholdLoader.Load(gomItm);
+                case "class.": return gomItm._dom.classSpecLoader.Load(gomItm);
+                case "ipp.": return gomItm._dom.appearanceLoader.Load(gomItm);
+                case "npp.": return gomItm._dom.appearanceLoader.Load(gomItm);
                 default:
                     return null;
             }
