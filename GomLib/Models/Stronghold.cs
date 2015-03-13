@@ -159,8 +159,8 @@ namespace GomLib.Models
             hash ^= DefGuildShOcc.GetHashCode();
             hash ^= GuildShCost.GetHashCode();
             hash ^= PlayerShCost.GetHashCode();
-            //hash ^= DiscountMtxSF.GetHashCode();//Needs its hash code implementation.
-            //hash ^= MtxStoreFront.GetHashCode();//Needs its hash code implementation.
+            hash ^= DiscountMtxSF.GetHashCode();
+            hash ^= MtxStoreFront.GetHashCode();
             hash ^= FactionPurchaseRestriction.GetHashCode();
             hash ^= Icon.GetHashCode();
             hash ^= PublicIcon.GetHashCode();
