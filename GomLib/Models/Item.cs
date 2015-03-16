@@ -138,6 +138,40 @@ namespace GomLib.Models
         public Dictionary<ulong, ulong> ippRefs { get; set; }
         public Dictionary<string, string> classAppearance { get; set; }
 
+        [Newtonsoft.Json.JsonIgnore]
+        public string Tooltip
+        {
+            get
+            {
+                StringBuilder tooltip = new StringBuilder();
+                tooltip.Append(String.Format("<div class='tooltip'><span class='{0}'>{1}</span>", Quality.ToString().ToLower(), Name));
+                //binding
+                //slot
+                //armor, rating etc if gear
+                tooltip.Append(String.Format("<div class='blue'>{0} Armor (Rating {1})</div>", 0 /*calculate this*/, CombinedRating)); //this needs a conditional
+
+                //stats
+                if (CombinedStatModifiers.Count != 0) {
+                    tooltip.Append("<div class='standard'>Total Stats:</div>");;
+                    for (var i = 0; i < CombinedStatModifiers.Count; i++) {
+                        tooltip.Append(String.Format("<div class='stat'>+{0} {1}</div>", CombinedStatModifiers[i].Modifier, CombinedStatModifiers[i].Stat.ToString()));
+                    }
+                }
+                //Modifications
+
+                if (RequiredLevel != 0)
+                   tooltip.Append(String.Format("<div>Requires Level {0}</div>", RequiredLevel));
+                if (UseAbilityId != 0)
+                    tooltip.Append(String.Format("<div class='standard'>Use: </div>", UseAbility.Description));
+                if (Description != ""){
+                    System.Text.RegularExpressions.Regex regex_newline = new System.Text.RegularExpressions.Regex("(\r\n|\r|\n)");   // remove the '+'
+                    regex_newline.Replace(Description, "<br />");
+                    tooltip.Append(String.Format("<div class='standard'>Use: </div>", Description));
+                }
+                return tooltip.ToString();
+            }
+        }
+
         public void AddStat(ItemStat stat)
         {
             AddStat(stat.Stat, stat.Modifier);
@@ -505,7 +539,7 @@ namespace GomLib.Models
                         new SQLProperty("DisassembleCategory", "DisassembleCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Durability", "Durability", "int(11) NOT NULL"),
                         new SQLProperty("EnhancementCategory", "EnhancementCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("EnhancementSlots", "EnhancementSlots", "text COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("EnhancementSlots", "EnhancementSlots", "text COLLATE utf8_unicode_ci NOT NULL", false, true),
                         new SQLProperty("EnhancementSubCategory", "EnhancementSubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("EnhancementType", "EnhancementType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("EquipAbilityId", "EquipAbilityId", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
@@ -545,7 +579,8 @@ namespace GomLib.Models
                         new SQLProperty("WeaponAppSpec", "WeaponAppSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Model", "Model", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("ImperialVOModulation", "ImperialVOModulation", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("RepublicVOModulation", "RepublicVOModulation", "varchar(255) COLLATE utf8_unicode_ci NOT NULL")
+                        new SQLProperty("RepublicVOModulation", "RepublicVOModulation", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Tooltip", "Tooltip", "varchar(1000) COLLATE utf8_unicode_ci NOT NULL")
                     };
             }
         }
