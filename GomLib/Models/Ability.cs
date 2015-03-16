@@ -50,6 +50,25 @@ namespace GomLib.Models
         public bool IgnoreAlacrity { get; set; }
 
         public Dictionary<int, Dictionary<string, object>> DescriptionTokens { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        internal Dictionary<int, Dictionary<string, object>> _modDescriptionTokens { get; set; }
+        public Dictionary<int, Dictionary<string, object>> modDescriptionTokens
+        {
+            get
+            {
+                if (DescriptionTokens == null) return null;
+                if (_modDescriptionTokens == null)
+                {
+                    _modDescriptionTokens = new Dictionary<int, Dictionary<string, object>>();
+                    foreach (var token in DescriptionTokens)
+                    {
+                        _modDescriptionTokens.Add(token.Key, token.Value.ToDictionary(x => x.Key.Replace("ablDescriptionToken", "")
+                            .Replace("ablParsedDescriptionToken", "Value"), x => ((x.Value.GetType() == typeof(string)) ? ((string)x.Value).Replace("ablDescriptionTokenType", "") : x.Value)));
+                    }
+                }
+                return _modDescriptionTokens;
+            }
+        }
         public int AiType { get; set; }
         public int CombatMode { get; set; }
         public int AutoAttackMode { get; set; }
@@ -317,8 +336,8 @@ namespace GomLib.Models
                         new SQLProperty("GcdOverride", "GcdOverride", "tinyint(1) NOT NULL"),
                         new SQLProperty("ModalGroup", "ModalGroup", "bigint(20) NOT NULL"),
                         new SQLProperty("SharedCooldown", "SharedCooldown", "bigint(20) unsigned NOT NULL"),
-                        new SQLProperty("TalentTokens", "TalentTokens", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("AbilityTokens", "AbilityTokens", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("DescriptionTokens", "modDescriptionTokens", "varchar(2000) COLLATE utf8_unicode_ci NOT NULL", false, true),
+                        //new SQLProperty("AbilityTokens", "AbilityTokens", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("TargetArc", "TargetArc", "float NOT NULL"),
                         new SQLProperty("TargetArcOffset", "TargetArcOffset", "float NOT NULL"),
                         new SQLProperty("TargetRule", "TargetRule", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
