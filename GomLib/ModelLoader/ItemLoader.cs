@@ -330,7 +330,7 @@ namespace GomLib.ModelLoader
             // Combined Stats
             itm.CombinedStatModifiers = new ItemStatList();
             itm.CombinedRequiredLevel = itm.RequiredLevel;
-            itm.CombinedRating = itm.Rating;
+            itm.CombinedRating = 0;
             foreach (var stat in itm.StatModifiers)
             {
                 var itmStat = new ItemStat();
@@ -343,8 +343,8 @@ namespace GomLib.ModelLoader
             {
                 if (mod.Modification != null)
                 {
-                    if (mod.Slot.IsBaseMod())
-                    {
+                    //if (mod.Slot.IsBaseMod())
+                    //{
                         if (mod.Modification.RequiredLevel > itm.CombinedRequiredLevel)
                         {
                             itm.CombinedRequiredLevel = mod.Modification.RequiredLevel;
@@ -353,7 +353,7 @@ namespace GomLib.ModelLoader
                         {
                             itm.CombinedRating = mod.Modification.Rating;
                         }
-                    }
+                    //}
 
                     foreach (var stat in mod.Modification.CombinedStatModifiers)
                     {
@@ -372,6 +372,7 @@ namespace GomLib.ModelLoader
                     }
                 }
             }
+            if (itm.CombinedRating == 0) itm.CombinedRating = itm.Rating;
 
             //itm.TreasurePackageSpec;
             itm.TreasurePackageId = (long)gom.Data.ValueOrDefault<long>("itmTreasurePackageId", 0);
@@ -383,11 +384,12 @@ namespace GomLib.ModelLoader
 
             itm.Value = (int)gom.Data.ValueOrDefault<long>("itmValue", 0);
             itm.VendorStackSize = (int)gom.Data.ValueOrDefault<long>("itmStackVendor", 0);
-            itm.WeaponSpec = WeaponSpecExtensions.ToWeaponSpec((ulong)gom.Data.ValueOrDefault<ulong>("cbtWeaponSpec", 0));
+            itm.WeaponSpec = WeaponSpec.Load(_dom, gom.Data.ValueOrDefault<ulong>("cbtWeaponSpec", 0));
 
             //ulong dmgType = (ulong)gom.Data.ValueOrDefault<ulong>("cbtDamageType", 0);
-            //itm.DamageType = ItemDamageTypeExtensions.ToItemDamageType(dmgType);
-            switch (itm.WeaponSpec)
+            if (itm.WeaponSpec != null)
+                itm.DamageType = ItemDamageTypeExtensions.ToItemDamageType(itm.WeaponSpec.DamageType);
+            /*switch (itm.WeaponSpec)
             {
                 case WeaponSpec.Lightsaber:
                 case WeaponSpec.Polesaber:
@@ -405,13 +407,13 @@ namespace GomLib.ModelLoader
                     { itm.DamageType = ItemDamageType.Kinetic; break; }
                 default:
                     { itm.DamageType = ItemDamageType.None; break; }
-            }
+            }*/
 
             itm.IsModdable = ((itm.Quality == ItemQuality.Prototype) && (itm.EnhancementSlots.Count > 1)) || itm.Quality == ItemQuality.Moddable;
 
             ItemSubCategoryExtensions.SetCategory(itm);
 
-            if (itm.WeaponSpec != WeaponSpec.Undefined)
+            if (itm.WeaponSpec != null)
             {
                 itm.WeaponAppSpec = gom.Data.ValueOrDefault<string>("cbtWeaponAppearanceSpec", "");
                 if (itm.WeaponAppSpec != "")

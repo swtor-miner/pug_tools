@@ -13,7 +13,7 @@ namespace GomLib.Tables
     
     public class WeaponPerLevel : IDisposable
     {
-        private Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, float>>>> table_data;
+        private Dictionary<ulong, Dictionary<int, Dictionary<int, Dictionary<int, float>>>> table_data;
         string tablePath = "cbtWeaponPerLevelPrototype";
         private bool disposed = false;
 
@@ -62,7 +62,7 @@ namespace GomLib.Tables
          * 
          */
 
-        public Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, float>>>> TableData
+        public Dictionary<ulong, Dictionary<int, Dictionary<int, Dictionary<int, float>>>> TableData
         {
             get
             {
@@ -71,14 +71,14 @@ namespace GomLib.Tables
             }
         }
 
-        public float GetStat(Item i, Stat stat) { return GetStat(i.WeaponSpec, i.ItemLevel, i.Quality, stat); }
-        public float GetStat(WeaponSpec spec, int level, ItemQuality quality, Stat stat)
+        public float GetStat(Item i, Stat stat) { return GetStat(i.WeaponSpec.Id, i.ItemLevel, i.Quality, stat); }
+        public float GetStat(ulong spec, int level, ItemQuality quality, Stat stat)
         {
             if (level <= 0) { return 0; }
 
             if (table_data == null) { LoadData(); }
 
-            return table_data[(int)spec][(int)quality][level][(int)stat];
+            return table_data[spec][(int)quality][level][(int)stat];
         }
 
         private DataObjectModel _dom;
@@ -94,14 +94,14 @@ namespace GomLib.Tables
             GomObject table = _dom.GetObject(tablePath);
             Dictionary<object, object> tableData = table.Data.Get<Dictionary<object,object>>("cbtWeaponPerLevelData");
 
-            table_data = new Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, float>>>>();
+            table_data = new Dictionary<ulong, Dictionary<int, Dictionary<int, Dictionary<int, float>>>>();
             foreach (var kvp in tableData)
             {
-                WeaponSpec wpnSpec = WeaponSpecExtensions.ToWeaponSpec((ulong)kvp.Key);
+                //WeaponSpec wpnSpec = WeaponSpec.Load(_dom, (ulong)kvp.Key);
                 Dictionary<object, object> qualityToLevelMap = (Dictionary<object, object>)kvp.Value;
 
                 var container0 = new Dictionary<int, Dictionary<int, Dictionary<int, float>>>();
-                table_data[(int)wpnSpec] = container0;
+                table_data[(ulong)kvp.Key] = container0;
 
                 foreach (var quality_level in qualityToLevelMap)
                 {

@@ -6,7 +6,7 @@ using System.Text;
 namespace GomLib.Models
 {
     /// <summary>Available Weapon Specs from /server/tbl/cbtWeaponTable.tbl</summary>
-    public enum WeaponSpec
+    /*public enum WeaponSpec
     {
         Undefined = 0,        // WeaponSpecs not listed in the weapon spec table, e.g. lightsaber_purple, itm.npc.blaster.grunt.level4, itm.npc.ranged
         NpcRangedEnergy = 1,// wpn.npc.ranged_energy
@@ -35,6 +35,7 @@ namespace GomLib.Models
         ElectrostaffTech = 24,// wpn.pc.electrostaff_tech
         Unknown = 25
     }
+
 
     public static class WeaponSpecExtensions
     {
@@ -158,6 +159,94 @@ namespace GomLib.Models
                 default:
                     return false;
             }
+        }
+    }*/
+    public class WeaponSpec
+    {
+        WeaponSpec(DataObjectModel dom, ulong id)
+        {
+            _dom = dom;
+            Id = id;
+        }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public DataObjectModel _dom { get; set; }
+
+        public ulong Id { get; set; }
+        public string Name { get; set; } //str.gui.tooltips 836131348283392
+        public long NameId { get; set; }
+        public Dictionary<string, string> LocalizedName { get; set; }
+        //stats
+        public string DamageType { get; set; }
+        public bool IsTwoHanded { get; set; }
+        public string RequiredTag { get; set; }
+        public ulong ReqAbilityId { get; set; }
+        //[Newtonsoft.Json.JsonIgnore]
+        //public Ability ReqAbility { get; set; }
+        public string SpecString { get; set; }
+        public bool IsRanged { get; set; }
+
+        public static Dictionary<ulong, WeaponSpec> WeaponSpecList;
+        public static void Flush(){
+            WeaponSpecList = null;
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = Id.GetHashCode();
+            hash ^= NameId.GetHashCode();
+            if (LocalizedName != null) foreach (var x in LocalizedName) { hash ^= x.GetHashCode(); }
+            //stats
+            hash ^= DamageType.GetHashCode();
+            hash ^= IsTwoHanded.GetHashCode();
+            hash ^= RequiredTag.GetHashCode();
+            hash ^= ReqAbilityId.GetHashCode();
+            hash ^= SpecString.GetHashCode();
+            hash ^= IsRanged.GetHashCode();
+            return hash;
+        }
+
+        public static void Load(DataObjectModel dom)
+        {
+            if (WeaponSpecList == null)
+            {
+                Dictionary<object, object> cbtWeaponData = dom.GetObject("cbtWeaponPrototype").Data.Get<Dictionary<object, object>>("cbtWeaponData");
+                WeaponSpecList = new Dictionary<ulong, WeaponSpec>();
+                foreach (var kvp in cbtWeaponData)
+                {
+                    WeaponSpec itm = new WeaponSpec(dom, (ulong)kvp.Key);
+                    Load(itm, (GomObjectData)kvp.Value);
+                    WeaponSpecList.Add((ulong)kvp.Key, itm);
+                }
+            }
+        }
+        public static WeaponSpec Load(DataObjectModel dom, ulong id)
+        {
+            if (dom == null || id == 0) return null;
+            Load(dom);
+            WeaponSpec ret;
+            WeaponSpecList.TryGetValue(id, out ret);
+
+            return ret;
+        }
+        internal static WeaponSpec Load(WeaponSpec itm, GomObjectData gom)
+        {
+            itm.NameId = gom.ValueOrDefault<long>("cbtWpnDataRequiredProficiencyName", 0) + 836131348283392;
+            itm.LocalizedName = itm._dom.stringTable.TryGetLocalizedStrings("str.gui.tooltips", itm.NameId);
+            itm.Name = itm._dom.stringTable.TryGetString("str.gui.tooltips", itm.NameId);
+            
+            var damageType = gom.ValueOrDefault<ScriptEnum>("cbtWpnDataDamageType", null);
+            if (damageType == null)
+                itm.DamageType = "Kinetic";
+            else
+                itm.DamageType = damageType.ToString().Replace("cbtDamage", "");
+
+            itm.IsTwoHanded = gom.ValueOrDefault<bool>("cbtWpnDataIsTwoHanded", false);
+            itm.IsRanged = gom.ValueOrDefault<bool>("cbtWpnDataIsRanged", false);
+            itm.ReqAbilityId = gom.ValueOrDefault<ulong>("cbtWpnDataRequiredAbility", 0);
+            itm.RequiredTag = gom.ValueOrDefault<string>("cbtWpnDataRequiredTags", "");
+            itm.SpecString = gom.ValueOrDefault<string>("cbtWpnDataSpecString", "");
+            return itm;
         }
     }
 }

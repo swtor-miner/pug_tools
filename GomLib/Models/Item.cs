@@ -156,7 +156,36 @@ namespace GomLib.Models
                     tooltip.Append(String.Format("<div class='torctip_text'>{0}</div>", String.Join(", ", Slots.Select(x => SlotToString(x)).Where(x => x != null).ToList())));
                 }
                 //armor, rating etc if gear
-                tooltip.Append(String.Format("<div class='torctip_text'>{0} Armor (Rating {1})</div>", 0 /*calculate this*/, CombinedRating)); //this needs a conditional
+                if (WeaponSpec != null)
+                {
+                    List<int> mainSlots = new List<int>{1, 3, 9};
+                    ItemEnhancement mainMod = null;
+                    if (EnhancementSlots != null)
+                    {
+                        var potentials = EnhancementSlots.Where(x => x.Slot.IsBaseMod());
+                        if (potentials.Count() != 0)
+                            mainMod = EnhancementSlots.Where(x => x.Slot.IsBaseMod()).Single();
+                    }
+                    //if (mainMod.Count == 0
+                    ItemQuality qual = ItemQuality.Premium;
+                    if (this.EnhancementSlots.Count() != 0)
+                    {
+                        if (mainMod != null)
+                        {
+                            if (mainMod.ModificationId != 0)
+                                qual = mainMod.Modification.Quality;
+                            //else
+                                //nothing premium is what we want
+                        }
+                    }
+                    else
+                        qual = this.Quality;
+                    float min = _dom.data.weaponPerLevel.GetStat(WeaponSpec.Id, this.RequiredLevel, this.Quality, Stat.MinWeaponDamage);
+                    float max = _dom.data.weaponPerLevel.GetStat(WeaponSpec.Id, this.RequiredLevel, this.Quality, Stat.MaxWeaponDamage);
+                    tooltip.Append(String.Format("<div class='torctip_text'><span class='torctip_minDam'>{0}</span>-<span class='torctip_maxDam'>{1}</span> {2} Damage (Rating {3})</div>", min.ToString("0.0"), max.ToString("0.0"), this.WeaponSpec.DamageType, CombinedRating)); //this needs a conditional
+                }
+                else
+                    tooltip.Append(String.Format("<div class='torctip_text'>{0} Armor (Rating {1})</div>", 0 /*calculate this*/, CombinedRating)); //this needs a conditional
 
                 //stats
                 if (CombinedStatModifiers.Count != 0) {
@@ -598,7 +627,7 @@ namespace GomLib.Models
             hash ^= UseAbility.GetHashCode();
             hash ^= Value.GetHashCode();
             hash ^= VendorStackSize.GetHashCode();
-            hash ^= WeaponSpec.GetHashCode();
+            if (WeaponSpec != null) hash ^= WeaponSpec.GetHashCode();
             foreach (var x in CombinedStatModifiers) { hash ^= x.GetHashCode(); }
             foreach (var x in EnhancementSlots) { hash ^= x.GetHashCode(); }
             foreach (var x in RequiredClasses) { hash ^= x.Id.GetHashCode(); }
