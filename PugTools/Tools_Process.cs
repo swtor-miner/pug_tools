@@ -449,12 +449,22 @@ namespace tor_tools
             {
                 XDocument previousFields = previousDom.ReturnTypeNames(); //XDocument.Load(Config.ExtractPath + prefix + "Gom_Fields.xml");
                 //XElement addedItems = FindChangedEntries(currentFields.Root, "Gom_Fields", "Gom_Field");
-                XElement addedItems = FindChangedEntries(currentFields.Root, previousFields, "Gom_Fields", "Gom_Field");
-                addedItems.ReplaceNodes(addedItems.Elements("Gom_Field")
+                WriteFile(new XDocument(currentFields.Root.Element("FieldUseInDomClass")), "CurrentGom_Fields.xml", false);
+                WriteFile(new XDocument(previousFields.Root.Element("FieldUseInDomClass")), "PreviousGom_Fields.xml", false);
+                XElement wrapper = new XElement("Wrapper");
+                XElement compared = FindChangedEntries(currentFields.Root.Element("Gom_Fields"), new XDocument(previousFields.Root.Element("Gom_Fields")), "Gom_Fields", "Gom_Field");
+                wrapper.Add(compared);
+                /*compared.ReplaceNodes(compared.Elements("Gom_Field")
                     .OrderBy(x => (string)x.Attribute("Status"))
-                    .ThenBy(x => (string)x.Attribute("Id")));
+                    .ThenBy(x => (string)x.Attribute("Id")));*/
+                XElement compared2 = FindChangedEntries(currentFields.Root.Element("FieldUseInDomClass"), new XDocument(previousFields.Root.Element("FieldUseInDomClass")), "FieldUseInDomClass", "DomClass");
+                //compared = CompareElements(previousFields.Root.Element("FieldUseInDomClass"), currentFields.Root.Element("FieldUseInDomClass"));
+                /*compared2.ReplaceNodes(compared.Elements("DomClass")
+                    .OrderBy(x => (string)x.Attribute("Status"))
+                    .ThenBy(x => (string)x.Attribute("Id")));*/
+                wrapper.Add(compared2);
 
-                XDocument xmlDoc = new XDocument(addedItems);
+                XDocument xmlDoc = new XDocument(wrapper);
                 if (!xmlDoc.Root.IsEmpty) WriteFile(xmlDoc, "ChangedGom_Fields.xml", false);
             }
             else

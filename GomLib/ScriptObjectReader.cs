@@ -74,19 +74,24 @@ namespace GomLib
 
                 // Save data to resulting script object
                 string fieldName = null;
+                string domClassNullCheck = ((object)domClass ?? "Unknown").ToString();
                 if ((field != null) && (!String.IsNullOrEmpty(field.Name)))
                 {
                     fieldName = field.Name;
+                    if (!_dom.NamedMap.ContainsKey(domClassNullCheck))
+                        _dom.NamedMap.Add(domClassNullCheck, new HashSet<string>());
+                    if (domClass != null)
+                        _dom.NamedMap[domClassNullCheck].Add(fieldName);
                 }
                 else
                 {
                     fieldName = _dom.GetStoredTypeName(fieldId);
                     if (fieldName == null)
                     {
-                        if (!_dom.UnNamedMap.ContainsKey(fieldId))
-                            _dom.UnNamedMap.Add(fieldId, new HashSet<string>());
+                        if (!_dom.UnNamedMap.ContainsKey(domClassNullCheck))
+                            _dom.UnNamedMap.Add(domClassNullCheck, new HashSet<ulong>());
                         if (domClass != null)
-                            _dom.UnNamedMap[fieldId].Add(domClass.ToString());
+                            _dom.UnNamedMap[domClassNullCheck].Add(fieldId);
                         //fieldName = String.Format("field_{0:X8}", fieldId);
                         fieldName = fieldId.ToString();
                     }

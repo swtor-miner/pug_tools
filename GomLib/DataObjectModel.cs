@@ -17,7 +17,8 @@ namespace GomLib
         private DomTypeLoaders.FileInstanceLoader prototypeLoader = new DomTypeLoaders.FileInstanceLoader();
         private Dictionary<string, ulong> StoredNameMap { get; set; }
         private Dictionary<ulong, string> StoredIdMap { get; set; }
-        public Dictionary<ulong, HashSet<string>> UnNamedMap { get; set; }
+        public Dictionary<string, HashSet<string>> NamedMap { get; set; }
+        public Dictionary<string, HashSet<ulong>> UnNamedMap { get; set; }
 
         private List<string> BucketFiles { get; set; }
 
@@ -46,7 +47,8 @@ namespace GomLib
 
             StoredNameMap = new Dictionary<string, ulong>();
             StoredIdMap = new Dictionary<ulong, string>();
-            UnNamedMap = new Dictionary<ulong, HashSet<string>>();
+            NamedMap = new Dictionary<string, HashSet<string>>();
+            UnNamedMap = new Dictionary<string, HashSet<ulong>>();
         }
 
         public Data data;
@@ -251,7 +253,7 @@ namespace GomLib
             foreach (var nodeTypeMap in nodeLookup)
             {
                 Type domType = nodeTypeMap.Key;
-                if (domType == typeof(GomObject)) { continue; }
+                if (domType == typeof(GomObject)){ continue; }
 
                 foreach (var kvp in nodeTypeMap.Value)
                 {
@@ -263,16 +265,31 @@ namespace GomLib
                         name));
                 }
             }
+            //typeNames.ReplaceNodes(typeNames.Elements("Gom_Field")
+                //.OrderBy(x => (string)x.Attribute("Id")));
+
+            XElement fieldUseInDomClass = new XElement("FieldUseInDomClass");
+
+            CrossLink(); //need to scan nodes to find all values
             foreach (var kvp in UnNamedMap)
             {
-                typeNames.Add(new XElement("Gom_Field",
+                fieldUseInDomClass.Add(new XElement("DomClass",
                     new XAttribute("Id", kvp.Key.ToString()),
-                    String.Join(", ", kvp.Value.ToArray())));
+                    new XElement("Gom_Fields", new XAttribute("Id", "UnNamed"), kvp.Value.ToList().Select(x => new XElement("Gom_Field", new XAttribute("Id", x))))));
             }
-            typeNames.ReplaceNodes(typeNames.Elements("Gom_Field")
-            .OrderBy(x => (string)x.Attribute("Id")));
+            foreach (var kvp in NamedMap)
+            {
+                var xe = fieldUseInDomClass.Elements().Where(x => x.Attribute("Id").Value == kvp.Key);
+                var ta = new XElement("Gom_Fields", new XAttribute("Id", "Named"), kvp.Value.ToList().Select(x => new XElement("Gom_Field", new XAttribute("Id", x))));
+                if (xe.Count() == 0)
+                    fieldUseInDomClass.Add(new XElement("DomClass",
+                    new XAttribute("Id", kvp.Key.ToString()),
+                    ta));
+                else
+                    xe.First().Add(ta);
+            }
 
-            return new XDocument(typeNames);
+            return new XDocument(new XElement("Wrapper", typeNames, fieldUseInDomClass));
         }
 
         public void Load()
@@ -331,8 +348,10 @@ namespace GomLib
             }
         }
 
+        public bool CrossLinked = false;
         public void CrossLink()
         {
+            if (CrossLinked) return;
             foreach (DomType t in DomTypeMap.Values)
             {
                 if (t.GetType() == typeof(GomObject))
@@ -348,6 +367,7 @@ namespace GomLib
                     //}
                 }
             }
+            CrossLinked = true;
         }
 
         public void Unload() //This unloads Assets allowing the loading of different assets without relaunching

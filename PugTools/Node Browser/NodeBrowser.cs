@@ -323,13 +323,13 @@ namespace tor_tools
                                 this.currentDom.DomTypeMap.TryGetValue(id, out fieldLookup2);
                                 if (fieldLookup2 != null)
                                 {
-                                    if (this.currentDom.UnNamedMap.ContainsKey(id))
+                                    /*if (this.currentDom.UnNamedMap.ContainsKey(id))
                                     {
                                         Console.WriteLine("found value");
                                     }else{
                                     
                                         Console.WriteLine("not found");
-                                    }                                    
+                                    } */                                   
                                 }
                             }
                         }
