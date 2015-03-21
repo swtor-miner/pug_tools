@@ -27,7 +27,7 @@ namespace GomLib.Tables
             public Dictionary<SlotType, int> slotToRating { get; set; }
         }
 
-        private Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, int>>>> table_data;
+        private Dictionary<long, Dictionary<int, Dictionary<int, Dictionary<int, int>>>> table_data;
         // string tablePath = "/resources/server/tbl/cbtarmorperleveltable.tbl";
         string tablePath = "cbtArmorPerLevel";
 
@@ -69,7 +69,7 @@ namespace GomLib.Tables
         }
 
 
-        public Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, int>>>> TableData
+        public Dictionary<long, Dictionary<int, Dictionary<int, Dictionary<int, int>>>> TableData
         {
             get
             {
@@ -82,10 +82,13 @@ namespace GomLib.Tables
         public int GetArmor(ArmorSpec spec, int level, ItemQuality quality, SlotType slot)
         {
             if (level <= 0) { return 0; }
-
+            if (spec == null) { return -1; }
             if (table_data == null) { LoadData(); }
 
-            return table_data[(int)spec][(int)quality][level][(int)slot];
+            if (table_data.ContainsKey(spec.Id))
+                return table_data[spec.Id][(int)quality][level][(int)slot];
+            else
+                return -1;
         }
 
         private void LoadData()
@@ -94,14 +97,14 @@ namespace GomLib.Tables
             Dictionary<object, object> tableData = table.Data.ValueOrDefault<Dictionary<object,object>>("cbtArmorValues", null);
 
             // var rows = Utilities.ReadDataTable(tablePath, ReadArmorRow);
-            table_data = new Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, int>>>>();
+            table_data = new Dictionary<long, Dictionary<int, Dictionary<int, Dictionary<int, int>>>>();
             foreach (var kvp in tableData)
             {
-                ArmorSpec armorSpec = ArmorSpecExtensions.ToArmorSpec((long)kvp.Key);
+                //ArmorSpec armorSpec = ArmorSpec.Load(_dom, (long)kvp.Key);
                 Dictionary<object, object> qualityToLevelMap = (Dictionary<object, object>)kvp.Value;
 
                 Dictionary<int, Dictionary<int, Dictionary<int, int>>> container0 = new Dictionary<int, Dictionary<int, Dictionary<int, int>>>();
-                table_data[(int)armorSpec] = container0;
+                table_data[(long)kvp.Key] = container0;
 
                 foreach (var quality_level in qualityToLevelMap)
                 {

@@ -86,7 +86,7 @@ namespace GomLib.ModelLoader
             itm._dom = _dom;
             itm.References = obj.References;
             itm.AppearanceColor = Models.AppearanceColorExtensions.ToAppearanceColor((string)gom.Data.ValueOrDefault<string>("itmEnhancementColor", null));
-            itm.ArmorSpec = Models.ArmorSpecExtensions.ToArmorSpec((long)gom.Data.ValueOrDefault<long>("itmArmorSpec", 0));
+            itm.ArmorSpec = Models.ArmorSpec.Load(_dom, (long)gom.Data.ValueOrDefault<long>("itmArmorSpec", 0));
             itm.Binding = Models.ItemBindingRuleExtensions.ToBindingRule((ScriptEnum)gom.Data.ValueOrDefault<ScriptEnum>("itmBindingRule", null));
 
             itm.CombinedStatModifiers = new ItemStatList();
@@ -299,7 +299,7 @@ namespace GomLib.ModelLoader
                 }
             }
 
-            itm.ShieldSpec = ArmorSpecExtensions.ToArmorSpec((long)gom.Data.ValueOrDefault<long>("itmShieldSpec", 0));
+            itm.ShieldSpec = ArmorSpec.Load(_dom, (long)gom.Data.ValueOrDefault<long>("itmShieldSpec", 0));
 
             // Valid Inventory Slots
             itm.Slots = new SlotTypeList();

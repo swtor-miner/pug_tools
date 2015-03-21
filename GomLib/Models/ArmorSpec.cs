@@ -5,7 +5,7 @@ using System.Text;
 
 namespace GomLib.Models
 {
-    public enum ArmorSpec
+    /*public enum ArmorSpec
     {
         Undefined = 0,
         Light = 1,  // light
@@ -56,6 +56,77 @@ namespace GomLib.Models
                 default:
                     return false;
             }
+        }
+    }*/
+
+    public class ArmorSpec
+    {
+        ArmorSpec(DataObjectModel dom, long id)
+        {
+            _dom = dom;
+            Id = id;
+        }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public DataObjectModel _dom { get; set; }
+
+        public long Id { get; set; }
+        public string Name { get; set; } //str.gui.tooltips 836131348283392
+        public long NameId { get; set; }
+        public Dictionary<string, string> LocalizedName { get; set; }
+        public ulong ReqAbilityId { get; set; }
+        //[Newtonsoft.Json.JsonIgnore]
+        //public Ability ReqAbility { get; set; }
+        public string DebugSpecName { get; set; }
+
+        public static Dictionary<long, ArmorSpec> ArmorSpecList;
+        public static void Flush()
+        {
+            ArmorSpecList = null;
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = Id.GetHashCode();
+            hash ^= NameId.GetHashCode();
+            if (LocalizedName != null) foreach (var x in LocalizedName) { hash ^= x.GetHashCode(); }
+            hash ^= ReqAbilityId.GetHashCode();
+            hash ^= DebugSpecName.GetHashCode();
+            return hash;
+        }
+
+        public static void Load(DataObjectModel dom)
+        {
+            if (ArmorSpecList == null)
+            {
+                Dictionary<object, object> cbtWeaponData = dom.GetObject("cbtArmorTablePrototype").Data.Get<Dictionary<object, object>>("cbtArmorDetailsBySpec");
+                ArmorSpecList = new Dictionary<long, ArmorSpec>();
+                foreach (var kvp in cbtWeaponData)
+                {
+                    ArmorSpec itm = new ArmorSpec(dom, (long)kvp.Key);
+                    Load(itm, (GomObjectData)kvp.Value);
+                    ArmorSpecList.Add((long)kvp.Key, itm);
+                }
+            }
+        }
+        public static ArmorSpec Load(DataObjectModel dom, long id)
+        {
+            if (dom == null || id == 0) return null;
+            Load(dom);
+            ArmorSpec ret;
+            ArmorSpecList.TryGetValue(id, out ret);
+
+            return ret;
+        }
+        internal static ArmorSpec Load(ArmorSpec itm, GomObjectData gom)
+        {
+            itm.NameId = gom.ValueOrDefault<long>("cbtArmorNameID", 0) + 836131348283392;
+            itm.LocalizedName = itm._dom.stringTable.TryGetLocalizedStrings("str.gui.tooltips", itm.NameId);
+            itm.Name = itm._dom.stringTable.TryGetString("str.gui.tooltips", itm.NameId);
+
+            itm.ReqAbilityId = gom.ValueOrDefault<ulong>("cbtArmorRequiredAbility", 0);
+            itm.DebugSpecName = gom.ValueOrDefault<string>("cbtArmorDebugSpecName", "");
+            return itm;
         }
     }
 }

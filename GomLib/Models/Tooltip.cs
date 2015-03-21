@@ -58,9 +58,11 @@ namespace GomLib.Models
                     tooltip.Append(String.Format("<div class='torctip_text'>Binds on {0}</div>", itm.Binding.ToString()));
                 }
                 //slot
+                bool isEquipable = false;
                 if (itm.Slots.Count > 1)
                 {
-                    tooltip.Append(String.Format("<div class='torctip_text'>{0}</div>", String.Join(", ", itm.Slots.Select(x => SlotToString(x)).Where(x => x != null).ToList())));
+                    tooltip.Append(String.Format("<div class='torctip_text'>{0}</div>", String.Join(", ", itm.Slots.Select(x => ConvertToString(x)).Where(x => x != null).ToList())));
+                    isEquipable = true;
                 }
                 //armor, rating etc if gear
                 float techpower = 0;
@@ -95,8 +97,23 @@ namespace GomLib.Models
                     forcepower = itm._dom.data.weaponPerLevel.GetStat(itm.WeaponSpec.Id, itm.RequiredLevel, itm.Quality, Stat.ForcePowerRating);
                     tooltip.Append(String.Format("<div class='torctip_text'><span class='torctip_minDam'>{0}</span>-<span class='torctip_maxDam'>{1}</span> {2} Damage (Rating {3})</div>", min.ToString("0.0"), max.ToString("0.0"), itm.WeaponSpec.DamageType, itm.CombinedRating)); //this needs a conditional
                 }
+                else if (isEquipable)
+                {
+                    ArmorSpec arm = itm.ArmorSpec;
+                    if (arm != null)
+                    {
+                        if (arm.DebugSpecName == "adaptive")
+                            arm = ArmorSpec.Load(_dom, 5763611092890301551);
+                        int armor = itm._dom.data.armorPerLevel.GetArmor(arm, itm.CombinedRequiredLevel, itm.Quality, itm.Slots.Where(x => x != SlotType.Any).First());
+                        if (armor > 0)
+                            tooltip.Append(String.Format("<div class='torctip_text'>{0} Armor (Rating {1})</div>", armor, itm.CombinedRating));
+                    }
+                    else
+                        tooltip.Append(String.Format("<div class='torctip_text'>Item Rating {0}</div>", itm.CombinedRating));
+                }
                 else
-                    tooltip.Append(String.Format("<div class='torctip_text'>{0} Armor (Rating {1})</div>", 0 /*calculate this*/, itm.CombinedRating)); //this needs a conditional
+                    tooltip.Append(String.Format("<div class='torctip_text'>Item Rating {0}</div>", itm.CombinedRating));
+                
 
                 //stats
                 if (itm.CombinedStatModifiers.Count != 0)
@@ -104,9 +121,30 @@ namespace GomLib.Models
                     tooltip.Append("<div class='torctip_stats'><span class='torctip_white'>Total Stats:</span>");
                     for (var i = 0; i < itm.CombinedStatModifiers.Count; i++)
                     {
-                        tooltip.Append(String.Format("<div class='torctip_stat' id='torctip_stat_{0}'><span>+{1} {2}</span></div>",
-                            // {0}              {1}                                     {2}
-                            i, itm.CombinedStatModifiers[i].Modifier, StatToString(itm.CombinedStatModifiers[i].Stat)));
+                        switch (itm.CombinedStatModifiers[i].Modifier)
+                        {
+                            /*case Stat.ShipArmor:
+                                tooltip.Append(String.Format("<div class='torctip_stat' id='torctip_stat_{0}'><span>Equip: Ship's toughness is set to {1}</span></div>",
+                                // {0}              {1}                                     {2}
+                                i, (1800 + 250 * itm.CombinedStatModifiers[i].Modifier)));
+                                   break;
+                            case Stat.ShipRateOfFire: return "debug_ShipRateOfFire";
+                            case Stat.ShipBlasterDamage: return "debug_ShipBlasterDamage";
+                            case Stat.ShipMissileCount: return "debug_ShipMissileCount";
+                            case Stat.ShipMissileLevel: return "debug_ShipMissileLevel";
+                            case Stat.ShipMissileRateOfFire: return "debug_ShipMissileRateOfFire";
+                            case Stat.ShipTorpedoCount: return "debug_ShipTorpedoCount";
+                            case Stat.ShipTorpedoLevel: return "debug_ShipTorpedoLevel";
+                            case Stat.ShipTorpedoRateOfFire: return "debug_ShipTorpedoRateOfFire";
+                            case Stat.ShipShieldStrength: return "debug_ShipShieldStrength";
+                            case Stat.ShipShieldRegen: return "debug_ShipShieldRegen";
+                            case Stat.ShipShieldCooldown: return "debug_ShipShieldCooldown";
+                            case Stat.ShipType: return "debug_ShipType";*/
+                            default: tooltip.Append(String.Format("<div class='torctip_stat' id='torctip_stat_{0}'><span>+{1} {2}</span></div>",
+                                    // {0}              {1}                                     {2}
+                                i, itm.CombinedStatModifiers[i].Modifier, ConvertToString(itm.CombinedStatModifiers[i].Stat)));
+                                break;
+                        }
                     }
                     if (techpower > 0)
                         tooltip.Append(String.Format("<div class='torctip_stat' id='torctip_stat_tech'><span>+{0} Tech Power</span></div>", techpower));
@@ -127,7 +165,7 @@ namespace GomLib.Models
                                 itm.EnhancementSlots[i].Modification.Quality.ToString(), itm.EnhancementSlots[i].Slot.ToString(), itm.EnhancementSlots[i].Modification.Rating.ToString()));
                             for (var e = 0; e < itm.EnhancementSlots[i].Modification.CombinedStatModifiers.Count; e++)
                             {
-                                tooltip.Append(String.Format("<div class='torctip_mstat'><span>+{1} {2}</span></div>", i, itm.EnhancementSlots[i].Modification.CombinedStatModifiers[e].Modifier, StatToString(itm.EnhancementSlots[i].Modification.CombinedStatModifiers[e].Stat)));
+                                tooltip.Append(String.Format("<div class='torctip_mstat'><span>+{1} {2}</span></div>", i, itm.EnhancementSlots[i].Modification.CombinedStatModifiers[e].Modifier, ConvertToString(itm.EnhancementSlots[i].Modification.CombinedStatModifiers[e].Stat)));
                             }
                             tooltip.Append("</div>");
                         }
@@ -135,25 +173,30 @@ namespace GomLib.Models
                             //empty mod
                             tooltip.Append(String.Format("<div class='torctip_mod'><div class='torctip_mslot'><span>{0}: Open</span></div></div>", itm.EnhancementSlots[i].Slot.ToString()));
                     }
-                    tooltip.Append("</div>");
+                    tooltip.Append("<div class='torctip_mod'><div class='torctip_mslot'><span>Augment: Open</span></div></div></div>");
                 }
 
                 if (itm.RequiredLevel != 0)
                     tooltip.Append(String.Format("<div>Requires Level {0}</div>", itm.RequiredLevel));
+                if (itm.ArmorSpec != null)
+                    tooltip.Append(String.Format("<div>Requires {0}</div>", itm.ArmorSpec.Name));
                 System.Text.RegularExpressions.Regex regex_newline = new System.Text.RegularExpressions.Regex("(\r\n|\r|\n)");
                 if (itm.UseAbilityId != 0)
                 {
                     if (itm.UseAbility != null)
                     {
                         string ablDesc = itm.UseAbility.Description ?? "";
-                        regex_newline.Replace(ablDesc, "<br />");
+                        ablDesc = System.Text.RegularExpressions.Regex.Replace(ablDesc, @"\r\n?|\n", "<br />");
+                        //regex_newline.Replace(ablDesc, "<br />");
                         tooltip.Append(String.Format("<div class='torctip_text'>Use: </div>", ablDesc));
                     }
                 }
                 if (itm.Description != "")
                 {
-                    regex_newline.Replace(itm.Description, "<br />");
-                    tooltip.Append(String.Format("<div class='torctip_text'>{0}</div>", itm.Description));
+                    string itmDesc = itm.Description;
+                    //regex_newline.Replace(itmDesc, "<br />");
+                    itmDesc = System.Text.RegularExpressions.Regex.Replace(itmDesc, @"\r\n?|\n", "<br />");
+                    tooltip.Append(String.Format("<div class='torctip_text'>{0}</div>", itmDesc));
                 }
             }
 
@@ -161,7 +204,7 @@ namespace GomLib.Models
             return tooltip.ToString();
         }
 
-        public static string SlotToString(SlotType slot) //replace these with friendly names
+        public static string ConvertToString(SlotType slot) //replace these with friendly names
         {
             switch (slot)
             {
@@ -222,8 +265,7 @@ namespace GomLib.Models
                     return "";
             }
         }
-
-        public static string StatToString(Stat slot) //replace these with friendly names
+        public static string ConvertToString(Stat slot) //replace these with friendly names
         {
             switch (slot)
             {
@@ -330,7 +372,7 @@ namespace GomLib.Models
                 case Stat.StealthLevel: return "debug_StealthLevel";
                 case Stat.StealthDetection: return "debug_StealthDetection";
                 case Stat.WeaponAccuracy: return "debug_WeaponAccuracy";
-                case Stat.GlanceRating: return "debug_GlanceRating";
+                case Stat.GlanceRating: return "Shield Rating";
                 case Stat.ForceDamageBonus: return "debug_ForceDamageBonus";
                 case Stat.TechDamageBonus: return "debug_TechDamageBonus";
                 case Stat.ForceCriticalChance: return "debug_ForceCriticalChance";
@@ -361,63 +403,63 @@ namespace GomLib.Models
                 case Stat.HealingReceivedModifierFixed: return "debug_HealingReceivedModifierFixed";
                 case Stat.DamageReceievedModifierPercentage: return "debug_DamageReceievedModifierPercentage";
                 case Stat.DamageReceivedModifierFixed: return "debug_DamageReceivedModifierFixed";
-                case Stat.DefenseRating: return "debug_DefenseRating";
+                case Stat.DefenseRating: return "Defense Rating";
                 case Stat.EffectGenerateHeatModifierFixed: return "debug_EffectGenerateHeatModifierFixed";
                 case Stat.EffectGenerateHeatModifierPercentage: return "debug_EffectGenerateHeatModifierPercentage";
                 case Stat.ArmorPenetration: return "debug_ArmorPenetration";
-                case Stat.Artifice: return "debug_Artifice";
-                case Stat.Armormech: return "debug_Armormech";
-                case Stat.Armstech: return "debug_Armstech";
-                case Stat.Biochem: return "debug_Biochem";
-                case Stat.Cybertech: return "debug_Cybertech";
-                case Stat.Synthweaving: return "debug_Synthweaving";
-                case Stat.Archaeology: return "debug_Archaeology";
-                case Stat.Bioanalysis: return "debug_Bioanalysis";
-                case Stat.Scavenging: return "debug_Scavenging";
-                case Stat.Slicing: return "debug_Slicing";
-                case Stat.Diplomacy: return "debug_Diplomacy";
-                case Stat.Research: return "debug_Research";
-                case Stat.TreasureHunting: return "debug_TreasureHunting";
-                case Stat.UnderworldTrading: return "debug_UnderworldTrading";
-                case Stat.Crafting: return "debug_Crafting";
-                case Stat.Harvesting: return "debug_Harvesting";
-                case Stat.Mission: return "debug_Mission";
-                case Stat.ArtificeEfficiency: return "debug_ArtificeEfficiency";
-                case Stat.ArmormechEfficiency: return "debug_ArmormechEfficiency";
-                case Stat.ArmstechEfficiency: return "debug_ArmstechEfficiency";
-                case Stat.BiochemEfficiency: return "debug_BiochemEfficiency";
-                case Stat.CybertechEfficiency: return "debug_CybertechEfficiency";
-                case Stat.SynthweavingEfficiency: return "debug_SynthweavingEfficiency";
-                case Stat.ArchaeologyEfficiency: return "debug_ArchaeologyEfficiency";
-                case Stat.BioanalysisEfficiency: return "debug_BioanalysisEfficiency";
-                case Stat.ScavengingEfficiency: return "debug_ScavengingEfficiency";
-                case Stat.SlicingEfficiency: return "debug_SlicingEfficiency";
-                case Stat.DiplomacyEfficiency: return "debug_DiplomacyEfficiency";
-                case Stat.ResearchEfficiency: return "debug_ResearchEfficiency";
-                case Stat.TreasureHuntingEfficiency: return "debug_TreasureHuntingEfficiency";
-                case Stat.UnderworldTradingEfficiency: return "debug_UnderworldTradingEfficiency";
-                case Stat.CraftingEfficiency: return "debug_CraftingEfficiency";
-                case Stat.HarvestingEfficiency: return "debug_HarvestingEfficiency";
-                case Stat.MissionEfficiency: return "debug_MissionEfficiency";
-                case Stat.ArtificeCritical: return "debug_ArtificeCritical";
-                case Stat.ArmormechCritical: return "debug_ArmormechCritical";
-                case Stat.ArmstechCritical: return "debug_ArmstechCritical";
-                case Stat.BiochemCritical: return "debug_BiochemCritical";
-                case Stat.CybertechCritical: return "debug_CybertechCritical";
-                case Stat.SynthweavingCritical: return "debug_SynthweavingCritical";
-                case Stat.ArchaeologyCritical: return "debug_ArchaeologyCritical";
-                case Stat.BioanalysisCritical: return "debug_BioanalysisCritical";
-                case Stat.ScavengingCritical: return "debug_ScavengingCritical";
-                case Stat.SlicingCritical: return "debug_SlicingCritical";
-                case Stat.DiplomacyCritical: return "debug_DiplomacyCritical";
-                case Stat.ResearchCritical: return "debug_ResearchCritical";
-                case Stat.TreasureHuntingCritical: return "debug_TreasureHuntingCritical";
-                case Stat.UnderworldTradingCritical: return "debug_UnderworldTradingCritical";
-                case Stat.CraftingCritical: return "debug_CraftingCritical";
-                case Stat.HarvestingCritical: return "debug_HarvestingCritical";
-                case Stat.MissionCritical: return "debug_MissionCritical";
-                case Stat.TechHealingPower: return "debug_TechHealingPower";
-                case Stat.ForceHealingPower: return "debug_ForceHealingPower";
+                case Stat.Artifice: return "Artifice";
+                case Stat.Armormech: return "Armormech";
+                case Stat.Armstech: return "Armstech";
+                case Stat.Biochem: return "Biochem";
+                case Stat.Cybertech: return "Cybertech";
+                case Stat.Synthweaving: return "Synthweaving";
+                case Stat.Archaeology: return "Archaeology";
+                case Stat.Bioanalysis: return "Bioanalysis";
+                case Stat.Scavenging: return "Scavenging";
+                case Stat.Slicing: return "Slicing";
+                case Stat.Diplomacy: return "Diplomacy";
+                case Stat.Research: return "Research";
+                case Stat.TreasureHunting: return "TreasureHunting";
+                case Stat.UnderworldTrading: return "UnderworldTrading";
+                case Stat.Crafting: return "Crafting";
+                case Stat.Harvesting: return "Harvesting";
+                case Stat.Mission: return "Mission";
+                case Stat.ArtificeEfficiency: return "Artifice Efficiency";
+                case Stat.ArmormechEfficiency: return "Armormech Efficiency";
+                case Stat.ArmstechEfficiency: return "Armstech Efficiency";
+                case Stat.BiochemEfficiency: return "Biochem Efficiency";
+                case Stat.CybertechEfficiency: return "Cybertech Efficiency";
+                case Stat.SynthweavingEfficiency: return "Synthweaving Efficiency";
+                case Stat.ArchaeologyEfficiency: return "Archaeology Efficiency";
+                case Stat.BioanalysisEfficiency: return "Bioanalysis Efficiency";
+                case Stat.ScavengingEfficiency: return "Scavenging Efficiency";
+                case Stat.SlicingEfficiency: return "Slicing Efficiency";
+                case Stat.DiplomacyEfficiency: return "Diplomacy  Efficiency";
+                case Stat.ResearchEfficiency: return "Research Efficiency";
+                case Stat.TreasureHuntingEfficiency: return "TreasureHunting Efficiency";
+                case Stat.UnderworldTradingEfficiency: return "UnderworldTrading Efficiency";
+                case Stat.CraftingEfficiency: return "Crafting Efficiency";
+                case Stat.HarvestingEfficiency: return "Harvesting Efficiency";
+                case Stat.MissionEfficiency: return "Mission Efficiency";
+                case Stat.ArtificeCritical: return "Artifice Critical";
+                case Stat.ArmormechCritical: return "Armormech Critical";
+                case Stat.ArmstechCritical: return "Armstech Critical";
+                case Stat.BiochemCritical: return "Biochem Critical";
+                case Stat.CybertechCritical: return "Cybertech Critical";
+                case Stat.SynthweavingCritical: return "Synthweaving Critical";
+                case Stat.ArchaeologyCritical: return "Archaeology Critical";
+                case Stat.BioanalysisCritical: return "Bioanalysis Critical";
+                case Stat.ScavengingCritical: return "Scavenging Critical";
+                case Stat.SlicingCritical: return "Slicing Critical";
+                case Stat.DiplomacyCritical: return "Diplomacy  Critical";
+                case Stat.ResearchCritical: return "Research Critical";
+                case Stat.TreasureHuntingCritical: return "TreasureHunting Critical";
+                case Stat.UnderworldTradingCritical: return "UnderworldTrading Critical";
+                case Stat.CraftingCritical: return "Crafting Critical";
+                case Stat.HarvestingCritical: return "Harvesting Critical";
+                case Stat.MissionCritical: return "Mission Critical";
+                case Stat.TechHealingPower: return "Tech Healing Power";
+                case Stat.ForceHealingPower: return "Force Healing Power";
                 case Stat.TargetLowDamageModifier: return "debug_TargetLowDamageModifier";
                 case Stat.TargetBleedingDamageModifier: return "debug_TargetBleedingDamageModifier";
                 case Stat.TargetStunnedDamageModifier: return "debug_TargetStunnedDamageModifier";
@@ -430,22 +472,22 @@ namespace GomLib.Models
                 case Stat.ForceDefense: return "debug_ForceDefense";
                 case Stat.TechAccuracy: return "debug_TechAccuracy";
                 case Stat.TechDefense: return "debug_TechDefense";
-                case Stat.ShipArmor: return "debug_ShipArmor";
-                case Stat.ShipRateOfFire: return "debug_ShipRateOfFire";
-                case Stat.ShipBlasterDamage: return "debug_ShipBlasterDamage";
-                case Stat.ShipMissileCount: return "debug_ShipMissileCount";
-                case Stat.ShipMissileLevel: return "debug_ShipMissileLevel";
-                case Stat.ShipMissileRateOfFire: return "debug_ShipMissileRateOfFire";
-                case Stat.ShipTorpedoCount: return "debug_ShipTorpedoCount";
-                case Stat.ShipTorpedoLevel: return "debug_ShipTorpedoLevel";
-                case Stat.ShipTorpedoRateOfFire: return "debug_ShipTorpedoRateOfFire";
-                case Stat.ShipShieldStrength: return "debug_ShipShieldStrength";
-                case Stat.ShipShieldRegen: return "debug_ShipShieldRegen";
-                case Stat.ShipShieldCooldown: return "debug_ShipShieldCooldown";
-                case Stat.ShipType: return "debug_ShipType";
+                case Stat.ShipArmor: return "Ship Armor";
+                case Stat.ShipRateOfFire: return "Ship Blaster ROF";
+                case Stat.ShipBlasterDamage: return "Ship Blaster Damage";
+                case Stat.ShipMissileCount: return "Ship Missile Count";
+                case Stat.ShipMissileLevel: return "Ship Missile Level";
+                case Stat.ShipMissileRateOfFire: return "Ship Missile ROF";
+                case Stat.ShipTorpedoCount: return "Ship Torpedo Count";
+                case Stat.ShipTorpedoLevel: return "Ship Torpedo Level";
+                case Stat.ShipTorpedoRateOfFire: return "Ship Torpedo ROF";
+                case Stat.ShipShieldStrength: return "Ship Shield Strength";
+                case Stat.ShipShieldRegen: return "Ship Shield Regen";
+                case Stat.ShipShieldCooldown: return "Ship Shield Cooldown";
+                case Stat.ShipType: return "Ship Type";
                 case Stat.PushbackModifier: return "debug_PushbackModifier";
                 case Stat.TargetOnFireDamageModifier: return "debug_TargetOnFireDamageModifier";
-                case Stat.SurgeRating: return "debug_SurgeRating";
+                case Stat.SurgeRating: return "Surge Rating";
                 case Stat.AlacrityRating: return "Alacrity Rating";
                 case Stat.SpellCastReductionPercentage: return "debug_SpellCastReductionPercentage";
                 case Stat.SpellChannelReductionPercentage: return "debug_SpellChannelReductionPercentage";
@@ -467,6 +509,30 @@ namespace GomLib.Models
                 case Stat.Chrmovebonus: return "debug_Chrmovebonus";
                 default:
                     return "";
+            }
+        }
+        public static string ConvertToString(EnhancementType enhancement) //replace these with friendly names
+        {
+            switch (enhancement)
+            {
+                case EnhancementType.None: return "None";
+                case EnhancementType.Hilt: return "Hilt";
+                case EnhancementType.PowerCell: return "debug_PowerCell";
+                case EnhancementType.Harness: return "debug_Harness";
+                case EnhancementType.Overlay: return "Modification";
+                case EnhancementType.Underlay: return "debug_Underlay";
+                case EnhancementType.Support: return "Enhancement";
+                case EnhancementType.FocusLens: return "debug_FocusLens";
+                case EnhancementType.Trigger: return "debug_Trigger";
+                case EnhancementType.Barrel: return "Barrel";
+                case EnhancementType.PowerCrystal: return "debug_PowerCrystal";
+                case EnhancementType.Scope: return "debug_Scope";
+                case EnhancementType.Circuitry: return "debug_Circuitry";
+                case EnhancementType.EmitterMatrix: return "debug_EmitterMatrix";
+                case EnhancementType.ColorCrystal: return "Color Crystal";
+                case EnhancementType.ColorCartridge: return "debug_ColorCartridge";
+                case EnhancementType.Modulator: return "debug_Modulator";
+                default: return "Unknown";
             }
         }
     }

@@ -118,7 +118,7 @@ namespace GomLib.Models
                 default: break;
             }*/
 
-            switch (itm.ArmorSpec)
+            /*switch (itm.ArmorSpec)
             {
                 case ArmorSpec.Light: itm.SubCategory = ItemSubCategory.EquipmentLightArmor; break;
                 case ArmorSpec.Medium: itm.SubCategory = ItemSubCategory.EquipmentMediumArmor; break;
@@ -129,7 +129,7 @@ namespace GomLib.Models
                 case ArmorSpec.ShieldForce:
                     itm.SubCategory = ItemSubCategory.EquipmentShield; break;
                 default: break;
-            }
+            }*/
 
             if (itm.Slots.Contains(SlotType.EquipHumanEar)) { itm.SubCategory = ItemSubCategory.EquipmentEar; }
             if (itm.Slots.Contains(SlotType.EquipHumanImplant)) { itm.SubCategory = ItemSubCategory.EquipmentImplant; }

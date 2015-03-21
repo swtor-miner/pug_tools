@@ -20,11 +20,11 @@ namespace GomLib.Tables
             LoadData();
         }
 
-        private Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, float>>>> table_data;
+        private Dictionary<long, Dictionary<int, Dictionary<int, Dictionary<int, float>>>> table_data;
         string tablePath = "cbtShieldPerLevel";
         private bool disposed = false;
 
-        public Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, float>>>> TableData
+        public Dictionary<long, Dictionary<int, Dictionary<int, Dictionary<int, float>>>> TableData
         {
             get
             {
@@ -76,7 +76,7 @@ namespace GomLib.Tables
         {
             if (table_data == null) { LoadData(); }
 
-            return table_data[(int)spec][(int)quality][Level][(int)stat];
+            return table_data[spec.Id][(int)quality][Level][(int)stat];
         }
 
         private void LoadData()
@@ -84,15 +84,15 @@ namespace GomLib.Tables
             GomObject table = _dom.GetObject(tablePath);
             Dictionary<object, object> tableData = table.Data.Get<Dictionary<object,object>>("cbtShieldStatMap");
 
-            table_data = new Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, float>>>>();
+            table_data = new Dictionary<long, Dictionary<int, Dictionary<int, Dictionary<int, float>>>>();
             foreach (var kvp in tableData)
             {
                 //WeaponSpec wpnSpec = WeaponSpecExtensions.ToWeaponSpec((ulong)kvp.Key);
-                ArmorSpec spec = ArmorSpecExtensions.ToArmorSpec((long)kvp.Key);
+                //ArmorSpec spec = ArmorSpec.Load(_dom, (long)kvp.Key);
                 Dictionary<object, object> qualityToLevelMap = (Dictionary<object, object>)kvp.Value;
 
                 var container0 = new Dictionary<int, Dictionary<int, Dictionary<int, float>>>();
-                table_data[(int)spec] = container0;
+                table_data[(long)kvp.Key] = container0;
 
                 foreach (var quality_level in qualityToLevelMap)
                 {
