@@ -194,6 +194,8 @@ namespace tor_tools
                         break;
                     case "testHashes": t = new ThreadStart(testHashes);
                         break;
+                    case "Tooltips": t = new ThreadStart(getTooltips);
+                        break;
                         
                 }
                 if (t != null)

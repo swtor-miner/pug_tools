@@ -307,11 +307,11 @@ namespace GomLib.Models
                 }
                 XElement resmats = new XElement("ResearchReturnedMaterials");
                 if (Research1 != null)
-                    resmats.Add(RequiredMatToXElement(_dom, ResearchQuantity1, Research1.NodeId, verbose));
+                    resmats.Add(RequiredMatToXElement(_dom, ResearchQuantity1, Research1.ShortId, verbose));
                 if (Research2 != null)
-                    resmats.Add(RequiredMatToXElement(_dom, ResearchQuantity2, Research2.NodeId, verbose));
+                    resmats.Add(RequiredMatToXElement(_dom, ResearchQuantity2, Research2.ShortId, verbose));
                 if (Research3 != null)
-                    resmats.Add(RequiredMatToXElement(_dom, ResearchQuantity3, Research3.NodeId, verbose));
+                    resmats.Add(RequiredMatToXElement(_dom, ResearchQuantity3, Research3.ShortId, verbose));
                 schem.Add(resmats);
             }
             else

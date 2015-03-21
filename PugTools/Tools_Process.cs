@@ -1440,16 +1440,20 @@ namespace tor_tools
             if (prefix == "Removed") return; //not supported as of yet.
             int i = 0;
             short e = 0;
+            int f = 1;
             string n = Environment.NewLine;
             var txtFile = new StringBuilder();
-            string filename = String.Format("{0}{1}{2}", prefix, xmlRoot, ".sql");
+            string filename = String.Format("{0}{1}_", prefix, xmlRoot);
+            string frs = "{0}{1}.sql";
             WriteFile("", filename, false);
             var count = itmList.Count();
             
             SQLInitStore transInit;
+            string transQuery;
             if (initTable.TryGetValue(xmlRoot, out transInit)) //verify that there is an SQL Transaction Query for this object type
             {
-                WriteFile(transInit.InitBegin + n, filename, false);
+                //WriteFile(transInit.InitBegin + n, String.Format("{0}_{1}", filename, f), false);
+                transQuery = transInit.InitBegin + n;
                 if (sql)
                     sqlTransactionsInitialize(transInit.InitBegin, transInit.InitEnd); //initialize the SQL tranaction if direct SQL output is enabled.
             }
@@ -1465,11 +1469,13 @@ namespace tor_tools
                     joiner = "";
                 progressUpdate(i, count);
 
-                if (e > 10000)
+                if (e > 20000)
                 {
-                    WriteFile(txtFile.ToString(), filename, true);
+                    WriteFile(transQuery, String.Format(frs, filename, f), false);
+                    WriteFile(txtFile.ToString(), String.Format(frs, filename, f), true);
                     txtFile.Clear();
                     e = 0;
+                    f++;
                 }
 
                 addtolist2(String.Format("{0}: {1}", prefix, GetObjectText(itm)));
@@ -1483,13 +1489,17 @@ namespace tor_tools
             }
             txtFile.Append(transInit.InitEnd);
             addtolist(String.Format("The {0} sql file has been generated; there were {1} {0}", prefix, i));
-            WriteFile(txtFile.ToString(), filename, true);
+            WriteFile(transQuery, String.Format(frs, filename, f), false);
+            WriteFile(txtFile.ToString(), String.Format(frs, filename, f), true);
             initTable[xmlRoot].OutputCreationSQL(); //output the creation sql file for this table
             sqlTransactionsFlush(); //flush the transaction queue
             DeleteEmptyFile(filename);
             itmList = null;
             GC.Collect();
-            CreateGzip(filename); //compresses output for upload
+            for (int j = 1; j <= f; j++)
+            {
+                CreateGzip(String.Format(frs, filename, j)); //compresses output for upload
+            }
             ClearProgress();
         }
 

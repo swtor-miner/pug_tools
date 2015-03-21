@@ -156,6 +156,7 @@
     <Compile Include="Models\AchievementCategory.cs" />
     <Compile Include="Models\Appearances.cs" />
     <Compile Include="Models\Conquest.cs" />
+    <Compile Include="Models\Tooltip.cs" />
     <Compile Include="Models\Discipline.cs" />
     <Compile Include="Models\Stronghold.cs" />
     <Compile Include="Models\Decoration.cs" />

@@ -81,7 +81,7 @@ namespace GomLib.ModelLoader
             if (questRewardRefs.TryGetValue(gom.Id, out qRList))
                 itm.rewardedForQuests = qRList.ToList();
 
-            itm.NodeId = gom.Id;
+            itm.ShortId = gom.Id;
             itm.Fqn = gom.Name;
             itm._dom = _dom;
             itm.References = obj.References;
@@ -218,7 +218,8 @@ namespace GomLib.ModelLoader
                 itm.Name = _dom.stringTable.TryGetString(itm.Fqn, nameLookupData);
             }
 
-            itm.Id = (ulong)(itm.NameId >> 32);
+            itm.ShortId = (ulong)(itm.NameId >> 32);
+            itm.Id = gom.Id;
 
             itm.Quality = Models.ItemQualityExtensions.ToItemQuality((ScriptEnum)gom.Data.ValueOrDefault<ScriptEnum>("itmBaseQuality", null));
             //if (itm.EnhancementType != EnhancementType.None)

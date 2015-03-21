@@ -79,7 +79,8 @@ namespace tor_tools
                 "Advanced Classes",
                 "FindNewMtxImages",
                 "AchCategories",
-                "testHashes"
+                "testHashes",
+                "Tooltips"
             });
             comboBoxExtractTypes.SelectedIndex = 0;
             cbxExtractFormat.SelectedIndex = 0;

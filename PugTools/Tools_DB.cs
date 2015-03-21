@@ -61,6 +61,7 @@ namespace tor_tools
                 {"AchCategories", new SQLInitStore("achcategories", new GomLib.Models.AchievementCategory())},
                 {"Achievements", new SQLInitStore("achievement", new GomLib.Models.Achievement())},
                 {"Items", new SQLInitStore("item", new GomLib.Models.Item())},
+                {"Tooltip", new SQLInitStore("tooltip", new GomLib.Models.Tooltip())},
             };
 
             #endregion
