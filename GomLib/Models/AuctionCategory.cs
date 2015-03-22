@@ -5,7 +5,7 @@ using System.Text;
 
 namespace GomLib.Models
 {
-    public enum AuctionCategory
+    /*public enum AuctionCategory
     {
         None = 0,
         ArmorLight = 1,
@@ -56,5 +56,214 @@ namespace GomLib.Models
                 default: throw new InvalidOperationException("Invalid AuctionCategory: " + str);
             }
         }
+    }*/
+
+    public class AuctionCategory
+    {
+        public AuctionCategory(DataObjectModel dom, int id)
+        {
+            _dom = dom;
+            Id = id;
+        }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public DataObjectModel _dom { get; set; }
+
+        public int Id { get; set; }
+        public string Name { get; set; } //str.gui.tooltips 836131348283392
+        public long NameId { get; set; }
+        public Dictionary<string, string> LocalizedName { get; set; }
+        public Dictionary<int, AuctionSubCategory> SubCategories { get; set; }
+
+        public static Dictionary<long, AuctionCategory> AuctionCategoryList;
+        public static void Flush()
+        {
+            AuctionCategoryList = null;
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = Id.GetHashCode();
+            hash ^= NameId.GetHashCode();
+            if (Name != null) hash ^= Name.GetHashCode();
+            if (LocalizedName != null) foreach (var x in LocalizedName) { hash ^= x.GetHashCode(); }
+            if (SubCategories != null) foreach (var x in SubCategories) { hash ^= x.GetHashCode(); }
+            return hash;
+        }
+
+        public static void Load(DataObjectModel dom)
+        {
+            if (AuctionCategoryList == null)
+            {
+                GomObject gom = dom.GetObject("ahItemCategoriesPrototype");
+                Dictionary<object, object> ahItemCategoriesIndexToCategoryMap = gom.Data.Get<Dictionary<object, object>>("ahItemCategoriesIndexToCategoryMap");
+                Dictionary<object, object> ahItemCategoriesSIDToIndexMap = gom.Data.Get<Dictionary<object, object>>("ahItemCategoriesSIDToIndexMap");
+                gom.Unload();
+                AuctionCategoryList = new Dictionary<long, AuctionCategory>();
+                foreach (var kvp in ahItemCategoriesIndexToCategoryMap)
+                {
+                    AuctionCategory itm = new AuctionCategory(dom, Convert.ToInt32(kvp.Key));
+                    Load(itm, (GomObjectData)kvp.Value);
+                    AuctionCategoryList.Add(Convert.ToInt32(kvp.Key), itm);
+                }
+            }
+        }
+        public static AuctionCategory Load(DataObjectModel dom, int id)
+        {
+            if (dom == null || id == 0) return null;
+            Load(dom);
+            AuctionCategory ret;
+            AuctionCategoryList.TryGetValue(id, out ret);
+
+            return ret;
+        }
+        internal static AuctionCategory Load(AuctionCategory itm, GomObjectData gom)
+        {
+            itm.NameId = gom.ValueOrDefault<long>("ahItemCategoryLocId", 0);
+            itm.LocalizedName = itm._dom.stringTable.TryGetLocalizedStrings("str.gui.auctionhouse", itm.NameId);
+            if (itm.NameId == 0)
+                itm.Name = "Root";
+            else
+                itm.Name = itm._dom.stringTable.TryGetString("str.gui.auctionhouse", itm.NameId);
+
+            List<object> subCats = gom.ValueOrDefault<List<object>>("ahItemCategorySubCategories", new List<object>());
+
+            itm.SubCategories = new Dictionary<int, AuctionSubCategory>();
+            foreach (var obj in subCats)
+            {
+                AuctionSubCategory.Load(itm._dom);
+                AuctionSubCategory sub;
+                if (AuctionSubCategory.AuctionSubCategorySIdList.TryGetValue(Convert.ToInt64(obj), out sub))
+                    itm.SubCategories.Add(sub.Id, sub);
+            }
+            return itm;
+        }
+    }
+
+    public class AuctionSubCategory
+    {
+        public AuctionSubCategory(DataObjectModel dom, int id, long sId)
+        {
+            _dom = dom;
+            Id = id;
+            SId = sId;
+        }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public DataObjectModel _dom { get; set; }
+
+        public int Id { get; set; }
+        public long SId { get; set; }
+        public string Name { get; set; } //str.gui.tooltips 836131348283392
+        public long NameId { get; set; }
+        public Dictionary<string, string> LocalizedName { get; set; }
+        public List<AuctionItemSlot> SlotCategories { get; set; }
+
+        public static Dictionary<int, AuctionSubCategory> AuctionSubCategoryList;
+        public static Dictionary<long, AuctionSubCategory> AuctionSubCategorySIdList;
+        public static void Flush()
+        {
+            AuctionSubCategoryList = null;
+            AuctionSubCategorySIdList = null;
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = Id.GetHashCode();
+            hash ^= NameId.GetHashCode();
+            if (Name != null) hash ^= Name.GetHashCode();
+            if (LocalizedName != null) foreach (var x in LocalizedName) { hash ^= x.GetHashCode(); }
+            if (SlotCategories != null) foreach (var x in SlotCategories) { hash ^= x.GetHashCode(); }
+            return hash;
+        }
+
+        public static void Load(DataObjectModel dom)
+        {
+            if (AuctionSubCategoryList == null)
+            {
+                GomObject gom = dom.GetObject("ahItemSubCategoriesPrototype");
+                Dictionary<object, object> ahItemSubCategoriesIndexToLocIdMap = gom.Data.Get<Dictionary<object, object>>("ahItemSubCategoriesIndexToLocIdMap");
+                Dictionary<object, object> ahItemSubCategoriesSIDToIndexMap = gom.Data.Get<Dictionary<object, object>>("ahItemSubCategoriesSIDToIndexMap");
+                gom.Unload();
+                AuctionSubCategoryList = new Dictionary<int, AuctionSubCategory>();
+                AuctionSubCategorySIdList = new Dictionary<long, AuctionSubCategory>();
+                foreach (var kvp in ahItemSubCategoriesSIDToIndexMap)
+                {
+                    AuctionSubCategory itm = new AuctionSubCategory(dom, Convert.ToInt32(kvp.Value), Convert.ToInt64(kvp.Key));
+                    Load(itm, (long)(ahItemSubCategoriesIndexToLocIdMap[kvp.Value]));
+                    AuctionSubCategorySIdList.Add(Convert.ToInt64(kvp.Key), itm);
+                    AuctionSubCategoryList.Add(itm.Id, itm);
+                }
+            }
+        }
+        public static AuctionSubCategory Load(DataObjectModel dom, int id)
+        {
+            if (dom == null || id == 0) return null;
+            Load(dom);
+            AuctionSubCategory ret;
+            AuctionSubCategoryList.TryGetValue(id, out ret);
+
+            return ret;
+        }
+        internal static AuctionSubCategory Load(AuctionSubCategory itm, long nameId)
+        {
+            itm.NameId = nameId;
+            itm.LocalizedName = itm._dom.stringTable.TryGetLocalizedStrings("str.gui.auctionhouse", itm.NameId);
+            if (itm.NameId == 0)
+                itm.Name = "Any";
+            else
+                itm.Name = itm._dom.stringTable.TryGetString("str.gui.auctionhouse", itm.NameId);
+
+            GomObject gom = itm._dom.GetObject("ahItemSlotCategoriesPrototype");
+            Dictionary<object, object> ahItemSlotCategories = gom.Data.Get<Dictionary<object, object>>("ahItemSlotCategories");
+            Dictionary<object, object> ahItemSlotConSlotNameIds = gom.Data.Get<Dictionary<object, object>>("ahItemSlotConSlotNameIds");
+            itm.SlotCategories = new List<AuctionItemSlot>();
+            if (ahItemSlotCategories.ContainsKey(itm.Id))
+            {
+                foreach (ScriptEnum obj in (List<ScriptEnum>)ahItemSlotCategories[itm.SId])
+                {
+                    AuctionItemSlot sub;
+                    if (!AuctionItemSlot.AuctionItemSlotList.TryGetValue(obj.ToString(), out sub))
+                        sub = new AuctionItemSlot(itm._dom, obj.ToString(), (long)(ahItemSlotConSlotNameIds[obj.ToString()]));
+                    itm.SlotCategories.Add(sub);
+                }
+            }
+            return itm;
+        }
+    }
+
+    public class AuctionItemSlot
+    {
+        public AuctionItemSlot(DataObjectModel dom, string id, long nameId)
+        {
+            _dom = dom;
+            Id = id;
+            NameId = nameId;
+            LocalizedName = _dom.stringTable.TryGetLocalizedStrings("str.gui.auctionhouse", NameId);
+            Name = _dom.stringTable.TryGetString("str.gui.auctionhouse", NameId);
+            if (!AuctionItemSlotList.ContainsKey(id))
+                AuctionItemSlotList.Add(id, this);
+        }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public DataObjectModel _dom { get; set; }
+
+        public string Id { get; set; }
+        public string Name { get; set; } //str.gui.tooltips 836131348283392
+        public long NameId { get; set; }
+        public Dictionary<string, string> LocalizedName { get; set; }
+
+        public static Dictionary<string, AuctionItemSlot> AuctionItemSlotList = new Dictionary<string, AuctionItemSlot>();
+
     }
 }

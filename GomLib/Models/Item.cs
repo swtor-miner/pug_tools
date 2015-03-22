@@ -67,7 +67,12 @@ namespace GomLib.Models
         public EnhancementType EnhancementType { get; set; }
         public GiftType GiftType { get; set; }
         public GiftRank GiftRank { get; set; }
-        // public AuctionCategory AuctionCategory { get; set; }
+        public int AuctionCategoryId { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        public AuctionCategory AuctionCategory { get; set; }
+        public int AuctionSubCategoryId { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        public AuctionSubCategory AuctionSubCategory { get; set; }
         public AppearanceColor AppearanceColor { get; set; }
         public ulong EquipAbilityId { get; set; }
 
@@ -189,7 +194,7 @@ namespace GomLib.Models
             if (LocalizedName != null) foreach (var x in LocalizedName) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
             if (LocalizedDescription != null) foreach (var x in LocalizedDescription) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
             hash ^= AppearanceColor.GetHashCode();
-            hash ^= ArmorSpec.GetHashCode();
+            if (ArmorSpec != null) hash ^= ArmorSpec.GetHashCode();
             hash ^= Binding.GetHashCode();
             hash ^= Category.GetHashCode();
             hash ^= CombinedRating.GetHashCode();
@@ -202,6 +207,8 @@ namespace GomLib.Models
             hash ^= EnhancementType.GetHashCode();
             hash ^= EquipAbility.GetHashCode();
             hash ^= GiftRank.GetHashCode();
+            hash ^= AuctionCategoryId.GetHashCode();
+            hash ^= AuctionSubCategoryId.GetHashCode();
             hash ^= GiftType.GetHashCode();
             hash ^= Icon.GetHashCode();
             hash ^= IsModdable.GetHashCode();
@@ -222,7 +229,7 @@ namespace GomLib.Models
             hash ^= RequiresAlignment.GetHashCode();
             hash ^= RequiresSocial.GetHashCode();
             hash ^= SchematicId.GetHashCode();
-            hash ^= ShieldSpec.GetHashCode();
+            if (ShieldSpec != null) hash ^= ShieldSpec.GetHashCode();
             hash ^= SubCategory.GetHashCode();
             hash ^= TypeBitSet.GetHashCode();
             hash ^= UniqueLimit.GetHashCode();
@@ -307,6 +314,10 @@ namespace GomLib.Models
             if (this.Fqn != itm.Fqn)
                 return false;
             if (this.GiftRank != itm.GiftRank)
+                return false;
+            if (this.AuctionCategoryId != itm.AuctionCategoryId)
+                return false;
+            if (this.AuctionSubCategoryId != itm.AuctionSubCategoryId)
                 return false;
             if (this.GiftType != itm.GiftType)
                 return false;
@@ -495,7 +506,7 @@ namespace GomLib.Models
                 return new List<SQLProperty>
                     {                //(SQL Column Name, C# Property Name, SQL Column type statement, isUnique/PrimaryKey, Serialize value to json)
                         new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("NodeId", "NodeId", "bigint(20) unsigned NOT NULL", true),
+                        new SQLProperty("NodeId", "Id", "bigint(20) unsigned NOT NULL", true),
                         new SQLProperty("NameId", "NameId", "bigint(20) NOT NULL"),
                         new SQLProperty("Fqn", "Fqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("ItemLevel", "ItemLevel", "int(11) NOT NULL"),
@@ -554,7 +565,11 @@ namespace GomLib.Models
                         new SQLProperty("WeaponAppSpec", "WeaponAppSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Model", "Model", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("ImperialVOModulation", "ImperialVOModulation", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("RepublicVOModulation", "RepublicVOModulation", "varchar(255) COLLATE utf8_unicode_ci NOT NULL")//,
+                        new SQLProperty("RepublicVOModulation", "RepublicVOModulation", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("AuctionCategoryId", "AuctionCategoryId", "int(11) NOT NULL"),
+                        new SQLProperty("AuctionCategory", "AuctionCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"), //in for testing
+                        new SQLProperty("AuctionSubCategoryId", "AuctionSubCategoryId", "int(11) NOT NULL"),
+                        new SQLProperty("AuctionSubCategory", "AuctionSubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL")//,
                         //new SQLProperty("Tooltip", "Tooltip", "varchar(1000) COLLATE utf8_unicode_ci NOT NULL")
                     };
             }

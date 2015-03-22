@@ -190,7 +190,6 @@
     <Compile Include="Models\ArmorSpec.cs" />
     <Compile Include="Models\AuctionCategory.cs" />
     <Compile Include="Models\AuctionHouseNetwork.cs" />
-    <Compile Include="Models\AuctionSubCategory.cs" />
     <Compile Include="Models\ClassSpec.cs" />
     <Compile Include="Models\Codex.cs" />
     <Compile Include="Models\Companion.cs" />

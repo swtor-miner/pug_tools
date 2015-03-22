@@ -8118,4 +8118,9 @@
 
   <!-- Npc npc.-->
   <gom_type Id="4611686061871131192" name="npcTrainerPackages" desc="" />
+  
+  <!-- ahItemSlotCategoriesPrototype -->
+  <gom_type Id="4611686284095450005" name="ahItemSlotSIdToConSlots" desc="" />
+  <gom_type Id="4611686284095450006" name="ahItemSlotConSlotNameIds" desc="" />
+  <gom_type Id="4611686284095450007" name="ahItemSlotCategories" desc="" />
 </gom_types>

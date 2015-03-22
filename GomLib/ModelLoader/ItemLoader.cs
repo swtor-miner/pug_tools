@@ -253,6 +253,10 @@ namespace GomLib.ModelLoader
             }
 
             itm.RequiredGender = GenderExtensions.ToGender((ScriptEnum)gom.Data.ValueOrDefault<ScriptEnum>("itmGenderRequired", null));
+            itm.AuctionCategoryId = (int)gom.Data.ValueOrDefault<long>("itmGtnMaincategory", 0);
+            itm.AuctionCategory = AuctionCategory.Load(_dom, itm.AuctionCategoryId);
+            itm.AuctionSubCategoryId = (int)gom.Data.ValueOrDefault<long>("itmGtnSubcategory", 0);
+            itm.AuctionSubCategory = AuctionSubCategory.Load(_dom, (int)itm.AuctionSubCategoryId);
             itm.RequiredLevel = (int)gom.Data.ValueOrDefault<long>("itmMinimumLevel", 0);
             itm.RequiredProfession = Models.ProfessionExtensions.ToProfession((ScriptEnum)gom.Data.ValueOrDefault<ScriptEnum>("prfProfessionRequired", null));
             itm.RequiredProfessionLevel = (int)gom.Data.ValueOrDefault<long>("prfProfessionLevelRequired", 0);
