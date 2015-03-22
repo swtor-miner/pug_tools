@@ -40,13 +40,16 @@ namespace GomLib.ModelLoader
             }
 
             IDictionary<string, object> objAsDict = obj.Dictionary;
-            if (objAsDict.ContainsKey("mapAreasDataDisplayNameId") && objAsDict.ContainsKey("mapAreasDataDefaultZoneName"))
-            {
+            //if (objAsDict.ContainsKey("mapAreasDataDisplayNameId") && objAsDict.ContainsKey("mapAreasDataDefaultZoneName"))
+            //{
                 area.DisplayNameId = obj.ValueOrDefault<long>("mapAreasDataDisplayNameId", 0);
-                area.Id = (int)(area.DisplayNameId & 0x7FFFFFFF);
-                area.CommentableId = Guid.NewGuid();
+                //area.Id = (int)(area.DisplayNameId & 0x7FFFFFFF);
+                //area.CommentableId = Guid.NewGuid();
                 area.Name = strTable.GetText(area.DisplayNameId, "MapArea." + area.DisplayNameId);
                 area.AreaId = obj.ValueOrDefault<ulong>("mapAreasDataAreaId", 0);
+                area.Id = (long)(area.AreaId >> 32);
+                if (area.Id == 0)
+                    area.Id = (long)area.AreaId;
                 area.ZoneName = obj.ValueOrDefault<string>("mapAreasDataDefaultZoneName", null);
 
                 string mapDataPath = String.Format("world.areas.{0}.mapdata", area.AreaId);
@@ -58,14 +61,14 @@ namespace GomLib.ModelLoader
                 else
                 {
                     Console.WriteLine("No MapData for " + area.Name);
-                    area.Id = 0;
+                    //area.Id = 0;
                 }
                 area.Assets = LoadAssets(area.AreaId);
-            }
+            /*}
             else
             {
                 area.Id = 0;
-            }
+            }*/
 
             return area;
         }

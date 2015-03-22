@@ -217,6 +217,10 @@ namespace GomLib.Models
                     GomLib.Models.AchievementCategory ach = new GomLib.Models.AchievementCategory();
                     dom.achievementCategoryLoader.Load(ach, (long)id, (GomObjectData)gomObjectData);
                     return ach;
+                case "Areas":
+                    GomLib.Models.Area ara = new GomLib.Models.Area();
+                    dom.areaLoader.Load(ara, (GomObjectData)gomObjectData);
+                    return ara;
                 default:
                     throw new IndexOutOfRangeException();
             }

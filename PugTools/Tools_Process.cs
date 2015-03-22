@@ -1261,7 +1261,12 @@ namespace tor_tools
                 case "GomLib.Models.MtxStorefrontEntry": return ((GomLib.Models.PseudoGameObject)item).ToXElement(!overrideVerbose);
                 case "GomLib.Models.ConquestObjective": return ((GomLib.Models.ConquestObjective)item).ToXElement(!overrideVerbose);
                 case "GomLib.Models.ConquestData": return ((GomLib.Models.ConquestData)item).ToXElement(!overrideVerbose);
-                default: break;
+                default:
+                    if (item is GomLib.Models.GameObject)
+                        return ((GomLib.Models.GameObject)item).ToXElement(!overrideVerbose);
+                    else if (item is GomLib.Models.PseudoGameObject)
+                        return ((GomLib.Models.PseudoGameObject)item).ToXElement(!overrideVerbose);
+                    break;
             }
             return null;
         }

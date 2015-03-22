@@ -144,7 +144,7 @@ namespace tor_tools
                         break;
                     case "Achievements": t = () => getObjects("ach.", "Achievements");
                         break;
-                    case "Areas": t = new ThreadStart(getAreas);
+                    case "Areas": t = () => getPrototypeObjects("Areas", "mapAreasDataProto", "mapAreasDataObjectList"); //new ThreadStart(getAreas);
                         break;
                     case "Cartel Market": t = () => getPrototypeObjects("MtxStoreFronts", "mtxStorefrontInfoPrototype", "mtxStorefrontData"); //new ThreadStart(getMtx);
                         break;
