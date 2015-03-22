@@ -25,6 +25,8 @@ namespace tor_tools
 {
     public partial class Tools
     {
+        #region deprecated
+        /* 
         public void getFilenames()
         {
             Clearlist2();
@@ -179,11 +181,11 @@ namespace tor_tools
             }
             catch (Exception e)
             {
-                /* do something here */
+                // do something here 
                 System.Windows.MessageBox.Show(String.Format("An error occured while loading data. ({0})", e.HResult));
             }
             EnableButtons();
-        }
+        } 
 
         private HashSet<string> AreasFromPrototypes(Dictionary<object, object> areaList)
         {
@@ -306,7 +308,7 @@ namespace tor_tools
                             if (comp.Model != "") ParseGR2(gr2List, comp.Model);
                         }
                     }
-                }*/
+                }///
 
                 GomObject dynamicCollectionProto = currentDom.GetObject(ship.EppDynamicCollectionId);
                 if (dynamicCollectionProto != null)
@@ -527,10 +529,6 @@ namespace tor_tools
                 List<string> materialNames = new List<string>();
                 using (var fileStream = file.OpenCopyInMemory())
                 { ReadGR2(fileStream, meshNames, materialNames); }
-                /*foreach (string meshName in meshNames)
-                {
-                    gr2List.Add(meshName + n);
-                }*/
 
                 foreach (string matName in materialNames)
                 {
@@ -768,12 +766,6 @@ namespace tor_tools
                                 if (fileList.Add("/resources/" + scrubbedName + ".tiny.dds")) addtolist2(scrubbedName);
                             }
                         }
-                        /*else //catch types for analysis. Caught the following types: bool, uvscale, float, rgba, vector4
-                        {
-                            System.IO.StreamWriter file3 = new System.IO.StreamWriter("c:/swtor/types.txt", true);
-                            file3.WriteLine(type);
-                            file3.Close();
-                        }*/
                     }
                     var fxSpecList = childnode.Elements("fxSpecString");
                     if (childnode.Name == "AppearanceAction" && fxSpecList.Count() > 0) //
@@ -796,7 +788,7 @@ namespace tor_tools
                             string scrubbedName = name.Replace("////", "//").Replace(" #", "").Replace("#", "").Replace("+", "/").Replace(" ", "_");
                             fileList.Add(scrubbedName);
                         }
-                    }*/
+                    }///
                     else
                     {
                         NodeChecker(fileList, childnode);
@@ -967,6 +959,7 @@ namespace tor_tools
             }
             return raw;
         }
+        #endregion*/
         #endregion
     }
 }

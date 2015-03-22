@@ -8,7 +8,6 @@ namespace tor_tools
     {
         public static string AssetsPath = ".";
         public static string ExtractPath = ".";
-        public static string PrevXMLPath = ".";
         public static string PrevAssetsPath = ".";
         public static string ExtractAssetsPath = ".";
         public static bool CrossLinkDOM = false;
@@ -39,18 +38,6 @@ namespace tor_tools
                     ExtractPath = str;
                 }
             }
-            str = Config.configFile.AppSettings.Settings["PrevXMLPath"].Value;
-            if (str != null)
-            {
-                if (!str.EndsWith("\\"))
-                {
-                    PrevXMLPath = str + "\\";
-                }
-                else
-                {
-                    PrevXMLPath = str;
-                }
-            }
             str = Config.configFile.AppSettings.Settings["PrevAssetsPath"].Value;
             if (str != null)
                 PrevAssetsPath = str;
@@ -78,9 +65,6 @@ namespace tor_tools
             str = Config.ExtractPath;
             if (str != null)
                 Config.configFile.AppSettings.Settings["ExtractPath"].Value = str;
-            str = Config.PrevXMLPath;
-            if (str != null)
-                Config.configFile.AppSettings.Settings["PrevXMLPath"].Value = str;
             str = Config.PrevAssetsPath;
             if (str != null)
                 Config.configFile.AppSettings.Settings["PrevAssetsPath"].Value = str;

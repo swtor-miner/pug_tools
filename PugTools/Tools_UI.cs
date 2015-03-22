@@ -65,21 +65,6 @@ namespace tor_tools
             }
         }
 
-        private void buttonPreviousBuildFolder_Click(object sender, EventArgs e)
-        {
-            FolderBrowserDialog fbd = new FolderBrowserDialog();
-            fbd.SelectedPath = textBoxPrevXMLFolder.Text;
-            DialogResult result = fbd.ShowDialog();
-            if (fbd.SelectedPath.EndsWith("\\"))
-            {
-                textBoxPrevXMLFolder.Text = fbd.SelectedPath;
-            }
-            else
-            {
-                textBoxPrevXMLFolder.Text = fbd.SelectedPath + "\\";
-            }
-        }
-
         private void buttonFindPrevAssets_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
@@ -156,8 +141,8 @@ namespace tor_tools
                         break;
                     case "Conversations": t = () => getObjects("cnv.", "Conversations");
                         break;
-                    case "Filenames": t = new ThreadStart(getFilenames);
-                        break;
+                    //case "Filenames": t = new ThreadStart(getFilenames);
+                        //break;
                     case "Icons": t = new ThreadStart(getIcons);
                         break;
                     case "Items": t = () => getObjects("itm.", "Items");
@@ -356,12 +341,6 @@ namespace tor_tools
             Config.Save();
         }
 
-        private void textBoxPrevXMLFolder_TextChanged(object sender, EventArgs e)
-        {
-            Config.PrevXMLPath = textBoxPrevXMLFolder.Text;
-            Config.Save();
-        }
-
         private async void textBoxPrevAssetsFolder_TextChanged(object sender, EventArgs e)
         {
             string path = textBoxPrevAssetsFolder.Text;
@@ -409,11 +388,9 @@ namespace tor_tools
             {
                 textBoxAssetsFolder.Enabled = false;
                 textBoxExtractFolder.Enabled = false;
-                textBoxPrevXMLFolder.Enabled = false;
                 textBoxPrevAssetsFolder.Enabled = false;
                 buttonSelectExtractFolder.Enabled = false;
                 buttonFindAssets.Enabled = false;
-                buttonPreviousBuildFolder.Enabled = false;
                 buttonFindPrevAssets.Enabled = false;
                 gbxFormat.Enabled = false;
                 gbxDB.Enabled = false;
@@ -436,11 +413,9 @@ namespace tor_tools
             {
                 textBoxAssetsFolder.Enabled = true;
                 textBoxExtractFolder.Enabled = true;
-                textBoxPrevXMLFolder.Enabled = true;
                 textBoxPrevAssetsFolder.Enabled = true;
                 buttonSelectExtractFolder.Enabled = true;
                 buttonFindAssets.Enabled = true;
-                buttonPreviousBuildFolder.Enabled = true;
                 buttonFindPrevAssets.Enabled = true;
                 gbxFormat.Enabled = true;
                 gbxDB.Enabled = true;

@@ -872,7 +872,8 @@ namespace tor_tools
         #region XML functions
         #region Xml Comparison Functions
 
-        private XElement FindChangedEntries(XElement items, string containerName, string subContainerName)
+        #region Deprecated
+        /*private XElement FindChangedEntries(XElement items, string containerName, string subContainerName)
         {
             string filename = prefix + containerName + ".xml";
             WriteFile(new XDocument(items), containerName + ".xml", false); //output new data while we have it.
@@ -884,7 +885,8 @@ namespace tor_tools
             XDocument previousPatch = XDocument.Load(textBoxPrevXMLFolder.Text + filename);
 
             return FindChangedEntries(items, previousPatch, containerName, subContainerName);
-        }
+        }*/
+        #endregion
 
         private XElement FindChangedEntries(XElement items, XDocument previousPatch, string containerName, string subContainerName)
         {

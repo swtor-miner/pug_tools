@@ -45,24 +45,21 @@
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.searchButton = new System.Windows.Forms.Button();
             this.gbxFormat = new System.Windows.Forms.GroupBox();
+            this.versionTexBox = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.chkBuildCompare = new System.Windows.Forms.CheckBox();
             this.chkRemoveElements = new System.Windows.Forms.CheckBox();
             this.cbxExtractFormat = new System.Windows.Forms.ComboBox();
             this.chkVerbose = new System.Windows.Forms.CheckBox();
             this.gbxDB = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.versionTexBox = new System.Windows.Forms.TextBox();
             this.extractButton = new System.Windows.Forms.Button();
             this.gbxFQN = new System.Windows.Forms.GroupBox();
             this.label7 = new System.Windows.Forms.Label();
             this.textBoxExtractFolder = new System.Windows.Forms.TextBox();
             this.labelExtractFolder = new System.Windows.Forms.Label();
             this.usePTSAssets = new System.Windows.Forms.CheckBox();
-            this.labelPrevBuildFolder = new System.Windows.Forms.Label();
-            this.textBoxPrevXMLFolder = new System.Windows.Forms.TextBox();
             this.buttonFindAssets = new System.Windows.Forms.Button();
             this.buttonSelectExtractFolder = new System.Windows.Forms.Button();
-            this.buttonPreviousBuildFolder = new System.Windows.Forms.Button();
             this.buttonFindPrevAssets = new System.Windows.Forms.Button();
             this.labelPrevAssetsFolder = new System.Windows.Forms.Label();
             this.textBoxPrevAssetsFolder = new System.Windows.Forms.TextBox();
@@ -238,6 +235,23 @@
             this.gbxFormat.TabStop = false;
             this.gbxFormat.Text = "Extract Format";
             // 
+            // versionTexBox
+            // 
+            this.versionTexBox.Location = new System.Drawing.Point(512, 15);
+            this.versionTexBox.Name = "versionTexBox";
+            this.versionTexBox.Size = new System.Drawing.Size(62, 20);
+            this.versionTexBox.TabIndex = 12;
+            this.versionTexBox.TextChanged += new System.EventHandler(this.textBox1_TextChanged_1);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(462, 18);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(45, 13);
+            this.label1.TabIndex = 13;
+            this.label1.Text = "Version.";
+            // 
             // chkBuildCompare
             // 
             this.chkBuildCompare.AutoSize = true;
@@ -312,23 +326,6 @@
             this.gbxDB.TabStop = false;
             this.gbxDB.Text = "Database Options";
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(462, 18);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(45, 13);
-            this.label1.TabIndex = 13;
-            this.label1.Text = "Version.";
-            // 
-            // versionTexBox
-            // 
-            this.versionTexBox.Location = new System.Drawing.Point(512, 15);
-            this.versionTexBox.Name = "versionTexBox";
-            this.versionTexBox.Size = new System.Drawing.Size(62, 20);
-            this.versionTexBox.TabIndex = 12;
-            this.versionTexBox.TextChanged += new System.EventHandler(this.textBox1_TextChanged_1);
-            // 
             // extractButton
             // 
             this.extractButton.Location = new System.Drawing.Point(160, 45);
@@ -395,23 +392,6 @@
             this.usePTSAssets.UseVisualStyleBackColor = true;
             this.usePTSAssets.CheckedChanged += new System.EventHandler(this.usePTSAssets_CheckedChanged);
             // 
-            // labelPrevBuildFolder
-            // 
-            this.labelPrevBuildFolder.AutoSize = true;
-            this.labelPrevBuildFolder.Location = new System.Drawing.Point(6, 91);
-            this.labelPrevBuildFolder.Name = "labelPrevBuildFolder";
-            this.labelPrevBuildFolder.Size = new System.Drawing.Size(86, 13);
-            this.labelPrevBuildFolder.TabIndex = 38;
-            this.labelPrevBuildFolder.Text = "Prev XML Folder";
-            // 
-            // textBoxPrevXMLFolder
-            // 
-            this.textBoxPrevXMLFolder.Location = new System.Drawing.Point(99, 88);
-            this.textBoxPrevXMLFolder.Name = "textBoxPrevXMLFolder";
-            this.textBoxPrevXMLFolder.Size = new System.Drawing.Size(242, 20);
-            this.textBoxPrevXMLFolder.TabIndex = 8;
-            this.textBoxPrevXMLFolder.TextChanged += new System.EventHandler(this.textBoxPrevXMLFolder_TextChanged);
-            // 
             // buttonFindAssets
             // 
             this.buttonFindAssets.Location = new System.Drawing.Point(346, 11);
@@ -431,16 +411,6 @@
             this.buttonSelectExtractFolder.Text = "Select";
             this.buttonSelectExtractFolder.UseVisualStyleBackColor = true;
             this.buttonSelectExtractFolder.Click += new System.EventHandler(this.buttonSelectExtractFolder_Click);
-            // 
-            // buttonPreviousBuildFolder
-            // 
-            this.buttonPreviousBuildFolder.Location = new System.Drawing.Point(347, 86);
-            this.buttonPreviousBuildFolder.Name = "buttonPreviousBuildFolder";
-            this.buttonPreviousBuildFolder.Size = new System.Drawing.Size(62, 23);
-            this.buttonPreviousBuildFolder.TabIndex = 9;
-            this.buttonPreviousBuildFolder.Text = "Select";
-            this.buttonPreviousBuildFolder.UseVisualStyleBackColor = true;
-            this.buttonPreviousBuildFolder.Click += new System.EventHandler(this.buttonPreviousBuildFolder_Click);
             // 
             // buttonFindPrevAssets
             // 
@@ -514,15 +484,12 @@
             this.gbxPath.Controls.Add(this.buttonFindPrevAssets);
             this.gbxPath.Controls.Add(this.labelExtractFolder);
             this.gbxPath.Controls.Add(this.labelPrevAssetsFolder);
-            this.gbxPath.Controls.Add(this.textBoxPrevXMLFolder);
             this.gbxPath.Controls.Add(this.textBoxPrevAssetsFolder);
-            this.gbxPath.Controls.Add(this.labelPrevBuildFolder);
-            this.gbxPath.Controls.Add(this.buttonPreviousBuildFolder);
             this.gbxPath.Controls.Add(this.buttonFindAssets);
             this.gbxPath.Controls.Add(this.buttonSelectExtractFolder);
             this.gbxPath.Location = new System.Drawing.Point(12, 2);
             this.gbxPath.Name = "gbxPath";
-            this.gbxPath.Size = new System.Drawing.Size(584, 116);
+            this.gbxPath.Size = new System.Drawing.Size(584, 91);
             this.gbxPath.TabIndex = 46;
             this.gbxPath.TabStop = false;
             this.gbxPath.Text = "Path Information";
@@ -706,11 +673,8 @@
         private System.Windows.Forms.TextBox textBoxExtractFolder;
         private System.Windows.Forms.Label labelExtractFolder;
         private System.Windows.Forms.CheckBox chkVerbose;
-        private System.Windows.Forms.Label labelPrevBuildFolder;
-        private System.Windows.Forms.TextBox textBoxPrevXMLFolder;
         private System.Windows.Forms.Button buttonFindAssets;
         private System.Windows.Forms.Button buttonSelectExtractFolder;
-        private System.Windows.Forms.Button buttonPreviousBuildFolder;
         private System.Windows.Forms.CheckBox chkRemoveElements;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox versionTexBox;

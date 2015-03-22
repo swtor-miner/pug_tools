@@ -49,7 +49,6 @@ namespace tor_tools
             InitializeComponent();
             textBoxAssetsFolder.Text = Config.AssetsPath;
             textBoxExtractFolder.Text = Config.ExtractPath;
-            textBoxPrevXMLFolder.Text = Config.PrevXMLPath;
             textBoxPrevAssetsFolder.Text = Config.PrevAssetsPath;            
             CrossLinkDomCheckBox.Checked = Config.CrossLinkDOM;
             comboBoxExtractTypes.Items.AddRange(new object[]
@@ -69,7 +68,7 @@ namespace tor_tools
                 "Icons",
                 "(Everything)",
                 "Conversations",
-                "Filenames",
+                //"Filenames",
                 "Talents",
                 "String Tables",
                 "Schematics",
@@ -497,6 +496,11 @@ namespace tor_tools
 
                     ExportICONS = extensions.Contains("ICONS");
 
+                    if (extensions.Contains("MISC"))
+                    {
+                        DisableButtons(); GC.Collect();
+                        FindNewMtxImages();
+                    }
                     if (extensions.Contains("GOM"))
                     {
                         addtolist("Getting Raw GOM.");
@@ -507,6 +511,17 @@ namespace tor_tools
                     {
                         DisableButtons(); GC.Collect();
                         getObjects("class.pc.advanced", "AdvancedClasses");
+                    }
+                    if (extensions.Contains("STB"))
+                    {
+                        DisableButtons(); GC.Collect();
+                        addtolist("Getting String Tables.");
+                        getStrings();
+                    }
+                    if (extensions.Contains("CNQ"))
+                    {
+                        DisableButtons(); GC.Collect();
+                        getPrototypeObjects("Conquests", "wevConquestInfosPrototype", "wevConquestTable");
                     }
                     if (extensions.Contains("ABL"))
                     {
@@ -522,6 +537,12 @@ namespace tor_tools
                     {
                         DisableButtons(); GC.Collect();
                         getObjects("apt.", "Strongholds");
+                    }
+                    if (extensions.Contains("AREA"))
+                    {
+                        DisableButtons(); GC.Collect();
+                        addtolist("Getting Areas.");
+                        getPrototypeObjects("Areas", "mapAreasDataProto", "mapAreasDataObjectList"); // getAreas();
                     }
                     if (extensions.Contains("CDX"))
                     {
@@ -589,34 +610,12 @@ namespace tor_tools
                         DisableButtons(); GC.Collect();
                         getPrototypeObjects("Ships", "scFFShipsDataPrototype", "scFFShipsData");
                     }
-                    if (extensions.Contains("CNQ"))
-                    {
-                        DisableButtons(); GC.Collect();
-                        getPrototypeObjects("Conquests", "wevConquestInfosPrototype", "wevConquestTable");
-                    }
-                    if (extensions.Contains("AREA"))
-                    {
-                        DisableButtons(); GC.Collect();
-                        addtolist("Getting Areas.");
-                        getAreas();
-                    }
-                    if (extensions.Contains("STB"))
-                    {
-                        DisableButtons(); GC.Collect();
-                        addtolist("Getting String Tables.");
-                        getStrings();
-                    }
                     if (extensions.Contains("IPP"))
                     {
                         DisableButtons(); GC.Collect();
                         addtolist("Getting Item Appearances.");
                         getObjects("ipp.", "ItemAppearances");
                         //getItemApps();
-                    }
-                    if (extensions.Contains("MISC"))
-                    {
-                        DisableButtons(); GC.Collect();
-                        FindNewMtxImages();
                     }
                     addtolist("Completed extraction of all supported objects.");
                 }
