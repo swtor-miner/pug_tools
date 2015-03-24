@@ -10,6 +10,13 @@ namespace GomLib.Models
     public class GameObject : Dependencies
     {
         public ulong Id { get; set; }
+        public string Base62Id
+        {
+            get
+            {
+                return Id.ToMaskedBase62();
+            }
+        }
         public string Fqn { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         public DataObjectModel _dom { get; set; }

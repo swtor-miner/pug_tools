@@ -152,8 +152,9 @@ namespace GomLib.Models
             {
                 return new List<SQLProperty>
                     {                //(SQL Column Name, C# Property Name, SQL Column type statement, isUnique/PrimaryKey, Serialize value to json)
-                        new SQLProperty("NodeId", "NodeId", "bigint(20) unsigned NOT NULL", true),
                         new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("NodeId", "NodeId", "bigint(20) unsigned NOT NULL", true),
+                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("NameId", "NameId", "bigint(20) NOT NULL"),
                         new SQLProperty("Description", "Description", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("DescriptionId", "DescriptionId", "bigint(20) NOT NULL"),
