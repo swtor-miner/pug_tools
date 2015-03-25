@@ -252,6 +252,13 @@ namespace GomLib.Models
             return hooks;
         }
 
+        public override int GetHashCode()
+        {
+            int hash = NameId.GetHashCode();
+            if(Name != null) hash ^= Name.GetHashCode();
+            return hash;
+        }
+
         public override bool Equals(object obj)
         {
             if (obj == null) return false;

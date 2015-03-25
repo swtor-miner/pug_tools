@@ -381,16 +381,15 @@ namespace GomLib.Models
         }
     }
 
-    public class ConquestObjective : IEquatable<ConquestObjective>
+    public class ConquestObjective : PseudoGameObject, IEquatable<ConquestObjective>
     {
-        [Newtonsoft.Json.JsonIgnore]
-        public DataObjectModel _dom;
         public Dictionary<Achievement, Dictionary<Planet, float>> ObjectiveList { get; set; }
-        public long Id { get; set; }
 
         public ConquestObjective()
         {
             ObjectiveList = new Dictionary<Achievement, Dictionary<Planet, float>>();
+            Prototype = "wevConquestAchListPrototype";
+            ProtoDataTable = "wevConquestAchListTable";
         }
 
         public override int GetHashCode()
@@ -451,7 +450,7 @@ namespace GomLib.Models
             return true;
         }
 
-        public XElement ToXElement(bool verbose)
+        public override XElement ToXElement(bool verbose)
         {
             XElement cObj = new XElement("ConquestObjective");
 
@@ -620,11 +619,14 @@ namespace GomLib.Models
         }
     }
 
-    public class ConquestData : IEquatable<ConquestData>
+    public class ConquestData : PseudoGameObject, IEquatable<ConquestData>
     {
-        [Newtonsoft.Json.JsonIgnore]
-        public DataObjectModel _dom;
-        public long Id { get; set; }
+        public ConquestData()
+        {
+            Prototype = "wevConquestsPrototype";
+            ProtoDataTable = "wevConquestsInfoTable";
+        }
+
         public ulong GuildQstId { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         internal Quest _GuildQst { get; set; }
@@ -659,7 +661,17 @@ namespace GomLib.Models
         public long RawStartTime { get; set; }
         public DateTime StartTime { get; set; }
         public int ActualOrderNum { get; set; }
-        
+
+        public override int GetHashCode()
+        {
+            int hash = Id.GetHashCode();
+            hash ^= GuildQstId.GetHashCode();
+            hash ^= PersonalQstId.GetHashCode();
+            hash ^= OrderId.GetHashCode();
+            hash ^= RawStartTime.GetHashCode();
+            hash ^= ActualOrderNum.GetHashCode();
+            return hash;
+        }
 
         public override bool Equals(object obj)
         {
@@ -695,7 +707,7 @@ namespace GomLib.Models
             return true;
         }
 
-        public XElement ToXElement(bool verbose)
+        public override XElement ToXElement(bool verbose)
         {
             XElement room = new XElement("EventData", new XAttribute("Id", Id));
 

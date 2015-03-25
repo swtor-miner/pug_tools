@@ -32,10 +32,6 @@ namespace GomLib.ModelLoader
             Models.PackageAbility result = new Models.PackageAbility();
             result.AbilityId = gomObj.ValueOrDefault<ulong>("ablAbilityDataSpec", 0);
             result.AutoAcquire = gomObj.ValueOrDefault<bool>("ablAbilityDataAutoAcquire", false);
-            // result.CategoryName = 
-            // result.CategoryNameId
-
-            // result.IsTalent
             result.PackageId = gomObj.ValueOrDefault<ulong>("ablAbilityDataPackage", 0);
             List<object> ranks = gomObj.ValueOrDefault<List<object>>("ablAbilityDataRanks", null);
             foreach (var rank in ranks)
@@ -47,8 +43,7 @@ namespace GomLib.ModelLoader
                 result.Level = result.Levels[0];
             }
             result.Scales = (result.Levels.Count == 61 - result.Level);
-            // result.Rank = 
-            // result.Toughness =
+            result.Toughness = gomObj.ValueOrDefault<string>("apnCbtToughness", "");
 
             result.Ability = _dom.abilityLoader.Load(result.AbilityId);
 

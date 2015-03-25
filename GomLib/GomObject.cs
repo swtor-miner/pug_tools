@@ -301,10 +301,6 @@ namespace GomLib
 
         public void Load()
         {
-            /*if (Name == "guiScaleFormGFxProto")//obsolete debugging code
-            {
-                string pausehere = "";
-            }*/
             if (IsLoaded) { return; }
             //if (IsUnloaded) { throw new InvalidOperationException("Cannot reload object once it's unloaded"); } //Fuck you yes I can reload it.
 
@@ -369,6 +365,16 @@ namespace GomLib
             this.GlommedClasses = new List<DomClass>();
             IsLoaded = false;
             IsUnloaded = true;
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = Id.GetHashCode();
+            hash ^= ClassId.GetHashCode();
+            if (Name != null) hash ^= Name.GetHashCode();
+            hash ^= DataLength.GetHashCode();
+            hash ^= Checksum.GetHashCode();
+            return hash;
         }
 
         public override bool Equals(Object obj)

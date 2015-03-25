@@ -59,19 +59,17 @@ namespace GomLib.Models
         }
     }*/
 
-    public class ArmorSpec
+    public class ArmorSpec : PseudoGameObject, IEquatable<ArmorSpec>
     {
         ArmorSpec(DataObjectModel dom, long id)
         {
             _dom = dom;
             Id = id;
+            Prototype = "cbtArmorTablePrototype";
+            ProtoDataTable = "cbtArmorDetailsBySpec";
         }
 
-        [Newtonsoft.Json.JsonIgnore]
-        public DataObjectModel _dom { get; set; }
-
-        public long Id { get; set; }
-        public string Name { get; set; } //str.gui.tooltips 836131348283392
+        //public string Name { get; set; } //str.gui.tooltips 836131348283392
         public long NameId { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
         public ulong ReqAbilityId { get; set; }
@@ -85,6 +83,11 @@ namespace GomLib.Models
             ArmorSpecList = null;
         }
 
+        public override string ToString()
+        {
+            return Name;
+        }
+        
         public override int GetHashCode()
         {
             int hash = Id.GetHashCode();
@@ -95,6 +98,26 @@ namespace GomLib.Models
             return hash;
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+            if (ReferenceEquals(this, obj)) return true;
+
+            ArmorSpec obj2 = obj as ArmorSpec;
+            if (obj2 == null) return false;
+
+            return Equals(obj2);
+        }
+
+        public bool Equals(ArmorSpec obj)
+        {
+            if (obj == null) return false;
+            if (ReferenceEquals(this, obj)) return true;
+
+            if (this.GetHashCode() != obj.GetHashCode())
+                return false;
+            return true;
+        }
         public static void Load(DataObjectModel dom)
         {
             if (ArmorSpecList == null)

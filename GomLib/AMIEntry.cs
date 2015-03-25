@@ -135,6 +135,23 @@ namespace GomLib
             }
         }
 
+        public override int GetHashCode()
+        {
+            int hash = Id.GetHashCode();
+            if (BaseFile != null) hash ^= BaseFile.GetHashCode();
+            if (Attachments != null) foreach (var x in Attachments) { hash ^= x.GetHashCode(); }
+            if (SlotType != null) hash ^= SlotType.GetHashCode();
+            if (MaterialList != null) foreach (var x in MaterialList) { hash ^= x.GetHashCode(); }
+            hash ^= SkinMaterialIndex.GetHashCode();
+            hash ^= SkinHueIndex.GetHashCode();
+            if (ChildSkinMaterials != null) foreach (var x in ChildSkinMaterials) { hash ^= x.GetHashCode(); }
+            hash ^= SithComplexion1.GetHashCode();
+            hash ^= SithComplexion2.GetHashCode();
+            if (RepresentativeColor != null) foreach (var x in RepresentativeColor) { hash ^= x.GetHashCode(); }
+
+            return hash;
+        }
+
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
@@ -234,6 +251,13 @@ namespace GomLib
         {
             PrimaryColor = data.ValueOrDefault<long>("appModelPrimaryColor", 0);
             SecondaryColor = data.ValueOrDefault<long>("appModelPrimaryColor", 0);
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = PrimaryColor.GetHashCode();
+            hash ^= SecondaryColor.GetHashCode();
+            return hash;
         }
 
         public override bool Equals(object obj)

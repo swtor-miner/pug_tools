@@ -18,35 +18,30 @@ namespace GomLib.Models
         public Ability Ability { get; set; }
 
         public ulong AbilityId { get; set; }
-        // public int Rank { get; set; }
         public List<int> Levels { get; set; }
         public bool Scales { get; set; }
         public int Level { get; set; }
         public bool AutoAcquire { get; set; }
-        // public int Toughness { get; set; }
-        public int CategoryNameId { get; set; }
-        public string CategoryName { get; set; }
-        // public bool IsTalent { get; set; }
-
-        //public PackageAbility Clone()
-        //{
-        //    return new PackageAbility()
-        //    {
-        //        PackageId = this.PackageId,
-        //        Ability = this.Ability,
-        //        AbilityId = this.AbilityId,
-        //        Rank = this.Rank,
-        //        Level = this.Level,
-        //        AutoAcquire = this.AutoAcquire,
-        //        Toughness = this.Toughness,
-        //        CategoryName = this.CategoryName,
-        //        CategoryNameId = this.CategoryNameId,
-        //        IsTalent = this.IsTalent
-        //    };
-        //}
+        public string Toughness { get; set; }
         public bool IsUtilityPackage { get; set; }
         public long UtilityTier { get; set; }
         public long UtilityPosition { get; set; }
+
+        public override int GetHashCode()
+        {
+            int hash = PackageId.GetHashCode();
+            if (Ability != null) hash ^= Ability.GetHashCode();
+            hash ^= AbilityId.GetHashCode();
+            if (Levels != null) foreach (var x in Levels) { hash ^= x.GetHashCode(); }
+            hash ^= Scales.GetHashCode();
+            hash ^= Level.GetHashCode();
+            hash ^= AutoAcquire.GetHashCode();
+            if (Toughness != null) hash ^= Toughness.GetHashCode();
+            hash ^= IsUtilityPackage.GetHashCode();
+            hash ^= UtilityTier.GetHashCode();
+            hash ^= UtilityPosition.GetHashCode();
+            return hash;
+        }
 
         public override bool Equals(object obj)
         {
@@ -72,10 +67,6 @@ namespace GomLib.Models
                 return false;
             if (this.AutoAcquire != pkga.AutoAcquire)
                 return false;
-            if (this.CategoryName != pkga.CategoryName)
-                return false;
-            if (this.CategoryNameId != pkga.CategoryNameId)
-                return false;
             if (this.Level != pkga.Level)
                 return false;
             if (!this.Levels.SequenceEqual(pkga.Levels))
@@ -99,6 +90,15 @@ namespace GomLib.Models
 
         public long UtilityTier { get; set; }
         public long UtilityPosition { get; set; }
+
+        public override int GetHashCode()
+        {
+            int hash = PackageId.GetHashCode();
+            if(Talent != null) hash ^= Talent.GetHashCode();
+            hash ^= UtilityTier.GetHashCode();
+            hash ^= UtilityPosition.GetHashCode();
+            return hash;
+        }
 
         public override bool Equals(object obj)
         {

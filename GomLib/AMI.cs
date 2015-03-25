@@ -7,11 +7,11 @@ using System.Xml.Linq;
 
 namespace GomLib
 {
-    public class AMI : IEquatable<AMI>
+    public class AMI : Models.GameObject, IEquatable<AMI>
     {
+        [Newtonsoft.Json.JsonIgnore]
         private Dictionary<string, AMI> fqnMap;
-
-        DataObjectModel _dom;
+        public Dictionary<long, AMIEntry> data;
         bool loaded = false;
 
         public AMI(DataObjectModel dom)
@@ -47,9 +47,6 @@ namespace GomLib
 
             return null;
         }
-
-        public Dictionary<long, AMIEntry> data;
-        public string Fqn { get; private set; }
 
         public AMIEntry GetEntry(long id)
         {
@@ -88,6 +85,7 @@ namespace GomLib
                 AMI table = new AMI(_dom);
 
                 table.Fqn = ami.Name;
+                table.Id = ami.Id;
                 var entries = ami.Data.Get<Dictionary<object, object>>("appModelDetails");
                 table.data = new Dictionary<long, AMIEntry>();
                 //Console.WriteLine(table.Fqn);
@@ -109,6 +107,15 @@ namespace GomLib
             data = null;
             Fqn = null;
             loaded = false;
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = Id.GetHashCode();
+            if (Fqn != null) hash ^= Fqn.GetHashCode();
+            if (data != null) foreach (var x in data) { hash ^= x.GetHashCode(); }
+
+            return hash;
         }
 
         public override bool Equals(object obj)

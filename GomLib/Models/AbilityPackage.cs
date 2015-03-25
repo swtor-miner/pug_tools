@@ -14,10 +14,18 @@ namespace GomLib.Models
             this.PackageTalents = new List<PackageTalent>();
         }
 
-        //public string Fqn { get; set; }
-        //public ulong Id { get; set; }
         public List<PackageAbility> PackageAbilities { get; private set; }
         public List<PackageTalent> PackageTalents { get; private set; }
+
+        public override int GetHashCode()
+        {
+            int hash = Id.GetHashCode();
+            if (Fqn != null) hash ^= Fqn.GetHashCode();
+            if (PackageAbilities != null) foreach (var x in PackageAbilities) { hash ^= x.GetHashCode(); }
+            if (PackageTalents != null) foreach (var x in PackageTalents) { hash ^= x.GetHashCode(); }
+
+            return hash;
+        }
 
         public override bool Equals(object obj)
         {

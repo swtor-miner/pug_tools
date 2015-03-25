@@ -756,6 +756,13 @@ namespace GomLib.Models
             return retVal;
         }
 
+        public override int GetHashCode()
+        {
+            int hash = 0;
+            foreach (var x in this) { hash ^= x.GetHashCode(); }
+            return hash;
+        }
+
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
@@ -785,6 +792,13 @@ namespace GomLib.Models
             string retVal = "";
             foreach (ItemEnhancement i in this) { retVal += string.Format("{0}, ", i); }
             return retVal;
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = 0;
+            foreach (var x in this) { hash ^= x.GetHashCode(); }
+            return hash;
         }
 
         public override bool Equals(object obj)

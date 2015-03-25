@@ -58,19 +58,15 @@ namespace GomLib.Models
         }
     }*/
 
-    public class AuctionCategory
+    public class AuctionCategory : PseudoGameObject, IEquatable<AuctionCategory>
     {
         public AuctionCategory(DataObjectModel dom, int id)
         {
             _dom = dom;
             Id = id;
         }
-
-        [Newtonsoft.Json.JsonIgnore]
-        public DataObjectModel _dom { get; set; }
-
-        public int Id { get; set; }
-        public string Name { get; set; } //str.gui.tooltips 836131348283392
+        
+        //public string Name { get; set; } //str.gui.tooltips 836131348283392
         public long NameId { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
         public Dictionary<int, AuctionSubCategory> SubCategories { get; set; }
@@ -94,6 +90,27 @@ namespace GomLib.Models
             if (LocalizedName != null) foreach (var x in LocalizedName) { hash ^= x.GetHashCode(); }
             if (SubCategories != null) foreach (var x in SubCategories) { hash ^= x.GetHashCode(); }
             return hash;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+            if (ReferenceEquals(this, obj)) return true;
+
+            AuctionCategory obj2 = obj as AuctionCategory;
+            if (obj2 == null) return false;
+
+            return Equals(obj2);
+        }
+
+        public bool Equals(AuctionCategory obj)
+        {
+            if (obj == null) return false;
+            if (ReferenceEquals(this, obj)) return true;
+
+            if (this.GetHashCode() != obj.GetHashCode())
+                return false;
+            return true;
         }
 
         public static void Load(DataObjectModel dom)
@@ -139,27 +156,27 @@ namespace GomLib.Models
                 AuctionSubCategory.Load(itm._dom);
                 AuctionSubCategory sub;
                 if (AuctionSubCategory.AuctionSubCategorySIdList.TryGetValue(Convert.ToInt64(obj), out sub))
-                    itm.SubCategories.Add(sub.Id, sub);
+                    itm.SubCategories.Add(sub.IntId, sub);
             }
             return itm;
         }
     }
 
-    public class AuctionSubCategory
+    public class AuctionSubCategory : PseudoGameObject, IEquatable<AuctionSubCategory>
     {
         public AuctionSubCategory(DataObjectModel dom, int id, long sId)
         {
             _dom = dom;
-            Id = id;
+            Id = (long)id;
+            IntId = id;
             SId = sId;
+            Prototype = "ahItemSubCategoriesPrototype";
+            ProtoDataTable = "ahItemSubCategoriesIndexToLocIdMap";
         }
 
-        [Newtonsoft.Json.JsonIgnore]
-        public DataObjectModel _dom { get; set; }
-
-        public int Id { get; set; }
+        public int IntId { get; set; }
         public long SId { get; set; }
-        public string Name { get; set; } //str.gui.tooltips 836131348283392
+        //public string Name { get; set; } //str.gui.tooltips 836131348283392
         public long NameId { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
         public List<AuctionItemSlot> SlotCategories { get; set; }
@@ -187,6 +204,27 @@ namespace GomLib.Models
             return hash;
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+            if (ReferenceEquals(this, obj)) return true;
+
+            AuctionSubCategory obj2 = obj as AuctionSubCategory;
+            if (obj2 == null) return false;
+
+            return Equals(obj2);
+        }
+
+        public bool Equals(AuctionSubCategory obj)
+        {
+            if (obj == null) return false;
+            if (ReferenceEquals(this, obj)) return true;
+
+            if (this.GetHashCode() != obj.GetHashCode())
+                return false;
+            return true;
+        }
+
         public static void Load(DataObjectModel dom)
         {
             if (AuctionSubCategoryList == null)
@@ -202,7 +240,7 @@ namespace GomLib.Models
                     AuctionSubCategory itm = new AuctionSubCategory(dom, Convert.ToInt32(kvp.Value), Convert.ToInt64(kvp.Key));
                     Load(itm, (long)(ahItemSubCategoriesIndexToLocIdMap[kvp.Value]));
                     AuctionSubCategorySIdList.Add(Convert.ToInt64(kvp.Key), itm);
-                    AuctionSubCategoryList.Add(itm.Id, itm);
+                    AuctionSubCategoryList.Add(itm.IntId, itm);
                 }
             }
         }
@@ -242,7 +280,7 @@ namespace GomLib.Models
         }
     }
 
-    public class AuctionItemSlot
+    public class AuctionItemSlot: IEquatable<AuctionItemSlot>
     {
         public AuctionItemSlot(DataObjectModel dom, string id, long nameId)
         {
@@ -265,5 +303,39 @@ namespace GomLib.Models
 
         public static Dictionary<string, AuctionItemSlot> AuctionItemSlotList = new Dictionary<string, AuctionItemSlot>();
 
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = Id.GetHashCode();
+            hash ^= NameId.GetHashCode();
+            if (Name != null) hash ^= Name.GetHashCode();
+            if (LocalizedName != null) foreach (var x in LocalizedName) { hash ^= x.GetHashCode(); }
+            return hash;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+            if (ReferenceEquals(this, obj)) return true;
+
+            AuctionItemSlot obj2 = obj as AuctionItemSlot;
+            if (obj2 == null) return false;
+
+            return Equals(obj2);
+        }
+
+        public bool Equals(AuctionItemSlot obj)
+        {
+            if (obj == null) return false;
+            if (ReferenceEquals(this, obj)) return true;
+
+            if (this.GetHashCode() != obj.GetHashCode())
+                return false;
+            return true;
+        }
     }
 }
