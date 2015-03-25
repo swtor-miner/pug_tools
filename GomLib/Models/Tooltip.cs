@@ -19,7 +19,7 @@ namespace GomLib.Models
             type = obj.GetType().ToString();
         }
 
-        internal GameObject _obj { get; set; }
+        public GameObject _obj { get; set; }
         public string type { get; set; }
         public string HTML
         {
@@ -33,6 +33,7 @@ namespace GomLib.Models
                 return new List<SQLProperty>
                     {                //(SQL Column Name, C# Property Name, SQL Column type statement, isUnique/PrimaryKey, Serialize value to json)
                         new SQLProperty("NodeId", "Id", "bigint(20) unsigned NOT NULL", true),
+                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Fqn", "Fqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Tooltip", "HTML", "varchar(10000) COLLATE utf8_unicode_ci NOT NULL")
                     };
@@ -48,6 +49,9 @@ namespace GomLib.Models
                 itm = (Item)_obj;
 
             StringBuilder tooltip = new StringBuilder();
+            tooltip.Append("<div class='torctip_wrapper'>");
+            var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", itm.Icon));
+            tooltip.Append(String.Format("<div class='torctip_image'><img src='/icons/{0}_{1}.png' alt='' /></div>", fileId.ph, fileId.sh)); 
             tooltip.Append("<div class='torctip_tooltip'>");
             if (itm != null)
             {
@@ -71,6 +75,7 @@ namespace GomLib.Models
                 {
                     List<int> mainSlots = new List<int> { 1, 3, 9 };
                     ItemEnhancement mainMod = null;
+                    var level = itm.RequiredLevel;
                     if (itm.EnhancementSlots != null)
                     {
                         var potentials = itm.EnhancementSlots.Where(x => x.Slot.IsBaseMod());
@@ -84,17 +89,32 @@ namespace GomLib.Models
                         if (mainMod != null)
                         {
                             if (mainMod.ModificationId != 0)
+                            {
+                                level = mainMod.Modification.RequiredLevel;
                                 qual = mainMod.Modification.Quality;
+                            }
                             //else
                             //nothing premium is what we want
                         }
                     }
                     else
+                    {
+                        level = itm.RequiredLevel;
                         qual = itm.Quality;
-                    float min = itm._dom.data.weaponPerLevel.GetStat(itm.WeaponSpec.Id, itm.RequiredLevel, itm.Quality, Stat.MinWeaponDamage);
-                    float max = itm._dom.data.weaponPerLevel.GetStat(itm.WeaponSpec.Id, itm.RequiredLevel, itm.Quality, Stat.MaxWeaponDamage);
-                    techpower = itm._dom.data.weaponPerLevel.GetStat(itm.WeaponSpec.Id, itm.RequiredLevel, itm.Quality, Stat.TechPowerRating);
-                    forcepower = itm._dom.data.weaponPerLevel.GetStat(itm.WeaponSpec.Id, itm.RequiredLevel, itm.Quality, Stat.ForcePowerRating);
+                    }
+                    float min = 0f;
+                    float max = 0f;
+                    try
+                    {
+                        min = itm._dom.data.weaponPerLevel.GetStat(itm.WeaponSpec.Id, level, qual, Stat.MinWeaponDamage);
+                        max = itm._dom.data.weaponPerLevel.GetStat(itm.WeaponSpec.Id, level, qual, Stat.MaxWeaponDamage);  //change this so items without barrels use level 1 premium numbers
+                        techpower = itm._dom.data.weaponPerLevel.GetStat(itm.WeaponSpec.Id, level, qual, Stat.TechPowerRating);
+                        forcepower = itm._dom.data.weaponPerLevel.GetStat(itm.WeaponSpec.Id, level, qual, Stat.ForcePowerRating);
+                    }
+                    catch (Exception e)
+                    {
+                        string dosomething = "";
+                    }
                     tooltip.Append(String.Format("<div class='torctip_text'><span class='torctip_minDam'>{0}</span>-<span class='torctip_maxDam'>{1}</span> {2} Damage (Rating {3})</div>", min.ToString("0.0"), max.ToString("0.0"), itm.WeaponSpec.DamageType, itm.CombinedRating)); //this needs a conditional
                 }
                 else if (isEquipable)
@@ -113,10 +133,15 @@ namespace GomLib.Models
                 }
                 else
                     tooltip.Append(String.Format("<div class='torctip_text'>Item Rating {0}</div>", itm.CombinedRating));
-                
 
+
+                if (itm.Durability > 0)
+                {
+                    tooltip.Append(String.Format("<div class='torctip_text'>Durability: {0}/{0}</div>", itm.CombinedRating));
+                }
                 //stats
-                if (itm.CombinedStatModifiers.Count != 0)
+                tooltip.Append("<br />");
+                if (itm.CombinedStatModifiers.Count != 0 || itm.WeaponSpec != null)
                 {
                     tooltip.Append("<div class='torctip_stats'><span class='torctip_white'>Total Stats:</span>");
                     for (var i = 0; i < itm.CombinedStatModifiers.Count; i++)
@@ -153,16 +178,20 @@ namespace GomLib.Models
                     tooltip.Append("</div>");
                 }
                 //Modifications
+                tooltip.Append("<br />");
                 if (itm.EnhancementSlots.Count != 0)
                 {
                     tooltip.Append("<div class='torctip_mods'><span class='torctip_white'>Item Modifications:</span>");
                     for (var i = 0; i < itm.EnhancementSlots.Count; i++)
                     {
+                        string slot = ConvertToString(itm.EnhancementSlots[i].Slot);
                         if (itm.EnhancementSlots[i].ModificationId != 0)
                         {
+                            if (itm.EnhancementSlots[i].Slot == EnhancementType.ColorCrystal)
+                                slot = itm.EnhancementSlots[i].Modification.Name;
                             tooltip.Append(String.Format("<div class='torctip_mod'><div class='torctip_mslot'><span class='torctip_{0}'>{1} ({2})</span></div>",
                                 //                      {0}                                         {1}                                             {2}
-                                itm.EnhancementSlots[i].Modification.Quality.ToString(), itm.EnhancementSlots[i].Slot.ToString(), itm.EnhancementSlots[i].Modification.Rating.ToString()));
+                                itm.EnhancementSlots[i].Modification.Quality.ToString(), slot, itm.EnhancementSlots[i].Modification.Rating.ToString()));
                             for (var e = 0; e < itm.EnhancementSlots[i].Modification.CombinedStatModifiers.Count; e++)
                             {
                                 tooltip.Append(String.Format("<div class='torctip_mstat'><span>+{1} {2}</span></div>", i, itm.EnhancementSlots[i].Modification.CombinedStatModifiers[e].Modifier, ConvertToString(itm.EnhancementSlots[i].Modification.CombinedStatModifiers[e].Stat)));
@@ -171,11 +200,11 @@ namespace GomLib.Models
                         }
                         else
                             //empty mod
-                            tooltip.Append(String.Format("<div class='torctip_mod'><div class='torctip_mslot'><span>{0}: Open</span></div></div>", itm.EnhancementSlots[i].Slot.ToString()));
+                            tooltip.Append(String.Format("<div class='torctip_mod'><div class='torctip_mslot'><span>{0}: Open</span></div></div>", slot));
                     }
                     tooltip.Append("<div class='torctip_mod'><div class='torctip_mslot'><span>Augment: Open</span></div></div></div>");
                 }
-
+                tooltip.Append("<br />");
                 if (itm.RequiredLevel != 0)
                     tooltip.Append(String.Format("<div>Requires Level {0}</div>", itm.RequiredLevel));
                 if (itm.ArmorSpec != null)
@@ -200,7 +229,7 @@ namespace GomLib.Models
                 }
             }
 
-            tooltip.Append("</div>"); //close tooltip div
+            tooltip.Append("</div></div>"); //close tooltip div, close wrapper div
             return tooltip.ToString();
         }
 

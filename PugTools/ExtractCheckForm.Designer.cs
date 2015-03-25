@@ -31,6 +31,8 @@
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.groupFileTypes = new System.Windows.Forms.GroupBox();
+            this.chkICONS = new System.Windows.Forms.CheckBox();
+            this.chkNPP = new System.Windows.Forms.CheckBox();
             this.chkCNQ = new System.Windows.Forms.CheckBox();
             this.chkGSF = new System.Windows.Forms.CheckBox();
             this.chkSCHEM = new System.Windows.Forms.CheckBox();
@@ -56,8 +58,7 @@
             this.chkCNV = new System.Windows.Forms.CheckBox();
             this.chkAPT = new System.Windows.Forms.CheckBox();
             this.chkABL = new System.Windows.Forms.CheckBox();
-            this.chkNPP = new System.Windows.Forms.CheckBox();
-            this.chkICONS = new System.Windows.Forms.CheckBox();
+            this.chkTORC = new System.Windows.Forms.CheckBox();
             this.groupFileTypes.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -86,6 +87,7 @@
             this.groupFileTypes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupFileTypes.Controls.Add(this.chkTORC);
             this.groupFileTypes.Controls.Add(this.chkICONS);
             this.groupFileTypes.Controls.Add(this.chkNPP);
             this.groupFileTypes.Controls.Add(this.chkCNQ);
@@ -121,6 +123,26 @@
             this.groupFileTypes.TabIndex = 2;
             this.groupFileTypes.TabStop = false;
             this.groupFileTypes.Text = "File Types";
+            // 
+            // chkICONS
+            // 
+            this.chkICONS.AutoSize = true;
+            this.chkICONS.Location = new System.Drawing.Point(166, 227);
+            this.chkICONS.Name = "chkICONS";
+            this.chkICONS.Size = new System.Drawing.Size(85, 17);
+            this.chkICONS.TabIndex = 26;
+            this.chkICONS.Text = "Export Icons";
+            this.chkICONS.UseVisualStyleBackColor = true;
+            // 
+            // chkNPP
+            // 
+            this.chkNPP.AutoSize = true;
+            this.chkNPP.Location = new System.Drawing.Point(88, 250);
+            this.chkNPP.Name = "chkNPP";
+            this.chkNPP.Size = new System.Drawing.Size(81, 17);
+            this.chkNPP.TabIndex = 25;
+            this.chkNPP.Text = "Export NPP";
+            this.chkNPP.UseVisualStyleBackColor = true;
             // 
             // chkCNQ
             // 
@@ -419,25 +441,15 @@
             this.chkABL.Text = "ABL - Abilities";
             this.chkABL.UseVisualStyleBackColor = true;
             // 
-            // chkNPP
+            // chkTORC
             // 
-            this.chkNPP.AutoSize = true;
-            this.chkNPP.Location = new System.Drawing.Point(88, 250);
-            this.chkNPP.Name = "chkNPP";
-            this.chkNPP.Size = new System.Drawing.Size(81, 17);
-            this.chkNPP.TabIndex = 25;
-            this.chkNPP.Text = "Export NPP";
-            this.chkNPP.UseVisualStyleBackColor = true;
-            // 
-            // chkICONS
-            // 
-            this.chkICONS.AutoSize = true;
-            this.chkICONS.Location = new System.Drawing.Point(166, 227);
-            this.chkICONS.Name = "chkICONS";
-            this.chkICONS.Size = new System.Drawing.Size(85, 17);
-            this.chkICONS.TabIndex = 26;
-            this.chkICONS.Text = "Export Icons";
-            this.chkICONS.UseVisualStyleBackColor = true;
+            this.chkTORC.AutoSize = true;
+            this.chkTORC.Location = new System.Drawing.Point(166, 250);
+            this.chkTORC.Name = "chkTORC";
+            this.chkTORC.Size = new System.Drawing.Size(92, 17);
+            this.chkTORC.TabIndex = 27;
+            this.chkTORC.Text = "Torcommunity";
+            this.chkTORC.UseVisualStyleBackColor = true;
             // 
             // ExtractCheckForm
             // 
@@ -486,5 +498,6 @@
         private System.Windows.Forms.CheckBox chkGSF;
         private System.Windows.Forms.CheckBox chkNPP;
         private System.Windows.Forms.CheckBox chkICONS;
+        private System.Windows.Forms.CheckBox chkTORC;
     }
 }

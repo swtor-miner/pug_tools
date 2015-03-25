@@ -78,6 +78,8 @@ namespace tor_tools
 
             if (this.chkICONS.Checked)
                 fileTypes.Add("ICONS");
+            if (this.chkTORC.Checked)
+                fileTypes.Add("TORC");
             return fileTypes;
         }
 
