@@ -495,7 +495,11 @@ namespace tor_tools
                     extensions = testFile.getTypes();
 
                     ExportICONS = extensions.Contains("ICONS");
-
+                    if (extensions.Contains("TORC"))
+                    {
+                        DisableButtons(); GC.Collect();
+                        getTorc();
+                    }
                     if (extensions.Contains("MISC"))
                     {
                         DisableButtons(); GC.Collect();
