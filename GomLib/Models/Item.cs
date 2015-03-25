@@ -32,6 +32,14 @@ namespace GomLib.Models
 
         public ulong ShortId { get; set; }
         public long NameId { get; set; }
+        public string CleanName
+        {
+            get
+            {
+                if (Name == null) return null;
+                return Name.Replace("'", "");
+            }
+        }
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
         public long DescriptionId { get; set; }
@@ -46,6 +54,15 @@ namespace GomLib.Models
         public ArmorSpec ShieldSpec { get; set; }
         public ItemBindingRule Binding { get; set; }
         public string Icon { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        public string HashedIcon
+        {
+            get
+            {
+                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", this.Icon));
+                return String.Format("{0}_{1}", fileId.ph, fileId.sh); 
+            }
+        }
         public ItemQuality Quality { get; set; }
         public int ItemLevel { get; set; }
         public int Rating { get; set; }
@@ -506,6 +523,7 @@ namespace GomLib.Models
                 return new List<SQLProperty>
                     {                //(SQL Column Name, C# Property Name, SQL Column type statement, isUnique/PrimaryKey, Serialize value to json)
                         new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Name", "CleanName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("NodeId", "Id", "bigint(20) unsigned NOT NULL", true),
                         new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("NameId", "NameId", "bigint(20) NOT NULL"),
@@ -532,7 +550,7 @@ namespace GomLib.Models
                         new SQLProperty("EquipAbilityId", "EquipAbilityId", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("GiftRank", "GiftRank", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("GiftType", "GiftType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("Icon", "Icon", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Icon", "HashedIcon", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("IsModdable", "IsModdable", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("MaxStack", "MaxStack", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("ModifierSpec", "ModifierSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
