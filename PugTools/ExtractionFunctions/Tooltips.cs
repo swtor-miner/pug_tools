@@ -63,10 +63,12 @@ namespace tor_tools
                     bool okToOutput = true;
                     if (chkBuildCompare.Checked)
                     {
-                        var itm2 = new GomLib.Models.GameObject().Load(gom);
-                        if (itm == null) continue;
-                        if (itm.GetHashCode() == itm2.GetHashCode())
-                            okToOutput = false;
+                        var itm2 = new GomLib.Models.GameObject().Load(gom.Id, previousDom);
+                        if (itm2 != null)
+                        {
+                            if (itm.GetHashCode() == itm2.GetHashCode())
+                                okToOutput = false;
+                        }
                     }
 
                     if (okToOutput)
@@ -75,7 +77,7 @@ namespace tor_tools
                         /*if (itm.GetType() == typeof(GomLib.Models.Item)){
                             OutputIcon(((GomLib.Models.Item)itm).Icon, "TORC");
                         }*/
-                        //WriteFile(t.HTML, String.Format("TORC\\{0}.torctip", t.Base62Id), false);
+                        WriteFile(t.Base62Id + Environment.NewLine, "newtips.txt", true);
                         iList.Add(t);
                     }
                     i++;

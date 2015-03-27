@@ -51,31 +51,33 @@ namespace GomLib.Models
             StringBuilder tooltip = new StringBuilder();
             tooltip.Append("<div class='torctip_wrapper'>");
             var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", itm.Icon));
-            tooltip.Append(String.Format("<div class='torctip_image'><img src='/icons/{0}_{1}.png' alt='' /></div>", fileId.ph, fileId.sh)); 
+            tooltip.Append(String.Format("<div class='torctip_image'><img src='http://torcommunity.com/db/icons/{0}_{1}.png' alt='' /></div>", fileId.ph, fileId.sh));
+            tooltip.Append(String.Format("<div class='torctip_name'><a href='http://torcommunity.com/db/{1}' data-torc='norestyle'>{0}</a></div>", itm.Name, itm.Base62Id)); 
+
             tooltip.Append("<div class='torctip_tooltip'>");
             if (itm != null)
             {
-                tooltip.Append(String.Format("<span class='torctip_{0}'>{1}</span>", itm.Quality.ToString().ToLower(), itm.Name));
+                tooltip.Append(String.Format("<span class='torctip_{0}'>{1}</span>", ((itm.IsModdable && (itm.Quality == ItemQuality.Prototype)) ? "moddable" : itm.Quality.ToString().ToLower()), itm.Name));
                 //binding
                 if (itm.Binding != 0)
                 {
-                    tooltip.Append(String.Format("<div class='torctip_text'>Binds on {0}</div>", itm.Binding.ToString()));
+                    tooltip.Append(String.Format("<div class='torctip_main'>Binds on {0}</div>", itm.Binding.ToString()));
                 }
                 //slot
                 bool isEquipable = false;
                 if (itm.Slots.Count > 1)
                 {
-                    tooltip.Append(String.Format("<div class='torctip_text'>{0}</div>", String.Join(", ", itm.Slots.Select(x => ConvertToString(x)).Where(x => x != null).ToList())));
+                    tooltip.Append(String.Format("<div class='torctip_main'>{0}</div>", String.Join(", ", itm.Slots.Select(x => ConvertToString(x)).Where(x => x != null).ToList())));
                     isEquipable = true;
                 }
                 //armor, rating etc if gear
                 float techpower = 0;
                 float forcepower = 0;
+                var level = itm.ItemLevel;
                 if (itm.WeaponSpec != null)
                 {
                     List<int> mainSlots = new List<int> { 1, 3, 9 };
                     ItemEnhancement mainMod = null;
-                    var level = itm.RequiredLevel;
                     if (itm.EnhancementSlots != null)
                     {
                         var potentials = itm.EnhancementSlots.Where(x => x.Slot.IsBaseMod());
@@ -90,7 +92,7 @@ namespace GomLib.Models
                         {
                             if (mainMod.ModificationId != 0)
                             {
-                                level = mainMod.Modification.RequiredLevel;
+                                level = mainMod.Modification.ItemLevel;
                                 qual = mainMod.Modification.Quality;
                             }
                             //else
@@ -99,7 +101,7 @@ namespace GomLib.Models
                     }
                     else
                     {
-                        level = itm.RequiredLevel;
+                        level = itm.ItemLevel;
                         qual = itm.Quality;
                     }
                     float min = 0f;
@@ -115,7 +117,7 @@ namespace GomLib.Models
                     {
                         string dosomething = "";
                     }
-                    tooltip.Append(String.Format("<div class='torctip_text'><span class='torctip_minDam'>{0}</span>-<span class='torctip_maxDam'>{1}</span> {2} Damage (Rating {3})</div>", min.ToString("0.0"), max.ToString("0.0"), itm.WeaponSpec.DamageType, itm.CombinedRating)); //this needs a conditional
+                    tooltip.Append(String.Format("<div class='torctip_main'><span class='torctip_minDam'>{0}</span>-<span class='torctip_maxDam'>{1}</span> {2} Damage (Rating {3})</div>", min.ToString("0.0"), max.ToString("0.0"), itm.WeaponSpec.DamageType, itm.CombinedRating)); //this needs a conditional
                 }
                 else if (isEquipable)
                 {
@@ -123,24 +125,32 @@ namespace GomLib.Models
                     if (arm != null)
                     {
                         if (arm.DebugSpecName == "adaptive")
-                            arm = ArmorSpec.Load(_dom, 5763611092890301551);
-                        int armor = itm._dom.data.armorPerLevel.GetArmor(arm, itm.CombinedRequiredLevel, itm.Quality, itm.Slots.Where(x => x != SlotType.Any).First());
-                        if (armor > 0)
-                            tooltip.Append(String.Format("<div class='torctip_text'>{0} Armor (Rating {1})</div>", armor, itm.CombinedRating));
+                            //arm = ArmorSpec.Load(_dom, 5763611092890301551);
+                            tooltip.Append(String.Format("<div class='torctip_main'>Adaptive Armor (Rating {0})</div>", itm.CombinedRating));
+                        else
+                        {
+                            var temp = itm.EnhancementSlots.Where(x =>x.Slot == EnhancementType.Harness);
+                            if(temp.Count() != 0)
+                                if(temp.First().ModificationId !=0)
+                                    level = temp.First().Modification.ItemLevel;
+                            int armor = itm._dom.data.armorPerLevel.GetArmor(arm, level, itm.Quality, itm.Slots.Where(x => x != SlotType.Any).First());
+                            if (armor > 0)
+                                tooltip.Append(String.Format("<div class='torctip_main'>{0} Armor (Rating {1})</div>", armor, itm.CombinedRating));
+                        }
                     }
-                    else
-                        tooltip.Append(String.Format("<div class='torctip_text'>Item Rating {0}</div>", itm.CombinedRating));
+                    else if(itm.CombinedRating != 0)
+                        tooltip.Append(String.Format("<div class='torctip_main'>Item Rating {0}</div>", itm.CombinedRating));
                 }
-                else
-                    tooltip.Append(String.Format("<div class='torctip_text'>Item Rating {0}</div>", itm.CombinedRating));
+                else if (itm.CombinedRating != 0)
+                    tooltip.Append(String.Format("<div class='torctip_main'>Item Rating {0}</div>", itm.CombinedRating));
 
 
                 if (itm.Durability > 0)
                 {
-                    tooltip.Append(String.Format("<div class='torctip_text'>Durability: {0}/{0}</div>", itm.CombinedRating));
+                    tooltip.Append(String.Format("<div class='torctip_main'>Durability: {0}/{0}</div>", itm.MaxDurability));
                 }
                 //stats
-                tooltip.Append("<br />");
+                //tooltip.Append("<br />");
                 if (itm.CombinedStatModifiers.Count != 0 || itm.WeaponSpec != null)
                 {
                     tooltip.Append("<div class='torctip_stats'><span class='torctip_white'>Total Stats:</span>");
@@ -165,50 +175,64 @@ namespace GomLib.Models
                             case Stat.ShipShieldRegen: return "debug_ShipShieldRegen";
                             case Stat.ShipShieldCooldown: return "debug_ShipShieldCooldown";
                             case Stat.ShipType: return "debug_ShipType";*/
-                            default: tooltip.Append(String.Format("<div class='torctip_stat' id='torctip_stat_{0}'><span>+{1} {2}</span></div>",
+                            default: tooltip.Append(String.Format("<div class='torctip_stat' id='torctip_stat_{0}'>+{1} {2}</div>",
                                     // {0}              {1}                                     {2}
                                 i, itm.CombinedStatModifiers[i].Modifier, ConvertToString(itm.CombinedStatModifiers[i].Stat)));
                                 break;
                         }
                     }
                     if (techpower > 0)
-                        tooltip.Append(String.Format("<div class='torctip_stat' id='torctip_stat_tech'><span>+{0} Tech Power</span></div>", techpower));
+                        tooltip.Append(String.Format("<div class='torctip_stat' id='torctip_stat_tech'>+{0} Tech Power</div>", techpower));
                     if (forcepower > 0)
-                        tooltip.Append(String.Format("<div class='torctip_stat' id='torctip_stat_force'><span>+{0} Force Power</span></div>", forcepower));
-                    tooltip.Append("</div>");
+                        tooltip.Append(String.Format("<div class='torctip_stat' id='torctip_stat_force'>+{0} Force Power</div>", forcepower));
+                    tooltip.Append("</div>"); //<br />");
                 }
                 //Modifications
-                tooltip.Append("<br />");
+                
                 if (itm.EnhancementSlots.Count != 0)
                 {
                     tooltip.Append("<div class='torctip_mods'><span class='torctip_white'>Item Modifications:</span>");
+
+                    Dictionary<string, string> enhancements = new Dictionary<string, string>();
                     for (var i = 0; i < itm.EnhancementSlots.Count; i++)
                     {
-                        string slot = ConvertToString(itm.EnhancementSlots[i].Slot);
-                        if (itm.EnhancementSlots[i].ModificationId != 0)
-                        {
-                            if (itm.EnhancementSlots[i].Slot == EnhancementType.ColorCrystal)
-                                slot = itm.EnhancementSlots[i].Modification.Name;
-                            tooltip.Append(String.Format("<div class='torctip_mod'><div class='torctip_mslot'><span class='torctip_{0}'>{1} ({2})</span></div>",
-                                //                      {0}                                         {1}                                             {2}
-                                itm.EnhancementSlots[i].Modification.Quality.ToString(), slot, itm.EnhancementSlots[i].Modification.Rating.ToString()));
-                            for (var e = 0; e < itm.EnhancementSlots[i].Modification.CombinedStatModifiers.Count; e++)
-                            {
-                                tooltip.Append(String.Format("<div class='torctip_mstat'><span>+{1} {2}</span></div>", i, itm.EnhancementSlots[i].Modification.CombinedStatModifiers[e].Modifier, ConvertToString(itm.EnhancementSlots[i].Modification.CombinedStatModifiers[e].Stat)));
-                            }
-                            tooltip.Append("</div>");
-                        }
-                        else
-                            //empty mod
-                            tooltip.Append(String.Format("<div class='torctip_mod'><div class='torctip_mslot'><span>{0}: Open</span></div></div>", slot));
+                        enhancements.Add(ConvertToString(itm.EnhancementSlots[i].Slot), EnhancementToHTML(itm.EnhancementSlots[i]));
                     }
-                    tooltip.Append("<div class='torctip_mod'><div class='torctip_mslot'><span>Augment: Open</span></div></div></div>");
+                    List<string> sortOrder = new List<string>
+                    {
+                        "Color Crystal",
+                        "Armoring",
+                        "Barrel",
+                        "Hilt",
+                        "Modification",
+                        "Enhancement",
+                        "Dye"
+                    };
+                    foreach (var key in sortOrder)
+                    {
+                        if (enhancements.ContainsKey(key))
+                        {
+                            tooltip.Append(enhancements[key]);
+                            enhancements.Remove(key);
+                        }
+                    }
+                    if (enhancements.Count() > 0) //some new kind of slot?
+                    {
+                        foreach (var kvp in enhancements)
+                        {
+                            tooltip.Append(kvp.Value); //append them for compatibility.
+                        }
+                    }
+                    tooltip.Append("<div class='torctip_mod'><div class='torctip_mslot'>Augment: Open</div></div></div>");
+                    //tooltip.Append("<br />");
                 }
-                tooltip.Append("<br />");
+                
                 if (itm.RequiredLevel != 0)
-                    tooltip.Append(String.Format("<div>Requires Level {0}</div>", itm.RequiredLevel));
+                    tooltip.Append(String.Format("<div class='torctip_main'>Requires Level {0}</div>", itm.RequiredLevel));
                 if (itm.ArmorSpec != null)
-                    tooltip.Append(String.Format("<div>Requires {0}</div>", itm.ArmorSpec.Name));
+                    tooltip.Append(String.Format("<div class='torctip_main'>Requires {0}</div>", itm.ArmorSpec.Name));
+                if (itm.WeaponSpec != null)
+                    tooltip.Append(String.Format("<div class='torctip_main'>Requires {0}</div>", itm.WeaponSpec.Name));
                 System.Text.RegularExpressions.Regex regex_newline = new System.Text.RegularExpressions.Regex("(\r\n|\r|\n)");
                 if (itm.UseAbilityId != 0)
                 {
@@ -217,7 +241,7 @@ namespace GomLib.Models
                         string ablDesc = itm.UseAbility.Description ?? "";
                         ablDesc = System.Text.RegularExpressions.Regex.Replace(ablDesc, @"\r\n?|\n", "<br />");
                         //regex_newline.Replace(ablDesc, "<br />");
-                        tooltip.Append(String.Format("<div class='torctip_text'>Use: </div>", ablDesc));
+                        tooltip.Append(String.Format("<div class='torctip_use'>Use: {0}</div>", ablDesc));
                     }
                 }
                 if (itm.Description != "")
@@ -225,12 +249,35 @@ namespace GomLib.Models
                     string itmDesc = itm.Description;
                     //regex_newline.Replace(itmDesc, "<br />");
                     itmDesc = System.Text.RegularExpressions.Regex.Replace(itmDesc, @"\r\n?|\n", "<br />");
-                    tooltip.Append(String.Format("<div class='torctip_text'>{0}</div>", itmDesc));
+                    tooltip.Append(String.Format("<div class='torctip_desc'>{0}</div>", itmDesc));
                 }
             }
 
             tooltip.Append("</div></div>"); //close tooltip div, close wrapper div
             return tooltip.ToString();
+        }
+
+        private static string EnhancementToHTML(ItemEnhancement itm)
+        {
+            string slot = ConvertToString(itm.Slot);
+            StringBuilder enhancement = new StringBuilder();
+            if (itm.ModificationId != 0)
+            {
+                if (itm.Slot == EnhancementType.ColorCrystal)
+                    slot = itm.Modification.Name;
+                enhancement.Append(String.Format("<div class='torctip_mod' ><div class='torctip_mslot'><a href='http://torcommunity.com/db/{3}' data-torc='norestyle' class='torctip_{0}'>{1} ({2})</a></div>",
+                    //                      {0}           {1}                     {2}
+                    itm.Modification.Quality.ToString(), slot, itm.Modification.Rating.ToString(), itm.Modification.Base62Id));
+                for (var e = 0; e < itm.Modification.CombinedStatModifiers.Count; e++)
+                {
+                    enhancement.Append(String.Format("<div class='torctip_mstat'>+{0} {1}</div>", itm.Modification.CombinedStatModifiers[e].Modifier, ConvertToString(itm.Modification.CombinedStatModifiers[e].Stat)));
+                }
+            }
+            else
+                //empty mod
+                enhancement.Append(String.Format("<div class='torctip_mod'><div class='torctip_mslot'>{0}: Open</div>", slot));
+            enhancement.Append("</div>");
+            return enhancement.ToString();
         }
 
         public static string ConvertToString(SlotType slot) //replace these with friendly names
@@ -547,20 +594,21 @@ namespace GomLib.Models
                 case EnhancementType.None: return "None";
                 case EnhancementType.Hilt: return "Hilt";
                 case EnhancementType.PowerCell: return "debug_PowerCell";
-                case EnhancementType.Harness: return "debug_Harness";
+                case EnhancementType.Harness: return "Armoring";
                 case EnhancementType.Overlay: return "Modification";
                 case EnhancementType.Underlay: return "debug_Underlay";
                 case EnhancementType.Support: return "Enhancement";
                 case EnhancementType.FocusLens: return "debug_FocusLens";
                 case EnhancementType.Trigger: return "debug_Trigger";
                 case EnhancementType.Barrel: return "Barrel";
-                case EnhancementType.PowerCrystal: return "debug_PowerCrystal";
+                case EnhancementType.PowerCrystal: return "Hilt"; //lightsaber hilt
                 case EnhancementType.Scope: return "debug_Scope";
                 case EnhancementType.Circuitry: return "debug_Circuitry";
                 case EnhancementType.EmitterMatrix: return "debug_EmitterMatrix";
                 case EnhancementType.ColorCrystal: return "Color Crystal";
                 case EnhancementType.ColorCartridge: return "debug_ColorCartridge";
                 case EnhancementType.Modulator: return "debug_Modulator";
+                case EnhancementType.Dye: return "Dye";
                 default: return "Unknown";
             }
         }
