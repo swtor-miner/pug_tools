@@ -78,7 +78,7 @@ namespace tor_tools
             ClientHeight = form.Controls.Find(panelName, true).First().Height;
             ClientWidth = form.Controls.Find(panelName, true).First().Width;
 
-            _useFpsCamera = false;
+            _useFpsCamera = true;
             _cam = new FpsCamera();
             _cam2 = new LookAtCamera();
 
@@ -182,7 +182,7 @@ namespace tor_tools
             this.globalBoxCenter = globalBoxMin + (globalBoxMax - globalBoxMin) / 2;
             this.cameraPos = new Vector3(globalBoxCenter.X * 2.5f, globalBoxCenter.Y * 2.5f, (Math.Max(Math.Max(globalBoxMax.X, globalBoxMax.Y), globalBoxMax.Z) * 2.5f /*+ 1.0f*/));
 
-            this._useFpsCamera = false;
+            this._useFpsCamera = true;
             this._cam.Reset();
             this._cam.Position = cameraPos;
 
