@@ -46,11 +46,9 @@ namespace tor_tools
         public bool _disposed;
         private GR2_Effect _fx;
 
-        private FpsCamera _cam;
-        private LookAtCamera _cam2;
+        private FpsCamera _cam;        
         private bool _useFpsCamera;
-        private float _FPScameraSpeed = 1.0f;
-        private float _LookAtZoomSpeed = 0.05f;
+        private float _FPScameraSpeed = 1.0f;        
 
         private Vector3 globalBoxMin;
         private Vector3 globalBoxMax;
@@ -80,8 +78,7 @@ namespace tor_tools
 
             _useFpsCamera = true;
             _cam = new FpsCamera();
-            _cam2 = new LookAtCamera();
-
+         
             _lastMousePos = new Point();
 
             _world = Matrix.Identity;
@@ -184,11 +181,7 @@ namespace tor_tools
 
             this._useFpsCamera = true;
             this._cam.Reset();
-            this._cam.Position = cameraPos;
-
-            this._cam2.Reset();
-            this._cam2.Position = cameraPos;
-            this._cam2.LookAt(cameraPos, globalBoxCenter, Vector3.UnitY);
+            this._cam.Position = cameraPos;        
 
             if (this.materials.Count > 0)
             {
@@ -276,8 +269,7 @@ namespace tor_tools
         public override void OnResize()
         {
             base.OnResize();
-            _cam.SetLens(0.25f * MathF.PI, AspectRatio, 0.001f, 1000.0f);
-            _cam2.SetLens(0.25f * MathF.PI, AspectRatio, 0.001f, 1000.0f);
+            _cam.SetLens(0.25f * MathF.PI, AspectRatio, 0.001f, 1000.0f);            
             _proj = Matrix.PerspectiveFovRH(0.25f * MathF.PI, AspectRatio, 1.0f, 1000.0f);
         }
 
@@ -288,31 +280,18 @@ namespace tor_tools
             if (Form.ActiveForm != null)
             {
                 if (Util.IsKeyDown(Keys.R))
-                {
-                    if (_useFpsCamera)
-                    {
-                        this._cam.Reset();
-                        this._cam.Position = cameraPos;
-                    }
-                    else
-                    {
-                        this._cam2.Reset();
-                        this._cam2.Position = cameraPos;
-                        this._cam2.LookAt(cameraPos, globalBoxCenter, Vector3.UnitY);
-                    }
+                {   
+                    this._cam.Reset();
+                    this._cam.Position = cameraPos;
                 }
 
-                if (Util.IsKeyDown(Keys.Oemplus))
-                {
-                    _FPScameraSpeed = 60.0f;
-                    _LookAtZoomSpeed = 0.20f;
-                }
+                if (Util.IsKeyDown(Keys.Oemplus))                
+                    _FPScameraSpeed = 60.0f;                    
+                
 
-                if (Util.IsKeyDown(Keys.OemMinus))
-                {
-                    _FPScameraSpeed = 30.0f;
-                    _LookAtZoomSpeed = 0.05f;
-                }
+                if (Util.IsKeyDown(Keys.OemMinus))                
+                    _FPScameraSpeed = 30.0f;                    
+                
 
                 if (Util.IsKeyDown(Keys.W) && _useFpsCamera)
                     if (Util.IsKeyDown(Keys.LShiftKey))
@@ -346,41 +325,12 @@ namespace tor_tools
                     else
                         _cam.Strafe(_FPScameraSpeed * dt);
 
-                if (Util.IsKeyDown(Keys.L))
-                    _useFpsCamera = false;
-
-                if (Util.IsKeyDown(Keys.F))
-                    _useFpsCamera = true;
-
                 if (Util.IsKeyDown(Keys.PageUp))
-                    if (!_useFpsCamera)
-                        _cam2.Zoom(-_FPScameraSpeed * dt);
-                    else
-                        _cam.Zoom(-dt);
+                     _cam.Zoom(-dt);
 
-                if (Util.IsKeyDown(Keys.PageDown))
-                    if (!_useFpsCamera)
-                        _cam2.Zoom(_FPScameraSpeed * dt);
-                    else
-                        _cam.Zoom(+dt);
+                if (Util.IsKeyDown(Keys.PageDown))                    
+                    _cam.Zoom(+dt);
 
-                if (Util.IsKeyDown(Keys.L))
-                    _useFpsCamera = false;
-
-                if (Util.IsKeyDown(Keys.F))
-                    _useFpsCamera = true;
-
-                if (Util.IsKeyDown(Keys.PageUp))
-                    if (!_useFpsCamera)
-                        _cam2.Zoom(-_FPScameraSpeed * dt);
-                    else
-                        _cam.Zoom(-dt);
-
-                if (Util.IsKeyDown(Keys.PageDown))
-                    if (!_useFpsCamera)
-                        _cam2.Zoom(_FPScameraSpeed * dt);
-                    else
-                        _cam.Zoom(+dt);
             }
             System.Threading.Thread.Sleep(1); //Fix for UI lag. Sleeps the thread for 1 millisecond...
         }
@@ -404,23 +354,12 @@ namespace tor_tools
             Matrix proj;
             Matrix viewProj;
 
-            if (_useFpsCamera)
-            {
-                _cam.UpdateViewMatrix();
-                view = _cam.View;
-                proj = _cam.Proj;
-                viewProj = _cam.ViewProj;
-                _fx.SetEyePosW(_cam.Position);
-            }
-            else
-            {
-                _cam2.UpdateViewMatrix();
-                view = _cam2.View;
-                proj = _cam2.Proj;
-                viewProj = _cam2.ViewProj;
-                _fx.SetEyePosW(_cam2.Position);
-            }
-
+            _cam.UpdateViewMatrix();
+            view = _cam.View;
+            proj = _cam.Proj;
+            viewProj = _cam.ViewProj;
+            _fx.SetEyePosW(_cam.Position);
+        
             _fx.SetDirLights(_dirLights);
             _fx.SetEyePosW(_cam.Position);
 
@@ -630,7 +569,7 @@ namespace tor_tools
                 ImmediateContext.ResolveSubresource(BackBuffer, 0, outputFile, 0, Format.R8G8B8A8_UNorm);
                 Texture2D.ToFile(ImmediateContext, outputFile, format, filename);
                 Util.ReleaseCom(ref outputFile);
-                ((tor_tools.ModelBrowser)Window).setStatusLabel("Screenshot Completed");
+                ((tor_tools.WorldBrowser)Window).setStatusLabel("Screenshot Completed");
             }
             catch (Exception ex)
             {
@@ -655,26 +594,8 @@ namespace tor_tools
             {
                 var dy = MathF.ToRadians(0.4f * (e.Y - _lastMousePos.Y));
                 var dx = -(MathF.ToRadians(0.4f * (e.X - _lastMousePos.X)));
-                if (_useFpsCamera)
-                {
-                    _cam.Pitch(-dy);
-                    _cam.Yaw(dx);
-                }
-                else
-                {
-                    if (Util.IsKeyDown(Keys.LShiftKey))
-                    {
-                        dx = MathF.ToRadians(0.05f * (e.X - _lastMousePos.X));
-                        dy = MathF.ToRadians(0.05f * (e.Y - _lastMousePos.Y));
-                        _cam2.Strafe(-dx * _cam2.Radius);
-                        _cam2.Fly(dy * _cam2.Radius);
-                    }
-                    else
-                    {
-                        _cam2.Pitch(dy);
-                        _cam2.Yaw(-dx);
-                    }
-                }
+                _cam.Pitch(-dy);
+                _cam.Yaw(dx);                              
             }
             _lastMousePos = e.Location;
         }
@@ -682,25 +603,7 @@ namespace tor_tools
         protected override void OnMouseWheel(object sender, MouseEventArgs e)
         {
             int zoom = -(e.Delta) * SystemInformation.MouseWheelScrollLines / 120;
-
-            if (!_useFpsCamera)
-            {
-                if (Util.IsKeyDown(Keys.LShiftKey))
-                {
-                    _cam2.Zoom(0.005f * zoom);
-                }
-                else if (Util.IsKeyDown(Keys.LControlKey))
-                {
-                    _cam2.Zoom(0.5f * zoom);
-                }
-                else
-                {
-                    _cam2.Zoom(_LookAtZoomSpeed * zoom);
-                }
-            }
-            else
-                _cam.Zoom(0.10f * zoom);
-
+            _cam.Zoom(0.10f * zoom);
         }
 
         private void BuildGeometry()
