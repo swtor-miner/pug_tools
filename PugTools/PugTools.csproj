@@ -451,10 +451,6 @@
       <Project>{F59DF2F2-4E69-41E5-B63B-6D4ABF2CA6E1}</Project>
       <Name>TorLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TreeViewFast\TreeViewFast.csproj">
-      <Project>{4ef6274c-0157-40a3-abca-a30dd0ec49ec}</Project>
-      <Name>TreeViewFast</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Asset Browser\Icons\COMPUTER.ICO" />

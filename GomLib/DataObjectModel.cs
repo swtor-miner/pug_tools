@@ -5,6 +5,8 @@ using System.Text;
 using TorLib;
 using System.Xml;
 using System.Xml.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using GomLib.ModelLoader;
 
 namespace GomLib
@@ -352,21 +354,17 @@ namespace GomLib
         public void CrossLink()
         {
             if (CrossLinked) return;
-            foreach (DomType t in DomTypeMap.Values)
+
+            //foreach (DomType t in DomTypeMap.Values)
+            Parallel.ForEach(DomTypeMap.Values, t =>
             {
                 if (t.GetType() == typeof(GomObject))
                 {
-                    //if (t.Name.Length > 4)
-                        //{
-                        //if (t.Name.ToArray()[3] == '.')
-                        //{
-                            GomObject tG = t as GomObject;
-                            tG.FindReferences();
-                            tG.Unload();
-                        //}
-                    //}
+                    GomObject tG = t as GomObject;
+                    tG.FindReferences();
+                    tG.Unload();
                 }
-            }
+            });
             CrossLinked = true;
         }
 

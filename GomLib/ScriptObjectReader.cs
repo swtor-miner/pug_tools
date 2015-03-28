@@ -27,17 +27,12 @@ namespace GomLib
             IDictionary<string, object> resultDict = result.Dictionary;
             if (domClass != null)
             {
-                resultDict["Script_Type"] = domClass;
+                resultDict.Add("Script_Type", domClass);
             }
-            else
-            {
-                resultDict["Script_Type"] = null;
-            }
-
-            resultDict["Script_TypeId"] = reader.ReadNumber();
+            resultDict.Add("Script_TypeId", reader.ReadNumber());
 
             int numFields = (int)reader.ReadNumber();
-            resultDict["Script_NumFields"] = numFields;
+            resultDict.Add("Script_NumFields", numFields);
 
             ulong fieldId = 0;
             for (var i = 0; i < numFields; i++)

@@ -228,7 +228,7 @@ namespace GomLib.Models
                     //txtFile.Append("      Ability Id: " + abl.Id + n);
                     //txtFile.Append("      Flags (Passive/Hidden): " + abl.IsPassive + "/" + abl.IsHidden + n);
                     txtFile.Append("      Description: " + abl.Description + " (" + abl.DescriptionId + ")" + n);
-                    txtFile.Append("      Tokens: " + abl.TalentTokens + n);
+                    //txtFile.Append("      Tokens: " + abl.TalentTokens + n);
                     /*if (abl.ablEffects != null) // May have gone overboard here on the text output. Add check for Verbose flag and radiobutton to set it.
                     {
                         txtFile.Append("      Ability Effects:" + abl.ablEffects.ToArray().ToString() + n);

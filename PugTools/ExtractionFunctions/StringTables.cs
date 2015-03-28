@@ -129,28 +129,17 @@ namespace tor_tools
             var doc = XDocument.Load(dom._assets.FindFile("\\resources\\gamedata\\str\\stb.manifest").OpenCopyInMemory());
 
             dom.stringTable.Flush(); //flushing out any loaded string tables that might have been altered.
-            addtolist("Discovering StringTable Names");
-            addtolist2("Loading default String Tables.");
-            int i = 0;
             HashSet<string> foundStringTables = new HashSet<string>();
-            ClearProgress();
-            int count = itmList.Count + doc.Element("manifest").Elements("file").Count();
             foreach (XElement element in doc.Element("manifest").Elements("file"))
             {
-                progressUpdate(i, count);
-                addtolist2("String Table: " + element.Attribute("val").Value);
                 foundStringTables.Add(element.Attribute("val").Value);
-                i++;
                 //XElement stringTable = StbToXElement(element.Attribute("val").Value);
                 //if (stringTable.Elements().Count() > 0) { stringTables.Add(stringTable); }
             }
 
-            addtolist2("Discovering Conversation StringTable Names.");
             foreach (GomObject itm in itmList)
             {
-                progressUpdate(i, count);
-                addtolist2("Conversation: " + itm.Name);
-                Dictionary<object, object> dialogNodeMap = itm.Data.ValueOrDefault<Dictionary<object, object>>("cnvTreeDialogNodes_Prototype", new Dictionary<object, object>());
+                /*Dictionary<object, object> dialogNodeMap = itm.Data.ValueOrDefault<Dictionary<object, object>>("cnvTreeDialogNodes_Prototype", new Dictionary<object, object>());
                 foreach (KeyValuePair<object, object> dialogKvp in dialogNodeMap)
                 {
                     long nodeNumber = ((GomObjectData)dialogKvp.Value).Get<long>("cnvNodeNumber");
@@ -161,7 +150,10 @@ namespace tor_tools
                         foundStringTables.Add(stb);
                     }
                 }
-                i++;
+                 This is always equal to the conversation node name. We can save a ton of time by just looking at that.
+                 */
+                string potentialStb = "str." + itm.Name;
+                foundStringTables.Add(potentialStb);
                 itm.Unload();
             }
             return foundStringTables;

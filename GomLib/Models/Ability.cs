@@ -40,8 +40,9 @@ namespace GomLib.Models
         public bool GcdOverride { get; set; }
         public long ModalGroup { get; set; }
         public ulong SharedCooldown { get; set; }
+        /* What's the point?
         public string TalentTokens { get; set; }
-        public string AbilityTokens { get; set; }
+        public string AbilityTokens { get; set; }*/
         public float TargetArc { get; set; }
         public float TargetArcOffset { get; set; }
         public int TargetRule { get; set; }
@@ -105,15 +106,69 @@ namespace GomLib.Models
             hash ^= GcdOverride.GetHashCode();
             hash ^= ModalGroup.GetHashCode();
             hash ^= SharedCooldown.GetHashCode();
-            if (TalentTokens != null) { hash ^= TalentTokens.GetHashCode(); }
-            if (AbilityTokens != null) { hash ^= AbilityTokens.GetHashCode(); }
             hash ^= TargetArc.GetHashCode();
             hash ^= TargetArcOffset.GetHashCode();
             hash ^= TargetRule.GetHashCode();
             hash ^= LineOfSightCheck.GetHashCode();
             hash ^= Pushback.GetHashCode();
             hash ^= IgnoreAlacrity.GetHashCode();
-            if (DescriptionTokens != null) foreach (var x in DescriptionTokens) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (DescriptionTokens != null)
+            {
+                foreach (var x in DescriptionTokens)
+                {
+                    hash ^= x.Key.GetHashCode();
+                    object typeObj;
+                    string type = string.Empty;
+                    if (x.Value.TryGetValue("ablDescriptionTokenType", out typeObj))
+                    {
+                        type = (string)typeObj;
+                    }
+
+                    foreach(var val in x.Value)
+                    {
+                        hash ^= val.Key.GetHashCode();
+                        if (val.Key == "ablParsedDescriptionToken" &&
+                            (type == "ablDescriptionTokenTypeDamage" || type == "ablDescriptionTokenTypeHealing"))
+                        {
+                            List<KeyValuePair<string, List<Dictionary<string, string>>>> coeffValues
+                                    = (List<KeyValuePair<string, List<Dictionary<string, string>>>>)val.Value;
+   
+                                    foreach (KeyValuePair<string, List<Dictionary<string, string>>> actionDetails in coeffValues)
+                                    {
+                                        hash ^= actionDetails.Key.GetHashCode();
+                                        foreach (Dictionary<string, string> actionDict in actionDetails.Value)
+                                        {
+                                            foreach (KeyValuePair<string, string> detailsKvp in actionDict)
+                                            {
+                                                hash ^= detailsKvp.Key.GetHashCode();
+                                                hash ^= detailsKvp.Value.GetHashCode();
+                                            }
+                                        }
+                            }
+                        }
+                        else
+                        {
+                            string valueStr = val.Value as string;
+                            if (valueStr != null)
+                            {
+                                hash ^= valueStr.GetHashCode();
+                            }
+                            else
+                            {
+                                if(val.Value is long)
+                                {
+                                    hash ^= ((long)val.Value).GetHashCode();
+                                }
+                                else if (val.Value is float)
+                                {
+                                    hash ^= ((float)val.Value).GetHashCode();
+                                }
+                            }
+                            
+                        }
+                    }
+                }
+            }
             hash ^= AiType.GetHashCode();
             hash ^= CombatMode.GetHashCode();
             hash ^= AutoAttackMode.GetHashCode();
@@ -151,8 +206,6 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, abl)) return true;
 
-            if (this.AbilityTokens != abl.AbilityTokens)
-                return false;
             //if (this.ablEffects != abl.ablEffects)
                 //return false;
             if (this.AiType != abl.AiType)
@@ -250,8 +303,6 @@ namespace GomLib.Models
                 return false;
             if (this.SharedCooldown != abl.SharedCooldown)
                 return false;
-            if (this.TalentTokens != abl.TalentTokens)
-                return false;
             if (this.TargetArc != abl.TargetArc)
                 return false;
             if (this.TargetArcOffset != abl.TargetArcOffset)
@@ -280,7 +331,7 @@ namespace GomLib.Models
             txtFile.Append("Id: " + Id + n);
             txtFile.Append("  Flags (Passive/Hidden): " + IsPassive + "/" + IsHidden + n);
             txtFile.Append("  Description: " + Description + " (" + DescriptionId + ")" + n);
-            txtFile.Append("  Tokens: " + TalentTokens + n);
+
             txtFile.Append("  Fqn: " + Fqn + n);
             txtFile.Append("  Icon: " + Icon + n);
             txtFile.Append("  level: " + Level + n);
@@ -304,6 +355,64 @@ namespace GomLib.Models
             if (SharedCooldown != 0) { txtFile.Append("  Shared Cooldown: " + SharedCooldown + n); }
             if (TargetArc != 0 && TargetArcOffset != 0) { txtFile.Append("  Target Arc/Offset: " + TargetArc + "/" + TargetArcOffset + n); }
             txtFile.Append("  Target Rule: " + (GomLib.Models.TargetRule)TargetRule + n + n);
+
+            txtFile.Append("  Tokens: " + n);
+
+            if (DescriptionTokens != null && DescriptionTokens.Count > 0)
+            {
+                //Add all the tokens.
+                foreach (KeyValuePair<int, Dictionary<string, object>> kvp in DescriptionTokens)
+                {
+                    //Create the Token node and give it the token ID.
+                    txtFile.Append("    Token ID: " + kvp.Key + n);
+
+                    //Lets get the token type..
+                    object tokenTypeObj;
+                    string tokenType = string.Empty;
+                    if (kvp.Value.TryGetValue("ablDescriptionTokenType", out tokenTypeObj))
+                    {
+                        tokenType = (string)tokenTypeObj;
+                    }
+
+                    //Handle these differently.
+                    if (tokenType == "ablDescriptionTokenTypeDamage" || tokenType == "ablDescriptionTokenTypeHealing")
+                    {
+                        foreach (KeyValuePair<string, object> tokenValueKvp in kvp.Value)
+                        {
+                            //Handle this differently.
+                            if (tokenValueKvp.Key == "ablParsedDescriptionToken")
+                            {
+                                txtFile.Append("      Coefficient Values:" + n);
+                                List<KeyValuePair<string, List<Dictionary<string, string>>>> coeffValues
+                                    = (List<KeyValuePair<string, List<Dictionary<string, string>>>>)tokenValueKvp.Value;
+
+                                foreach (KeyValuePair<string, List<Dictionary<string, string>>> actionDetails in coeffValues)
+                                {
+                                    txtFile.Append("        Action - " + actionDetails.Key + ":" + n);
+                                    foreach (Dictionary<string, string> actionDict in actionDetails.Value)
+                                    {
+                                        foreach (KeyValuePair<string, string> detailsKvp in actionDict)
+                                        {
+                                            txtFile.Append("          " + detailsKvp.Key + " = " + detailsKvp.Value + n);
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                txtFile.Append("      " + tokenValueKvp.Key + " = " + tokenValueKvp.Value + n);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (KeyValuePair<string, object> finalKvp in kvp.Value)
+                        {
+                            txtFile.Append("      " + finalKvp.Key + " = " + finalKvp.Value + n);
+                        }
+                    }
+                }
+            }
 
             return txtFile.ToString();
         }
@@ -390,7 +499,7 @@ namespace GomLib.Models
                     ability.Element("Description").Add(new XAttribute("Id", DescriptionId));
                     ability.Add(new XElement("IsPassive", IsPassive),
                         new XElement("IsHidden", IsHidden),
-                        new XElement("Tokens", (DescriptionTokens ?? new Dictionary<int, Dictionary<string, object>>()).Select(x => TokenToXElement(x))),
+                        new XElement("Tokens"),
                         new XElement("Icon", Icon),
                         new XElement("level", Level),
                         new XElement("MinRange", MinRange * 10),
@@ -411,15 +520,72 @@ namespace GomLib.Models
                         new XElement("TargetArc", TargetArc),
                         new XElement("TargetArcOffset", TargetArcOffset),
                         new XElement("TargetRule", (GomLib.Models.TargetRule)TargetRule));
+
+                    if (DescriptionTokens != null && DescriptionTokens.Count > 0)
+                    {
+                        //Add all the tokens.
+                        XElement tokenRootElem = ability.Element("Tokens");
+                        foreach (KeyValuePair<int, Dictionary<string, object>> kvp in DescriptionTokens)
+                        {
+                            //Create the Token node and give it the token ID.
+                            XElement tokenElem = new XElement("Token", new XAttribute("Id", kvp.Key));
+
+                            //Lets get the token type..
+                            object tokenTypeObj;
+                            string tokenType = string.Empty;
+                            if (kvp.Value.TryGetValue("ablDescriptionTokenType", out tokenTypeObj))
+                            {
+                                tokenType = (string)tokenTypeObj;
+                            }
+
+                            //Handle these differently.
+                            if (tokenType == "ablDescriptionTokenTypeDamage" || tokenType == "ablDescriptionTokenTypeHealing")
+                            {
+                                foreach (KeyValuePair<string, object> tokenValueKvp in kvp.Value)
+                                {
+                                    //Handle this differently.
+                                    if (tokenValueKvp.Key == "ablParsedDescriptionToken")
+                                    {
+                                        XElement detailsElem = new XElement("ablCoefficients");
+                                        List<KeyValuePair<string, List<Dictionary<string, string>>>> coeffValues
+                                            = (List<KeyValuePair<string, List<Dictionary<string, string>>>>)tokenValueKvp.Value;
+
+                                        foreach (KeyValuePair<string, List<Dictionary<string, string>>> actionDetails in coeffValues)
+                                        {
+                                            XElement actionElem = new XElement("Action",
+                                                new XAttribute("Name", actionDetails.Key));
+                                            foreach (Dictionary<string, string> actionDict in actionDetails.Value)
+                                            {
+                                                foreach (KeyValuePair<string, string> detailsKvp in actionDict)
+                                                {
+                                                    actionElem.Add(new XElement(detailsKvp.Key, detailsKvp.Value));
+                                                }
+                                            }
+                                            detailsElem.Add(actionElem);
+                                        }
+                                        tokenElem.Add(detailsElem);
+                                    }
+                                    else
+                                    {
+                                        tokenElem.Add(new XElement(tokenValueKvp.Key, tokenValueKvp.Value));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                foreach (KeyValuePair<string, object> finalKvp in kvp.Value)
+                                {
+                                    tokenElem.Add(new XElement(finalKvp.Key, finalKvp.Value));
+                                }
+                            }
+                            tokenRootElem.Add(tokenElem);
+                        }
+                    }
                 }
+
                 ability.Elements().Where(x => x.Value == "0" || x.IsEmpty).Remove();
             }
             return ability;
-        }
-        public static XElement TokenToXElement(KeyValuePair<int, Dictionary<string, object>> data)
-        {
-            return new XElement("Token", new XAttribute("Id", data.Key),
-                data.Value.Select(x => new XElement(x.Key, x.Value)));
         }
     }
 }

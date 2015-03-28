@@ -39,17 +39,22 @@ namespace GomLib
             }
 
             result = new StringTable(fqn, _dom);
-            try
+            if (result.StbFileExists())
             {
-                result.Load();
-                fqnMap[fqn] = result;
-                return result;
+                try
+                {
+                    result.Load();
+                    fqnMap.Add(fqn, result);
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    failedFqns.Add(fqn, ex.Message);
+                    return null;
+                }
             }
-            catch (Exception ex)
-            {
-                failedFqns.Add(fqn, ex.Message);
-                return null;
-            }
+
+            return null;
         }
 
         public Dictionary<long, StringTableEntry> data;
@@ -111,6 +116,26 @@ namespace GomLib
 
             //Console.WriteLine("Cannot find String {0} in StringTable {1} for {2}", id, this.Fqn, forFqn);
             return null;
+        }
+
+        public bool StbFileExists()
+        {
+            List<string> localizations = new List<string> {
+                "en-us",
+                "fr-fr",
+                "de-de"
+            };
+
+            foreach (string localization in localizations)
+            {
+                var path = String.Format("/resources/" + localization + "/{0}.stb", this.Fqn.Replace('.', '/'));
+                if (_dom._assets.HasFile(path))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void Load()
@@ -409,17 +434,38 @@ namespace GomLib
 
             var ssComp = new Models.DictionaryComparer<long, StringTableEntry>();
             if (!ssComp.Equals(this.data, stb.data))
-            
-            foreach (var entry in data)
-            {
-                var prevEntry = new StringTableEntry();
-                stb.data.TryGetValue(entry.Key, out prevEntry);
-                if (prevEntry == null) return false;
-                if (!entry.Value.Equals(prevEntry))
-                    return false;
-            }
+                return false;
 
-            return true;
+                //foreach (var entry in data)
+            bool isEqual = true;
+            System.Threading.Tasks.Parallel.ForEach(data, (entry, loopState) =>
+            {
+                if (isEqual)
+                {
+                    StringTableEntry prevEntry;
+                    if (stb.data.TryGetValue(entry.Key, out prevEntry))
+                    {
+                        if (prevEntry == null)
+                        {
+                            isEqual = false;
+                            loopState.Stop();
+                        }
+
+                        if (!entry.Value.Equals(prevEntry))
+                        {
+                            isEqual = false;
+                            loopState.Stop();
+                        }
+                    }
+                    else
+                    {
+                        isEqual = false;
+                        loopState.Stop();
+                    }
+                }
+            });
+
+            return isEqual;
         }
 
         public override int GetHashCode()

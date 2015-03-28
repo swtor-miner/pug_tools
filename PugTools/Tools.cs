@@ -488,7 +488,12 @@ namespace tor_tools
             {
                 try
                 {
+                    System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+                    sw.Start();
+                    
                     LoadData();
+                    sw.Stop();
+                    addtolist("Took " + sw.ElapsedMilliseconds + "ms to load data.");
 
                     DisableButtons();
                     List<string> extensions = new List<string>();
@@ -497,126 +502,157 @@ namespace tor_tools
                     ExportICONS = extensions.Contains("ICONS");
                     if (extensions.Contains("TORC"))
                     {
-                        DisableButtons(); GC.Collect();
+                        sw.Restart();
+                        DisableButtons();
                         getTorc();
+                        sw.Stop();
+                        addtolist("Took " + sw.ElapsedMilliseconds + "ms to handle TORC.");
                     }
                     if (extensions.Contains("MISC"))
                     {
-                        DisableButtons(); GC.Collect();
+                        sw.Restart();
+                        DisableButtons();
                         FindNewMtxImages();
-                    }
-                    if (extensions.Contains("GOM"))
-                    {
-                        addtolist("Getting Raw GOM.");
-                        ExportGOM = extensions.Contains("EXP");
-                        getRaw();
-                    }
-                    if (extensions.Contains("AC"))
-                    {
-                        DisableButtons(); GC.Collect();
-                        getObjects("class.pc.advanced", "AdvancedClasses");
+                        sw.Stop();
+                        addtolist("Took " + sw.ElapsedMilliseconds + "ms to get MTX images.");
                     }
                     if (extensions.Contains("STB"))
                     {
-                        DisableButtons(); GC.Collect();
+                        sw.Restart();
+                        DisableButtons();
                         addtolist("Getting String Tables.");
                         getStrings();
+                        sw.Stop();
+                        addtolist("Took " + sw.ElapsedMilliseconds + "ms to get string tables.");
+                    }
+                    if (extensions.Contains("GOM"))
+                    {
+                        sw.Restart();
+                        DisableButtons();
+                        addtolist("Getting Raw GOM.");
+                        ExportGOM = extensions.Contains("EXP");
+                        getRaw();
+                        sw.Stop();
+                        addtolist("Took " + sw.ElapsedMilliseconds + "ms to get GOM.");
+                    }
+                    if (extensions.Contains("AC"))
+                    {
+                        sw.Restart();
+                        DisableButtons();
+                        getObjects("class.pc.advanced", "AdvancedClasses");
+                        sw.Stop();
+                        addtolist("Took " + sw.ElapsedMilliseconds + "ms to get Advanced Classes");
                     }
                     if (extensions.Contains("CNQ"))
                     {
-                        DisableButtons(); GC.Collect();
+                        sw.Restart();
+                        DisableButtons();
                         getPrototypeObjects("Conquests", "wevConquestInfosPrototype", "wevConquestTable");
+                        sw.Stop();
+                        addtolist("Took " + sw.ElapsedMilliseconds + "ms to get Conquests.");
                     }
                     if (extensions.Contains("ABL"))
                     {
-                        DisableButtons(); GC.Collect();
+                        sw.Restart();
+                        DisableButtons();
                         getObjects("abl.", "Abilities");
+                        sw.Stop();
+                        addtolist("Took " + sw.ElapsedMilliseconds + "ms to get Abilities..");
                     }
                     if (extensions.Contains("ACH"))
                     {
-                        DisableButtons(); GC.Collect();
+                        sw.Restart();
+                        DisableButtons();
                         getObjects("ach.", "Achievements");
+                        sw.Stop();
+                        addtolist("Took " + sw.ElapsedMilliseconds + "ms to get Achievements.");
                     }
                     if (extensions.Contains("APT"))
                     {
-                        DisableButtons(); GC.Collect();
+                        sw.Restart();
+                        DisableButtons();
                         getObjects("apt.", "Strongholds");
+                        sw.Stop();
+                        addtolist("Took " + sw.ElapsedMilliseconds + "ms to get Strongholds.");
                     }
                     if (extensions.Contains("AREA"))
                     {
-                        DisableButtons(); GC.Collect();
+                        sw.Restart();
+                        DisableButtons();
                         addtolist("Getting Areas.");
                         getPrototypeObjects("Areas", "mapAreasDataProto", "mapAreasDataObjectList"); // getAreas();
+                        sw.Stop();
+                        addtolist("Took " + sw.ElapsedMilliseconds + "ms to get Areas.");
                     }
                     if (extensions.Contains("CDX"))
                     {
-                        DisableButtons(); GC.Collect();
+                        DisableButtons();
                         getObjects("cdx.", "CodexEntries");
                     }
                     if (extensions.Contains("CNV"))
                     {
-                        DisableButtons(); GC.Collect();
+                        DisableButtons();
                         getObjects("cnv.", "Conversations");
                     }
                     if (extensions.Contains("DEC"))
                     {
-                        DisableButtons(); GC.Collect();
+                        DisableButtons();
                         getObjects("dec.", "Decorations");
                     }
                     if (extensions.Contains("ABLEFF"))
                     {
-                        DisableButtons(); GC.Collect();
+                        DisableButtons();
                         getObjects("eff.", "Effects");
                     }
                     if (extensions.Contains("ITM"))
                     {
-                        DisableButtons(); GC.Collect();
+                        DisableButtons();
                         getObjects("itm.", "Items");
                     }
                     if (extensions.Contains("NPC"))
                     {
-                        DisableButtons(); GC.Collect();
+                        DisableButtons();
                         ExportNPP = extensions.Contains("NPP");
                         getObjects("npc.", "Npcs");
                     }
                     if (extensions.Contains("QST"))
                     {
-                        DisableButtons(); GC.Collect();
+                        DisableButtons();
                         getObjects("qst.", "Quests");
                     }
                     if (extensions.Contains("SCHEM"))
                     {
-                        DisableButtons(); GC.Collect();
+                        DisableButtons();
                         getObjects("schem.", "Schematics");
                     }
                     if (extensions.Contains("TAL"))
                     {
-                        DisableButtons(); GC.Collect();
+                        DisableButtons();
                         getObjects("tal.", "Talents");
                     }
                     if (extensions.Contains("COL"))
                     {
-                        DisableButtons(); GC.Collect();
+                        DisableButtons();
                         getPrototypeObjects("Collections", "colCollectionItemsPrototype", "colCollectionItemsData");
                     }
                     if (extensions.Contains("CMP"))
                     {
-                        DisableButtons(); GC.Collect();
+                        DisableButtons();
                         getPrototypeObjects("Companions", "chrCompanionInfo_Prototype", "chrCompanionInfoData");
                     }
                     if (extensions.Contains("MTX"))
                     {
-                        DisableButtons(); GC.Collect();
+                        DisableButtons();
                         getPrototypeObjects("MtxStoreFronts", "mtxStorefrontInfoPrototype", "mtxStorefrontData");
                     }
                     if (extensions.Contains("GSF"))
                     {
-                        DisableButtons(); GC.Collect();
+                        DisableButtons();
                         getPrototypeObjects("Ships", "scFFShipsDataPrototype", "scFFShipsData");
                     }
                     if (extensions.Contains("IPP"))
                     {
-                        DisableButtons(); GC.Collect();
+                        DisableButtons();
                         addtolist("Getting Item Appearances.");
                         getObjects("ipp.", "ItemAppearances");
                         //getItemApps();
@@ -629,6 +665,7 @@ namespace tor_tools
                     MessageBox.Show(String.Format("An error occured while loading data. ({0})", e.HResult));
                 }
             }
+            GC.Collect();
             EnableButtons();
         }
         public void getRaw()

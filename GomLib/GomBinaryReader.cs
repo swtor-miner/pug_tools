@@ -34,21 +34,29 @@ namespace GomLib
             if (b0 < 0xC0) { return (ulong)b0; }
             if (b0 < 0xC8)
             {
-                int numBytes = b0 - 0xBF;
-                for (var i = 0; i < numBytes; i++)
+                byte[] byteBuffer = new byte[b0 - 0xBF];
+                this.Read(byteBuffer, 0, byteBuffer.Length);
+
+                for (int i = 0; i < byteBuffer.Length; i++)
                 {
                     val <<= 8;
-                    val = val + this.ReadByte();
+                    val += byteBuffer[i];
                 }
+
+                return val;
             }
             else if (b0 < 0xD0)
             {
-                int numBytes = b0 - 0xC7;
-                for (var i = 0; i < numBytes; i++)
+                byte[] byteBuffer = new byte[b0 - 0xC7];
+                this.Read(byteBuffer, 0, byteBuffer.Length);
+
+                for (int i = 0; i < byteBuffer.Length; i++)
                 {
                     val <<= 8;
-                    val = val + this.ReadByte();
+                    val += byteBuffer[i];
                 }
+
+                return val;
             }
             /*else if (b0 == 0xD8)
             {
@@ -62,13 +70,6 @@ namespace GomLib
             {
                 throw new InvalidOperationException(String.Format("Unknown Number Prefix: 0x{0:X}", b0));
             }
-
-            //if (val == 16141034714338427555)
-            //{
-            //    Console.WriteLine("Gotcha! ulong");
-            //}
-
-            return val;
         }
 
         public long ReadSignedNumber()
@@ -86,21 +87,25 @@ namespace GomLib
                 if (b0 < 0xC0) { return (long)b0; }
                 if (b0 < 0xC8)
                 {
-                    int numBytes = b0 - 0xBF;
-                    for (var i = 0; i < numBytes; i++)
+                    byte[] byteBuffer = new byte[b0 - 0xBF];
+                    this.Read(byteBuffer, 0, byteBuffer.Length);
+
+                    for (int i = 0; i < byteBuffer.Length; i++)
                     {
                         val <<= 8;
-                        val = val | this.ReadByte();
+                        val |= byteBuffer[i];
                     }
                     val = -val;
                 }
                 else if (b0 < 0xD0)
                 {
-                    int numBytes = b0 - 0xC7;
-                    for (var i = 0; i < numBytes; i++)
+                    byte[] byteBuffer = new byte[b0 - 0xC7];
+                    this.Read(byteBuffer, 0, byteBuffer.Length);
+
+                    for (int i = 0; i < byteBuffer.Length; i++)
                     {
                         val <<= 8;
-                        val = val | this.ReadByte();
+                        val |= byteBuffer[i];
                     }
                 }
                 else if (b0 == 0xD0)
