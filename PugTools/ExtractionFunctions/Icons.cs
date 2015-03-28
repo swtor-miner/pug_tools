@@ -65,7 +65,14 @@ namespace tor_tools
                     file2.WriteLine("/resources/gfx/icons/" + icon + ".dds");
                     i++;
                 }
-                
+
+                icon = gomItm.Data.ValueOrDefault<string>("effIcon", null);
+
+                if (icon != null)
+                {
+                    file2.WriteLine("/resources/gfx/icons/" + icon + ".dds");
+                    i++;
+                }                
             }
             ablList = null;
             GC.Collect();
