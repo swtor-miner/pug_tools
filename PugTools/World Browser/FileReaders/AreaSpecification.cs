@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using TorLib;
 
-namespace TorLib.FileReaders
+namespace FileFormats
 {
     public class AreaSpecification
     {
@@ -30,17 +31,22 @@ namespace TorLib.FileReaders
         public Dictionary<long, AreaAsset> AssetIdMap { get; set; }
         public Dictionary<string, List<AreaAsset>> AssetsByExtension { get; set; }
         public List<RoomSpecification> Rooms { get; set; }
+        public ulong Id;
+        public string Path;
 
         private Assets _assets;
 
-        public AreaSpecification(File areaDat, Assets assets)
+        public AreaSpecification(HashFileInfo info, Assets assets)
         {
             _assets = assets;
+            File areaDat = info.file;
             if (areaDat == null) { throw new ArgumentNullException("areaDat", "File cannot be null"); }
             File = areaDat;
             AssetIdMap = new Dictionary<long, AreaAsset>();
             AssetsByExtension = new Dictionary<string, List<AreaAsset>>();
             Rooms = new List<RoomSpecification>();
+            Id = ulong.Parse(info.Directory.Split('/').Last());
+            Path = info.Directory;
         }
 
         public IEnumerable<AssetInstance> FindInstances(Func<AssetInstance, bool> predicate)
@@ -128,8 +134,8 @@ namespace TorLib.FileReaders
                             }
                             break;
                         case FileRegion.Rooms:
-                            var roomFileName = currentLine.Trim();
-                            string roomFilePath = String.Format("{0}/{1}.dat", File.FilePath.Remove(File.FilePath.LastIndexOf('/')), roomFileName);
+                            var roomFileName = currentLine.Trim();                            
+                            string roomFilePath = String.Format("{0}/{1}.dat", Path, roomFileName);
                             File roomFile = _assets.FindFile(roomFilePath);
                             if (roomFile == null)
                             {
@@ -137,7 +143,7 @@ namespace TorLib.FileReaders
                                 break;
                             }
 
-                            FileReaders.RoomSpecification roomSpec = new RoomSpecification(roomFile, roomFileName, this);
+                            RoomSpecification roomSpec = new RoomSpecification(roomFile, roomFileName, this);
                             roomSpec.Read();
                             this.Rooms.Add(roomSpec);
                             break;

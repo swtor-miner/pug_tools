@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using TorLib;
+using File = TorLib.File;
 
-namespace TorLib.FileReaders
+namespace FileFormats
 {
     public class RoomSpecification
     {
@@ -122,14 +125,53 @@ namespace TorLib.FileReaders
                                         var match = instanceValueParser.Match(currentLine);
                                         if (match.Success)
                                         {
-                                            currentInstance.HasPosition = true;
+                                            //currentInstance.HasPosition = true;
                                             string posStr = match.Groups[2].Value;
                                             posStr = posStr.Substring(1, posStr.Length - 2);
                                             string[] coords = posStr.Split(',');
 
-                                            currentInstance.PositionX = float.Parse(coords[0]);
-                                            currentInstance.PositionY = float.Parse(coords[1]);
-                                            currentInstance.PositionZ = float.Parse(coords[2]);
+                                            currentInstance.Position.X = float.Parse(coords[0]);
+                                            currentInstance.Position.Y = float.Parse(coords[1]);
+                                            currentInstance.Position.Z = float.Parse(coords[2]);
+                                        }
+                                    }
+                                    else if (trimmedLine.StartsWith(".Rotation="))
+                                    {
+                                        var match = instanceValueParser.Match(currentLine);
+                                        if (match.Success)
+                                        {
+                                            //currentInstance.HasRotation = true;
+                                            string posStr = match.Groups[2].Value;
+                                            posStr = posStr.Substring(1, posStr.Length - 2);
+                                            string[] coords = posStr.Split(',');
+
+                                            currentInstance.Rotation.X = float.Parse(coords[0]);
+                                            currentInstance.Rotation.Y = float.Parse(coords[1]);
+                                            currentInstance.Rotation.Z = float.Parse(coords[2]);
+                                        }
+                                    }
+                                    else if (trimmedLine.StartsWith(".Scale="))
+                                    {
+                                        var match = instanceValueParser.Match(currentLine);
+                                        if (match.Success)
+                                        {
+                                            //currentInstance.HasScale = true;
+                                            string posStr = match.Groups[2].Value;
+                                            posStr = posStr.Substring(1, posStr.Length - 2);
+                                            string[] coords = posStr.Split(',');
+
+                                            currentInstance.Scale.X = float.Parse(coords[0]);
+                                            currentInstance.Scale.Y = float.Parse(coords[1]);
+                                            currentInstance.Scale.Z = float.Parse(coords[2]);
+                                        }
+                                    }
+                                    else if (trimmedLine.StartsWith(".Hidden="))
+                                    {
+                                        var match = instanceValueParser.Match(currentLine);
+                                        if (match.Success)
+                                        {
+                                            bool hidden = bool.Parse(match.Groups[2].Value);
+                                            currentInstance.Hidden = hidden;
                                         }
                                     }
                                     else if (trimmedLine.StartsWith(".ParentInstance="))
@@ -150,10 +192,12 @@ namespace TorLib.FileReaders
                                                 parentAssetInstances.Add(currentInstance);
                                             }
                                         }
-                                    }
+                                    }                                   
                                 }
                                 else
                                 {
+                                    if (currentInstance != null)
+                                        currentInstance.CalculateTransform();
                                     currentInstance = new AssetInstance();
 
                                     // Parse Instance Id and Asset Id
@@ -178,8 +222,21 @@ namespace TorLib.FileReaders
                                 }
                             }
                             break;
-                    }
+                     }
                 }
+            }
+        }
+
+        public static void CopyTo(Stream input, Stream output)
+        {
+            byte[] buffer = new byte[16 * 1024];
+            int bytesRead = 0;
+
+            bytesRead = input.Read(buffer, 0, buffer.Length);
+            while (bytesRead > 0)
+            {
+                output.Write(buffer, 0, bytesRead);
+                bytesRead = input.Read(buffer, 0, buffer.Length);
             }
         }
     }

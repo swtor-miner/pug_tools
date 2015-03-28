@@ -90,10 +90,6 @@
     <Compile Include="File.cs" />
     <Compile Include="FileExtension.cs" />
     <Compile Include="FileId.cs" />
-    <Compile Include="FileReaders\AreaSpecification.cs" />
-    <Compile Include="FileReaders\AssetData.cs" />
-    <Compile Include="FileReaders\AssetInstance.cs" />
-    <Compile Include="FileReaders\RoomSpecification.cs" />
     <Compile Include="GameInfo.cs" />
     <Compile Include="HashDictionaryInstance.cs" />
     <Compile Include="HashFileInfo.cs" />

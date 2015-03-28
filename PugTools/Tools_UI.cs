@@ -392,6 +392,7 @@ namespace tor_tools
                 buttonSelectExtractFolder.Enabled = false;
                 buttonFindAssets.Enabled = false;
                 buttonFindPrevAssets.Enabled = false;
+				btnWorldBrowser.Enabled = false;
                 gbxFormat.Enabled = false;
                 gbxDB.Enabled = false;
                 gbxExtract.Enabled = false;
@@ -417,6 +418,7 @@ namespace tor_tools
                 buttonSelectExtractFolder.Enabled = true;
                 buttonFindAssets.Enabled = true;
                 buttonFindPrevAssets.Enabled = true;
+                btnWorldBrowser.Enabled = true;              
                 gbxFormat.Enabled = true;
                 gbxDB.Enabled = true;
                 gbxExtract.Enabled = true;

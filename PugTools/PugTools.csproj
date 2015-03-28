@@ -340,6 +340,10 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tools\HelperFunctions.cs" />
+    <Compile Include="World Browser\FileReaders\AreaSpecification.cs" />
+    <Compile Include="World Browser\FileReaders\AssetData.cs" />
+    <Compile Include="World Browser\FileReaders\AssetInstance.cs" />    
+    <Compile Include="World Browser\FileReaders\RoomSpecification.cs" />
     <Compile Include="World Browser\View_Area.cs" />
     <Compile Include="World Browser\WorldBrowser.cs">
       <SubType>Form</SubType>

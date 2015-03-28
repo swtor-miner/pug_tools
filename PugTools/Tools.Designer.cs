@@ -542,7 +542,6 @@
             // 
             // btnWorldBrowser
             // 
-            this.btnWorldBrowser.Enabled = false;
             this.btnWorldBrowser.Location = new System.Drawing.Point(6, 77);
             this.btnWorldBrowser.Name = "btnWorldBrowser";
             this.btnWorldBrowser.Size = new System.Drawing.Size(108, 23);

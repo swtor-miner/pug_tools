@@ -34,7 +34,7 @@
             this.treeViewFast1 = new TreeViewFast.Controls.TreeViewFast();
             this.btnDataCollapse = new System.Windows.Forms.Button();
             this.btnStopRender = new System.Windows.Forms.Button();
-            this.btnModelBrowserHelp = new System.Windows.Forms.Button();
+            this.btnWorldBrowserHelp = new System.Windows.Forms.Button();
             this.exportButton = new System.Windows.Forms.Button();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.renderPanel = new System.Windows.Forms.Panel();
@@ -111,7 +111,7 @@
             // 
             this.splitContainer2.Panel2.Controls.Add(this.btnDataCollapse);
             this.splitContainer2.Panel2.Controls.Add(this.btnStopRender);
-            this.splitContainer2.Panel2.Controls.Add(this.btnModelBrowserHelp);
+            this.splitContainer2.Panel2.Controls.Add(this.btnWorldBrowserHelp);
             this.splitContainer2.Panel2.Controls.Add(this.exportButton);
             this.splitContainer2.Size = new System.Drawing.Size(130, 615);
             this.splitContainer2.SplitterDistance = 491;
@@ -127,8 +127,7 @@
             this.treeViewFast1.Name = "treeViewFast1";
             this.treeViewFast1.Size = new System.Drawing.Size(120, 481);
             this.treeViewFast1.TabIndex = 0;
-            this.treeViewFast1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewFast1_AfterSelect);
-            this.treeViewFast1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.treeViewFast1_MouseUp);
+            this.treeViewFast1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewFast1_AfterSelect);            
             // 
             // btnDataCollapse
             // 
@@ -151,17 +150,19 @@
             this.btnStopRender.Text = "Stop Render";
             this.btnStopRender.UseVisualStyleBackColor = true;
             this.btnStopRender.Click += new System.EventHandler(this.btnStopRender_Click);
+            /*
             // 
-            // btnModelBrowserHelp
+            // btnWorldBrowserHelp
             // 
-            this.btnModelBrowserHelp.Enabled = false;
-            this.btnModelBrowserHelp.Location = new System.Drawing.Point(3, 32);
-            this.btnModelBrowserHelp.Name = "btnModelBrowserHelp";
-            this.btnModelBrowserHelp.Size = new System.Drawing.Size(108, 23);
-            this.btnModelBrowserHelp.TabIndex = 1;
-            this.btnModelBrowserHelp.Text = "Help";
-            this.btnModelBrowserHelp.UseVisualStyleBackColor = true;
-            this.btnModelBrowserHelp.Click += new System.EventHandler(this.btnModelBrowserHelp_Click);
+            this.btnWorldBrowserHelp.Enabled = false;
+            this.btnWorldBrowserHelp.Location = new System.Drawing.Point(3, 32);
+            this.btnWorldBrowserHelp.Name = "btnWorldBrowserHelp";
+            this.btnWorldBrowserHelp.Size = new System.Drawing.Size(108, 23);
+            this.btnWorldBrowserHelp.TabIndex = 1;
+            this.btnWorldBrowserHelp.Text = "Help";
+            this.btnWorldBrowserHelp.UseVisualStyleBackColor = true;
+            this.btnWorldBrowserHelp.Click += new System.EventHandler(this.btnWorldBrowserHelp_Click);
+             */
             // 
             // exportButton
             // 
@@ -171,8 +172,7 @@
             this.exportButton.Size = new System.Drawing.Size(108, 23);
             this.exportButton.TabIndex = 0;
             this.exportButton.Text = "Export";
-            this.exportButton.UseVisualStyleBackColor = true;
-            this.exportButton.Click += new System.EventHandler(this.button1_Click);
+            this.exportButton.UseVisualStyleBackColor = true;            
             // 
             // splitContainer3
             // 
@@ -304,8 +304,7 @@
             // 
             this.toolStripMenuItemViewAll.Name = "toolStripMenuItemViewAll";
             this.toolStripMenuItemViewAll.Size = new System.Drawing.Size(148, 22);
-            this.toolStripMenuItemViewAll.Text = "View All Items";
-            this.toolStripMenuItemViewAll.Click += new System.EventHandler(this.toolStripMenuItemViewAll_Click);
+            this.toolStripMenuItemViewAll.Text = "View All Items";            
             // 
             // contextMenuStrip2
             // 
@@ -326,16 +325,16 @@
             this.BodyTypeStrip.Name = "contextMenuStrip3";
             this.BodyTypeStrip.Size = new System.Drawing.Size(153, 26);
             // 
-            // ModelBrowser
+            // WorldBrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(960, 615);
             this.Controls.Add(this.splitContainer1);
-            this.Name = "ModelBrowser";
-            this.Text = "Model Browser";
+            this.Name = "WorldBrowser";
+            this.Text = "World Browser";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ModelBrowser_FormClosing);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.WorldBrowser_FormClosing);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
@@ -377,7 +376,7 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemViewAll;
         private System.Windows.Forms.SplitContainer splitContainer2;
-        private System.Windows.Forms.Button btnModelBrowserHelp;
+        private System.Windows.Forms.Button btnWorldBrowserHelp;
         private System.Windows.Forms.Button btnStopRender;
         private System.Windows.Forms.SplitContainer splitContainer3;
         private System.Windows.Forms.SplitContainer splitContainer4;
