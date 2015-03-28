@@ -205,6 +205,7 @@ namespace GomLib.ModelLoader
                     t++;
                 }
                 //tokenNumber = 1;
+                /*
                 if (tokenList.Count > 0)
                 {
                     abl.TalentTokens = returnStrings(tokenList, "'", ",");
@@ -215,7 +216,7 @@ namespace GomLib.ModelLoader
                     abl.TalentTokens = String.Empty;
                     abl.AbilityTokens = null;
                 }
-
+                */
                 foreach (var token in descTokenList)
                 {
                     string tokenType = ((Dictionary<string, object>)token.Value)["ablDescriptionTokenType"].ToString();
