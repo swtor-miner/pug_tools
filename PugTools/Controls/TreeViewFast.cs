@@ -250,8 +250,22 @@ namespace TreeViewFast.Controls
             Nodes.Clear();
             _treeNodes.Clear();
 
-            List<string> keys = assetDict.Keys.ToList();
-            keys.Sort();
+            List<string> keys = assetDict.Keys.ToList();            
+            keys.Sort(delegate(string x, string y)
+            {
+                NodeAsset tx = assetDict[x];
+                NodeAsset ty = assetDict[y];
+                
+                if ((tx.obj == null && tx.dynObject == null && tx.objData == null) && (ty.obj != null || ty.dynObject != null || ty.objData != null))
+                    return -1;
+                else if ((tx.obj != null || tx.dynObject != null || tx.objData != null) && (ty.obj == null && ty.dynObject == null && ty.objData == null))
+                    return 1;
+                else if ((tx.obj == null && tx.dynObject == null && tx.objData == null) && (ty.obj == null && ty.dynObject == null && ty.objData == null))
+                    return string.Compare(x, y);
+                else
+                    return string.Compare(tx.Id, ty.Id);
+            });
+
 
             // Load internal dictionary with nodes
             foreach (var key in keys)
@@ -260,7 +274,8 @@ namespace TreeViewFast.Controls
                 var id = getId(item);
                 var displayName = getDisplayName(item);
                 var node = new TreeNode { Name = id.ToString(), Text = displayName, Tag = item };
-                if (item.obj != null)
+                
+                if (item.obj != null || item.dynObject != null || item.objData != null)
                 {
                     node.ImageIndex = 2;
                     node.SelectedImageIndex = 2;

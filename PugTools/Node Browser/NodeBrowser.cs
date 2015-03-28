@@ -252,8 +252,7 @@ namespace tor_tools
             Func<NodeAsset, string> getParentId = (x => x.parentId);
             Func<NodeAsset, string> getDisplayName = (x => x.displayName);
             treeViewFast1.BeginUpdate();
-            treeViewFast1.LoadItems<NodeAsset>(assetDict, getId, getParentId, getDisplayName);
-            treeViewFast1.Sort();
+            treeViewFast1.LoadItems<NodeAsset>(assetDict, getId, getParentId, getDisplayName);            
         }
 
         private void backgroundWorker2_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

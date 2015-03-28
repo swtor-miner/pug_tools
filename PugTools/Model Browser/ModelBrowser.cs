@@ -276,8 +276,7 @@ namespace tor_tools
             Func<NodeAsset, string> getDisplayName = (x => x.displayName);
             treeViewFast1.SuspendLayout();
             treeViewFast1.BeginUpdate();
-            treeViewFast1.LoadItems<NodeAsset>(assetDict, getId, getParentId, getDisplayName);            
-            //treeViewFast1.Sort();
+            treeViewFast1.LoadItems<NodeAsset>(assetDict, getId, getParentId, getDisplayName);                        
             treeViewFast1.EndUpdate();
             treeViewFast1.ResumeLayout();
             toolStripStatusLabel1.Text = "Loading Complete";
