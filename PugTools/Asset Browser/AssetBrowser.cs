@@ -1223,7 +1223,11 @@ namespace tor_tools
                     List<GomObject> ippNodes = dom.GetObjectsStartingWith("ipp.");                    
                     misc_parser.ParseMISC_IPP(ippNodes);
                     List<GomObject> cdxNodes = dom.GetObjectsStartingWith("cdx.");
-                    misc_parser.ParseMISC_CDX(cdxNodes);                    
+                    misc_parser.ParseMISC_CDX(cdxNodes);                                        
+                    Dictionary<string, DomType> nodeDict;
+                    dom.nodeLookup.TryGetValue(typeof(GomObject), out nodeDict);                    
+                    misc_parser.ParseMISC_NODE(nodeDict);
+                    nodeDict.Clear();
                     misc_parser.WriteFile();
                     this.namesFound = misc_parser.found;
                     break;

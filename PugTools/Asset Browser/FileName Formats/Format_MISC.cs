@@ -129,8 +129,17 @@ namespace tor_tools
             }
             worldAreasProto.Clear();
             GC.Collect();
+        }       
+
+        public void ParseMISC_NODE(Dictionary<string, DomType> nodeDict)
+        {               
+            foreach (var obj in nodeDict)
+            {
+                GomObject node = (GomObject)obj.Value;
+                fileNames.Add("/resources/systemgenerated/prototypes/" + node.Id.ToString() + ".node");
+            }
         }
-       
+
         public void WriteFile()
         {
             if (!System.IO.Directory.Exists(this.dest + "\\File_Names"))
