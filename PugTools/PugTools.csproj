@@ -179,6 +179,7 @@
     </Compile>
     <Compile Include="Asset Browser\ArchTreeListItem.cs" />
     <Compile Include="Asset Browser\FileListItem.cs" />
+    <Compile Include="Asset Browser\FileName Formats\Format_SDEF.cs" />
     <Compile Include="Asset Browser\FileName Formats\Format_AMX.cs" />
     <Compile Include="Asset Browser\FileName Formats\Format_BNK.cs" />
     <Compile Include="Asset Browser\FileName Formats\Format_CNV.cs" />

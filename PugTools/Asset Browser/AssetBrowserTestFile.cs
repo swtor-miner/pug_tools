@@ -44,6 +44,8 @@ namespace tor_tools
                 fileTypes.Add("MISC_WORLD");
             if (this.chkPRT.Checked)
                 fileTypes.Add("PRT");
+            if (this.chkSDEF.Checked)
+                fileTypes.Add("SDEF");
             if (this.chkXML.Checked)
                 fileTypes.Add("XML");
             return fileTypes;
@@ -62,7 +64,8 @@ namespace tor_tools
             this.chkMAT.Checked = value;
             this.chkMISC.Checked = value;
             this.chkMISC_WORLD.Checked = value;               
-            this.chkPRT.Checked = value;                
+            this.chkPRT.Checked = value;
+            this.chkSDEF.Checked = value;
             this.chkXML.Checked = value;
         }
     }

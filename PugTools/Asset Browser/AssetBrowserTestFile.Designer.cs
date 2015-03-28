@@ -31,6 +31,7 @@
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.groupFileTypes = new System.Windows.Forms.GroupBox();
+            this.chkAMX = new System.Windows.Forms.CheckBox();
             this.chkFXSPEC = new System.Windows.Forms.CheckBox();
             this.chkMISC_WORLD = new System.Windows.Forms.CheckBox();
             this.chkMISC = new System.Windows.Forms.CheckBox();
@@ -43,14 +44,14 @@
             this.chkGR2 = new System.Windows.Forms.CheckBox();
             this.chkDAT = new System.Windows.Forms.CheckBox();
             this.chkBNK = new System.Windows.Forms.CheckBox();
-            this.chkAMX = new System.Windows.Forms.CheckBox();
+            this.chkSDEF = new System.Windows.Forms.CheckBox();
             this.groupFileTypes.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnOK
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(78, 334);
+            this.btnOK.Location = new System.Drawing.Point(78, 352);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 0;
@@ -60,7 +61,7 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(159, 334);
+            this.btnCancel.Location = new System.Drawing.Point(159, 352);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 1;
@@ -72,6 +73,7 @@
             this.groupFileTypes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupFileTypes.Controls.Add(this.chkSDEF);
             this.groupFileTypes.Controls.Add(this.chkAMX);
             this.groupFileTypes.Controls.Add(this.chkFXSPEC);
             this.groupFileTypes.Controls.Add(this.chkMISC_WORLD);
@@ -89,10 +91,22 @@
             this.groupFileTypes.Controls.Add(this.chkBNK);
             this.groupFileTypes.Location = new System.Drawing.Point(12, 12);
             this.groupFileTypes.Name = "groupFileTypes";
-            this.groupFileTypes.Size = new System.Drawing.Size(304, 363);
+            this.groupFileTypes.Size = new System.Drawing.Size(304, 385);
             this.groupFileTypes.TabIndex = 2;
             this.groupFileTypes.TabStop = false;
             this.groupFileTypes.Text = "File Types";
+            // 
+            // chkAMX
+            // 
+            this.chkAMX.AutoSize = true;
+            this.chkAMX.Checked = true;
+            this.chkAMX.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkAMX.Location = new System.Drawing.Point(7, 44);
+            this.chkAMX.Name = "chkAMX";
+            this.chkAMX.Size = new System.Drawing.Size(109, 17);
+            this.chkAMX.TabIndex = 12;
+            this.chkAMX.Text = "AMX - Animations";
+            this.chkAMX.UseVisualStyleBackColor = true;
             // 
             // chkFXSPEC
             // 
@@ -172,7 +186,7 @@
             this.chkXML.AutoSize = true;
             this.chkXML.Checked = true;
             this.chkXML.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkXML.Location = new System.Drawing.Point(6, 303);
+            this.chkXML.Location = new System.Drawing.Point(6, 325);
             this.chkXML.Name = "chkXML";
             this.chkXML.Size = new System.Drawing.Size(103, 17);
             this.chkXML.TabIndex = 5;
@@ -239,23 +253,23 @@
             this.chkBNK.Text = "BNK - Audio Banks";
             this.chkBNK.UseVisualStyleBackColor = true;
             // 
-            // chkAMX
+            // chkSDEF
             // 
-            this.chkAMX.AutoSize = true;
-            this.chkAMX.Checked = true;
-            this.chkAMX.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkAMX.Location = new System.Drawing.Point(7, 44);
-            this.chkAMX.Name = "chkAMX";
-            this.chkAMX.Size = new System.Drawing.Size(109, 17);
-            this.chkAMX.TabIndex = 12;
-            this.chkAMX.Text = "AMX - Animations";
-            this.chkAMX.UseVisualStyleBackColor = true;
+            this.chkSDEF.AutoSize = true;
+            this.chkSDEF.Checked = true;
+            this.chkSDEF.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkSDEF.Location = new System.Drawing.Point(6, 302);
+            this.chkSDEF.Name = "chkSDEF";
+            this.chkSDEF.Size = new System.Drawing.Size(123, 17);
+            this.chkSDEF.TabIndex = 13;
+            this.chkSDEF.Text = "SDEF - Script ID List";
+            this.chkSDEF.UseVisualStyleBackColor = true;
             // 
             // AssetBrowserTestFile
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(328, 387);
+            this.ClientSize = new System.Drawing.Size(328, 409);
             this.Controls.Add(this.groupFileTypes);
             this.Name = "AssetBrowserTestFile";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -284,5 +298,6 @@
         private System.Windows.Forms.CheckBox chkMISC_WORLD;
         private System.Windows.Forms.CheckBox chkFXSPEC;
         private System.Windows.Forms.CheckBox chkAMX;
+        private System.Windows.Forms.CheckBox chkSDEF;
     }
 }

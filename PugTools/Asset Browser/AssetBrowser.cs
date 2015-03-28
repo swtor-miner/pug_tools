@@ -1260,6 +1260,13 @@ namespace tor_tools
                     amx_parser.WriteFile();
                     this.namesFound = amx_parser.fileNames.Count();
                     break;
+                case "SDEF":
+                    Format_SDEF sdef_parser = new Format_SDEF(this.extractPath, extension);
+                    TorLib.File sdef = AssetHandler.Instance.getCurrentAssets().FindFile("/resources/systemgenerated/scriptdef.list");
+                    sdef_parser.parseSDEF(sdef.OpenCopyInMemory());
+                    sdef_parser.WriteFile();
+                    this.namesFound = sdef_parser.found;
+                    break;
                 default:
                     break;
 
