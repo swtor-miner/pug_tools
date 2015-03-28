@@ -65,9 +65,7 @@ namespace tor_tools
                 if (sectionNames.Contains(line))
                     current = line;
                 else
-                {
-                    if (line.Contains(':') || line.Contains('#'))
-                        continue;
+                {                    
                     switch (current)
                     {
                         case "[ROOMS]":
@@ -76,7 +74,9 @@ namespace tor_tools
                                 fileNames.Add("/resources/world/areas/" + areaID + "/" + line.ToLower() + ".dat");
                             }
                             break;
-                        case "[ASSETS]":                            
+                        case "[ASSETS]":
+                            if (line.Contains(':') || line.Contains('#'))
+                                continue;
                             fileNames.Add("/resources" + line.Split('=').Last().ToString().ToLower().Replace("\\", "/"));
                             break;
                         case "[PATHS]":                            
