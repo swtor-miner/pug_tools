@@ -132,27 +132,8 @@ PgUp - Zoom In
 PgDown - Zoom Out
 R - Reset Camera
 
-LookAt Camera
-
-L - Activate LookAt Camera
-Left Mouse - Rotate Camera
-Shift + Left Mouse - Move Camera Focus
-Mouse Wheel - Zoom
-Left Shift + Mouse Wheel - Extremely Slow Zoom
-Left Ctrl + Mouse Wheel - Extremely Fast Zoom
-Minus Key - Set Slow Zoom Speed
-Plus Key - Set Fast Zoom Speed
-PgUp - Zoom In
-PgDown - Zoom Out
-R - Reset Camera
-
 Misc Functions
 
-Q - Show PaletteMapMask
-1 - Show Palette1 Color
-2 - Show Palette2 Color
-3 - Show PaletteMap
-E - Show Default Model Color
 C - Show Wireframe Mode
 PrtScreen - Take a Screen Shot</value>
   </data>

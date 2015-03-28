@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ModelBrowserHelp));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WorldBrowserHelp));
             this.txtHelp = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
@@ -49,15 +49,15 @@
             this.txtHelp.TabStop = false;
             this.txtHelp.Text = resources.GetString("txtHelp.Text");
             // 
-            // ModelBrowserHelp
+            // WorldBrowserHelp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(413, 510);
             this.Controls.Add(this.txtHelp);
-            this.Name = "ModelBrowserHelp";
+            this.Name = "WorldBrowserHelp";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "NPC Browser Help";
+            this.Text = "World Browser Help";
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -29,13 +29,13 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WorldBrowser));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.treeViewFast1 = new TreeViewFast.Controls.TreeViewFast();
             this.btnDataCollapse = new System.Windows.Forms.Button();
             this.btnStopRender = new System.Windows.Forms.Button();
             this.btnWorldBrowserHelp = new System.Windows.Forms.Button();
-            this.exportButton = new System.Windows.Forms.Button();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.renderPanel = new System.Windows.Forms.Panel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -51,6 +51,7 @@
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.BodyTypeStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -112,7 +113,6 @@
             this.splitContainer2.Panel2.Controls.Add(this.btnDataCollapse);
             this.splitContainer2.Panel2.Controls.Add(this.btnStopRender);
             this.splitContainer2.Panel2.Controls.Add(this.btnWorldBrowserHelp);
-            this.splitContainer2.Panel2.Controls.Add(this.exportButton);
             this.splitContainer2.Size = new System.Drawing.Size(130, 615);
             this.splitContainer2.SplitterDistance = 491;
             this.splitContainer2.TabIndex = 0;
@@ -127,52 +127,39 @@
             this.treeViewFast1.Name = "treeViewFast1";
             this.treeViewFast1.Size = new System.Drawing.Size(120, 481);
             this.treeViewFast1.TabIndex = 0;
-            this.treeViewFast1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewFast1_AfterSelect);            
+            this.treeViewFast1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewFast1_AfterSelect);
+            this.treeViewFast1.ImageList = this.imageList1;
             // 
             // btnDataCollapse
             // 
-            this.btnDataCollapse.Enabled = false;
-            this.btnDataCollapse.Location = new System.Drawing.Point(4, 91);
+            this.btnDataCollapse.Location = new System.Drawing.Point(3, 61);
             this.btnDataCollapse.Name = "btnDataCollapse";
             this.btnDataCollapse.Size = new System.Drawing.Size(108, 23);
             this.btnDataCollapse.TabIndex = 3;
             this.btnDataCollapse.Text = "Hide Data Viewer";
             this.btnDataCollapse.UseVisualStyleBackColor = true;
             this.btnDataCollapse.Click += new System.EventHandler(this.btnDataCollapse_Click);
+            this.btnDataCollapse.Visible = false;
             // 
             // btnStopRender
             // 
             this.btnStopRender.Enabled = false;
-            this.btnStopRender.Location = new System.Drawing.Point(4, 62);
+            this.btnStopRender.Location = new System.Drawing.Point(5, 32);
             this.btnStopRender.Name = "btnStopRender";
             this.btnStopRender.Size = new System.Drawing.Size(108, 23);
             this.btnStopRender.TabIndex = 2;
             this.btnStopRender.Text = "Stop Render";
             this.btnStopRender.UseVisualStyleBackColor = true;
             this.btnStopRender.Click += new System.EventHandler(this.btnStopRender_Click);
-            /*
             // 
             // btnWorldBrowserHelp
             // 
-            this.btnWorldBrowserHelp.Enabled = false;
-            this.btnWorldBrowserHelp.Location = new System.Drawing.Point(3, 32);
+            this.btnWorldBrowserHelp.Location = new System.Drawing.Point(5, 3);
             this.btnWorldBrowserHelp.Name = "btnWorldBrowserHelp";
-            this.btnWorldBrowserHelp.Size = new System.Drawing.Size(108, 23);
-            this.btnWorldBrowserHelp.TabIndex = 1;
+            this.btnWorldBrowserHelp.Size = new System.Drawing.Size(107, 23);
+            this.btnWorldBrowserHelp.TabIndex = 4;
             this.btnWorldBrowserHelp.Text = "Help";
-            this.btnWorldBrowserHelp.UseVisualStyleBackColor = true;
-            this.btnWorldBrowserHelp.Click += new System.EventHandler(this.btnWorldBrowserHelp_Click);
-             */
-            // 
-            // exportButton
-            // 
-            this.exportButton.Enabled = false;
-            this.exportButton.Location = new System.Drawing.Point(3, 3);
-            this.exportButton.Name = "exportButton";
-            this.exportButton.Size = new System.Drawing.Size(108, 23);
-            this.exportButton.TabIndex = 0;
-            this.exportButton.Text = "Export";
-            this.exportButton.UseVisualStyleBackColor = true;            
+            this.btnWorldBrowserHelp.Click += new System.EventHandler(this.btnWorldBrowserHelp_Click);            
             // 
             // splitContainer3
             // 
@@ -190,6 +177,7 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.splitContainer4);
+            this.splitContainer3.Panel2Collapsed = true;
             this.splitContainer3.Size = new System.Drawing.Size(816, 583);
             this.splitContainer3.SplitterDistance = 669;
             this.splitContainer3.TabIndex = 2;
@@ -202,7 +190,7 @@
             this.renderPanel.Controls.Add(this.pictureBox1);
             this.renderPanel.Location = new System.Drawing.Point(3, 3);
             this.renderPanel.Name = "renderPanel";
-            this.renderPanel.Size = new System.Drawing.Size(665, 573);
+            this.renderPanel.Size = new System.Drawing.Size(812, 573);
             this.renderPanel.TabIndex = 0;
             this.renderPanel.MouseHover += new System.EventHandler(this.renderPanel_MouseHover);
             this.renderPanel.Resize += new System.EventHandler(this.renderPanel_Resize);
@@ -216,7 +204,7 @@
             this.pictureBox1.Image = global::PugTools.Properties.Resources.LoadingImage;
             this.pictureBox1.Location = new System.Drawing.Point(3, 3);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(665, 573);
+            this.pictureBox1.Size = new System.Drawing.Size(812, 573);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
@@ -236,8 +224,8 @@
             // splitContainer4.Panel2
             // 
             this.splitContainer4.Panel2.Controls.Add(this.dgvDataViewer);
-            this.splitContainer4.Size = new System.Drawing.Size(143, 583);
-            this.splitContainer4.SplitterDistance = 428;
+            this.splitContainer4.Size = new System.Drawing.Size(96, 100);
+            this.splitContainer4.SplitterDistance = 71;
             this.splitContainer4.TabIndex = 0;
             // 
             // tvfDataViewer
@@ -248,7 +236,7 @@
             this.tvfDataViewer.Enabled = false;
             this.tvfDataViewer.Location = new System.Drawing.Point(3, 3);
             this.tvfDataViewer.Name = "tvfDataViewer";
-            this.tvfDataViewer.Size = new System.Drawing.Size(136, 418);
+            this.tvfDataViewer.Size = new System.Drawing.Size(89, 61);
             this.tvfDataViewer.TabIndex = 0;
             this.tvfDataViewer.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvfDataViewer_AfterSelect);
             this.tvfDataViewer.MouseUp += new System.Windows.Forms.MouseEventHandler(this.tvfDataViewer_MouseUp);
@@ -262,7 +250,7 @@
             this.dgvDataViewer.Enabled = false;
             this.dgvDataViewer.Location = new System.Drawing.Point(3, 3);
             this.dgvDataViewer.Name = "dgvDataViewer";
-            this.dgvDataViewer.Size = new System.Drawing.Size(136, 141);
+            this.dgvDataViewer.Size = new System.Drawing.Size(89, 15);
             this.dgvDataViewer.TabIndex = 0;
             // 
             // statusStrip1
@@ -298,32 +286,40 @@
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItemViewAll});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(149, 26);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(141, 26);
             // 
             // toolStripMenuItemViewAll
             // 
             this.toolStripMenuItemViewAll.Name = "toolStripMenuItemViewAll";
-            this.toolStripMenuItemViewAll.Size = new System.Drawing.Size(148, 22);
-            this.toolStripMenuItemViewAll.Text = "View All Items";            
+            this.toolStripMenuItemViewAll.Size = new System.Drawing.Size(140, 22);
+            this.toolStripMenuItemViewAll.Text = "View All Items";
             // 
             // contextMenuStrip2
             // 
             this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem1});
             this.contextMenuStrip2.Name = "contextMenuStrip2";
-            this.contextMenuStrip2.Size = new System.Drawing.Size(152, 26);
+            this.contextMenuStrip2.Size = new System.Drawing.Size(145, 26);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(151, 22);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(144, 22);
             this.toolStripMenuItem1.Text = "Toggle Render";
             this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
             // BodyTypeStrip
             // 
             this.BodyTypeStrip.Name = "contextMenuStrip3";
-            this.BodyTypeStrip.Size = new System.Drawing.Size(153, 26);
+            this.BodyTypeStrip.Size = new System.Drawing.Size(61, 4);
+            // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "COMPUTER.ICO");
+            this.imageList1.Images.SetKeyName(1, "Folder.ico");
+            this.imageList1.Images.SetKeyName(2, "textdoc.ico");
             // 
             // WorldBrowser
             // 
@@ -372,7 +368,6 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
-        private System.Windows.Forms.Button exportButton;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemViewAll;
         private System.Windows.Forms.SplitContainer splitContainer2;
@@ -387,5 +382,6 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.ContextMenuStrip BodyTypeStrip;
+        private System.Windows.Forms.ImageList imageList1;
     }
 }

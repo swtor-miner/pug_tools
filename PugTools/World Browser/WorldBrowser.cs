@@ -149,8 +149,7 @@ namespace tor_tools
         {
             btnDataCollapse.Enabled = false;
             btnWorldBrowserHelp.Enabled = false;
-            btnStopRender.Enabled = false;
-            exportButton.Enabled = false;
+            btnStopRender.Enabled = false;            
             treeViewFast1.Enabled = false;
             tvfDataViewer.Enabled = false;
             dgvDataViewer.Enabled = false;
@@ -160,8 +159,7 @@ namespace tor_tools
         {
             btnDataCollapse.Enabled = true;
             btnWorldBrowserHelp.Enabled = true;
-            btnStopRender.Enabled = true;
-            exportButton.Enabled = true;
+            btnStopRender.Enabled = true;            
             treeViewFast1.Enabled = true;
             tvfDataViewer.Enabled = true;
             dgvDataViewer.Enabled = true;
