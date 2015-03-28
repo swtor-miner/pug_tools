@@ -26,13 +26,11 @@ using GomLib.Models;
 namespace tor_tools
 {
     class View_NPC_GR2 : D3DPanelApp
-    {
-        NpcAppearance npcData;
-        ItemAppearance itemData;        
+    {   
         String fqn;
 
         Dictionary<string, GR2> models = new Dictionary<string,GR2>();
-        Dictionary<string, Stream> resources = new Dictionary<string,Stream>();
+        Dictionary<string, object> resources = new Dictionary<string, object>();
 
         private DirectionalLight[] _dirLights;
 
@@ -62,12 +60,12 @@ namespace tor_tools
         private List<ushort> indexList = new List<ushort>();
 
         bool makeScreenshot = false;
-        bool rotateModel = false;
-
-        private Matrix blankMatrix;
+        
         private GR2 focus = new GR2();
 
         public string selectedModel = "";
+
+        public EffectTechnique activeTech;
 
         public View_NPC_GR2(IntPtr hInstance, Form form, string panelName = "")
             : base(hInstance, panelName)
@@ -92,18 +90,15 @@ namespace tor_tools
             _dirLights = new[] {                
                 new DirectionalLight {
                 Ambient = Color.White,
-                Diffuse = Color.White,                
+                Diffuse = Color.White,
                 Specular = new Color4(0.5f, 0.5f, 0.5f),
                 Direction = new Vector3(0.57735f, -0.57735f, 0.57735f)
                 },              
             };
-
         }
 
         public void Clear()
-        {
-            this.npcData = null;            
-            this.itemData = null;                     
+        {   
             if (this.models != null)
             {
                 foreach (var model in this.models)
@@ -130,11 +125,6 @@ namespace tor_tools
                     {
                         foreach (var attach in model.Value.attachedModels)
                         {
-                            if (attach.attachedModels.Count() > 0)
-                            {
-                                Console.WriteLine("pause");
-                            }
-
                             foreach (var mesh in attach.meshes)
                             {
                                 Util.ReleaseCom(ref mesh.meshIdxBuff);
@@ -163,13 +153,12 @@ namespace tor_tools
             this.vertices.Clear();
             this.indexes.Clear();
             this.indexList.Clear();
-            rotateModel = false;
         }
 
-        public void LoadModel(Dictionary<string, GR2> models, Dictionary<string, Stream> resources,  string fqn, string type = "")
-        {            
-            this.fqn = fqn;            
-            rotateModel = false;
+        public void LoadModel(Dictionary<string, GR2> models, Dictionary<string, object> resources,  string fqn, string type = "")
+        {
+            this.activeTech = _fx.Light1Tech;
+            this.fqn = fqn;                        
             if (type == "nppTypeHumanoid")
                 focus = models["appSlotLeg"];
             else if (type == "nppTypeCreature")
@@ -222,7 +211,104 @@ namespace tor_tools
                         }
                     }
                 }
+
+                if (model.Value.materialOverride != null)
+                {
+                    model.Value.materialOverride.ParseMAT(Device);
+                }
             }
+
+            if (resources.Count > 0)
+            {  
+                foreach (var model in models)
+                {
+                    if (model.Value.numMaterials > 0)
+                    {
+                        foreach (GR2_Material mat in model.Value.materials)
+                        {
+                            if (mat.derived == "HairC")
+                            {
+                                if(resources.Keys.Contains("appSlotHairColor"))
+                                    mat.SetDynamicColor((GomObject)resources["appSlotHairColor"]);
+                            }
+                            if (mat.derived == "SkinB")
+                            {   
+                                if (resources.Keys.Contains("appSlotFacePaint"))
+                                    mat.SetFacepaintMap(Device, (string)resources["appSlotFacePaint"]);
+                                if (resources.Keys.Contains("appSlotComplexion"))
+                                    mat.SetComplexionMap(Device, (string)resources["appSlotComplexion"]);                                
+                                if (resources.Keys.Contains("appSlotSkinColor"))
+                                    mat.SetDynamicColor((GomObject)resources["appSlotSkinColor"], 1);
+                            }
+
+                            if (mat.derived == "Eye")
+                            {
+                                if (resources.Keys.Contains("appSlotEyeColor"))
+                                    mat.SetDynamicColor((GomObject)resources["appSlotEyeColor"]);
+                            }
+                        }
+                    }
+
+                    if (model.Value.attachedModels.Count() > 0)
+                    {
+                        foreach (var attachModel in model.Value.attachedModels)
+                        {
+                            if (attachModel.numMaterials > 0)
+                            {
+                                foreach (GR2_Material attachMat in attachModel.materials)
+                                {
+                                    if (attachMat.derived == "HairC")
+                                    {
+                                        if (resources.Keys.Contains("appSlotHairColor"))
+                                            attachMat.SetDynamicColor((GomObject)resources["appSlotHairColor"]);
+                                    }
+                                    if (attachMat.derived == "SkinB")
+                                    {
+                                        if (resources.Keys.Contains("appSlotSkinColor"))
+                                            attachMat.SetDynamicColor((GomObject)resources["appSlotSkinColor"], 1);
+                                        if (resources.Keys.Contains("appSlotFacePaint"))
+                                            attachMat.SetFacepaintMap(Device, (string)resources["appSlotFacePaint"]);
+                                        if (resources.Keys.Contains("appSlotComplexion"))
+                                            attachMat.SetComplexionMap(Device, (string)resources["appSlotComplexion"]);
+                                    }
+
+                                    if (attachMat.derived == "Eye")
+                                    {
+                                        if (resources.Keys.Contains("appSlotEyeColor"))
+                                            attachMat.SetDynamicColor((GomObject)resources["appSlotEyeColor"]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (model.Value.materialOverride != null)
+                    {
+                        if (model.Value.materialOverride.derived == "HairC")
+                        {
+                            if (resources.Keys.Contains("appSlotHairColor"))
+                                model.Value.materialOverride.SetDynamicColor((GomObject)resources["appSlotHairColor"]);
+                        }
+                        if (model.Value.materialOverride.derived == "SkinB")
+                        {
+                            if (resources.Keys.Contains("appSlotSkinColor"))
+                                model.Value.materialOverride.SetDynamicColor((GomObject)resources["appSlotSkinColor"], 1);
+                            if (resources.Keys.Contains("appSlotFacePaint"))
+                                model.Value.materialOverride.SetFacepaintMap(Device, (string)resources["appSlotFacePaint"]);
+                            if (resources.Keys.Contains("appSlotComplexion"))
+                                model.Value.materialOverride.SetComplexionMap(Device, (string)resources["appSlotComplexion"]);
+                        }
+
+                        if (model.Value.materialOverride.derived == "Eye")
+                        {
+                            if (resources.Keys.Contains("appSlotEyeColor"))
+                                model.Value.materialOverride.SetDynamicColor((GomObject)resources["appSlotEyeColor"]);
+                        }
+                    }
+                }
+               
+            }
+
             BuildGeometry();
         }
 
@@ -449,7 +535,7 @@ namespace tor_tools
             _fx.SetDirLights(_dirLights);
             _fx.SetEyePosW(_cam.Position);
 
-            var activeTech = _fx.Light1Garment;
+            this.activeTech = _fx.Light1Tech;
 
             if (Form.ActiveForm != null)
             {
@@ -476,6 +562,21 @@ namespace tor_tools
                 if (Util.IsKeyDown(Keys.D3))
                 {
                     activeTech = _fx.Light1GarmentPaletteMap;
+                }
+
+                if (Util.IsKeyDown(Keys.D4))
+                {
+                    activeTech = _fx.Light1Complexion;
+                }
+
+                if (Util.IsKeyDown(Keys.D5))
+                {
+                    activeTech = _fx.Light1Facepaint;
+                }
+
+                if (Util.IsKeyDown(Keys.D6))
+                {
+                    activeTech = _fx.Light1Age;
                 }
 
                 if (Util.IsKeyDown(Keys.C))
@@ -506,103 +607,43 @@ namespace tor_tools
                     if (mesh.meshName.Contains("collision"))
                         continue;
 
+                    int pieceCount = 0;
                     foreach (FileFormats.GR2_Mesh_Piece piece in mesh.meshPieces)
                     {
                         ImmediateContext.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(mesh.meshVertBuff, PosNormalTexTan.Stride, 0));
                         ImmediateContext.InputAssembler.SetIndexBuffer(mesh.meshIdxBuff, Format.R16_UInt, 0);                        
 
-                        if (piece.matID != -1)
+                        if(model.Value.filename.Contains("head_"))
                         {
-                            if (model.Value.materials.ElementAtOrDefault(piece.matID) != null)
-                            {
-                                if (activeTech == _fx.Light1Garment || activeTech == _fx.Light1Tech || activeTech == _fx.Light1Skin)
-                                {
-                                    if (model.Value.materials[piece.matID].derived == "Garment" ||
-                                        model.Value.materials[piece.matID].derived == "GarmentScrolling" ||
-                                        model.Value.materials[piece.matID].derived == "HairC")
-                                        activeTech = _fx.Light1Garment;
-                                    else if (model.Value.materials[piece.matID].derived == "SkinB")
-                                        activeTech = _fx.Light1Skin;
-                                    else
-                                        activeTech = _fx.Light1Tech;
-                                }
-                               
-                                _fx.SetDiffuseMap(model.Value.materials[piece.matID].diffuseSRV);
-                                _fx.SetGlossMap(model.Value.materials[piece.matID].glossSRV);
-                                _fx.SetRotationMap(model.Value.materials[piece.matID].rotationSRV);
+                            if(model.Value.materialOverride != null && pieceCount > 0)
+                                SetMaterial(model.Value.materialOverride);
+                            else
+                                SetMaterial(model.Value.materials[0]);                                
+                        }else{
 
-                                _fx.SetPaletteMap(model.Value.materials[piece.matID].paletteSRV);
-                                _fx.SetPaletteMaskMap(model.Value.materials[piece.matID].paletteMaskSRV);
-
-                                _fx.SetComplexionMap(model.Value.materials[piece.matID].complexionSRV);
-                                _fx.SetFacepaintMap(model.Value.materials[piece.matID].facepaintSRV);
-                                _fx.SetAgeMap(model.Value.materials[piece.matID].ageSRV);
-
-                                _fx.SetPalette1(model.Value.materials[piece.matID].palette1);
-                                _fx.SetPalette2(model.Value.materials[piece.matID].palette2);
-
-                                _fx.SetPalette1Spec(model.Value.materials[piece.matID].palette1Spec);
-                                _fx.SetPalette2Spec(model.Value.materials[piece.matID].palette2Spec);
-
-                                _fx.SetPalette1MetSpec(model.Value.materials[piece.matID].palette1MetSpec);
-                                _fx.SetPalette2MetSpec(model.Value.materials[piece.matID].palette2MetSpec);                                
-
-                                _fx.SetAlphaClipValue(new Vector2(model.Value.materials[piece.matID].alphaClipValue));
-
-                                if(model.Value.materials[piece.matID].polytype == "Ignore")
-                                    _fx.SetPolyIgnore(new Vector2(1));
-                                else
-                                    _fx.SetPolyIgnore(new Vector2(0));
+                           if (piece.matID != -1)
+                           { 
+                                if (model.Value.materials.ElementAtOrDefault(piece.matID) != null)
+                                    SetMaterial(model.Value.materials[piece.matID]);                                
                             }
-                        }
-                        else
-                        {  
-                            if (model.Value.materials.Count > 0)
-                            {
-                                if (activeTech == _fx.Light1Garment || activeTech == _fx.Light1Tech || activeTech == _fx.Light1Skin)
+                            else
+                            {  
+                                if (model.Value.materials.Count > 0)
                                 {
-                                    if (model.Value.materials[0].derived == "Garment" || 
-                                        model.Value.materials[0].derived == "GarmentScrolling" ||
-                                        model.Value.materials[0].derived == "HairC")
-                                        activeTech = _fx.Light1Garment;
-                                    else if (model.Value.materials[0].derived == "SkinB")
-                                        activeTech = _fx.Light1Skin;
+                                    GR2_Material selectedMat;
+                                    if (model.Value.materialOverride != null)
+                                        selectedMat = model.Value.materialOverride;
                                     else
-                                        activeTech = _fx.Light1Tech;
-                                }
-
-                                _fx.SetDiffuseMap(model.Value.materials[0].diffuseSRV);
-                                _fx.SetGlossMap(model.Value.materials[0].glossSRV);
-                                _fx.SetRotationMap(model.Value.materials[0].rotationSRV);
-
-                                _fx.SetPaletteMap(model.Value.materials[0].paletteSRV);
-                                _fx.SetPaletteMaskMap(model.Value.materials[0].paletteMaskSRV);
-
-                                _fx.SetComplexionMap(model.Value.materials[0].complexionSRV);
-                                _fx.SetFacepaintMap(model.Value.materials[0].facepaintSRV);
-                                _fx.SetAgeMap(model.Value.materials[0].ageSRV);
-
-                                _fx.SetPalette1(model.Value.materials[0].palette1);
-                                _fx.SetPalette2(model.Value.materials[0].palette2);
-
-                                _fx.SetPalette1Spec(model.Value.materials[0].palette1Spec);
-                                _fx.SetPalette2Spec(model.Value.materials[0].palette2Spec);
-
-                                _fx.SetPalette1MetSpec(model.Value.materials[0].palette1MetSpec);
-                                _fx.SetPalette2MetSpec(model.Value.materials[0].palette2MetSpec);
-
-                                _fx.SetAlphaClipValue(new Vector2(model.Value.materials[0].alphaClipValue));
-
-                                if (model.Value.materials[0].polytype == "Ignore")
-                                    _fx.SetPolyIgnore(new Vector2(1));
-                                else
-                                    _fx.SetPolyIgnore(new Vector2(0));
-                            }                            
+                                        selectedMat = model.Value.materials[0];
+                                    SetMaterial(selectedMat);
+                                }                            
+                            }
                         }
 
                         activeTech.GetPassByIndex(0).Apply(ImmediateContext);
 
                         ImmediateContext.DrawIndexed(((int)piece.numPieceFaces) * 3, ((int)piece.startIndex) * 3, 0);
+                        pieceCount++;
                     }
                 }
 
@@ -621,80 +662,10 @@ namespace tor_tools
                                 ImmediateContext.InputAssembler.SetIndexBuffer(attachMesh.meshIdxBuff, Format.R16_UInt, 0);                                
 
                                 if (attachPiece.matID != -1)
-                                {
-                                    if (activeTech == _fx.Light1Garment || activeTech == _fx.Light1Tech || activeTech == _fx.Light1Skin)
-                                    {
-                                        if (attachModel.materials[attachPiece.matID].derived == "Garment" || 
-                                            attachModel.materials[attachPiece.matID].derived == "GarmentScrolling" ||
-                                            attachModel.materials[attachPiece.matID].derived == "HairC")
-                                            activeTech = _fx.Light1Garment;
-                                        else if (attachModel.materials[attachPiece.matID].derived == "SkinB")
-                                            activeTech = _fx.Light1Skin;
-                                        else
-                                            activeTech = _fx.Light1Tech;
-                                    }
-                                    _fx.SetDiffuseMap(attachModel.materials[attachPiece.matID].diffuseSRV);
-                                    _fx.SetGlossMap(attachModel.materials[attachPiece.matID].glossSRV);
-                                    _fx.SetRotationMap(attachModel.materials[attachPiece.matID].rotationSRV);
-
-                                    _fx.SetPaletteMap(attachModel.materials[attachPiece.matID].paletteSRV);
-                                    _fx.SetPaletteMaskMap(attachModel.materials[attachPiece.matID].paletteMaskSRV);
-
-                                    _fx.SetPalette1(attachModel.materials[attachPiece.matID].palette1);
-                                    _fx.SetPalette2(attachModel.materials[attachPiece.matID].palette2);
-
-                                    _fx.SetPalette1Spec(attachModel.materials[attachPiece.matID].palette1Spec);
-                                    _fx.SetPalette2Spec(attachModel.materials[attachPiece.matID].palette2Spec);
-
-                                    _fx.SetPalette1MetSpec(attachModel.materials[attachPiece.matID].palette1MetSpec);
-                                    _fx.SetPalette2MetSpec(attachModel.materials[attachPiece.matID].palette2MetSpec);
-
-                                    _fx.SetAlphaClipValue(new Vector2(attachModel.materials[attachPiece.matID].alphaClipValue));
-
-                                    if (attachModel.materials[attachPiece.matID].polytype == "Ignore")
-                                        _fx.SetPolyIgnore(new Vector2(1));
-                                    else
-                                        _fx.SetPolyIgnore(new Vector2(0));
-                                }
-                                else
-                                {
-                                    if (activeTech == _fx.Light1Garment || activeTech == _fx.Light1Tech || activeTech == _fx.Light1Skin)
-                                    {
-                                        if (attachModel.materials[0].derived == "Garment" || 
-                                            attachModel.materials[0].derived == "GarmentScrolling" ||
-                                            attachModel.materials[0].derived == "HairC")
-                                            activeTech = _fx.Light1Garment;
-                                        else if (attachModel.materials[0].derived == "SkinB")
-                                            activeTech = _fx.Light1Skin;
-                                        else
-                                            activeTech = _fx.Light1Tech;
-                                    }
-                                    _fx.SetDiffuseMap(attachModel.materials[0].diffuseSRV);
-                                    _fx.SetGlossMap(attachModel.materials[0].glossSRV);
-                                    _fx.SetRotationMap(attachModel.materials[0].rotationSRV);
-
-                                    _fx.SetPaletteMap(attachModel.materials[0].paletteSRV);
-                                    _fx.SetPaletteMaskMap(attachModel.materials[0].paletteMaskSRV);
-
-                                    _fx.SetPalette1(attachModel.materials[0].palette1);
-                                    _fx.SetPalette2(attachModel.materials[0].palette2);
-
-                                    _fx.SetPalette1Spec(attachModel.materials[0].palette1Spec);
-                                    _fx.SetPalette2Spec(attachModel.materials[0].palette2Spec);
-
-                                    _fx.SetPalette1MetSpec(attachModel.materials[0].palette1MetSpec);
-                                    _fx.SetPalette2MetSpec(attachModel.materials[0].palette2MetSpec);
-
-                                    _fx.SetAlphaClipValue(new Vector2(attachModel.materials[0].alphaClipValue));
-
-                                    if (attachModel.materials[0].polytype == "Ignore")
-                                        _fx.SetPolyIgnore(new Vector2(1));
-                                    else
-                                        _fx.SetPolyIgnore(new Vector2(0));
-                                }
-
+                                    SetMaterial(attachModel.materials[attachPiece.matID]);
+                                else                                
+                                    SetMaterial(attachModel.materials[0]);
                                 activeTech.GetPassByIndex(0).Apply(ImmediateContext);
-
                                 ImmediateContext.DrawIndexed(((int)attachPiece.numPieceFaces) * 3, ((int)attachPiece.startIndex) * 3, 0);
                             }
                         }
@@ -710,6 +681,56 @@ namespace tor_tools
                 makeScreenshot = false;
             }
 
+        }
+
+        public void SetMaterial(GR2_Material selectedMaterial)
+        {     
+            string derived = selectedMaterial.derived;
+
+
+            if (activeTech == _fx.Light1Garment || activeTech == _fx.Light1Tech || activeTech == _fx.Light1Skin || activeTech == _fx.Light1Hair || activeTech == _fx.Light1Eye)
+            {
+                if (derived == "Garment" || derived == "GarmentScrolling")
+                    activeTech = _fx.Light1Garment;
+                else if (derived == "HairC")
+                    activeTech = _fx.Light1Hair;
+                else if (derived == "SkinB")
+                    activeTech = _fx.Light1Skin;
+                else if (derived == "Eye")
+                    activeTech = _fx.Light1Eye;
+                else
+                    activeTech = _fx.Light1Tech;
+            }
+
+            _fx.SetDiffuseMap(selectedMaterial.diffuseSRV);
+            _fx.SetGlossMap(selectedMaterial.glossSRV);
+            _fx.SetRotationMap(selectedMaterial.rotationSRV);
+
+            _fx.SetPaletteMap(selectedMaterial.paletteSRV);
+            _fx.SetPaletteMaskMap(selectedMaterial.paletteMaskSRV);
+
+            _fx.SetComplexionMap(selectedMaterial.complexionSRV);
+            _fx.SetFacepaintMap(selectedMaterial.facepaintSRV);
+            _fx.SetAgeMap(selectedMaterial.ageSRV);
+
+            _fx.SetFlushTone(selectedMaterial.flushTone);
+            _fx.SetFleshBrightness(selectedMaterial.fleshBrightness);
+
+            _fx.SetPalette1(selectedMaterial.palette1);
+            _fx.SetPalette2(selectedMaterial.palette2);
+
+            _fx.SetPalette1Spec(selectedMaterial.palette1Spec);
+            _fx.SetPalette2Spec(selectedMaterial.palette2Spec);
+
+            _fx.SetPalette1MetSpec(selectedMaterial.palette1MetSpec);
+            _fx.SetPalette2MetSpec(selectedMaterial.palette2MetSpec);
+
+            _fx.SetAlphaClipValue(new Vector2(selectedMaterial.alphaClipValue));
+
+            if (selectedMaterial.polytype == "Ignore")
+                _fx.SetPolyIgnore(new Vector2(1));
+            else
+                _fx.SetPolyIgnore(new Vector2(0));
         }
 
         public void MakeScreenshot(SlimDX.Direct3D11.ImageFileFormat format)
@@ -1031,10 +1052,6 @@ namespace tor_tools
                                 {
                                     if ((rotationData.Data[k * 4 + 0] / 255.0f) > mat.alphaClipValue)
                                         p = rotationData.Data[k * 4 + 0];
-                                    else
-                                    {
-                                        string pausehere = "";
-                                    }
                                 }
 
                                 Color diffusePixel = Color.FromArgb(p,
@@ -1087,8 +1104,6 @@ namespace tor_tools
                                     tor_tools.Tools.WriteFile(bmStream, String.Format("{0}\\{1}", path, mat.glossDDS.Substring(mat.glossDDS.LastIndexOf('/') + 1).Replace("_s.", "_emis.").Replace(".dds", ".png"))); //Save DDS
                                 }
                         }
-                         
-
 
                         //save
                         using (var bmStream = new MemoryStream())

@@ -9,6 +9,7 @@ using SlimDX;
 using SlimDX.Direct3D11;
 using ShaderResourceView = SlimDX.Direct3D11.ShaderResourceView;
 using TorLib;
+using GomLib;
 
 namespace FileFormats
 {
@@ -49,6 +50,9 @@ namespace FileFormats
         public Vector4 palette2Spec;
         public Vector4 palette1MetSpec;
         public Vector4 palette2MetSpec;
+
+        public Vector4 flushTone;
+        public Vector2 fleshBrightness;
 
         public bool useEmissive;
         public bool alphaClip;        
@@ -117,11 +121,7 @@ namespace FileFormats
 
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                //Console.WriteLine(e.StackTrace.ToString());
-            }
+            } catch (Exception) { }
             var materialFile = currentAssets.FindFile(materialFileName);
             if (materialFile == null)
             {
@@ -169,7 +169,6 @@ namespace FileFormats
                             MemoryStream diffuseMS = new MemoryStream();
                             diffuseStream.CopyTo(diffuseMS);
                             diffuseSRV = ShaderResourceView.FromMemory(device, diffuseMS.ToArray());
-                            //diffuseSRV = ShaderResourceView.FromFile(device, "n:\\_tor_extract" + diffuseDDS);
                         }
                         else
                         {
@@ -212,7 +211,7 @@ namespace FileFormats
                    { 
                         this.useEmissive = Convert.ToBoolean(value);
                     }
-                    if (matType == "Garment" || matType == "GarmentScrolling")
+                    if (matType == "Garment" || matType == "GarmentScrolling" || matType == "SkinB" || matType == "HairC" || matType == "Eye")
                     {                        
                         if (semantic == "PaletteMap")
                         {
@@ -303,6 +302,16 @@ namespace FileFormats
                                 ageSRV = ShaderResourceView.FromMemory(device, ageMS.ToArray());
                             }
                         }
+                        else if (semantic == "FlushTone")
+                        {
+                            if (flushTone == new Vector4())
+                                flushTone = FileFormats.File_Helpers.stringToVec4(value);
+                        }
+                        else if (semantic == "FleshBrightness")
+                        {
+                            if (fleshBrightness == new Vector2())
+                                fleshBrightness = new Vector2(float.Parse(value), 0);
+                        }
                     }
                 }
 
@@ -332,6 +341,71 @@ namespace FileFormats
                 }
             }
             this.parsed = true;
+        }
+
+        public void SetDynamicColor(GomObject dynObj, int paletteNum = 0)
+        {
+            float hue = dynObj.Data.ValueOrDefault<float>("appPaletteHue", 0);
+            float saturation = dynObj.Data.ValueOrDefault<float>("appPaletteSaturation", 0.5f);
+            float brightness = dynObj.Data.ValueOrDefault<float>("appPaletteBrightness", 0);
+            float contrast = dynObj.Data.ValueOrDefault<float>("appPaletteContrast", 1.0f);
+            Vector4 palette = new Vector4(hue, saturation, brightness, contrast); 
+            GomObjectData specData = (GomObjectData)dynObj.Data.Dictionary["appPaletteSpecular"];
+            Vector4 specular = new Vector4((float)specData.Dictionary["r"], (float)specData.Dictionary["g"], (float)specData.Dictionary["b"], (float)specData.Dictionary["a"]);
+            GomObjectData metSpecData = (GomObjectData)dynObj.Data.Dictionary["appPaletteMetallicSpecular"];
+            Vector4 metallicSpecular = new Vector4((float)metSpecData.Dictionary["r"], (float)metSpecData.Dictionary["g"], (float)metSpecData.Dictionary["b"], (float)metSpecData.Dictionary["a"]);
+
+            if (paletteNum != 0)
+            {
+                if (paletteNum == 1)
+                {
+                    this.palette1 = palette;
+                    this.palette1MetSpec = metallicSpecular;
+                    this.palette1Spec = specular;                    
+                }
+
+                if (paletteNum == 2)
+                {
+                    this.palette2 = palette;
+                    this.palette2MetSpec = metallicSpecular;
+                    this.palette2Spec = specular;         
+                }
+            }
+            else
+            {
+                this.palette1 = palette;
+                this.palette1MetSpec = metallicSpecular;
+                this.palette1Spec = specular;
+                this.palette2 = palette;
+                this.palette2MetSpec = metallicSpecular;
+                this.palette2Spec = specular;  
+            }
+        }
+
+        public void SetFacepaintMap(Device device, string facepaintPath)
+        {
+            this.facepaintDDS = "/resources" + facepaintPath;
+            var facepaintFile = AssetHandler.Instance.getCurrentAssets().FindFile(facepaintDDS);
+            if (facepaintFile != null && device != null)
+            {
+                var facepaintStream = facepaintFile.OpenCopyInMemory();
+                MemoryStream facepaintMS = new MemoryStream();
+                facepaintStream.CopyTo(facepaintMS);
+                this.facepaintSRV = ShaderResourceView.FromMemory(device, facepaintMS.ToArray());
+            }
+        }
+
+        public void SetComplexionMap(Device device, string complexionPath)
+        {
+            this.complexionDDS = "/resources" + complexionPath;
+            var complexionFile = AssetHandler.Instance.getCurrentAssets().FindFile(complexionDDS);
+            if (complexionFile != null && device != null)
+            {
+                var complexionStream = complexionFile.OpenCopyInMemory();
+                MemoryStream complexionMS = new MemoryStream();
+                complexionStream.CopyTo(complexionMS);
+                this.complexionSRV = ShaderResourceView.FromMemory(device, complexionMS.ToArray());
+            }
         }
     }
 }

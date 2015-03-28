@@ -205,6 +205,8 @@ cbuffer cbPerFrame
 	float4 gPalette2Spec;
 	float4 gPalette1MetSpec;
 	float4 gPalette2MetSpec;
+	float4 gFlushTone;
+	float2 gFleshBrightness;
 };
 
 cbuffer cbPerObject
@@ -300,14 +302,14 @@ float4 PS( VS_OUTPUT pin, uniform int gLightCount ) : SV_Target
 	//Disable lighting code for now
 
 	/*
-	float4 rotationMapValue = gRotationMap.Sample( samLinear, pin.Tex ).rgba;
+	//float4 rotationMapValue = gRotationMap.Sample( samLinear, pin.Tex ).rgba;
 	float4 glossMapValue = gGlossMap.Sample( samLinear, pin.Tex ).rgba;		
 	gMaterialLoaded.Diffuse = float4(diffuseMapValue.rgba);
 	gMaterialLoaded.Ambient = float4(diffuseMapValue.rgba);
 	gMaterialLoaded.Specular = float4(glossMapValue.rgba);
 
-	//float3 normalMapSample = gRotationMap.Sample(samLinear, pin.Tex).rgb;
-	//float3 bumpedNormalW = NormalSampleToWorldSpace(normalMapSample, pin.NormalW, pin.TangentW);
+	float2 normalMapSample = gRotationMap.Sample(samLinear, pin.Tex).ag * 2 - 1;
+	float3 bumpedNormalW = float3(normalMapSample.x, normalMapSample.y, sqrt(1 - dot(normalMapSample.xy, normalMapSample.xy)));
 
 	float4 ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
 	float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
@@ -326,13 +328,13 @@ float4 PS( VS_OUTPUT pin, uniform int gLightCount ) : SV_Target
 	}
 	
 	litColor = ambient + diffuse + spec;
-	litColor.a = rotationMapValue.r;	
+	litColor.a = 1.0f - rotationMapValue.r;	
 	
 	return litColor;
 	*/
-
 	return outputColor;
 }
+
 
 float4 PS_Uber_Deffuse( VS_OUTPUT pin, uniform int gLightCount ) : SV_Target
 {
@@ -463,6 +465,7 @@ float4 PS_Garment( VS_OUTPUT pin, uniform int gLightCount ) : SV_Target
 		}
 	}	
 
+	//Black
 	if(paletteMaskMapValue.r < .5 && paletteMaskMapValue.g < .5 && paletteMaskMapValue.b < .5)
 	{
 		return float4(diffuseColor, alpha);
@@ -486,11 +489,13 @@ float4 PS_Garment( VS_OUTPUT pin, uniform int gLightCount ) : SV_Target
 
 	diffuseColor = lerp(diffuseMapValue.rgb, RGB.rgb, paletteMaskSum);	
 
+	//Red
 	if(paletteMaskMapValue.r > .5 && paletteMaskMapValue.g < .5 && paletteMaskMapValue.b < .5)
 	{
 		return float4(diffuseColor, alpha);
 	}
 
+	//Green
 	if(paletteMaskMapValue.r < .5 && paletteMaskMapValue.g > .5 && paletteMaskMapValue.b < .5)
 	{
 		return float4(diffuseColor, alpha);
@@ -513,17 +518,20 @@ float4 PS_Garment( VS_OUTPUT pin, uniform int gLightCount ) : SV_Target
 	hueSpecColor *= specularMapValue.r;
 	specularColor.rgb = lerp(specularColor.rgb, hueSpecColor, paletteMaskSum);
 
+	//Blue
 	if(paletteMaskMapValue.r < .5 && paletteMaskMapValue.g < .5 && paletteMaskMapValue.b > .5)
 	{
 		return float4(specularColor.rgb, alpha);
 	}
 
+	//Purple
 	if(paletteMaskMapValue.r > .5 && paletteMaskMapValue.g < .5 && paletteMaskMapValue.b > .5)
 	{
 		float3 finalColor = diffuseColor.rgb + specularColor.rgb;
 		return float4(finalColor, alpha);
 	}
 
+	//Yellow
 	if(paletteMaskMapValue.r < .5 && paletteMaskMapValue.g > .5 && paletteMaskMapValue.b > .5)
 	{
 		float3 finalColor = diffuseColor.rgb + specularColor.rgb;
@@ -534,7 +542,7 @@ float4 PS_Garment( VS_OUTPUT pin, uniform int gLightCount ) : SV_Target
 	return float4(finalColor, alpha);
 }
 
-float4 PS_Skin( VS_OUTPUT pin, uniform int gLightCount ) : SV_Target
+float4 PS_Hair( VS_OUTPUT pin, uniform int gLightCount ) : SV_Target
 {
 	// Interpolating normal can unnormalize it, so normalize it.
     pin.NormalW = normalize(pin.NormalW);
@@ -599,18 +607,11 @@ float4 PS_Skin( VS_OUTPUT pin, uniform int gLightCount ) : SV_Target
 	hueSpecColor *= specularMapValue.r;
 	specularColor.rgb = lerp(specularColor.rgb, hueSpecColor, paletteMaskSum);
 
-	float3 complexionMapValue = gComplexionMap.Sample( samLinear, pin.Tex ).rgb;
-	float4 facepaintMapValue = gFacepaintMap.Sample( samLinear, pin.Tex ).rgba;
-
-	float3 fragmentDiffuseColor = fragmentDiffuseColor * complexionMapValue;
-	fragmentDiffuseColor.rgb = lerp(fragmentDiffuseColor.rgb, facepaintMapValue.rgb, facepaintMapValue.a);
-
-	float3 finalColor = diffuseColor.rgb + specularColor.rgb;
-	return float4(finalColor, alpha);
+	float3 finalColor = diffuseColor.rgb; // + specularColor.rgb;
+	return float4(diffuseColor, alpha);
 }
 
-/*
-float4 PS_Garment( VS_OUTPUT pin, uniform int gLightCount ) : SV_Target
+float4 PS_Skin( VS_OUTPUT pin, uniform int gLightCount ) : SV_Target
 {
 	// Interpolating normal can unnormalize it, so normalize it.
     pin.NormalW = normalize(pin.NormalW);
@@ -625,20 +626,18 @@ float4 PS_Garment( VS_OUTPUT pin, uniform int gLightCount ) : SV_Target
 	toEye /= distToEye;
 
 	float4 diffuseMapValue = gDiffuseMap.Sample( samLinear, pin.Tex ).rgba;
+	float4 rotationMapValue = gRotationMap.Sample( samLinear, pin.Tex ).rgba;	
 	float4 specularMapValue = gGlossMap.Sample( samLinear, pin.Tex ).rgba;
+	//float alpha = diffuseMapValue.a;
+	//clip(alpha);
 
 	float4 paletteMapValue = gPaletteMap.Sample( samLinear, pin.Tex ).rgba;
 	float4 paletteMaskMapValue = gPaletteMaskMap.Sample( samLinear, pin.Tex ).rgba;	
 
 	float3 diffuseColor = diffuseMapValue.rgb;
 	float4 specularColor = specularMapValue;
-
+	
 	float paletteMaskSum = paletteMaskMapValue.x + paletteMaskMapValue.y;
-
-	if(paletteMaskMapValue.r < .5 && paletteMaskMapValue.g < .5 && paletteMaskMapValue.b < .5)  //black
-	{
-		return float4(diffuseColor.rgb, 0);
-	}	
 
 	float4 cPalette;
 	float3 cSpecColor, cMetSpecColor;
@@ -654,31 +653,18 @@ float4 PS_Garment( VS_OUTPUT pin, uniform int gLightCount ) : SV_Target
 		cMetSpecColor = gPalette1MetSpec.rgb;
 	}
 
-	//float3 HSL = ManipulateHSL(float3(paletteMapValue.g, paletteMapValue.b, paletteMapValue.a), cPalette);
-	//float ambientOcclusion = ManipulateAO(paletteMapValue.r, cPalette.z, cPalette.w);
-	//HSL.z *= ambientOcclusion;
-	//float3 RGB = ConvertHSLToRGB(HSL);
+	float3 HSL = ManipulateHSL(float3(paletteMapValue.g, paletteMapValue.b, paletteMapValue.a), cPalette);
+	float ambientOcclusion = ManipulateAO(paletteMapValue.r, cPalette.z, cPalette.w);
+	HSL.z *= ambientOcclusion;
+	float3 RGB = ConvertHSLToRGB(HSL);
 
-	diffuseColor = lerp(diffuseMapValue.rgb, cPalette.rgb, paletteMaskSum);
-	
-	if(paletteMaskMapValue.r > .5 && paletteMaskMapValue.g < .5 && paletteMaskMapValue.b < .5) //red
-	{
-		diffuseColor = lerp(diffuseMapValue.rgb, cPalette.rgb, paletteMaskMapValue.x);
-		return float4(diffuseColor, 1.0f);
-	}
+	diffuseColor = lerp(diffuseMapValue.rgb, RGB.rgb, paletteMaskSum);	
 
-	if(paletteMaskMapValue.r < .5 && paletteMaskMapValue.g > .5 && paletteMaskMapValue.b < .5) //green	
-	{
-		diffuseColor = lerp(diffuseMapValue.rgb, cPalette.rgb, paletteMaskMapValue.y);
-		return float4(diffuseColor, 1.0f);
-	}
-
-	//return float4(diffuseMapValue.rgb, 1.0f);
-	
+	// Determine the hue specular color
 	float3 hueSpecColor;
 	const float3 white = float3(1,1,1);
 	float metallicMask = paletteMaskMapValue.b;
-	//1.0 uses chosenMetallicSpecColor, .5 uses white, 0.0 uses chosenSpecColor      
+	//1.0 uses cMetSpecColor, .5 uses white, 0.0 uses cSpecColor      
 	if( metallicMask > .5 )
 	{
 		hueSpecColor = lerp(white, cMetSpecColor, (metallicMask - 0.5) * 2);
@@ -689,44 +675,121 @@ float4 PS_Garment( VS_OUTPUT pin, uniform int gLightCount ) : SV_Target
 	}
 	hueSpecColor *= specularMapValue.r;
 	specularColor.rgb = lerp(specularColor.rgb, hueSpecColor, paletteMaskSum);
+
+	//float4 ageMapValue = gAgeMap.Sample( samLinear, pin.Tex ).rgba;
+	//float3 ageDarkening = lerp(gFlushTone.rgb, white, ageMapValue.b);
+
+	float3 complexionMapValue = gComplexionMap.Sample( samLinear, pin.Tex ).rgb;
+	float4 facepaintMapValue = gFacepaintMap.Sample( samLinear, pin.Tex ).rgba;
+
+	float3 fragmentDiffuseColor = diffuseColor;
+	fragmentDiffuseColor = fragmentDiffuseColor * complexionMapValue; // * ageDarkening);
+	fragmentDiffuseColor.rgb = lerp(fragmentDiffuseColor.rgb, facepaintMapValue.rgb, facepaintMapValue.a);
 	
+	float flushFactor = (saturate(2.0f - 0.27f) * 3) * gFleshBrightness.x; //2.0f should be nDotL
+	float3 flushFrag = gFlushTone.rgb * flushFactor * diffuseColor;
 
-	if(paletteMaskMapValue.r < .5 && paletteMaskMapValue.g < .5 && paletteMaskMapValue.b > .5) //blue
-	{
-		return float4(specularColor.rgb, 1.0f);
-	}
+	fragmentDiffuseColor.rgb = fragmentDiffuseColor.rgb + flushFrag.rgb;
 
-	if(paletteMaskMapValue.r > .5 && paletteMaskMapValue.g > .5 && paletteMaskMapValue.b < .5) //yellow
-	{
-
-	}
-
-	if(paletteMaskMapValue.r < .5 && paletteMaskMapValue.g > .5 && paletteMaskMapValue.b > .5) //cyan
-	{
-		float3 color = float3(diffuseColor + specularColor.rgb);
-		return float4(color, 1.0f);
-	}
-
-	if(paletteMaskMapValue.r > .5 && paletteMaskMapValue.g < .5 && paletteMaskMapValue.b > .5) //purple
-	{
-		float3 color = float3(diffuseColor + specularColor.rgb);
-		return float4(color, 1.0f);
-	}
-
-
-
-
-	float3 color = diffuseColor.rgb + specularColor.rgb;
-
-	//float4 finalColor = float4(color, diffuseMapValue.a);
-
-	return float4(color, diffuseMapValue.a);
-	//return paletteMaskMapValue;
-
-	//return finalColor;
-	
+	float3 finalColor = fragmentDiffuseColor.rgb; // + specularColor.rgb;
+	return float4(finalColor, 1.0f);
 }
-*/
+
+float4 PS_Eye( VS_OUTPUT pin, uniform int gLightCount ) : SV_Target
+{
+	// Interpolating normal can unnormalize it, so normalize it.
+    pin.NormalW = normalize(pin.NormalW);
+
+	// The toEye vector is used in lighting.
+	float3 toEye = gEyePosW - pin.PosW;
+
+	// Cache the distance to the eye from this surface point.
+	float distToEye = length(toEye);
+
+	// Normalize.
+	toEye /= distToEye;
+
+	float4 diffuseMapValue = gDiffuseMap.Sample( samLinear, pin.Tex ).rgba;
+	float4 rotationMapValue = gRotationMap.Sample( samLinear, pin.Tex ).rgba;	
+	float4 specularMapValue = gGlossMap.Sample( samLinear, pin.Tex ).rgba;
+	float alpha = 1.0f - rotationMapValue.r;
+	clip(alpha - gAlphaClipValue.x);	
+
+	float4 paletteMapValue = gPaletteMap.Sample( samLinear, pin.Tex ).rgba;
+	float4 paletteMaskMapValue = gPaletteMaskMap.Sample( samLinear, pin.Tex ).rgba;	
+
+	float3 diffuseColor = diffuseMapValue.rgb;
+	float4 specularColor = specularMapValue;
+	
+	float paletteMaskSum = paletteMaskMapValue.x + paletteMaskMapValue.y;
+
+	float4 cPalette;
+	float3 cSpecColor, cMetSpecColor;
+
+	if(paletteMaskMapValue.x < paletteMaskMapValue.y)
+	{
+		cPalette = gPalette2;
+		cSpecColor = gPalette2Spec.rgb;
+		cMetSpecColor = gPalette2MetSpec.rgb;
+	}else{
+		cPalette = gPalette1;
+		cSpecColor = gPalette1Spec.rgb;
+		cMetSpecColor = gPalette1MetSpec.rgb;
+	}
+
+	float3 HSL = ManipulateHSL(float3(paletteMapValue.g, paletteMapValue.b, paletteMapValue.a), cPalette);
+	float ambientOcclusion = ManipulateAO(paletteMapValue.r, cPalette.z, cPalette.w);
+	HSL.z *= ambientOcclusion;
+	float3 RGB = ConvertHSLToRGB(HSL);
+
+	diffuseColor = lerp(diffuseMapValue.rgb, RGB.rgb, paletteMaskSum);	
+
+	// Determine the hue specular color
+	float3 hueSpecColor;
+	const float3 white = float3(1,1,1);
+	float metallicMask = paletteMaskMapValue.b;
+	//1.0 uses cMetSpecColor, .5 uses white, 0.0 uses cSpecColor      
+	if( metallicMask > .5 )
+	{
+		hueSpecColor = lerp(white, cMetSpecColor, (metallicMask - 0.5) * 2);
+	}
+	else
+	{
+		hueSpecColor = lerp(cSpecColor, white, metallicMask * 2);
+	}
+	hueSpecColor *= specularMapValue.r;
+	specularColor.rgb = lerp(specularColor.rgb, hueSpecColor, paletteMaskSum);	
+
+	float3 finalColor = diffuseColor.rgb; // + specularColor.rgb;
+	return float4(finalColor, alpha);
+}
+
+float4 PS_Skin_Complexion( VS_OUTPUT pin, uniform int gLightCount ) : SV_Target
+{
+	// Interpolating normal can unnormalize it, so normalize it.
+    pin.NormalW = normalize(pin.NormalW);
+	float3 complexionMapValue = gComplexionMap.Sample( samLinear, pin.Tex ).rgb;
+	
+	return float4(complexionMapValue, 1.0f);
+}
+
+float4 PS_Skin_Facepaint( VS_OUTPUT pin, uniform int gLightCount ) : SV_Target
+{
+	// Interpolating normal can unnormalize it, so normalize it.
+    pin.NormalW = normalize(pin.NormalW);
+	float3 facepaintMapValue = gFacepaintMap.Sample( samLinear, pin.Tex ).rgb;
+	
+	return float4(facepaintMapValue, 1.0f);
+}
+
+float4 PS_Skin_Age( VS_OUTPUT pin, uniform int gLightCount ) : SV_Target
+{
+	// Interpolating normal can unnormalize it, so normalize it.
+    pin.NormalW = normalize(pin.NormalW);
+	float3 ageMapValue = gAgeMap.Sample( samLinear, pin.Tex ).rgb;
+	
+	return float4(ageMapValue, 1.0f);
+}
 
 float4 PS_Garment_Mask( VS_OUTPUT pin, uniform int gLightCount ) : SV_Target
 {
@@ -952,3 +1015,56 @@ technique11 Light1Skin
 		SetPixelShader( CompileShader( ps_5_0, PS_Skin(1 ) ) );
 	}
 }
+
+
+technique11 Light1Eye
+{
+	pass P0
+	{
+		SetVertexShader( CompileShader( vs_5_0, VS( ) ) );
+		SetGeometryShader( NULL );
+		SetPixelShader( CompileShader( ps_5_0, PS_Eye(1 ) ) );
+	}
+}
+
+
+technique11 Light1Hair
+{
+	pass P0
+	{
+		SetVertexShader( CompileShader( vs_5_0, VS( ) ) );
+		SetGeometryShader( NULL );
+		SetPixelShader( CompileShader( ps_5_0, PS_Hair(1 ) ) );
+	}
+}
+
+technique11 Light1Complexion
+{
+	pass P0
+	{
+		SetVertexShader( CompileShader( vs_5_0, VS( ) ) );
+		SetGeometryShader( NULL );
+		SetPixelShader( CompileShader( ps_5_0, PS_Skin_Complexion(1 ) ) );
+	}
+}
+
+technique11 Light1Facepaint
+{
+	pass P0
+	{
+		SetVertexShader( CompileShader( vs_5_0, VS( ) ) );
+		SetGeometryShader( NULL );
+		SetPixelShader( CompileShader( ps_5_0, PS_Skin_Facepaint(1 ) ) );
+	}
+}
+
+technique11 Light1Age
+{
+	pass P0
+	{
+		SetVertexShader( CompileShader( vs_5_0, VS( ) ) );
+		SetGeometryShader( NULL );
+		SetPixelShader( CompileShader( ps_5_0, PS_Skin_Age(1 ) ) );
+	}
+}
+

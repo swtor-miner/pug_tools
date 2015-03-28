@@ -23,11 +23,7 @@ namespace tor_tools
                 this.name = name;
                 this.value = value;
                 //Console.WriteLine(name);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("pause");
-            }
+            } catch (Exception) { }            
 
             if (type != null)
             {
@@ -100,7 +96,7 @@ namespace tor_tools
                                         fieldLookup = classLookup.Fields.Find(x => x.Id == id);
                                     }
                                 }
-                                catch (Exception e) { }
+                                catch (Exception) { }
                             }
 
                             if (fieldLookup != null)

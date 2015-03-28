@@ -32,6 +32,11 @@ namespace SlimDX_Framework.FX {
         public readonly EffectTechnique Light1UberSpecular;
 
         public readonly EffectTechnique Light1Skin;
+        public readonly EffectTechnique Light1Hair;
+        public readonly EffectTechnique Light1Eye;
+        public readonly EffectTechnique Light1Facepaint;
+        public readonly EffectTechnique Light1Complexion;
+        public readonly EffectTechnique Light1Age;        
       
         private readonly EffectMatrixVariable _worldViewProj;
         private readonly EffectMatrixVariable _world;
@@ -63,6 +68,9 @@ namespace SlimDX_Framework.FX {
         private readonly EffectVectorVariable _palette1MetSpec;
         private readonly EffectVectorVariable _palette2MetSpec;
 
+        private readonly EffectVectorVariable _flushTone;
+        private readonly EffectVectorVariable _fleshBrightness;
+
         private readonly EffectVectorVariable _alphaClipValue;
         private readonly EffectVectorVariable _polyIgnore;  
         
@@ -85,6 +93,11 @@ namespace SlimDX_Framework.FX {
             Light1UberSpecular = FX.GetTechniqueByName("Light1UberSpecular");
 
             Light1Skin = FX.GetTechniqueByName("Light1Skin");
+            Light1Hair = FX.GetTechniqueByName("Light1Hair");
+            Light1Eye = FX.GetTechniqueByName("Light1Eye");
+            Light1Complexion = FX.GetTechniqueByName("Light1Complexion");
+            Light1Facepaint = FX.GetTechniqueByName("Light1Facepaint");
+            Light1Age = FX.GetTechniqueByName("Light1Age");
 
             Light1Tech = FX.GetTechniqueByName("Light1");
             Light2Tech = FX.GetTechniqueByName("Light2");
@@ -123,6 +136,8 @@ namespace SlimDX_Framework.FX {
             _palette1MetSpec = FX.GetVariableByName("gPalette1MetSpec").AsVector();
             _palette2MetSpec = FX.GetVariableByName("gPalette2MetSpec").AsVector();
 
+            _flushTone = FX.GetVariableByName("gFlushTone").AsVector();
+            _fleshBrightness = FX.GetVariableByName("gFleshBrightness").AsVector();
 
             _alphaClipValue = FX.GetVariableByName("gAlphaClipValue").AsVector();
             _polyIgnore = FX.GetVariableByName("gPolyIgnore").AsVector();
@@ -250,6 +265,16 @@ namespace SlimDX_Framework.FX {
             _polyIgnore.Set(v);
         }
 
+        public void SetFlushTone(Vector4 v)
+        {
+            _flushTone.Set(v);
+        }
+
+        public void SetFleshBrightness(Vector2 v)
+        {
+            _fleshBrightness.Set(v);
+        }
+        
         public void SetWorldViewProjTex(Matrix matrix) {
             if ( _worldViewProjTex != null )_worldViewProjTex.SetMatrix(matrix);
         }

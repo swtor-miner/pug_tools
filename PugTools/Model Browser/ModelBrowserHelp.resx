@@ -152,7 +152,10 @@ Q - Show PaletteMapMask
 1 - Show Palette1 Color
 2 - Show Palette2 Color
 3 - Show PaletteMap
-E - Show Default Model Color
+4 - Show Complexion Map
+5 - Show Facepaint Map
+6 - Show Age Map
+E - Show Diffuse Color
 C - Show Wireframe Mode
 PrtScreen - Take a Screen Shot</value>
   </data>

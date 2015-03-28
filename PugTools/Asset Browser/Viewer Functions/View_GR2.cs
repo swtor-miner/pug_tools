@@ -78,7 +78,7 @@ namespace tor_tools
             _dirLights = new[] {                
                 new DirectionalLight {
                 Ambient = Color.White,
-                Diffuse = Color.White,                
+                Diffuse = Color.White,
                 Specular = new Color4(0.5f, 0.5f, 0.5f),
                 Direction = new Vector3(0.57735f, -0.57735f, 0.57735f)
                 },              

@@ -36,7 +36,7 @@ namespace tor_tools
         private Thread render;
 
         public Dictionary<string, GR2> models = new Dictionary<string, GR2>();
-        public Dictionary<string, Stream> resources = new Dictionary<string, Stream>();
+        public Dictionary<string, object> resources = new Dictionary<string, object>();
         public List<ItemAppearance> items = new List<ItemAppearance>();
 
         Dictionary<object, object> weaponAppearance = new Dictionary<object, object>();
@@ -92,11 +92,8 @@ namespace tor_tools
                     string appearSpec = item.Data.ValueOrDefault<string>("cbtWeaponAppearanceSpec", null);
                     if (appearSpec == null)
                         continue;                    
-                }
-                //nodeKeys.Add(item.Key.ToString());
-                //GomLib.GomObject obj = (GomLib.GomObject)currentNode.Value;
-                string parent = "";
-                //string display = currentNode.Key.ToString();
+                }                
+                string parent = "";                
                 string display = item.Name;
                 if (item.Name.Contains("."))
                 {
@@ -207,11 +204,7 @@ namespace tor_tools
                             if (hashInfo.Extension.ToUpper() != "GR2")
                                 continue;
                             hashInfo.Directory = "/unknown/" + hashInfo.Source.Replace(".tor", "");
-
-                            NodeAsset assetAll = new NodeAsset(prefixAll + hashInfo.Directory + "/" + hashInfo.Extension + "/" + hashInfo.FileName + "." + hashInfo.Extension, prefixAll + hashInfo.Directory + "/" + hashInfo.Extension, hashInfo.FileName + "." + hashInfo.Extension, hashInfo);
-                            assetDict.Add(prefixAll + hashInfo.Directory + "/" + hashInfo.Extension + "/" + hashInfo.FileName + "." + hashInfo.Extension, assetAll);
-                            fileDirs.Add(prefixAll + hashInfo.Directory + "/" + hashInfo.Extension);                            
-
+                            
                             NodeAsset assetUnn = new NodeAsset(prefixUnn + hashInfo.Directory + "/" + hashInfo.Extension + "/" + hashInfo.FileName + "." + hashInfo.Extension, prefixUnn + hashInfo.Directory + "/" + hashInfo.Extension, hashInfo.FileName + "." + hashInfo.Extension, hashInfo);
                             assetDict.Add(prefixUnn + hashInfo.Directory + "/" + hashInfo.Extension + "/" + hashInfo.FileName + "." + hashInfo.Extension, assetUnn);
                             fileDirs.Add(prefixUnn + hashInfo.Directory + "/" + hashInfo.Extension);                            
@@ -433,13 +426,7 @@ namespace tor_tools
                     treeViewFast1.Enabled = true;
                     toolStripProgressBar1.Visible = false;
                     this.toolStripStatusLabel1.Text = "NPC Loaded"; 
-                }
-                /*
-                DataTable dt = new DataTable();                
-                dt.Columns.Add("Property");
-                dt.Columns.Add("Value");
-                dt.Rows.Add(new string[] { "Archive", "" });
-                 */
+                }            
             }
         }
 
@@ -447,10 +434,10 @@ namespace tor_tools
         {
             tvfDataViewer.Nodes.Clear();
             dgvDataViewer.DataSource = null;
+            dataviewDict.Clear();
+            dataviewDict.Add("/", new NodeAsset("/", "", "Root", (GomObject)null));
             if (models.Count > 0)
             {
-                dataviewDict.Clear();
-                dataviewDict.Add("/", new NodeAsset("/", "", "Root", (GomObject)null));
                 dataviewDict.Add("/models", new NodeAsset("/models", "/", "Models", (GomObject)null));
                 foreach (var model in models)
                 {
@@ -520,6 +507,16 @@ namespace tor_tools
                         }
                     }
 
+                    if (gr2.materialOverride != null)
+                    {
+                        if (!dataviewDict.ContainsKey("/models/" + model.Key + "/materials"))
+                            dataviewDict.Add("/models/" + model.Key + "/materials", new NodeAsset("/models/" + model.Key + "/materials", "/models/" + model.Key, "Materials", (GomObject)null));
+                        GR2_Material gr2_material = gr2.materialOverride;
+                        NodeAsset materialAsset = new NodeAsset("/models/" + model.Key + "/materials/" + gr2_material.materialName, "/models/" + model.Key + "/materials", gr2_material.materialName, gr2_material);
+                        if (!dataviewDict.ContainsKey("/models/" + model.Key + "/materials/" + gr2_material.materialName))
+                            dataviewDict.Add("/models/" + model.Key + "/materials/" + gr2_material.materialName, materialAsset);
+                    }
+
                     if (gr2.numBones > 0)
                     {
                         if (!dataviewDict.ContainsKey("/models/" + model.Key + "/bones"))
@@ -533,19 +530,29 @@ namespace tor_tools
                         }
                     }
                 }
-                Func<NodeAsset, string> getId = (x => x.Id);
-                Func<NodeAsset, string> getParentId = (x => x.parentId);
-                Func<NodeAsset, string> getDisplayName = (x => x.displayName);
-                tvfDataViewer.SuspendLayout();
-                tvfDataViewer.BeginUpdate();
-                tvfDataViewer.LoadItems<NodeAsset>(dataviewDict, getId, getParentId, getDisplayName);
-                tvfDataViewer.Sort();
-                tvfDataViewer.EndUpdate();
-                tvfDataViewer.ResumeLayout();
-                tvfDataViewer.Enabled = true;
-                tvfDataViewer.Nodes[0].Expand();
-                dgvDataViewer.Enabled = true;
             }
+
+            if (resources.Count > 0)
+            {
+                dataviewDict.Add("/resources", new NodeAsset("/resources", "/", "Resources", (GomObject)null));
+                foreach (var resource in resources)
+                {
+                    NodeAsset asset = new NodeAsset("/resources/" + resource.Key, "/models", resource.Key, (GomObject)null);
+                    dataviewDict.Add("/resources/" + resource.Key, asset);
+                }
+            }
+            Func<NodeAsset, string> getId = (x => x.Id);
+            Func<NodeAsset, string> getParentId = (x => x.parentId);
+            Func<NodeAsset, string> getDisplayName = (x => x.displayName);
+            tvfDataViewer.SuspendLayout();
+            tvfDataViewer.BeginUpdate();
+            tvfDataViewer.LoadItems<NodeAsset>(dataviewDict, getId, getParentId, getDisplayName);
+            tvfDataViewer.Sort();
+            tvfDataViewer.EndUpdate();
+            tvfDataViewer.ResumeLayout();
+            tvfDataViewer.Enabled = true;
+            tvfDataViewer.Nodes[0].Expand();
+            dgvDataViewer.Enabled = true;
         }
 
         private async Task previewGR2(HashFileInfo hashInfo)
@@ -636,16 +643,13 @@ namespace tor_tools
                         string palette2XML = "";
 
                         if (itemData.IPP.Material0 != null)
-                        {
-                            //Console.WriteLine("into material checking");
+                        {                            
                             if (itemData.IPP.PrimaryHue != "")
                                 palette1XML = "/resources" + itemData.IPP.PrimaryHue.Split(';').First();
 
                             if (itemData.IPP.SecondaryHue != "")
                                 palette2XML = "/resources" + itemData.IPP.SecondaryHue.Split(';').First();
-
-                            //if (itemData.IPP.Material0.Contains("[gen]"))
-                            //{
+                         
                             if (itemData.IPP.BodyType.Contains("bf"))
                             {
                                 mat0 = mat0.Replace("[gen]", "f").Replace("[bt]", itemData.IPP.BodyType);
@@ -659,15 +663,11 @@ namespace tor_tools
                             else
                             {
                                 mat0 = mat0.Replace("[gen]", Bodytype.Substring(1, 1)).Replace("[bt]", Bodytype);
-                                matMir = mat0.Replace("[gen]", Bodytype.Substring(1, 1)).Replace("[bt]", Bodytype);
-                                //Console.WriteLine("pause - unknown body type");
+                                matMir = mat0.Replace("[gen]", Bodytype.Substring(1, 1)).Replace("[bt]", Bodytype);                                
                             }
 
-                            //Console.WriteLine("past gender checking");
-
                             if (gr2_model.numMaterials == 0)
-                            {
-                                //Console.WriteLine("checking 0 material");
+                            {                                
                                 gr2_model.numMaterials = 1;
                                 gr2_model.materials.Add(new GR2_Material(mat0));
                                 if (palette1XML != null)
@@ -676,8 +676,7 @@ namespace tor_tools
                                     gr2_model.materials[0].palette2XML = palette2XML;
                             }
                             else if (gr2_model.numMaterials == 1)
-                            {
-                                //Console.WriteLine("checking 1 material");
+                            {   
                                 gr2_model.materials[0] = new GR2_Material(mat0);
                                 if (palette1XML != null)
                                     gr2_model.materials[0].palette1XML = palette1XML;
@@ -685,8 +684,7 @@ namespace tor_tools
                                     gr2_model.materials[0].palette2XML = palette2XML;
                             }
                             else if (gr2_model.numMaterials == 2)
-                            {
-                                //Console.WriteLine("checking 2 material");
+                            {   
                                 gr2_model.materials[0] = new GR2_Material(mat0);
                                 gr2_model.materials[1] = new GR2_Material(matMir);
                                 if (palette1XML != null)
@@ -700,13 +698,7 @@ namespace tor_tools
                                     gr2_model.materials[1].palette2XML = palette2XML;
                                 }
                             }
-                            else
-                            {
-                                //Console.WriteLine("more than 2 materials");
-                            }
-                            //Console.WriteLine("pause");
                         }
-                        //Console.WriteLine("pause");
 
                         if (itemData.IPP.AttachedModels.Count() > 0)
                         {
@@ -725,10 +717,8 @@ namespace tor_tools
                                     string attachName = attachFileName.Split('/').Last();
                                     FileFormats.GR2 attachModel = new FileFormats.GR2(br2, attachName);
 
-
                                     if (attachModel.numMaterials == 0)
                                     {
-                                        //Console.WriteLine("checking 0 material");
                                         attachModel.numMaterials = 1;
                                         attachModel.materials.Add(new GR2_Material(mat0));
                                         if (palette1XML != null)
@@ -737,8 +727,7 @@ namespace tor_tools
                                             attachModel.materials[0].palette2XML = palette2XML;
                                     }
                                     else if (attachModel.numMaterials == 1)
-                                    {
-                                        //Console.WriteLine("checking 1 material");
+                                    {   
                                         attachModel.materials[0] = new GR2_Material(mat0);
                                         if (palette1XML != null)
                                             attachModel.materials[0].palette1XML = palette1XML;
@@ -746,8 +735,7 @@ namespace tor_tools
                                             attachModel.materials[0].palette2XML = palette2XML;
                                     }
                                     else if (attachModel.numMaterials == 2)
-                                    {
-                                        //Console.WriteLine("checking 2 material");
+                                    {   
                                         attachModel.materials[0] = new GR2_Material(mat0);
                                         attachModel.materials[1] = new GR2_Material(matMir);
                                         if (palette1XML != null)
@@ -775,7 +763,6 @@ namespace tor_tools
                     Stream inputStream = this.currentAssets.FindFile("/resources" + model).OpenCopyInMemory();
                     if (inputStream != null)
                         resources.Add(model.Substring(model.LastIndexOf('/') + 1), inputStream);
-                    //Console.WriteLine("DDS PAUSE");
                 }
                 panelRender.LoadModel(models, resources, itemData.Fqn, "ipp");
                 render = new Thread(panelRender.startRender);
@@ -801,8 +788,7 @@ namespace tor_tools
                     else
                         model = model.Replace("[bt]", Bodytype);
                     if (model.Contains(".gr2"))
-                    {
-                        //Console.WriteLine(model);
+                    {   
                         var file = this.currentAssets.FindFile("/resources" + model);
                         if (file != null)
                         {
@@ -816,16 +802,13 @@ namespace tor_tools
                             string palette2XML = "";
 
                             if (itemData.IPP.Material0 != null)
-                            {
-                                //Console.WriteLine("into material checking");
+                            {   
                                 if (itemData.IPP.PrimaryHue != "")
                                     palette1XML = "/resources" + itemData.IPP.PrimaryHue.Split(';').First();
 
                                 if (itemData.IPP.SecondaryHue != "")
                                     palette2XML = "/resources" + itemData.IPP.SecondaryHue.Split(';').First();
-
-                                //if (itemData.IPP.Material0.Contains("[gen]"))
-                                //{
+                             
                                 if (itemData.IPP.BodyType.Contains("bf"))
                                 {
                                     mat0 = mat0.Replace("[gen]", "f").Replace("[bt]", itemData.IPP.BodyType);
@@ -839,15 +822,11 @@ namespace tor_tools
                                 else
                                 {
                                     mat0 = mat0.Replace("[gen]", Bodytype.Substring(1, 1)).Replace("[bt]", Bodytype);
-                                    matMir = mat0.Replace("[gen]", Bodytype.Substring(1, 1)).Replace("[bt]", Bodytype);
-                                    //Console.WriteLine("pause - unknown body type");
+                                    matMir = mat0.Replace("[gen]", Bodytype.Substring(1, 1)).Replace("[bt]", Bodytype);                                    
                                 }
-
-                                //Console.WriteLine("past gender checking");
-
+                                                                
                                 if (gr2_model.numMaterials == 0)
-                                {
-                                    //Console.WriteLine("checking 0 material");
+                                {   
                                     gr2_model.numMaterials = 1;
                                     gr2_model.materials.Add(new GR2_Material(mat0));
                                     if (palette1XML != null)
@@ -857,7 +836,6 @@ namespace tor_tools
                                 }
                                 else if (gr2_model.numMaterials == 1)
                                 {
-                                    //Console.WriteLine("checking 1 material");
                                     gr2_model.materials[0] = new GR2_Material(mat0);
                                     if (palette1XML != null)
                                         gr2_model.materials[0].palette1XML = palette1XML;
@@ -865,8 +843,7 @@ namespace tor_tools
                                         gr2_model.materials[0].palette2XML = palette2XML;
                                 }
                                 else if (gr2_model.numMaterials == 2)
-                                {
-                                    //Console.WriteLine("checking 2 material");
+                                {   
                                     gr2_model.materials[0] = new GR2_Material(mat0);
                                     gr2_model.materials[1] = new GR2_Material(matMir);
                                     if (palette1XML != null)
@@ -880,13 +857,7 @@ namespace tor_tools
                                         gr2_model.materials[1].palette2XML = palette2XML;
                                     }
                                 }
-                                else
-                                {
-                                    //Console.WriteLine("more than 2 materials");
-                                }
-                                //Console.WriteLine("pause");
-                            }
-                            //Console.WriteLine("pause");
+                            }                            
 
                             if (itemData.IPP.AttachedModels.Count() > 0)
                             {
@@ -905,10 +876,8 @@ namespace tor_tools
                                         string attachName = attachFileName.Split('/').Last();
                                         FileFormats.GR2 attachModel = new FileFormats.GR2(br2, attachName);
 
-
                                         if (attachModel.numMaterials == 0)
-                                        {
-                                            //Console.WriteLine("checking 0 material");
+                                        {   
                                             attachModel.numMaterials = 1;
                                             attachModel.materials.Add(new GR2_Material(mat0));
                                             if (palette1XML != null)
@@ -917,8 +886,7 @@ namespace tor_tools
                                                 attachModel.materials[0].palette2XML = palette2XML;
                                         }
                                         else if (attachModel.numMaterials == 1)
-                                        {
-                                            //Console.WriteLine("checking 1 material");
+                                        {   
                                             attachModel.materials[0] = new GR2_Material(mat0);
                                             if (palette1XML != null)
                                                 attachModel.materials[0].palette1XML = palette1XML;
@@ -927,7 +895,6 @@ namespace tor_tools
                                         }
                                         else if (attachModel.numMaterials == 2)
                                         {
-                                            //Console.WriteLine("checking 2 material");
                                             attachModel.materials[0] = new GR2_Material(mat0);
                                             attachModel.materials[1] = new GR2_Material(matMir);
                                             if (palette1XML != null)
@@ -955,7 +922,6 @@ namespace tor_tools
                         Stream inputStream = this.currentAssets.FindFile("/resources" + model).OpenCopyInMemory();
                         if (inputStream != null)
                             resources.Add(model.Substring(model.LastIndexOf('/') + 1), inputStream);
-                        //Console.WriteLine("DDS PAUSE");
                     }
                 }
                 panelRender.LoadModel(models, resources, itemsData.First().Fqn, "ipp");
@@ -976,8 +942,7 @@ namespace tor_tools
                 string model = itemData.ValueOrDefault<string>("itmModel", null).Replace('\\', '/');
                 string fxspec = itemData.ValueOrDefault<string>("itmFxSpec", null);
                 if (model.Contains(".gr2"))
-                {
-                    //Console.WriteLine(model);
+                {   
                     var file = this.currentAssets.FindFile("/resources" + model);
                     if (file != null)
                     {
@@ -1046,8 +1011,7 @@ namespace tor_tools
                             continue;
                         }
                     }
-
-                    //Console.WriteLine(model);
+                    
                     if (model.Contains("designblockout"))
                         continue;
                     var file = this.currentAssets.FindFile("/resources" + model);
@@ -1071,42 +1035,7 @@ namespace tor_tools
                             Console.WriteLine(e.StackTrace.ToString());
                             Console.WriteLine("pause here");
                         }
-                      
                     }
-                    /*
-                    if (fxspec != null)
-                    {
-                        string fxName = "/resources/art/fx/fxspec/" + fxspec + ".fxspec";
-                        fxName = fxName.Replace(".fxspec.fxspec", ".fxspec");
-                        var file = this.currentAssets.FindFile(fxName);
-                        if (file != null)
-                        {
-                            XmlDocument doc = new XmlDocument();
-                            doc.Load(file.OpenCopyInMemory());
-                            XmlNode modelList = doc.SelectSingleNode("//node()[@name='_fxModelList']");
-                            XmlNodeList resourceList = modelList.SelectNodes("//node()[@name='_fxResourceName']");
-                            if (resourceList.Count > 0)
-                            {
-                                foreach (XmlNode node in resourceList)
-                                {
-                                    string modelPath = "/resources" + node.InnerText.Replace("\\", "/");
-                                    if (modelPath.Contains(".gr2"))
-                                    {
-                                        var attachModel = this.currentAssets.FindFile(modelPath);
-                                        if (attachModel != null)
-                                        {
-                                            Stream modelStream = attachModel.OpenCopyInMemory();
-                                            BinaryReader br = new BinaryReader(modelStream);
-                                            string name = modelPath.Split('/').Last();
-                                            FileFormats.GR2 gr2_model = new FileFormats.GR2(br, name);
-                                            models.First().Value.attachedModels.Add(gr2_model);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                     */
                 }
                 panelRender.LoadModel(models, resources, obj.Name, "dyn");
                 render = new Thread(panelRender.startRender);
@@ -1125,12 +1054,14 @@ namespace tor_tools
             {
                 object fxSpec;
                 obj.Dictionary.TryGetValue("mntDataVFX", out fxSpec);
+                string fqn = (string)obj.Dictionary["mntDataSpecString"];
+                if (fxSpec != null)
+                    parseFXSpec(fxSpec.ToString());
                 object npcNodeId;
                 obj.Dictionary.TryGetValue("4611686299207604004", out npcNodeId);
                 if (npcNodeId != null)
                 {
                     GomObject npcNode = this.currentDom.GetObject((ulong)npcNodeId);
-                    //Dictionary<object, object> npcVisualList = currentDom.GetObject((ulong)npcNodeId).Data.ValueOrDefault<Dictionary<object, object>>("npcVisualDataList", null);                                
                     List<object> npcVisualList = this.currentDom.GetObject((ulong)npcNodeId).Data.ValueOrDefault<List<object>>("npcVisualDataList", null);
 
                     if (npcVisualList != null)
@@ -1148,67 +1079,21 @@ namespace tor_tools
                         }
                     }
                 }
-                string fqn = (string)obj.Dictionary["mntDataSpecString"];
-                if (fxSpec != null)
-                    parseFXSpec(fxSpec.ToString());
-
-                /*
-                if (fxSpec != null)
+                else
                 {
-                    string fxName = "/resources/art/fx/fxspec/" + fxSpec + ".fxspec";
-                    fxName = fxName.Replace(".fxspec.fxspec", ".fxspec");
-                    
-                    var file = this.currentAssets.FindFile(fxName);
+                    string skeletonModel = "/resources/art/dynamic/spec/bmanew_skeleton.gr2";
+                    TorLib.File file = this.currentAssets.FindFile(skeletonModel);
                     if (file != null)
                     {
-                        XmlDocument doc = new XmlDocument();
-                        doc.Load(file.OpenCopyInMemory());
-                        XmlNode modelList = doc.SelectSingleNode("//node()[@name='_fxModelList']");
-                        XmlNodeList resourceList = modelList.SelectNodes("//node()[@name='_fxResourceName']");
-                        if (resourceList.Count > 0)
-                        {
-                            int i = 0;
-                            lock (this.models)
-                            {
-                                foreach (XmlNode node in resourceList)
-                                {
-                                    i++;
-                                    string modelPath = "/resources" + node.InnerText.Replace("\\", "/");
-                                    if (modelPath.Contains(".gr2"))
-                                    {
-                                        if (modelPath.Contains("spawn"))
-                                            continue;
-                                        var attachModel = this.currentAssets.FindFile(modelPath);
-                                        if (attachModel != null)
-                                        {
-                                            Stream modelStream = attachModel.OpenCopyInMemory();
-                                            BinaryReader br = new BinaryReader(modelStream);
-                                            string name = modelPath.Split('/').Last();
-                                            FileFormats.GR2 gr2_model = new FileFormats.GR2(br, name);
-                                            //GR2 gr2_model = new GR2();
-                                            try
-                                            {
-                                                int count = 0;
-                                                while (this.models.ContainsKey(name))
-                                                {
-                                                    name = count.ToString() + "-" + name;
-                                                    count++;
-                                                }
-                                                this.models.Add(name, gr2_model);
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                MessageBox.Show(e.InnerException + "\r\n" + e.StackTrace.ToString());
-                                                Console.WriteLine("pause");
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            
-                        }
+                        Stream skeletonStream = file.OpenCopyInMemory();
+                        BinaryReader br = new BinaryReader(skeletonStream);
+                        string name = skeletonModel.Split('/').Last();
+                        FileFormats.GR2 gr2_model = new FileFormats.GR2(br, name);
+                        gr2_model.transformMatrix = Matrix.Scaling(new Vector3(1.0f, 1.0f, 1.0f));
+                        this.models.Add(name, gr2_model);
                     }
-                }*/
+                }
+           
                 if (models.Count() > 0)
                 {
                     panelRender.LoadModel(this.models, resources, fqn, "mnt");
@@ -1254,8 +1139,7 @@ namespace tor_tools
                     string model;
                     model = slotDict.Value[0].Model.Replace("[bt]", slotDict.Value[0].BodyType);
                     if (model.Contains(".gr2"))
-                    {
-                        //Console.WriteLine(model);
+                    {   
                         Stream modelStream = this.currentAssets.FindFile("/resources" + model).OpenCopyInMemory();
                         if (modelStream != null)
                         {
@@ -1268,16 +1152,12 @@ namespace tor_tools
                             string palette2XML = "";
 
                             if (slotDict.Value[0].Material0 != null)
-                            {
-                                //Console.WriteLine("into material checking");
+                            {   
                                 if (slotDict.Value[0].PrimaryHue != "")
                                     palette1XML = "/resources" + slotDict.Value[0].PrimaryHue.Split(';').First();
 
                                 if (slotDict.Value[0].SecondaryHue != "")
                                     palette2XML = "/resources" + slotDict.Value[0].SecondaryHue.Split(';').First();
-
-                                //if (slotDict.Value[0].Material0.Contains("[gen]"))
-                                //{
                                 if (slotDict.Value[0].BodyType.Contains("bf"))
                                 {
                                     mat0 = mat0.Replace("[gen]", "f").Replace("[bt]", slotDict.Value[0].BodyType);
@@ -1288,57 +1168,18 @@ namespace tor_tools
                                     mat0 = mat0.Replace("[gen]", "m").Replace("[bt]", slotDict.Value[0].BodyType);
                                     matMir = matMir.Replace("[gen]", "m").Replace("[bt]", slotDict.Value[0].BodyType);
                                 }
-                                //else
-                                //Console.WriteLine("pause - unknown body type");
-                                //}
-
-                                //Console.WriteLine("past gender checking");
-
-                                /*if (gr2_model.numMaterials == 0)
-                                {
-                                    //Console.WriteLine("checking 0 material");
-                                    gr2_model.numMaterials = 1;
-                                    gr2_model.materials.Add(new GR2_Material(mat0));
-                                    if (palette1XML != null)
-                                        gr2_model.materials[0].palette1XML = palette1XML;
-                                    if (palette2XML != null)
-                                        gr2_model.materials[0].palette2XML = palette2XML;
-                                }
-                                else if (gr2_model.numMaterials == 1)
-                                {
-                                    //Console.WriteLine("checking 1 material");
-                                    gr2_model.materials[0] = new GR2_Material(mat0);  
-                                    if(palette1XML != null)
-                                        gr2_model.materials[0].palette1XML = palette1XML;
-                                    if (palette2XML != null)
-                                        gr2_model.materials[0].palette2XML = palette2XML;
-                                }
-                                else if (gr2_model.numMaterials == 2)
-                                {*/
-                                //Console.WriteLine("checking 2 material");
+                                
                                 gr2_model.materials = new List<GR2_Material>();
                                 gr2_model.materials.Add(new GR2_Material(mat0));
                                 if (matMir != mat0 && matMir != "")
-                                    gr2_model.materials.Add(new GR2_Material(matMir));
+                                    gr2_model.materialOverride = new GR2_Material(matMir);                                                                    
                                 gr2_model.numMaterials = (ushort)gr2_model.materials.Count;
-                                if (palette1XML != null)
-                                {
+                                if (palette1XML != null)                                
                                     gr2_model.materials[0].palette1XML = palette1XML;
-                                    //gr2_model.materials[1].palette1XML = palette1XML;
-                                }
-                                if (palette2XML != null)
-                                {
-                                    gr2_model.materials[0].palette2XML = palette2XML;
-                                    //gr2_model.materials[1].palette2XML = palette2XML;
-                                }
-                                /*}
-                                else
-                                {
-                                    //Console.WriteLine("more than 2 materials");
-                                }*/
-                                //Console.WriteLine("pause");
-                            }
-                            //Console.WriteLine("pause");
+                                
+                                if (palette2XML != null)                                
+                                    gr2_model.materials[0].palette2XML = palette2XML;                                    
+                            }                            
 
                             if (slotDict.Value[0].AttachedModels.Count() > 0)
                             {
@@ -1354,8 +1195,7 @@ namespace tor_tools
 
                                         attachModel.materials = gr2_model.materials;
                                         if (attachModel.numMaterials == 0)
-                                        {
-                                            //Console.WriteLine("checking 0 material");
+                                        {   
                                             attachModel.numMaterials = 1;
                                             attachModel.materials.Add(new GR2_Material(mat0));
                                             if (palette1XML != null)
@@ -1364,8 +1204,7 @@ namespace tor_tools
                                                 attachModel.materials[0].palette2XML = palette2XML;
                                         }
                                         else if (attachModel.numMaterials == 1)
-                                        {
-                                            //Console.WriteLine("checking 1 material");
+                                        {   
                                             attachModel.materials[0] = new GR2_Material(mat0);
                                             if (palette1XML != null)
                                                 attachModel.materials[0].palette1XML = palette1XML;
@@ -1373,8 +1212,7 @@ namespace tor_tools
                                                 attachModel.materials[0].palette2XML = palette2XML;
                                         }
                                         else if (attachModel.numMaterials == 2)
-                                        {
-                                            //Console.WriteLine("checking 2 material");
+                                        {   
                                             attachModel.materials.Add(new GR2_Material(mat0));
                                             attachModel.materials.Add(new GR2_Material(matMir));
                                             if (palette1XML != null)
@@ -1398,17 +1236,20 @@ namespace tor_tools
                         }
                     }
                     if (model.Contains(".dds"))
-                    {
-                        Stream inputStream = this.currentAssets.FindFile("/resources" + model).OpenCopyInMemory();
-                        if (inputStream != null)
-                            resources.Add(slotDict.Key.ToString(), inputStream);
-                        //Console.WriteLine("DDS PAUSE");
+                    {   
+                        resources.Add(slotDict.Key.ToString(), slotDict.Value.First().Model);                        
                     }
-                }
-                else
-                {
-                    //Console.WriteLine("pause");
-                }
+
+                    if (model.Contains(".xml"))
+                    {
+                        string dynFqn = model.Replace("/art/", "").Replace(".xml", "").Replace("/", ".");
+                        GomObject dynObj = currentDom.GetObject(dynFqn);                     
+                        if (dynObj != null)
+                        {   
+                            resources.Add(slotDict.Key, dynObj);
+                        }
+                    }
+                }                
             }
         }
 
@@ -1826,7 +1667,7 @@ namespace tor_tools
                     dt.Rows.Add(new string[] { "# Attachments", model.numAttach.NullSafeToString() });
                     dt.Rows.Add(new string[] { "# Bones", model.numBones.NullSafeToString() });
                     dt.Rows.Add(new string[] { "# Meshes", model.numMeshes.NullSafeToString() });
-                    dt.Rows.Add(new string[] { "# Materials", model.numMaterials.NullSafeToString() });
+                    dt.Rows.Add(new string[] { "# Materials", model.numMaterials.NullSafeToString() });                    
                 }
                 else if (tag.dynObject is GR2_Material)
                 {
@@ -1835,7 +1676,7 @@ namespace tor_tools
                     dt.Rows.Add(new string[] { "DiffuseMap", material.diffuseDDS.NullSafeToString() });
                     dt.Rows.Add(new string[] { "RotationMap1", material.rotationDDS.NullSafeToString() });
                     dt.Rows.Add(new string[] { "GlossMap", material.glossDDS.NullSafeToString() });
-                    dt.Rows.Add(new string[] { "PaletteMask", material.paletteMaskDDS.NullSafeToString() });
+                    dt.Rows.Add(new string[] { "PaletteMask", material.paletteDDS.NullSafeToString() });
                     dt.Rows.Add(new string[] { "PaletteMaskMap", material.paletteMaskDDS.NullSafeToString() });
                     dt.Rows.Add(new string[] { "UsesEmissive", material.useEmissive.NullSafeToString() });
                     dt.Rows.Add(new string[] { "Pal 1", material.palette1.NullSafeToString() });
@@ -1844,6 +1685,11 @@ namespace tor_tools
                     dt.Rows.Add(new string[] { "Pal 2", material.palette2.NullSafeToString() });
                     dt.Rows.Add(new string[] { "Pal 2 Met Spec", material.palette2MetSpec.NullSafeToString() });
                     dt.Rows.Add(new string[] { "Pal 2 Spec", material.palette2Spec.NullSafeToString() });
+                    
+                    dt.Rows.Add(new string[] { "FacePaint Map", material.facepaintDDS.NullSafeToString() });
+                    dt.Rows.Add(new string[] { "Complexion Map", material.complexionDDS.NullSafeToString() });
+                    dt.Rows.Add(new string[] { "Age Map", material.ageDDS.NullSafeToString() });
+
                 }
                 else if (tag.dynObject is GR2_Mesh)
                 {
