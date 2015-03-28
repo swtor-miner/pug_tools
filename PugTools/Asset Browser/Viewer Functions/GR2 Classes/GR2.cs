@@ -40,6 +40,8 @@ namespace FileFormats
         public Matrix rotationMatrix;
         public Matrix attachMatrix;
 
+        public Matrix transformMatrix;
+
         public Matrix parentPosMatrix;
         public Matrix parentScaleMatrix;
         public Matrix parentRotMatrix;        
@@ -204,6 +206,14 @@ namespace FileFormats
                     }
                 }
             }
+        }
+
+        public Matrix GetTransform()
+        {
+            Matrix output = Matrix.Identity;
+            if (attachMatrix != new Matrix())
+                output *= this.attachMatrix;
+            return (output * this.transformMatrix);
         }
     }    
 }

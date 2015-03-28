@@ -42,8 +42,6 @@ namespace tor_tools
         Dictionary<object, object> weaponAppearance = new Dictionary<object, object>();
         Dictionary<object, object> mntMountInfoTable = new Dictionary<object, object>();
 
-        Vector3 blankVec = new Vector3();
-
         public ModelBrowser(string assetLocation, bool usePTS)
         {
             InitializeComponent();
@@ -566,6 +564,7 @@ namespace tor_tools
                     BinaryReader br = new BinaryReader(modelStream);
                     string name = model.Split('/').Last();
                     FileFormats.GR2 gr2_model = new FileFormats.GR2(br, name);
+                    gr2_model.transformMatrix = Matrix.Scaling(new Vector3(1.0f, 1.0f, 1.0f));
                     models.Add(model.Substring(model.LastIndexOf('/') + 1), gr2_model);
                     panelRender.LoadModel(models, resources, name, "");
                     render = new Thread(panelRender.startRender);
@@ -762,11 +761,12 @@ namespace tor_tools
                                             attachModel.materials[1].palette2XML = palette2XML;
                                         }
                                     }
+                                    attachModel.transformMatrix = Matrix.Scaling(new Vector3(1.0f, 1.0f, 1.0f));
                                     gr2_model.attachedModels.Add(attachModel);
                                 }
                             }
                         }
-
+                        gr2_model.transformMatrix = Matrix.Scaling(new Vector3(1.0f, 1.0f, 1.0f));
                         models.Add(model.Substring(model.LastIndexOf('/') + 1), gr2_model);
                     }
                 }
@@ -941,11 +941,12 @@ namespace tor_tools
                                                 attachModel.materials[1].palette2XML = palette2XML;
                                             }
                                         }
+                                        attachModel.transformMatrix = Matrix.Scaling(new Vector3(1.0f, 1.0f, 1.0f));
                                         gr2_model.attachedModels.Add(attachModel);
                                     }
                                 }
                             }
-
+                            gr2_model.transformMatrix = Matrix.Scaling(new Vector3(1.0f, 1.0f, 1.0f));
                             models.Add(model.Substring(model.LastIndexOf('/') + 1), gr2_model);
                         }
                     }
@@ -984,6 +985,7 @@ namespace tor_tools
                         BinaryReader br = new BinaryReader(modelStream);
                         string name = model.Split('/').Last();
                         FileFormats.GR2 gr2_model = new FileFormats.GR2(br, name);
+                        gr2_model.transformMatrix = Matrix.Scaling(new Vector3(1.0f, 1.0f, 1.0f));
                         models.Add(model.Substring(model.LastIndexOf('/') + 1), gr2_model);
                     }
                 }
@@ -1008,7 +1010,7 @@ namespace tor_tools
                     string model = "";
                     string visualName = "";
                     Vector3 rotationVec = new Vector3();
-                    Vector3 scaleVec = new Vector3();
+                    Vector3 scaleVec = new Vector3(1.0f, 1.0f, 1.0f);
                     Vector3 positionVec = new Vector3();
                     foreach (KeyValuePair<string, object> itm in visItem.Dictionary)
                     {
@@ -1055,24 +1057,11 @@ namespace tor_tools
                         BinaryReader br = new BinaryReader(modelStream);
                         string name = model.Split('/').Last();
                         FileFormats.GR2 gr2_model = new FileFormats.GR2(br, name);
-                        Vector3 blankVec = new Vector3();
-                        if (positionVec != blankVec)
-                        {
-                            Matrix posMatrix = Matrix.Translation(positionVec);
-                            gr2_model.positionMatrix = posMatrix;
-                        }
-
-                        if (scaleVec != blankVec)
-                        {
-                            Matrix scaleMatrix = Matrix.Scaling(scaleVec);
-                            gr2_model.scaleMatrix = scaleMatrix;
-                        }
-
-                        if (rotationVec != blankVec)
-                        {
-                            Matrix rotMatrix = Matrix.RotationX((float)(rotationVec.X * Math.PI) / 180) * Matrix.RotationY((float)(rotationVec.Y * Math.PI) / 180) * Matrix.RotationZ((float)(rotationVec.Z * Math.PI) / 180);
-                            gr2_model.rotationMatrix = rotMatrix;
-                        }
+                        gr2_model.transformMatrix = ((( Matrix.Scaling(scaleVec) * 
+                                                        Matrix.RotationZ((float)((rotationVec.Z * Math.PI) / 180.0))) * 
+                                                        Matrix.RotationX((float)((rotationVec.X * Math.PI) / 180.0))) * 
+                                                        Matrix.RotationY((float)((rotationVec.Y * Math.PI) / 180.0))) * 
+                                                        Matrix.Translation(positionVec);
                         try
                         {
                             models.Add(visualName, gr2_model);
@@ -1399,17 +1388,13 @@ namespace tor_tools
                                                 attachModel.materials[1].palette2XML = palette2XML;
                                             }
                                         }
+                                        attachModel.transformMatrix = Matrix.Scaling(new Vector3(1.0f, 1.0f, 1.0f));
                                         gr2_model.attachedModels.Add(attachModel);
                                     }
                                 }
                             }
-
-                            models.Add(slotDict.Key.ToString(), gr2_model);
-                            //Console.WriteLine("pause");
-                        }
-                        else
-                        {
-                            //Console.WriteLine("Error Loading Model");
+                            gr2_model.transformMatrix = Matrix.Scaling(new Vector3(1.0f, 1.0f, 1.0f));
+                            models.Add(slotDict.Key.ToString(), gr2_model);                            
                         }
                     }
                     if (model.Contains(".dds"))
@@ -1466,9 +1451,9 @@ namespace tor_tools
                         {
                             if (entryNode.ChildNodes.Count > 0)
                             {
-                                XmlNode parentRotVecNode = null;
-                                XmlNode parentPosVecNode = null;
-                                XmlNode parentBoneNode = null;
+                                //XmlNode parentRotVecNode = null;
+                                //XmlNode parentPosVecNode = null;
+                                //XmlNode parentBoneNode = null;
                                 XmlNode resourceFxName = entryNode.SelectSingleNode("./node()[@name='_fxName']");
                                 XmlNode resourceName = entryNode.SelectSingleNode("./node()[@name='_fxResourceName']");
                                 XmlNode rotationVecNode = entryNode.SelectSingleNode("./node()[@name='_fxAttachRotation']");                                
@@ -1476,7 +1461,10 @@ namespace tor_tools
                                 XmlNode boneAttachNode = entryNode.SelectSingleNode("./node()[@name='_fxAttachBone']");
                                 XmlNode attachRelativeNode = entryNode.SelectSingleNode("./node()[@name='_fxAttachRelative']");
                                 XmlNode attachTo = entryNode.SelectSingleNode("./node()[@name='_fxAttachTo']");
-                                //XmlNode scaleVecNode = entryNode.SelectSingleNode("node()[@name='_fxScale']");                   
+
+                                Vector3 rotationVec = new Vector3();
+                                Vector3 positionVec = new Vector3();
+                                Vector3 scaleVec = new Vector3(1.0f, 1.0f, 1.0f);
 
                                 if (resourceName.InnerText.Contains(".gr2"))
                                 {   
@@ -1491,15 +1479,17 @@ namespace tor_tools
                                         string name = modelPath.Split('/').Last();
                                         FileFormats.GR2 gr2_model = new FileFormats.GR2(br, name);
 
-                                        if (attachTo != null && attachTo.InnerText != "")
-                                        {
-                                            XmlNode testList3 = doc.SelectSingleNode("//node()[@name='_fxName' and text() = '" + attachTo.InnerText.Replace("\"", "") + "']");
+                                        //if (attachTo != null && attachTo.InnerText != "")
+                                        //{
+                                            //XmlNode testList3 = doc.SelectSingleNode("//node()[@name='_fxName' and text() = '" + attachTo.InnerText.Replace("\"", "") + "']");
                                          ///   Console.WriteLine("./node()[text() = '" + attachTo.InnerText.Replace("\"", "") + "']");
                                             //XmlNode testList = modelList.SelectSingleNode("./node()[@name='_fxName' and text() = '" + attachTo.InnerText.Replace("\"", "") + "']");
                                             //XmlNode testList2 = emitterList.SelectSingleNode("./node()[@name='_fxName' and text() = '" + attachTo.InnerText.Replace("\"", "") + "']");
                                             
                                             //XmlNode testList = modelList.SelectSingleNode("./node()[@name='_fxName' and text() = '" + attachTo.InnerText.Replace("\"", "") + "']");
                                             //XmlNode testList2 = emitterList.SelectSingleNode("./node()[@name='_fxName' and text() = '" + attachTo.InnerText.Replace("\"", "") + "']");                                           
+                                            
+                                            /*
                                             if (testList3 != null)
                                             {
                                                 //Console.WriteLine(testList3.InnerText);                                                
@@ -1507,31 +1497,19 @@ namespace tor_tools
                                                 parentPosVecNode = testList3.ParentNode.SelectSingleNode("./node()[@name='_fxAttachPosition']");
                                                 parentBoneNode = testList3.ParentNode.SelectSingleNode("./node()[@name='_fxAttachBone']");
                                                 //attachRelativeNode = testList3.ParentNode.SelectSingleNode("./node()[@name='_fxAttachRelative']");                                                
-                                            }
-                                        }
-
+                                            }*/
+                                        //}
+                                        /*
                                         if (parentRotVecNode != null && parentRotVecNode.InnerText != "")
                                         {
                                             string[] temp = parentRotVecNode.InnerText.ToString().Replace("(", "").Replace(")", "").Split(',');
-                                            Vector3 rotationVec = new Vector3(float.Parse(temp[0]), float.Parse(temp[1]), float.Parse(temp[2]));
-                                            if (rotationVec != blankVec)
-                                            {
-                                                Matrix rotMatrix = Matrix.RotationX((float)(rotationVec.X * Math.PI) / 180) * Matrix.RotationY((float)(rotationVec.Y * Math.PI) / 180) * Matrix.RotationZ((float)(rotationVec.Z * Math.PI) / 180);
-                                                gr2_model.parentRotMatrix = rotMatrix;
-                                            }
-                                        }                                     
+                                            rotationVec = new Vector3(float.Parse(temp[0]), float.Parse(temp[1]), float.Parse(temp[2]));                                          
+                                        } */                                    
 
                                         if (rotationVecNode != null && rotationVecNode.InnerText != "")
                                         {
                                             string[] temp = rotationVecNode.InnerText.ToString().Replace("(", "").Replace(")", "").Split(',');
-                                            Vector3 rotationVec = new Vector3(float.Parse(temp[0]), float.Parse(temp[1]), float.Parse(temp[2]));
-                                            if (rotationVec != blankVec)
-                                            {
-                                                Matrix rotMatrix = Matrix.RotationX((float)(rotationVec.X * Math.PI) / 180) * Matrix.RotationY((float)(rotationVec.Y * Math.PI) / 180) * Matrix.RotationZ((float)(rotationVec.Z * Math.PI) / 180);
-                                                {
-                                                    gr2_model.rotationMatrix = rotMatrix;
-                                                }
-                                            }
+                                            rotationVec = new Vector3(float.Parse(temp[0]), float.Parse(temp[1]), float.Parse(temp[2]));                                           
                                         }
                                         
                                         /*
@@ -1546,33 +1524,22 @@ namespace tor_tools
                                             }
                                         }
                                         */
+                                        /*
                                         if (parentPosVecNode != null && parentPosVecNode.InnerText != "")
                                         {
                                             string[] temp = parentPosVecNode.InnerText.ToString().Replace("(", "").Replace(")", "").Split(',');
-                                            Vector3 positionVec = new Vector3(float.Parse(temp[0]), float.Parse(temp[1]), float.Parse(temp[2]));
-                                            if (positionVec != blankVec)
-                                            {
-                                                Matrix positionMatrix = Matrix.Translation(positionVec);
-                                                gr2_model.parentPosMatrix = positionMatrix;
-                                            }
+                                            positionVec = new Vector3(float.Parse(temp[0]), float.Parse(temp[1]), float.Parse(temp[2]));                                         
                                         }
                                         else
-                                        {
+                                        {*/
 
                                             if (positionVecNode != null && positionVecNode.InnerText != "")
                                             {
                                                 string[] temp = positionVecNode.InnerText.ToString().Replace("(", "").Replace(")", "").Split(',');
-                                                Vector3 positionVec = new Vector3(float.Parse(temp[0]), float.Parse(temp[1]), float.Parse(temp[2]));
-                                                if (positionVec != blankVec)
-                                                {
-                                                    Matrix positionMatrix = Matrix.Translation(positionVec);                                                    
-                                                    {
-                                                        gr2_model.positionMatrix = positionMatrix;
-                                                    }
-                                                }
+                                                positionVec = new Vector3(float.Parse(temp[0]), float.Parse(temp[1]), float.Parse(temp[2]));                                               
                                             }
-                                        }
-
+                                        //}
+                                        /*
                                         if (parentBoneNode != null && parentBoneNode.InnerText != "")
                                         {
                                             foreach (KeyValuePair<string, GR2> model in models)
@@ -1592,7 +1559,7 @@ namespace tor_tools
                                         }
                                         else
                                         {
-
+                                        */
                                             if (boneAttachNode != null && boneAttachNode.InnerText != "")
                                             {
                                                 foreach (KeyValuePair<string, GR2> model in models)
@@ -1609,6 +1576,7 @@ namespace tor_tools
                                                         gr2_model.attachMatrix = boneAttach.root;
                                                     }
                                                 }
+                                            }
 
                                                 /*
                                                 GR2_Attachment attach = (GR2_Attachment)models.First().Value.attachments.SingleOrDefault(x => x.attachName == boneAttachNode.InnerText);
@@ -1617,9 +1585,9 @@ namespace tor_tools
                                                     gr2_model.attachMatrix = attach.attach_matrix;
                                                 }
                                                  */
-                                            }
-                                        }
-
+                                            //}
+                                        //}
+                                        /*
                                         if (attachTo != null && attachTo.InnerText != "")
                                         {   
                                             if (boneAttachNode != null && boneAttachNode.InnerText != "")
@@ -1661,13 +1629,18 @@ namespace tor_tools
                                                 }
                                             }
                                             
-                                        }                                        
+                                        }    */                                    
                                         if (modelEnabled.ContainsKey(resourceFxName.InnerText))
                                         {
                                             bool enabled = false;
                                             modelEnabled.TryGetValue(resourceFxName.InnerText, out enabled);
                                             gr2_model.enabled = enabled;                                            
                                         }
+                                        gr2_model.transformMatrix = (((Matrix.Scaling(scaleVec) *
+                                                        Matrix.RotationZ((float)((rotationVec.Z * Math.PI) / 180.0))) *
+                                                        Matrix.RotationX((float)((rotationVec.X * Math.PI) / 180.0))) *
+                                                        Matrix.RotationY((float)((rotationVec.Y * Math.PI) / 180.0))) *
+                                                        Matrix.Translation(positionVec);
                                         models.Add(resourceFxName.InnerText, gr2_model);
                                     }
                                 }

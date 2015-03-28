@@ -183,7 +183,11 @@ namespace tor_tools
                 this.resources = resources;
 
             this.globalBoxMin = new Vector3(focus.global_box.minX, focus.global_box.minY, focus.global_box.minZ);
+            Vector4 tempMin = Vector3.Transform(this.globalBoxMin, focus.GetTransform());
+            this.globalBoxMin = new Vector3(tempMin.X, tempMin.Y, tempMin.Z);
             this.globalBoxMax = new Vector3(focus.global_box.maxX, focus.global_box.maxY, focus.global_box.maxZ);
+            Vector4 tempMax = Vector3.Transform(this.globalBoxMax, focus.GetTransform());
+            this.globalBoxMax = new Vector3(tempMax.X, tempMax.Y, tempMax.Z);
             this.globalBoxCenter = globalBoxMin + (globalBoxMax - globalBoxMin) / 2;
             this.cameraPos = new Vector3(globalBoxCenter.X * 2.5f, globalBoxCenter.Y* 2.5f, (Math.Max(Math.Max(globalBoxMax.X, globalBoxMax.Y), globalBoxMax.Z) * 2.5f /*+ 1.0f*/));
 
@@ -485,19 +489,18 @@ namespace tor_tools
                 }
             }
 
-            var world = _world;
-            var wit = MathF.InverseTranspose(world);
-            var wvp = world * viewProj;
-
-            _fx.SetWorld(world);
-            _fx.SetWorldInvTranspose(wit);
-            _fx.SetWorldViewProj(wvp);
-            _fx.SetTexTransform(_texTransform);
-
             foreach (var model in models)
             {
                 if (model.Value.enabled == false)
-                    continue;                
+                    continue;
+                var world = _world * model.Value.GetTransform();
+                var wit = MathF.InverseTranspose(world);
+                var wvp = world * viewProj;
+
+                _fx.SetWorld(world);
+                _fx.SetWorldInvTranspose(wit);
+                _fx.SetWorldViewProj(wvp);
+                _fx.SetTexTransform(_texTransform);
                 foreach (var mesh in model.Value.meshes)
                 {
                     if (mesh.meshName.Contains("collision"))
@@ -807,71 +810,8 @@ namespace tor_tools
 
         private void BuildGeometry()
         {
-            Matrix rotateX = Matrix.RotationX((float)Math.PI * 0.5f);
             foreach (var model in models)
             {  
-                /*
-                if (rotateModel)
-                {
-                    Vector4 minVec = new Vector4(model.Value.global_box.minX, model.Value.global_box.minY, model.Value.global_box.minZ, model.Value.global_box.minW);
-                    minVec = Vector3.Transform(new Vector3(minVec.X, minVec.Y, minVec.Z), rotateX);
-                    model.Value.global_box.minX = minVec.X;
-                    model.Value.global_box.minY = minVec.Y;
-                    model.Value.global_box.minZ = minVec.Z;
-
-                    Vector4 maxVec = new Vector4(model.Value.global_box.maxX, model.Value.global_box.maxY, model.Value.global_box.maxZ, model.Value.global_box.maxW);
-                    maxVec = Vector3.Transform(new Vector3(maxVec.X, maxVec.Y, maxVec.Z), rotateX);
-                    model.Value.global_box.maxX = maxVec.X;
-                    model.Value.global_box.maxY = maxVec.Y;
-                    model.Value.global_box.maxZ = maxVec.Z;
-                }
-                 */
-
-                if (model.Value.positionMatrix != blankMatrix)
-                {
-                    Vector4 minVec = new Vector4(model.Value.global_box.minX, model.Value.global_box.minY, model.Value.global_box.minZ, model.Value.global_box.minW);
-                    minVec = Vector3.Transform(new Vector3(minVec.X, minVec.Y, minVec.Z), model.Value.positionMatrix);
-                    model.Value.global_box.minX = minVec.X;
-                    model.Value.global_box.minY = minVec.Y;
-                    model.Value.global_box.minZ = minVec.Z;
-
-                    Vector4 maxVec = new Vector4(model.Value.global_box.maxX, model.Value.global_box.maxY, model.Value.global_box.maxZ, model.Value.global_box.maxW);
-                    maxVec = Vector3.Transform(new Vector3(maxVec.X, maxVec.Y, maxVec.Z), model.Value.positionMatrix);
-                    model.Value.global_box.maxX = maxVec.X;
-                    model.Value.global_box.maxY = maxVec.Y;
-                    model.Value.global_box.maxZ = maxVec.Z;
-                }
-
-                if (model.Value.scaleMatrix != blankMatrix)
-                {
-                    Vector4 minVec = new Vector4(model.Value.global_box.minX, model.Value.global_box.minY, model.Value.global_box.minZ, model.Value.global_box.minW);
-                    minVec = Vector3.Transform(new Vector3(minVec.X, minVec.Y, minVec.Z), model.Value.scaleMatrix);
-                    model.Value.global_box.minX = minVec.X;
-                    model.Value.global_box.minY = minVec.Y;
-                    model.Value.global_box.minZ = minVec.Z;
-
-                    Vector4 maxVec = new Vector4(model.Value.global_box.maxX, model.Value.global_box.maxY, model.Value.global_box.maxZ, model.Value.global_box.maxW);
-                    maxVec = Vector3.Transform(new Vector3(maxVec.X, maxVec.Y, maxVec.Z), model.Value.scaleMatrix);
-                    model.Value.global_box.maxX = maxVec.X;
-                    model.Value.global_box.maxY = maxVec.Y;
-                    model.Value.global_box.maxZ = maxVec.Z;
-                }
-
-                if (model.Value.rotationMatrix != blankMatrix)
-                {   
-                    Vector4 minVec = new Vector4(model.Value.global_box.minX, model.Value.global_box.minY, model.Value.global_box.minZ, model.Value.global_box.minW);
-                    minVec = Vector3.Transform(new Vector3(minVec.X, minVec.Y, minVec.Z), model.Value.rotationMatrix);
-                    model.Value.global_box.minX = minVec.X;
-                    model.Value.global_box.minY = minVec.Y;
-                    model.Value.global_box.minZ = minVec.Z;
-
-                    Vector4 maxVec = new Vector4(model.Value.global_box.maxX, model.Value.global_box.maxY, model.Value.global_box.maxZ, model.Value.global_box.maxW);
-                    maxVec = Vector3.Transform(new Vector3(maxVec.X, maxVec.Y, maxVec.Z), model.Value.rotationMatrix);
-                    model.Value.global_box.maxX = maxVec.X;
-                    model.Value.global_box.maxY = maxVec.Y;
-                    model.Value.global_box.maxZ = maxVec.Z;
-                }
-
                 foreach (var mesh in model.Value.meshes)
                 {
                     vertices = new List<PosNormalTexTan>();
@@ -882,43 +822,6 @@ namespace tor_tools
                     foreach (var vertex in mesh.meshVerts)
                     {
                         Vector3 pos = new Vector3(vertex.X, vertex.Y, vertex.Z);
-
-                        if (model.Value.parentRotMatrix != blankMatrix)
-                        {
-                            Vector4 posVec = Vector3.Transform(pos, model.Value.parentRotMatrix);
-                            pos = new Vector3(posVec.X, posVec.Y, posVec.Z);
-                        }
-
-                        if (model.Value.rotationMatrix != blankMatrix)
-                        {
-                            Vector4 posVec = Vector3.Transform(pos, model.Value.rotationMatrix);
-                            pos = new Vector3(posVec.X, posVec.Y, posVec.Z);
-                        }
-
-                        if (model.Value.attachMatrix != blankMatrix)
-                        {
-                            Vector4 posVec = Vector3.Transform(pos, model.Value.attachMatrix);
-                            pos = new Vector3(posVec.X, posVec.Y, posVec.Z);
-                        }
-
-                        if (model.Value.scaleMatrix != blankMatrix)
-                        {
-                            Vector4 posVec = Vector3.Transform(pos, model.Value.scaleMatrix);
-                            pos = new Vector3(posVec.X, posVec.Y, posVec.Z);
-                        }
-
-                        if (model.Value.parentPosMatrix != blankMatrix)
-                        {
-                            Vector4 posVec = Vector3.Transform(pos, model.Value.parentPosMatrix);
-                            pos = new Vector3(posVec.X, posVec.Y, posVec.Z);
-                        }
-
-                        if (model.Value.positionMatrix != blankMatrix)
-                        {
-                            Vector4 posVec = Vector3.Transform(pos, model.Value.positionMatrix);
-                            pos = new Vector3(posVec.X, posVec.Y, posVec.Z);
-                        }
-                        
                         Vector3 norm = new Vector3(vertex.normX, vertex.normY, vertex.normZ);
                         Vector2 texC = new Vector2(vertex.texU, vertex.texV);
                         Vector3 tan = new Vector3(vertex.tanX, vertex.tanY, vertex.tanZ);
@@ -945,42 +848,6 @@ namespace tor_tools
                             foreach (var vertex in attachMesh.meshVerts)
                             {
                                 Vector3 pos = new Vector3(vertex.X, vertex.Y, vertex.Z);
-                                if (attachModel.attachMatrix != blankMatrix)
-                                {
-                                    Vector4 posVec = Vector3.Transform(pos, attachModel.attachMatrix);
-                                    pos = new Vector3(posVec.X, posVec.Y, posVec.Z);
-                                }
-
-                                if (attachModel.parentPosMatrix != blankMatrix)
-                                {
-                                    Vector4 posVec = Vector3.Transform(pos, attachModel.parentPosMatrix);
-                                    pos = new Vector3(posVec.X, posVec.Y, posVec.Z);
-                                }
-
-                                if (attachModel.scaleMatrix != blankMatrix)
-                                {
-                                    Vector4 posVec = Vector3.Transform(pos, attachModel.scaleMatrix);
-                                    pos = new Vector3(posVec.X, posVec.Y, posVec.Z);
-                                }
-
-                                if (attachModel.parentRotMatrix != blankMatrix)
-                                {
-                                    Vector4 posVec = Vector3.Transform(pos, attachModel.parentRotMatrix);
-                                    pos = new Vector3(posVec.X, posVec.Y, posVec.Z);
-                                }
-
-                                if (attachModel.rotationMatrix != blankMatrix)
-                                {
-                                    Vector4 posVec = Vector3.Transform(pos, attachModel.rotationMatrix);
-                                    pos = new Vector3(posVec.X, posVec.Y, posVec.Z);
-                                }
-
-                                if (attachModel.positionMatrix != blankMatrix)
-                                {
-                                    Vector4 posVec = Vector3.Transform(pos, attachModel.positionMatrix);
-                                    pos = new Vector3(posVec.X, posVec.Y, posVec.Z);
-                                }
-                              
                                 Vector3 norm = new Vector3(vertex.normX, vertex.normY, vertex.normZ);
                                 Vector2 texC = new Vector2(vertex.texU, vertex.texV);
                                 Vector3 tan = new Vector3(vertex.tanX, vertex.tanY, vertex.tanZ);
