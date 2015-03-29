@@ -86,7 +86,7 @@ namespace tor_tools
             if (sql)
             {
                 storedQueryValues.Add(value);
-                if (storedQueryValues.Count > 20000) //This can be enabled if the queries are getting too big.
+                if (storedQueryValues.Count > 10000) //This can be enabled if the queries are getting too big.
                 {
                     addtolist("Query limit reached. Stopping to insert values into to mysql table");
                     sqlExecTransaction();
@@ -292,7 +292,8 @@ namespace tor_tools
             }
             var names = SqlData.SQLProperties.Select(x => x.Name).ToList(); //Use linq to suck all the sql column names into a list.
             InitBegin = String.Format("INSERT INTO `{0}` (`current_version`, `previous_version`, `{1}`, `Hash`) VALUES ", name, String.Join("`, `", names)); //join the name list together and create a basic insert query for the type
-            InitEnd = String.Format(@"ON DUPLICATE KEY UPDATE 
+            InitEnd = String.Format(@";
+ON DUPLICATE KEY UPDATE 
 previous_version = IF((@update_record := (Hash <> VALUES(Hash))), current_version, previous_version),
 current_version = IF(@update_record, VALUES(current_version), current_version),
 {0}

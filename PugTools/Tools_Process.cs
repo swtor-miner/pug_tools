@@ -1479,7 +1479,10 @@ namespace tor_tools
                 if (e > 20000)
                 {
                     WriteFile(transQuery, String.Format(frs, filename, f), false);
-                    WriteFile(txtFile.ToString(), String.Format(frs, filename, f), true);
+                    string output = txtFile.ToString();
+                    output = output.Substring(0, output.Length-3); //trim end characters
+                    WriteFile(output, String.Format(frs, filename, f), true);
+                    WriteFile(transInit.InitEnd, String.Format(frs, filename, f), true);
                     txtFile.Clear();
                     e = 0;
                     f++;
@@ -1497,7 +1500,10 @@ namespace tor_tools
             txtFile.Append(transInit.InitEnd);
             addtolist(String.Format("The {0} sql file has been generated; there were {1} {0}", prefix, i));
             WriteFile(transQuery, String.Format(frs, filename, f), false);
-            WriteFile(txtFile.ToString(), String.Format(frs, filename, f), true);
+            string outputf = txtFile.ToString();
+            outputf = outputf.Substring(0, outputf.Length - 3); //trim end characters
+            WriteFile(outputf, String.Format(frs, filename, f), true);
+            WriteFile(transInit.InitEnd, String.Format(frs, filename, f), true);
             initTable[xmlRoot].OutputCreationSQL(); //output the creation sql file for this table
             sqlTransactionsFlush(); //flush the transaction queue
             DeleteEmptyFile(filename);

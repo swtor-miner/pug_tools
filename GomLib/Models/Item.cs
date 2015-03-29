@@ -43,7 +43,19 @@ namespace GomLib.Models
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
         public long DescriptionId { get; set; }
-        public string Description { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        internal string _Description;
+        public string Description
+        {
+            get
+            {
+                return _Description;
+            }
+            set
+            {
+                _Description = System.Text.RegularExpressions.Regex.Replace(value, @"\r\n?|\n", "<br />");
+            }
+        }
         public Dictionary<string, string> LocalizedDescription { get; set; }
         public int Value { get; set; }
         public int Durability { get; set; }
@@ -523,7 +535,7 @@ namespace GomLib.Models
                 return new List<SQLProperty>
                     {                //(SQL Column Name, C# Property Name, SQL Column type statement, isUnique/PrimaryKey, Serialize value to json)
                         new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("Name", "CleanName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("CleanName", "CleanName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("NodeId", "Id", "bigint(20) unsigned NOT NULL", true),
                         new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("NameId", "NameId", "bigint(20) NOT NULL"),

@@ -159,7 +159,7 @@ namespace tor_tools
                             {
                                 if (iconStream != null)
                                 {
-                                    var iconEntry = zipArchive.CreateEntry(String.Format("icons\\{0}.png", GetIconFilename(((GomLib.Models.Item)t._obj).Icon)), CompressionLevel.Fastest);
+                                    var iconEntry = zipArchive.CreateEntry(String.Format("icons/{0}.png", GetIconFilename(((GomLib.Models.Item)t._obj).Icon)), CompressionLevel.Fastest);
                                     using(var a = iconEntry.Open())
                                         iconStream.WriteTo(a);
                                     //using (Writer writer = new BinaryWriter(iconEntry.Open()))
