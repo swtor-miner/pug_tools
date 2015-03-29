@@ -31,6 +31,7 @@
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.groupFileTypes = new System.Windows.Forms.GroupBox();
+            this.chkTORC = new System.Windows.Forms.CheckBox();
             this.chkICONS = new System.Windows.Forms.CheckBox();
             this.chkNPP = new System.Windows.Forms.CheckBox();
             this.chkCNQ = new System.Windows.Forms.CheckBox();
@@ -58,7 +59,7 @@
             this.chkCNV = new System.Windows.Forms.CheckBox();
             this.chkAPT = new System.Windows.Forms.CheckBox();
             this.chkABL = new System.Windows.Forms.CheckBox();
-            this.chkTORC = new System.Windows.Forms.CheckBox();
+            this.chkSetBonus = new System.Windows.Forms.CheckBox();
             this.groupFileTypes.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -87,6 +88,7 @@
             this.groupFileTypes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupFileTypes.Controls.Add(this.chkSetBonus);
             this.groupFileTypes.Controls.Add(this.chkTORC);
             this.groupFileTypes.Controls.Add(this.chkICONS);
             this.groupFileTypes.Controls.Add(this.chkNPP);
@@ -123,6 +125,16 @@
             this.groupFileTypes.TabIndex = 2;
             this.groupFileTypes.TabStop = false;
             this.groupFileTypes.Text = "File Types";
+            // 
+            // chkTORC
+            // 
+            this.chkTORC.AutoSize = true;
+            this.chkTORC.Location = new System.Drawing.Point(166, 250);
+            this.chkTORC.Name = "chkTORC";
+            this.chkTORC.Size = new System.Drawing.Size(92, 17);
+            this.chkTORC.TabIndex = 27;
+            this.chkTORC.Text = "Torcommunity";
+            this.chkTORC.UseVisualStyleBackColor = true;
             // 
             // chkICONS
             // 
@@ -441,15 +453,17 @@
             this.chkABL.Text = "ABL - Abilities";
             this.chkABL.UseVisualStyleBackColor = true;
             // 
-            // chkTORC
+            // chkSetBonus
             // 
-            this.chkTORC.AutoSize = true;
-            this.chkTORC.Location = new System.Drawing.Point(166, 250);
-            this.chkTORC.Name = "chkTORC";
-            this.chkTORC.Size = new System.Drawing.Size(92, 17);
-            this.chkTORC.TabIndex = 27;
-            this.chkTORC.Text = "Torcommunity";
-            this.chkTORC.UseVisualStyleBackColor = true;
+            this.chkSetBonus.AutoSize = true;
+            this.chkSetBonus.Checked = true;
+            this.chkSetBonus.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkSetBonus.Location = new System.Drawing.Point(166, 273);
+            this.chkSetBonus.Name = "chkSetBonus";
+            this.chkSetBonus.Size = new System.Drawing.Size(86, 17);
+            this.chkSetBonus.TabIndex = 28;
+            this.chkSetBonus.Text = "Set Bonuses";
+            this.chkSetBonus.UseVisualStyleBackColor = true;
             // 
             // ExtractCheckForm
             // 
@@ -499,5 +513,6 @@
         private System.Windows.Forms.CheckBox chkNPP;
         private System.Windows.Forms.CheckBox chkICONS;
         private System.Windows.Forms.CheckBox chkTORC;
+        private System.Windows.Forms.CheckBox chkSetBonus;
     }
 }

@@ -78,7 +78,6 @@ namespace GomLib
         public DisciplineLoader disciplineLoader;
         public EncounterLoader encounterLoader;
         public ItemLoader itemLoader;
-        public ItemSetLoader itemSetLoader;
         public MapNoteLoader mapNoteLoader;
         public MtxStorefrontEntryLoader mtxStorefrontEntryLoader;
         public NpcLoader npcLoader;
@@ -97,6 +96,7 @@ namespace GomLib
         //public Models.StatExtensions statExtensions;
         public StrongholdLoader strongholdLoader;
         public TalentLoader talentLoader;
+        public SetBonusLoader setBonusLoader;
 
         private void initializeModelLoaders()
         {
@@ -125,7 +125,6 @@ namespace GomLib
             disciplineLoader = new DisciplineLoader(this);
             encounterLoader = new EncounterLoader(this);
             itemLoader = new ItemLoader(this);
-            itemSetLoader = new ItemSetLoader(this);
             mapNoteLoader = new MapNoteLoader(this);
             npcLoader = new NpcLoader(this);
             packageAbilityLoader = new PackageAbilityLoader(this);
@@ -143,6 +142,7 @@ namespace GomLib
             //statExtensions = new Models.StatExtensions();
             strongholdLoader = new StrongholdLoader(this);
             talentLoader = new TalentLoader(this);
+            setBonusLoader = new SetBonusLoader(this);
         }
 
         public void Dispose()
@@ -402,7 +402,6 @@ namespace GomLib
                 disciplineLoader.Flush();
                 encounterLoader.Flush();
                 itemLoader.Flush();
-                itemSetLoader.Flush();
                 mapNoteLoader.Flush();
                 mtxStorefrontEntryLoader.Flush();
                 npcLoader.Flush();
@@ -415,6 +414,7 @@ namespace GomLib
                 schematicLoader.Flush();
                 strongholdLoader.Flush();
                 talentLoader.Flush();
+                setBonusLoader.Flush();
 
                 /*foreach (var DomEntry in DomTypeMap)
                 {

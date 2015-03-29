@@ -79,7 +79,8 @@ namespace tor_tools
                 "FindNewMtxImages",
                 "AchCategories",
                 "testHashes",
-                "Tooltips"
+                "Tooltips",
+                "Set Bonuses"
             });
             comboBoxExtractTypes.SelectedIndex = 0;
             cbxExtractFormat.SelectedIndex = 0;
@@ -469,6 +470,10 @@ namespace tor_tools
                     GomLib.Models.Conquest cnq = new GomLib.Models.Conquest();
                     dom.conquestLoader.Load(cnq, (long)id, (GomObjectData)gomObjectData);
                     return cnq;
+                case "SetBonuses":
+                    GomLib.Models.SetBonusEntry sbEntry = new GomLib.Models.SetBonusEntry();
+                    dom.setBonusLoader.Load(sbEntry, (long)id, (GomObjectData)gomObjectData);
+                    return sbEntry;
                 /*case "AdvancedClasses":
                     GomLib.Models.PlayerClass dis = new GomLib.Models.PlayerClass();
                     dom.disciplineLoader.LoadClass(dis, (ulong)id, ((List<Object>)gomObjectData).ToList().ConvertAll(x => (GomObjectData)x));
@@ -500,6 +505,11 @@ namespace tor_tools
                     extensions = testFile.getTypes();
 
                     ExportICONS = extensions.Contains("ICONS");
+                    if(extensions.Contains("SBN"))
+                    {
+                        DisableButtons();
+                        getPrototypeObjects("SetBonuses", "itmSetBonusesPrototype", "itmSetBonuses");
+                    }
                     if (extensions.Contains("TORC"))
                     {
                         sw.Restart();

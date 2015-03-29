@@ -22,6 +22,8 @@ namespace tor_tools
         public List<string> getTypes()
         {
             fileTypes.Clear();
+            if (this.chkSetBonus.Checked)
+                fileTypes.Add("SBN");
             if (this.chkGOM.Checked)
                 fileTypes.Add("GOM");
             if (this.chkEXP.Checked)
@@ -112,6 +114,7 @@ namespace tor_tools
             this.chkSTB.Checked = value;
             this.chkTAL.Checked = value;
             this.chkICONS.Checked = value;
+            this.chkSetBonus.Checked = value;
         }
     }
 }

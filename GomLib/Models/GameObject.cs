@@ -228,6 +228,10 @@ namespace GomLib.Models
                     GomLib.Models.Area ara = new GomLib.Models.Area();
                     dom.areaLoader.Load(ara, (GomObjectData)gomObjectData);
                     return ara;
+                case "SetBonuses":
+                    GomLib.Models.SetBonusEntry setEntry = new GomLib.Models.SetBonusEntry();
+                    dom.setBonusLoader.Load(setEntry, (long)id, (GomObjectData)gomObjectData);
+                    return setEntry;
                 default:
                     throw new IndexOutOfRangeException();
             }

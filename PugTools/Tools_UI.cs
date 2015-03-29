@@ -181,6 +181,8 @@ namespace tor_tools
                         break;
                     case "Tooltips": t = new ThreadStart(getTooltips);
                         break;
+                    case "Set Bonuses": t = () => getPrototypeObjects("SetBonuses", "itmSetBonusesPrototype", "itmSetBonuses");
+                        break;
                         
                 }
                 if (t != null)
