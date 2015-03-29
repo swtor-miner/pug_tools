@@ -164,59 +164,14 @@ namespace GomLib.ModelLoader
             if (gom.Data.ContainsKey("ablDescriptionTokens"))
             {
                 //var tokenList = new List<string>();
-                int t = 1;
+                int tid = 1;
                 foreach (GomObjectData tokDesc in gom.Data.Get<List<object>>("ablDescriptionTokens"))
                 {
                     Dictionary<string, object> tokenInfo = LoadDescriptionToken(tokDesc, abilityEffectList);
-                    descTokenList.Add(t, tokenInfo);
+                    descTokenList.Add(tid, tokenInfo);
+                    tid++;
+                }
 
-                    if (!tokDesc.ContainsKey("ablDescriptionTokenType"))
-                    {
-                        object value = tokDesc.Get<object>("ablDescriptionTokenMultiplier");
-                        tokenList.Add(String.Format("rank,{0}", value));
-                    }
-                    else
-                    {
-                        string tokType = tokDesc.Get<object>("ablDescriptionTokenType").ToString();
-                        switch (tokType)
-                        {
-                            case "ablDescriptionTokenTypeRank":
-                                object value = tokDesc.Get<object>("ablDescriptionTokenMultiplier");
-                                tokenList.Add(String.Format("rank,{0}", value));
-                                break;
-                            case "ablDescriptionTokenTypeDamage": {
-                                tokenList.AddRange(LoadParamDamage(tokDesc, abilityEffectList));
-                                //tokenList.Add("damage");
-                                break;
-                            }
-                            case "ablDescriptionTokenTypeHealing":
-                                tokenList.Add(LoadParamHealing(tokDesc, abilityEffectList));
-                                //tokenList.Add("healing");
-                                break;
-                            case "ablDescriptionTokenTypeDuration":
-                                string duration = LoadParamDuration(tokDesc, abilityEffectList);
-                                tokenList.Add(duration);
-                                break;
-                            case "ablDescriptionTokenTypeBindpoint":
-                                tokenList.Add("bindpoint");
-                                break;
-                        }
-                    }
-                    t++;
-                }
-                //tokenNumber = 1;
-                /*
-                if (tokenList.Count > 0)
-                {
-                    abl.TalentTokens = returnStrings(tokenList, "'", ",");
-                    abl.AbilityTokens = returnStrings(tokenList, "", ";");
-                }
-                else
-                {
-                    abl.TalentTokens = String.Empty;
-                    abl.AbilityTokens = null;
-                }
-                */
                 foreach (var token in descTokenList)
                 {
                     string tokenType = ((Dictionary<string, object>)token.Value)["ablDescriptionTokenType"].ToString();
@@ -501,11 +456,11 @@ namespace GomLib.ModelLoader
                     tokenInfo.Add("ablParsedDescriptionToken", multiplier);
                     break;
                 case "ablDescriptionTokenTypeDamage":
-                    string damage = String.Join(";" ,LoadParamDamage(tokDesc, abilityEffectList));
+                    var damage = LoadParamDamage(tokDesc, abilityEffectList);
                     tokenInfo.Add("ablParsedDescriptionToken", damage);
                     break;
                 case "ablDescriptionTokenTypeHealing":
-                    string healing = LoadParamHealing(tokDesc, abilityEffectList);
+                    var healing = LoadParamHealing(tokDesc, abilityEffectList);
                     tokenInfo.Add("ablParsedDescriptionToken", healing);
                     break;
                 case "ablDescriptionTokenTypeDuration":
@@ -575,12 +530,13 @@ namespace GomLib.ModelLoader
             return false;
         }
 
-        private List<string> LoadParamDamage(GomObjectData tokDesc, List<object> abilityEffectList)
+        private List<KeyValuePair<string, List<Dictionary<string, string>>>> LoadParamDamage(GomObjectData tokDesc, List<object> abilityEffectList)
         {
             int tokEffIndex = (int)tokDesc.ValueOrDefault<long>("ablDescriptionTokenEffect", 0);
             int tokSubEffIndex = (int)tokDesc.ValueOrDefault<long>("ablDescriptionTokenSubEffect", 0);
             float multi = (float)tokDesc.ValueOrDefault<float>("ablDescriptionTokenMultiplier", 0f);
-            if (!(tokEffIndex < abilityEffectList.Count)) { return new List<string>() { "damage" }; }
+            if (!(tokEffIndex < abilityEffectList.Count)) { return new List<KeyValuePair<string, List<Dictionary<string, string>>>>(); }
+
             // Effect is in-range, find the coefficients for dmg formula
             GomObject tokEff = null;
             if (tokEffIndex >= 0) {
@@ -596,76 +552,102 @@ namespace GomLib.ModelLoader
                     }
                 }
             }
-            if (tokEff == null) { return new List<string>() { "damage" }; }
+            if (tokEff == null) { return new List<KeyValuePair<string, List<Dictionary<string, string>>>>(); }
 
             var tokSubEffects = (List<object>)tokEff.Data.ValueOrDefault<List<object>>("effSubEffects", null);
             List<GomObjectData> actions = new List<GomObjectData>();
-            List<bool> isWeapon = new List<bool>();
+            List<string> actionNames = new List<string>();
+
             // Loop through subEffects
             if ((tokSubEffIndex >= 0) && (tokSubEffIndex < tokSubEffects.Count)) {
                 GomObjectData subEff = (GomObjectData)tokSubEffects[tokSubEffIndex];
-                foreach (GomObjectData a in subEff.ValueOrDefault<List<object>>("effActions", null)) {
-                    switch (((ScriptEnum)a.ValueOrDefault<ScriptEnum>("effActionName", null)).ToString()) {
-                        case "effAction_WeaponDamage": { actions.Add(a); isWeapon.Add(true); break; }
-                        case "effAction_SpellDamage": { actions.Add(a); isWeapon.Add(false); break; }
+                foreach (GomObjectData a in subEff.ValueOrDefault<List<object>>("effActions", null))
+                {
+                    string actionName = ((ScriptEnum)a.ValueOrDefault<ScriptEnum>("effActionName", null)).ToString();
+                    if (actionName == "effAction_WeaponDamage" || actionName == "effAction_SpellDamage"
+                        || actionName == "effAction_GodDamage")
+                    {
+                        actions.Add(a);
+                        actionNames.Add(actionName);
                     }
                 }
             } else {
                 foreach (GomObjectData subEff in tokSubEffects) {
                     var effActions = (List<object>)subEff.Get<List<object>>("effActions");
                     foreach (GomObjectData a in effActions) {
-                        var b = ((ScriptEnum)a.Get<ScriptEnum>("effActionName")).ToString();
-                        switch (b) {
-                            case "effAction_WeaponDamage": { actions.Add(a); isWeapon.Add(true); break; }
-                            case "effAction_SpellDamage": { actions.Add(a); isWeapon.Add(false); break; }
+                        string actionName = ((ScriptEnum)a.Get<ScriptEnum>("effActionName")).ToString();
+                        if (actionName == "effAction_WeaponDamage" || actionName == "effAction_SpellDamage"
+                            || actionName == "effAction_GodDamage")
+                        {
+                            actions.Add(a);
+                            actionNames.Add(actionName);
                         }
                     }
                     //if (actions != null) { break; }
                 }
             }
 
-            if (actions == null || actions.Count <= 0) { return new List<string>() { "damage" }; }
-            var retVal = new List<string>();
+            if (actions == null || actions.Count <= 0) { return new List<KeyValuePair<string, List<Dictionary<string, string>>>>(); }
+            var retVal = new List<KeyValuePair<string, List<Dictionary<string, string>>>>();
 
             for(int i=0; i < actions.Count;  i++)
             {
-                retVal.Add(LoadParamDamageChild(multi, actions[i], isWeapon[i]));
+                KeyValuePair<string, List<Dictionary<string, string>>> kvp
+                    = new KeyValuePair<string,List<Dictionary<string,string>>>(actionNames[i], LoadActionParams(actions[i]));
+                retVal.Add(kvp);
             }
 
             tokEff.Unload();
             return retVal;
         }
 
-        private string LoadParamDamageChild(float multi, GomObjectData action, bool isWeapon)
+        private List<Dictionary<string, string>> LoadActionParams(GomObjectData action)
         {
-            var floatParams = (Dictionary<object, object>)action.Get<Dictionary<object,object>>("effFloatParams");
-            //
-            float flurrMin = floatParams.Keys.Where(i => ((ScriptEnum)i).ToString() == "effParam_FlurryBlowsMin").Count() > 0 ? (float)floatParams.First(kvp => ((ScriptEnum)kvp.Key).ToString() == "effParam_FlurryBlowsMin").Value : 0f;
-            float flurrMax = floatParams.Keys.Where(i => ((ScriptEnum)i).ToString() == "effParam_FlurryBlowsMax").Count() > 0 ? (float)floatParams.First(kvp => ((ScriptEnum)kvp.Key).ToString() == "effParam_FlurryBlowsMax").Value : 0f;
-            float threatPerc = floatParams.Keys.Where(i => ((ScriptEnum)i).ToString() == "effParam_ThreatParam").Count() > 0 ? (float)floatParams.First(kvp => ((ScriptEnum)kvp.Key).ToString() == "effParam_ThreatParam").Value : 0f;
-            float stdHpMin = (float)floatParams.First(kvp => ((ScriptEnum)kvp.Key).ToString() == "effParam_StandardHealthPercentMin").Value;
-            float stdHpMax = (float)floatParams.First(kvp => ((ScriptEnum)kvp.Key).ToString() == "effParam_StandardHealthPercentMax").Value;
-            float modFMin = floatParams.Keys.Where(i => ((ScriptEnum)i).ToString() == "effParam_AmountModifierFixedMin").Count() > 0 ? (float)floatParams.First(kvp => ((ScriptEnum)kvp.Key).ToString() == "effParam_AmountModifierFixedMin").Value : 0f;
-            float modFMax = floatParams.Keys.Where(i => ((ScriptEnum)i).ToString() == "effParam_AmountModifierFixedMax").Count() > 0 ? (float)floatParams.First(kvp => ((ScriptEnum)kvp.Key).ToString() == "effParam_AmountModifierFixedMax").Value : 0f;
-            float modPct = (float)floatParams.First(kvp => ((ScriptEnum)kvp.Key).ToString() == "effParam_AmountModifierPercent").Value;
-            float coeff = (float)floatParams.First(kvp => ((ScriptEnum)kvp.Key).ToString() == "effParam_Coefficient").Value;
-            float amtMin = 0; float amtMax = 0; float amtPct = 0;
-            if (!isWeapon) {
-                amtMin = (float)floatParams.First(kvp => ((ScriptEnum)kvp.Key).ToString() == "effParam_AmountMin").Value;
-                amtMax = (float)floatParams.First(kvp => ((ScriptEnum)kvp.Key).ToString() == "effParam_AmountMax").Value;
-                amtPct = (float)floatParams.First(kvp => ((ScriptEnum)kvp.Key).ToString() == "effParam_AmountPercent").Value;
-            }
+            List<Dictionary<string, string>> effectDetails = new List<Dictionary<string, string>>();
 
-            if (amtMin != 0) {
-                return String.Format("damage,{0},{1},{2},{3},{4},{5}",
-                    flurrMin, flurrMax, threatPerc, multi, amtMin, amtMax);
-            } else {
-                return String.Format("damage,{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}",
-                    flurrMin, flurrMax, threatPerc, isWeapon ? 'w' : 's', multi, coeff, stdHpMin, stdHpMax, modFMin, modFMax, modPct);
+            Dictionary<object, object> boolParams = action.Get<Dictionary<object, object>>("effBoolParams");
+            Dictionary<string, string> boolValues = new Dictionary<string, string>();
+
+            foreach (KeyValuePair<object, object> kvp in boolParams)
+            {
+                ScriptEnum key = (ScriptEnum)kvp.Key;
+                string keyStr = key.ToString();
+                string curVal = ((bool)kvp.Value).ToString();
+
+                boolValues.Add(keyStr, curVal);
             }
+            effectDetails.Add(boolValues);
+
+
+            Dictionary<object, object> intParams = action.Get<Dictionary<object, object>>("effIntParams");
+            Dictionary<string, string> intValues = new Dictionary<string, string>();
+            foreach (KeyValuePair<object, object> kvp in intParams)
+            {
+                ScriptEnum key = (ScriptEnum)kvp.Key;
+                string keyStr = key.ToString();
+                string curVal = ((long)kvp.Value).ToString();
+
+                intValues.Add(keyStr, curVal);
+            }
+            effectDetails.Add(intValues);
+
+
+            Dictionary<object, object> floatParams = action.Get<Dictionary<object, object>>("effFloatParams");
+            Dictionary<string, string> floatValues = new Dictionary<string, string>();
+            foreach(KeyValuePair<object, object> kvp in floatParams)
+            {
+                ScriptEnum key = (ScriptEnum)kvp.Key;
+                string keyStr = key.ToString();
+                string curVal = ((float)kvp.Value).ToString();
+
+                floatValues.Add(keyStr, curVal);
+            }
+            effectDetails.Add(floatValues);
+
+            return effectDetails;
         }
 
-        private string LoadParamHealing(GomObjectData tokDesc, List<object> abilityEffectList)
+        private List<KeyValuePair<string, List<Dictionary<string, string>>>> LoadParamHealing(GomObjectData tokDesc, List<object> abilityEffectList)
         {
             int tokEffIndex = (int)tokDesc.ValueOrDefault<long>("ablDescriptionTokenEffect", 0);
             int tokSubEffIndex = (int)tokDesc.ValueOrDefault<long>("ablDescriptionTokenSubEffect", 0);
@@ -675,7 +657,7 @@ namespace GomLib.ModelLoader
             {
                 // Effect is in-range, find the coefficients for healing formula
                 var tokEff = _dom.GetObject((ulong)abilityEffectList[tokEffIndex]);
-                if (tokEff == null) { return "healing"; }
+                if (tokEff == null) { return new List<KeyValuePair<string,List<Dictionary<string,string>>>>(); }
 
                 var tokSubEffects = (List<object>)tokEff.Data.ValueOrDefault<List<object>>("effSubEffects", null);
                 tokEff.Unload();
@@ -710,26 +692,18 @@ namespace GomLib.ModelLoader
                     }
                 }
 
-                if (action == null) { return "healing"; }
+                if (action == null) { return new List<KeyValuePair<string,List<Dictionary<string,string>>>>(); }
 
-                var floatParams = (Dictionary<object, object>)action.ValueOrDefault<Dictionary<object,object>>("effFloatParams", null);
-                float amtMin = (float)floatParams.First(kvp => ((ScriptEnum)kvp.Key).ToString() == "effParam_AmountMin").Value;
-                float amtMax = (float)floatParams.First(kvp => ((ScriptEnum)kvp.Key).ToString() == "effParam_AmountMax").Value;
-                float amtPct = (float)floatParams.First(kvp => ((ScriptEnum)kvp.Key).ToString() == "effParam_AmountPercent").Value;
-                float stdHpMin = (float)floatParams.First(kvp => ((ScriptEnum)kvp.Key).ToString() == "effParam_StandardHealthPercentMin").Value;
-                float stdHpMax = (float)floatParams.First(kvp => ((ScriptEnum)kvp.Key).ToString() == "effParam_StandardHealthPercentMax").Value;
-                float coeff = (float)floatParams.First(kvp => ((ScriptEnum)kvp.Key).ToString() == "effParam_HealingPowerCoefficient").Value;
+                //Get the action details and return it in a list. We do this to maintain the same structure between dmg and heals.
+                KeyValuePair<string, List<Dictionary<string, string>>> kvp =
+                    new KeyValuePair<string, List<Dictionary<string, string>>>("effAction_Heal", LoadActionParams(action));
+                var retVal = new List<KeyValuePair<string, List<Dictionary<string, string>>>>();
+                retVal.Add(kvp);
 
-                if (amtMin != 0)
-                {
-                    return String.Format("healing,{0},{1},{2}", multi, amtMin, amtMax);
-                }
-                else {
-                    return String.Format("healing,{0},{1},{2},{3}", multi, coeff, stdHpMin, stdHpMax);
-                }
+                return retVal;
             }
 
-            return "healing";
+            return new List<KeyValuePair<string,List<Dictionary<string,string>>>>();
         }
 
         private string LoadParamDuration(GomObjectData tokDesc, List<object> abilityEffectList)
