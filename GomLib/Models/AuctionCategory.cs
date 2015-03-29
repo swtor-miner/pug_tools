@@ -191,7 +191,7 @@ namespace GomLib.Models
 
         public override string ToString()
         {
-            return Name;
+            return System.Text.RegularExpressions.Regex.Replace(Name, @"\r\n?|\n", "<br />");
         }
 
         public override int GetHashCode()
