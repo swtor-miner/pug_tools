@@ -17,6 +17,7 @@ using TorLib;
 using nsHashDictionary;
 using DevIL;
 using BrightIdeasSoftware;
+using TreeViewFast.Controls;
 
 namespace tor_tools
 {  
@@ -109,7 +110,7 @@ namespace tor_tools
                 ArrayList children = new ArrayList();
                 foreach (var child in obj.children)
                 {
-                    if (child.name.Contains("Script_"))
+                    if (child.displayName.Contains("Script_"))
                         continue;
                     children.Add(child);
                 }
@@ -665,7 +666,7 @@ namespace tor_tools
                                 NodeListItem dataItem = new NodeListItem(item.Key.ToString(), item.Value);
                                 if (dataItem.children.Count > 0)
                                 {
-                                    this.currentParent = dataItem.name;
+                                    this.currentParent = dataItem.name.ToString();
                                     foreach (var child in dataItem.children)
                                     {
                                         handleChildData(child, source.Value);
@@ -715,7 +716,7 @@ namespace tor_tools
             {
                 if (item.children.Count > 0)
                 {
-                    this.currentParent = item.name;
+                    this.currentParent = item.name.ToString();
                     foreach (var child in item.children)
                     {
                         handleChildData(child, fields);
@@ -857,9 +858,13 @@ namespace tor_tools
 
                 if (item != null)
                 {
+                    //Prefer the value. Do we ever have a case of both the key and value representing nodes?
                     if (item.type == "ulong" && item.displayValue.Contains("(") && item.displayValue.Contains(")"))
                     {
-                        cmsJumpToNode.Show(treeListView1, e.Location);                        
+                        cmsJumpToNode.Show(treeListView1, e.Location);
+                    } else if (item.displayName.Contains(" (") && item.displayName.EndsWith(")"))
+                    {
+                        cmsJumpToNode.Show(treeListView1, e.Location);
                     }
                 }
             }
@@ -870,7 +875,16 @@ namespace tor_tools
             //BrightIdeasSoftware.TreeListView tlv = sender as BrightIdeasSoftware.TreeListView;
             NodeListItem item = treeListView1.SelectedObject as NodeListItem;
             //NodeListItem item = tr .SelectedObject as NodeListItem;
-            string nodeString = item.displayValue.Split(' ').Last().Replace("(", "").Replace(")", "");
+            string nodeString;
+            if (item.displayValue.Contains(" (") && item.displayValue.EndsWith(")"))
+            {
+                nodeString = item.displayValue.Split(' ').Last().Replace("(", "").Replace(")", "");
+            }
+            else
+            {
+                nodeString = item.displayName.Split(' ').Last().Replace("(", "").Replace(")", "");
+            }
+
             TreeNode[] node = treeViewFast1.Nodes.Find(nodeString, true);
             treeViewFast1.SelectedNode = node.First();
         }

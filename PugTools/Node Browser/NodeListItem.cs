@@ -9,18 +9,52 @@ namespace tor_tools
 {
     class NodeListItem
     {   
-        public string name;
+        public object name;
+        public string displayName;
         public string type;
         public object value;
         public string displayValue;
 
         public List<NodeListItem> children = new List<NodeListItem>();
 
+        //Sort of hacky to avoid changing all the existing stuff.
+        public NodeListItem(object name, object value, GomType type = null)
+        {
+            this.name = name;
+
+            if(name is ulong)
+            {
+                ulong potNodeID = (ulong)name;
+                DataObjectModel currentDom = DomHandler.Instance.getCurrentDOM();
+                DomType nodeLookup;
+                if(currentDom.DomTypeMap.TryGetValue(potNodeID, out nodeLookup))
+                {
+                    this.displayName = potNodeID.ToString() + "  (" + nodeLookup.Name.ToString() + ")";
+                }
+                else
+                {
+                    this.displayName = name.ToString();
+                }
+
+                NodeListItemSetup(name.ToString(), value, type);
+            }
+            else
+            {
+                this.displayName = name.ToString();
+                NodeListItemSetup(name.ToString(), value, type);
+            }
+        }
+
         public NodeListItem(string name, object value, GomType type = null)
+        {
+            this.name = name;
+            this.displayName = name;
+            NodeListItemSetup(name, value, type);
+        }
+        private void NodeListItemSetup(string name, object value, GomType type = null)
         {
             try
             {
-                this.name = name;
                 this.value = value;
                 //Console.WriteLine(name);
             } catch (Exception) { }            
@@ -39,8 +73,8 @@ namespace tor_tools
                         Dictionary<object, object> objDict = (Dictionary<object, object>)this.value;
                         foreach (var item in objDict)
                         {
-                            NodeListItem child = new NodeListItem(item.Key.ToString(), item.Value, valueType);
-                            if (this.name == "locTextRetrieverMap")
+                            NodeListItem child = new NodeListItem(item.Key, item.Value, valueType);
+                            if (this.displayName == "locTextRetrieverMap")
                             {
                                 GomObjectData currentValue = (GomObjectData)item.Value;
                                 long stringId = currentValue.ValueOrDefault<long>("strLocalizedTextRetrieverStringID", 0);
@@ -156,7 +190,7 @@ namespace tor_tools
                     foreach (var item in objDict)
                     {
                         NodeListItem child = new NodeListItem(item.Key.ToString(), item.Value);
-                        if (this.name == "locTextRetrieverMap")
+                        if (this.displayName == "locTextRetrieverMap")
                         {
                             GomObjectData currentValue = (GomObjectData)item.Value;
                             long stringId = currentValue.ValueOrDefault<long>("strLocalizedTextRetrieverStringID", 0);

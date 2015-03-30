@@ -245,7 +245,7 @@
             // 
             // olvColumn1
             // 
-            this.olvColumn1.AspectName = "name";
+            this.olvColumn1.AspectName = "displayName";
             this.olvColumn1.CellPadding = null;
             this.olvColumn1.Text = "Name";
             this.olvColumn1.Width = 144;
