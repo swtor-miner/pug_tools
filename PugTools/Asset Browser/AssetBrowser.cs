@@ -369,11 +369,15 @@ namespace tor_tools
                 fileName = this.extractPath + assetFile.Directory.Replace("/", "\\") + "\\" + assetFile.Extension.ToLower() + "\\" + assetFile.FileName + "." + assetFile.Extension;
             fileName = fileName.Replace("\\\\", "\\");
             directory = Path.GetDirectoryName(fileName);
-            if (!System.IO.Directory.Exists(directory)) { System.IO.Directory.CreateDirectory(directory); }            
+            if (!System.IO.Directory.Exists(directory)) { System.IO.Directory.CreateDirectory(directory); }
+
             Stream file = assetFile.file.Open();
             var outputStream = System.IO.File.Create(fileName);
-            file.CopyTo(outputStream);
+            byte[] fileBuffer = new byte[assetFile.file.FileInfo.UncompressedSize];
+            file.Read(fileBuffer, 0, fileBuffer.Length);
+            outputStream.Write(fileBuffer, 0, fileBuffer.Length);
             outputStream.Close();
+
             extractCount++;
         }
 
