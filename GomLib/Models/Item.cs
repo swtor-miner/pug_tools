@@ -36,8 +36,10 @@ namespace GomLib.Models
         {
             get
             {
-                if (Name == null) return null;
-                return Name.Replace("'", "");
+                if (Name == null || Name == "")
+                    return "Unnamed_Item";
+                //return Name.Replace("'", "");
+                return System.IO.Path.GetInvalidFileNameChars().Aggregate(Name, (current, c) => current.Replace(c.ToString(), string.Empty)).Replace("'", "").Replace(" ", "_");
             }
         }
         public string Name { get; set; }
