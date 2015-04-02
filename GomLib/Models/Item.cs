@@ -30,6 +30,7 @@ namespace GomLib.Models
             return clone;
         }
 
+        #region Properties
         public ulong ShortId { get; set; }
         public long NameId { get; set; }
         public string CleanName
@@ -182,6 +183,7 @@ namespace GomLib.Models
                 return new Tooltip(this).HTML;
             }
         }
+        #endregion
 
         public void AddStat(ItemStat stat)
         {
@@ -219,6 +221,7 @@ namespace GomLib.Models
             return returnList;
         }
 
+        #region IEquatable<Item>
         public override int GetHashCode() //needs fixed, it's changing for the same data
         {
             int hash = Id.GetHashCode();
@@ -468,7 +471,9 @@ namespace GomLib.Models
                 return false;
             return true;
         }
+        #endregion
 
+        #region Output related
         public override string ToString(bool verbose)
         {
 
@@ -529,7 +534,6 @@ namespace GomLib.Models
             }
             return txtFile.ToString();
         }
-
         public override List<SQLProperty> SQLProperties
         {
             get
@@ -607,7 +611,6 @@ namespace GomLib.Models
                     };
             }
         }
-
         public override XElement ToXElement(bool verbose)
         {
             XElement item = new XElement("Item",
@@ -755,6 +758,7 @@ namespace GomLib.Models
             }*/
             return item;
         }
+        #endregion
     }
 
     public class ItemStatList : List<ItemStat>, IEquatable<ItemStatList>
