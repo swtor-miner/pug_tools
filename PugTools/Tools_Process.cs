@@ -183,15 +183,19 @@ namespace tor_tools
                             newElement = CompareElements(oldElement, newElement);
                             oldElement = null;
 
-                            newElement.Add(new XAttribute("Status", itmList.Key));
-                            /*switch (xmlRoot)
+
+                            if (newElement != null)
                             {
-                                case "Decorations":
-                                    if (newElement.Elements().Count() == 2)
-                                        i++;
-                                        continue;
-                            }*/
-                            elements.Add(newElement);
+                                newElement.Add(new XAttribute("Status", itmList.Key));
+                                /*switch (xmlRoot)
+                                {
+                                    case "Decorations":
+                                        if (newElement.Elements().Count() == 2)
+                                            i++;
+                                            continue;
+                                }*/
+                                elements.Add(newElement);
+                            }
                             i++;
                         }
 
@@ -384,8 +388,11 @@ namespace tor_tools
                             newElement = CompareElements(oldElement, newElement);
                             oldElement = null;
 
-                            newElement.Add(new XAttribute("Status", itmList.Key));
-                            elements.Add(newElement);
+                            if (newElement != null)
+                            {
+                                newElement.Add(new XAttribute("Status", itmList.Key));
+                                elements.Add(newElement);
+                            }
                             i++;
                         }
                     }
@@ -617,11 +624,13 @@ namespace tor_tools
 
                                 newElement = CompareElements(oldElement, newElement);
                                 oldElement = null;
+                                if (newElement != null)
+                                {
+                                    var regex = new Regex(Regex.Escape("."));
+                                    var newText = regex.Replace(changedPair.Value.Name, "\\", 1);
 
-                                var regex = new Regex(Regex.Escape("."));
-                                var newText = regex.Replace(changedPair.Value.Name, "\\", 1);
-
-                                WriteFile(new XDocument(newElement), String.Format("\\GOM\\{0}\\{1}.xml", objList.Key, newText), false);
+                                    WriteFile(new XDocument(newElement), String.Format("\\GOM\\{0}\\{1}.xml", objList.Key, newText), false);
+                                }
 
                             }
                         }
@@ -958,7 +967,7 @@ namespace tor_tools
 
                     var changedItem = addedChangedItems.Elements().First(x => x.Attribute("Id").Value == changedItemId);
                     changedItem.ReplaceWith(CompareElements(previousElement, newElement));
-                    if (changedItem.Attribute("Status") == null)
+                    if (changedItem != null && changedItem.Attribute("Status") == null)
                     {
                         changedItem.Add(new XAttribute("Status", "Changed"));
                     }
@@ -995,6 +1004,7 @@ namespace tor_tools
         private XElement CompareElements(XElement previousElement, XElement newElement)
         {
             List<XElement> elementsToRemove = new List<XElement>();
+            int unmodifiedBaseElemCount = 0;
             if (previousElement != null)
             {
                 IEnumerable<XNode> changedElements;
@@ -1123,6 +1133,11 @@ namespace tor_tools
                             {
                                 elementsToRemove.Add(subElement); //Element didn't change and it's clogging up the file, saving a shallow copy to remove it later. Because removing it now fucks with the foreach looping
                             }
+                            else if (subElement.Attribute("OldValue") == null)
+                            {
+                                //If this is a "base" element that we want to keep but its unchanged then increment the counter.
+                                unmodifiedBaseElemCount++;
+                            }
                         }
                     }
                     else
@@ -1165,6 +1180,12 @@ namespace tor_tools
                 for (int i = elementsToRemove.Count() - 1; i >= 0; i--)
                 {
                     elementsToRemove[i].Remove(); //removing elements we saved shallow copies off earlier
+                }
+
+                if (newElement.Elements().Count() == unmodifiedBaseElemCount)
+                {
+                    //If all we have are the "base" elements and none are changed then just delete the whole thing.
+                    newElement = null;
                 }
             }
             previousElement = null;

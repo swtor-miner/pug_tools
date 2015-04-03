@@ -394,11 +394,14 @@
             // 
             // buttonFindAssets
             // 
+            this.buttonFindAssets.Image = global::PugTools.Properties.Resources.cross_shield;
+            this.buttonFindAssets.ImageAlign = System.Drawing.ContentAlignment.BottomLeft;
             this.buttonFindAssets.Location = new System.Drawing.Point(346, 11);
             this.buttonFindAssets.Name = "buttonFindAssets";
             this.buttonFindAssets.Size = new System.Drawing.Size(63, 23);
             this.buttonFindAssets.TabIndex = 1;
             this.buttonFindAssets.Text = "Select";
+            this.buttonFindAssets.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.buttonFindAssets.UseVisualStyleBackColor = true;
             this.buttonFindAssets.Click += new System.EventHandler(this.buttonFindAssets_Click);
             // 
@@ -414,11 +417,13 @@
             // 
             // buttonFindPrevAssets
             // 
+            this.buttonFindPrevAssets.Image = global::PugTools.Properties.Resources.tick_shield;
             this.buttonFindPrevAssets.Location = new System.Drawing.Point(346, 36);
             this.buttonFindPrevAssets.Name = "buttonFindPrevAssets";
             this.buttonFindPrevAssets.Size = new System.Drawing.Size(63, 23);
             this.buttonFindPrevAssets.TabIndex = 4;
             this.buttonFindPrevAssets.Text = "Select";
+            this.buttonFindPrevAssets.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.buttonFindPrevAssets.UseVisualStyleBackColor = true;
             this.buttonFindPrevAssets.Click += new System.EventHandler(this.buttonFindPrevAssets_Click);
             // 

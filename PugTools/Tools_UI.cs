@@ -240,24 +240,78 @@ namespace tor_tools
 
         private async void usePTSAssets_CheckedChanged(object sender, EventArgs e)
         {
-            DisableButtons();
-            Clearlist();
-            addtolist("Current Assets & DOM - Clearing");
-            await Task.Run(() => unloadCurrent());
-            addtolist("Current Assets & DOM - Cleared");
-            EnableButtons();
-            GC.Collect();
+            string path = textBoxAssetsFolder.Text;
+            if(usePTSAssets.Checked)
+            {
+                if(PathContainsPTSAssets(path))
+                {
+                    buttonFindAssets.Image = global::PugTools.Properties.Resources.tick_shield;
+                }
+                else
+                {
+                    buttonFindAssets.Image = global::PugTools.Properties.Resources.cross_shield;
+                }
+            }
+            else
+            {
+                if (PathContainsLiveAssets(path))
+                {
+                    buttonFindAssets.Image = global::PugTools.Properties.Resources.tick_shield;
+                }
+                else
+                {
+                    buttonFindAssets.Image = global::PugTools.Properties.Resources.cross_shield;
+                }
+            }
+
+            if (Loaded)
+            {
+                DisableButtons();
+                Clearlist();
+                addtolist("Current Assets & DOM - Clearing");
+                await Task.Run(() => unloadCurrent());
+                addtolist("Current Assets & DOM - Cleared");
+                EnableButtons();
+                GC.Collect();
+            }
         }
 
         private async void prevUsePTSAssets_CheckedChanged(object sender, EventArgs e)
         {
-            DisableButtons();
-            Clearlist();
-            addtolist("Previous Assets & DOM - Clearing");
-            await Task.Run(() => unloadPrevious());
-            addtolist("Previous Assets & DOM - Cleared");
-            EnableButtons();
-            GC.Collect();
+            string path = textBoxPrevAssetsFolder.Text;
+            if (prevUsePTSAssets.Checked)
+            {
+                if (PathContainsPTSAssets(path))
+                {
+                    buttonFindPrevAssets.Image = global::PugTools.Properties.Resources.tick_shield;
+                }
+                else
+                {
+                    buttonFindPrevAssets.Image = global::PugTools.Properties.Resources.cross_shield;
+                }
+            }
+            else
+            {
+                if (PathContainsLiveAssets(path))
+                {
+                    buttonFindPrevAssets.Image = global::PugTools.Properties.Resources.tick_shield;
+                }
+                else
+                {
+                    buttonFindPrevAssets.Image = global::PugTools.Properties.Resources.cross_shield;
+                }
+            }
+
+            if (Loaded)
+            {
+                DisableButtons();
+                Clearlist();
+                addtolist("Previous Assets & DOM - Clearing");
+                await Task.Run(() => unloadPrevious());
+                addtolist("Previous Assets & DOM - Cleared");
+                EnableButtons();
+                GC.Collect();
+            }
         }
 
         private void btnAssetBrowser_Click(object sender, EventArgs e)
@@ -319,6 +373,22 @@ namespace tor_tools
             }
             Config.AssetsPath = path;
             Config.Save();
+
+            bool hasLive = PathContainsLiveAssets(path);
+            bool hasPTS = PathContainsPTSAssets(path);
+            if(hasLive && !hasPTS)
+            {
+                usePTSAssets.Checked = false;
+            } else if(!hasLive && hasPTS) {
+                
+                usePTSAssets.Checked = true;
+            } else if(!hasLive && !hasPTS) {
+                buttonFindAssets.Image = global::PugTools.Properties.Resources.cross_shield;
+            } else {
+                //Has both live and pts assets.
+                buttonFindAssets.Image = global::PugTools.Properties.Resources.tick_shield;
+            }
+
             if (Loaded)
             {
                 DisableButtons();
@@ -350,6 +420,29 @@ namespace tor_tools
             {
                 path += "\\";
             }
+
+            bool hasLive = PathContainsLiveAssets(path);
+            bool hasPTS = PathContainsPTSAssets(path);
+            if (hasLive && !hasPTS)
+            {
+                buttonFindPrevAssets.Image = global::PugTools.Properties.Resources.tick_shield;
+                prevUsePTSAssets.Checked = false;
+            }
+            else if (!hasLive && hasPTS)
+            {
+                buttonFindPrevAssets.Image = global::PugTools.Properties.Resources.tick_shield;
+                prevUsePTSAssets.Checked = true;
+            }
+            else if (!hasLive && !hasPTS)
+            {
+                buttonFindPrevAssets.Image = global::PugTools.Properties.Resources.cross_shield;
+            }
+            else
+            {
+                //Has both live and pts assets.
+                buttonFindPrevAssets.Image = global::PugTools.Properties.Resources.tick_shield;
+            }
+
             Config.PrevAssetsPath = path;
             Config.Save();
             if (Loaded)

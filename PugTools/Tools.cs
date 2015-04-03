@@ -996,6 +996,42 @@ namespace tor_tools
         {
             SqlCreate();
         }
+
+        public bool PathContainsLiveAssets(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                return false;
+            }
+
+            string[] fileList = Directory.GetFiles(path, "swtor_main*.tor");
+            if(fileList.Length > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool PathContainsPTSAssets(string path)
+        {
+            if(!Directory.Exists(path))
+            {
+                return false;
+            }
+
+            string[] fileList = Directory.GetFiles(path, "swtor_test*.tor");
+            if (fileList.Length > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 
     public static class DocumentExtensions
