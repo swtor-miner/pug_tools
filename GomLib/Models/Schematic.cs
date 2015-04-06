@@ -22,6 +22,10 @@ namespace GomLib.Models
                     _Item = _dom.itemLoader.Load(ItemId);
                 return _Item;
             }
+            set
+            {
+                _Item = value;
+            }
         }
         [Newtonsoft.Json.JsonIgnore]
         private Item _Item { get; set; }

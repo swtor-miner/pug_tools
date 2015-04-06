@@ -37,9 +37,9 @@ namespace tor_tools
                 {"cnv.", true},
                 {"npc.", true},
                 {"qst.", true},
-                {"tal.", true},
-                {"sche", true},
-                {"dec.", true},*/
+                {"tal.", true},*/
+                {"sche", "Schematics"},
+                /*{"dec.", true},*/
                 {"itm.", "Item"}/*,
                 {"apt.", true},
                 {"apc.", true},
@@ -59,10 +59,11 @@ namespace tor_tools
                 foreach (var gom in gomList)
                 {
                     progressUpdate(i, count);
-                    var itm = new GomLib.Models.GameObject().Load(gom);
+                    
                     bool okToOutput = true;
                     if (chkBuildCompare.Checked)
                     {
+                        var itm = new GomLib.Models.GameObject().Load(gom);
                         var itm2 = new GomLib.Models.GameObject().Load(gom.Id, previousDom);
                         if (itm2 != null)
                         {
@@ -73,11 +74,11 @@ namespace tor_tools
 
                     if (okToOutput)
                     {
-                        GomLib.Models.Tooltip t = new GomLib.Models.Tooltip(itm);
+                        GomLib.Models.Tooltip t = new GomLib.Models.Tooltip(gom.Id, currentDom);
                         /*if (itm.GetType() == typeof(GomLib.Models.Item)){
                             OutputIcon(((GomLib.Models.Item)itm).Icon, "TORC");
                         }*/
-                        WriteFile(t.Base62Id + Environment.NewLine, "newtips.txt", true);
+                        //WriteFile(t.Base62Id + Environment.NewLine, "newtips.txt", true);
                         iList.Add(t);
                     }
                     i++;
@@ -142,6 +143,8 @@ namespace tor_tools
 
         public void CreatCompressedOutput(string prefix, string xmlRoot, IEnumerable<GomLib.Models.Tooltip> itmList)
         {
+            WriteFile("", xmlRoot + "torctips.zip", false);
+            HashSet<string> iconNames = new HashSet<string>();
             using (var compressStream = new MemoryStream())
             {
                 //create the zip in memory
@@ -149,17 +152,26 @@ namespace tor_tools
                 {
                     foreach (var t in itmList)
                     {
-                        var torcEntry = zipArchive.CreateEntry(String.Format("{0}.torctip", t.Base62Id), CompressionLevel.Fastest);
-                        using (StreamWriter writer = new StreamWriter(torcEntry.Open()))
+                        var torcEntry = zipArchive.CreateEntry(String.Format("tooltips/html/{0}.torctip", t.Base62Id), CompressionLevel.Fastest);
+                        using (StreamWriter writer = new StreamWriter(torcEntry.Open())) //old method. Race conditions led to Central Directory corruption.
                             writer.Write(t.HTML);
-
-                        if (t._obj.GetType() == typeof(GomLib.Models.Item))
+                        /*using (MemoryStream htmlStream = new MemoryStream(Encoding.UTF8.GetBytes(t.HTML ?? ""))) //see if this solves the Central Directory corruption.
                         {
-                            using (MemoryStream iconStream = GetIcon(((GomLib.Models.Item)t._obj).Icon))
+                            using (var html = torcEntry.Open())
+                                htmlStream.WriteTo(html);
+                        }*/
+
+                        if (t.obj.GetType() == typeof(GomLib.Models.Item))
+                        {
+                            if (iconNames.Contains(((GomLib.Models.Item)t.obj).Icon))
+                                continue;
+                            else
+                                iconNames.Add(((GomLib.Models.Item)t.obj).Icon);
+                            using (MemoryStream iconStream = GetIcon(((GomLib.Models.Item)t.obj).Icon))
                             {
                                 if (iconStream != null)
                                 {
-                                    var iconEntry = zipArchive.CreateEntry(String.Format("icons/{0}.png", GetIconFilename(((GomLib.Models.Item)t._obj).Icon)), CompressionLevel.Fastest);
+                                    var iconEntry = zipArchive.CreateEntry(String.Format("icons/{0}.png", GetIconFilename(((GomLib.Models.Item)t.obj).Icon)), CompressionLevel.Fastest);
                                     using(var a = iconEntry.Open())
                                         iconStream.WriteTo(a);
                                     //using (Writer writer = new BinaryWriter(iconEntry.Open()))
@@ -171,8 +183,8 @@ namespace tor_tools
                     }
                 }
 
-                //write it to a file
-                WriteFile(compressStream, "torctips.zip");
+                compressStream.Position = 0;
+                WriteFile(compressStream, xmlRoot + "torctips.zip");
             }
 
             

@@ -80,7 +80,7 @@ namespace GomLib.ModelLoader
             {
                 missionStrTable = _dom.stringTable.Find("str.prf.missions");
             }
-            schem.NodeId = obj.Id;
+            schem.Id = obj.Id;
             schem.Fqn = obj.Name;
             schem._dom = _dom;
             schem.References = obj.References;
@@ -114,7 +114,7 @@ namespace GomLib.ModelLoader
             if (schem.NameId > 0)
             {
                 schem.Name = missionStrTable.GetText((int)schem.NameId + strOffset, schem.Fqn);
-                schem.Id = schem.NameId;
+                //schem.Id = schem.NameId;
             }
 
             if ((schem.Name == null) && (schem.Item != null))
