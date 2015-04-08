@@ -161,7 +161,8 @@ namespace tor_tools
             if (!System.IO.Directory.Exists(Config.ExtractPath + prefix + subPath)) { System.IO.Directory.CreateDirectory(Config.ExtractPath + prefix + subPath); }
             using (System.IO.FileStream file2 = new System.IO.FileStream(Config.ExtractPath + prefix + filename, FileMode.OpenOrCreate))
             {
-                content.WriteTo(file2);
+                content.Position = 0;
+                content.CopyTo(file2); //this works when writeto doesn't for some streams.
             }
             //MessageBox.Show("Operation Complete. File: " + Config.ExtractPath + filename);
         }
