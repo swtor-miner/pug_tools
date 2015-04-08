@@ -456,6 +456,8 @@ namespace GomLib.ModelLoader
                 }
             }
 
+            itm.SetBonusId = gom.Data.ValueOrDefault<long>("ItemSetBonusId", 0);
+
             gom.Unload();
             return itm;
         }

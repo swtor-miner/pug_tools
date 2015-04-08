@@ -8123,4 +8123,6 @@
   <gom_type Id="4611686284095450005" name="ahItemSlotSIdToConSlots" desc="" />
   <gom_type Id="4611686284095450006" name="ahItemSlotConSlotNameIds" desc="" />
   <gom_type Id="4611686284095450007" name="ahItemSlotCategories" desc="" />
+  <!-- itm. -->
+  <gom_type Id="4611686347206970000" name="ItemSetBonusId" desc="" />
 </gom_types>

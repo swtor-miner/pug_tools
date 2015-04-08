@@ -56,7 +56,8 @@ namespace GomLib.Models
             }
             set
             {
-                _Description = System.Text.RegularExpressions.Regex.Replace(value, @"\r\n?|\n", "<br />");
+                //_Description = System.Text.RegularExpressions.Regex.Replace(value, @"\r\n?|\n", "<br />");
+                _Description = value;
             }
         }
         public Dictionary<string, string> LocalizedDescription { get; set; }
@@ -174,6 +175,24 @@ namespace GomLib.Models
         public List<ulong> rewardedForQuests { get; set; }
         public Dictionary<ulong, ulong> ippRefs { get; set; }
         public Dictionary<string, string> classAppearance { get; set; }
+        public long SetBonusId { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        internal SetBonusEntry _SetBonus { get; set; }
+        public SetBonusEntry SetBonus
+        {
+            get
+            {
+                if (_SetBonus == null)
+                {
+                    _SetBonus = _dom.setBonusLoader.Load(SetBonusId);
+                }
+                return _SetBonus;
+            }
+            set
+            {
+                _SetBonus = value;
+            }
+        }
 
         [Newtonsoft.Json.JsonIgnore]
         public string Tooltip

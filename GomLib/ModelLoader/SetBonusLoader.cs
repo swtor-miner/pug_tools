@@ -3,22 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GomLib.Models;
 
 namespace GomLib.ModelLoader
 {
     public class SetBonusLoader
     {
-        DataObjectModel _Dom;
+        DataObjectModel _dom;
         StringTable strTable;
+        public Dictionary<object, object> SetBonusEntryData;
+
         public SetBonusLoader(DataObjectModel dom)
         {
-            _Dom = dom;
+            _dom = dom;
             Flush();
         }
 
         public void Flush()
         {
             strTable = null;
+            SetBonusEntryData = new Dictionary<object,object>();
+        }
+
+        public Models.SetBonusEntry Load(long id)
+        {
+            if (SetBonusEntryData.Count == 0)
+            {
+                SetBonusEntryData = _dom.GetObject("itmSetBonusesPrototype").Data.Get<Dictionary<object, object>>("itmSetBonuses");
+            }
+            object setData = new object();
+            SetBonusEntryData.TryGetValue(id, out setData);
+
+            SetBonusEntry set = new SetBonusEntry();
+            return Load(set, id, (GomObjectData)setData);
         }
 
         public Models.SetBonusEntry Load(Models.SetBonusEntry setEntry, long Id, GomObjectData objData)
@@ -29,13 +46,13 @@ namespace GomLib.ModelLoader
                 return null;
 
             setEntry.Id = Id;
-            setEntry._dom = _Dom;
+            setEntry._dom = _dom;
             setEntry.Prototype = "itmSetBonusesPrototype";
             setEntry.ProtoDataTable = "itmSetBonuses";
 
             if(strTable == null)
             {
-                strTable = _Dom.stringTable.Find("str.gui.itm.setbonuses");
+                strTable = _dom.stringTable.Find("str.gui.itm.setbonuses");
             }
             //The base id to use for finding the real id with an offset.
             //First id in the file take 1.
@@ -56,7 +73,7 @@ namespace GomLib.ModelLoader
                 long setNum = (long)kvp.Key;
                 
                 ulong abilityNodeId = (ulong)kvp.Value;
-                Models.Ability abl = _Dom.abilityLoader.Load(abilityNodeId);
+                Models.Ability abl = _dom.abilityLoader.Load(abilityNodeId);
 
                 setAblsByNum.Add(setNum, abl);
             }
@@ -67,7 +84,7 @@ namespace GomLib.ModelLoader
             foreach(KeyValuePair<object, object> kvp in setSources)
             {
                 ulong itmNodeId = (ulong)kvp.Key;
-                setSourceItmList.Add(_Dom.itemLoader.Load(itmNodeId));
+                setSourceItmList.Add(_dom.itemLoader.Load(itmNodeId));
             }
             setEntry.Sources = setSourceItmList;
 
