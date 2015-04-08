@@ -84,7 +84,7 @@ namespace tor_tools
                     i++;
                 }
                 //ObjectListAsSql(gameObj.Value, "Tooltip", iList);
-                CreatCompressedOutput(gameObj.Value, "Tooltip", iList);
+                CreatCompressedOutput(gameObj.Value, gameObj.Value, iList);
             }
 
             /*addtolist("Verifying GameObject Hashes");

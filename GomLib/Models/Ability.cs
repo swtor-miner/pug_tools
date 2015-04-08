@@ -18,6 +18,80 @@ namespace GomLib.Models
         public Dictionary<string, string> LocalizedName { get; set; }
         public long DescriptionId { get; set; }
         public string Description { get; set; }
+        public string ParsedDescription
+        {
+            get
+            {
+                var retval = Description;
+
+                if (DescriptionTokens == null)
+                    return retval;
+
+                for (var i = 0; i < DescriptionTokens.Count; i++) {
+                    var id = DescriptionTokens.ElementAt(i).Key;
+                    var value = DescriptionTokens.ElementAt(i).Value["ablParsedDescriptionToken"].ToString();
+                    var type = DescriptionTokens.ElementAt(i).Value["ablDescriptionTokenType"].ToString().Replace("ablDescriptionTokenType", "");
+                    var start = retval.IndexOf("<<" + id);
+
+                    if (start == -1) {
+                        //console.log("didn't find: <<" + id);
+                        continue;
+                    }
+                    //console.log("id" + id + ":" + retval);
+                    //console.log("Start Index: " + start);
+
+                    var end = retval.Substring(start).IndexOf(">>") + 2;
+
+                    //console.log("Length: " +length);
+                    var fullToken = retval.Substring(start, end);
+                    //console.log("Full: " + fullToken);
+
+                    var durationText = "";
+                    if ((end - start) > 5) {
+                        string[] durationList = new string[] {"", "", ""};
+                        var partialToken = fullToken.Substring(4, fullToken.Length - 7);
+                        //console.log("Partial:" + partialToken);
+
+                        durationList = partialToken.Replace("%d", "").Split('/').ToArray();
+                        //console.log(durationList);
+
+                        int pValue;
+                        Int32.TryParse(value.ToString(), out pValue);
+
+                        durationText = "";
+                        if (pValue <= 0)
+                            durationText = durationList[0];
+                        else if (pValue > 1)
+                            durationText = durationList[2];
+                        else
+                            durationText = durationList[1];
+                        //console.log(pValue + durationText);
+                    }
+                    //console.log(type);
+                    while (retval.IndexOf(fullToken) != -1) { //sometimes there's multiple instance of the same token.
+                        switch (type) {
+                            case "Healing":
+                            case "Damage":
+                                retval = retval.Replace(fullToken, generateTokenString(value));
+                                break;
+                            case "Duration":
+                                retval = retval.Replace(fullToken, value + durationText);
+                                break;
+                            case "Talent":
+                                retval = retval.Replace(fullToken, value);
+                                //console.log("replaced '<<" + id + ">>' :" + retval);
+                                break;
+                            default:
+                                //console.log(type);
+                                retval = retval.Replace(fullToken, "Unknown Token: " + type);
+                                break;
+                        }
+                    }
+        
+                }
+                return retval;
+            }
+        }
         public Dictionary<string, string> LocalizedDescription { get; set; }
 
         public List<ulong> EffectIds { get; set; }
@@ -586,6 +660,78 @@ namespace GomLib.Models
                 ability.Elements().Where(x => x.Value == "0" || x.IsEmpty).Remove();
             }
             return ability;
+        }
+
+        public string generateTokenString(string value)
+        {
+            var retval = "";
+
+            var splitTokens = value.Split(';');
+            /*if (splitTokens.length == 2)
+                retval = splitTokens[1] + " to " + splitTokens[0];
+            else*/
+            retval = splitTokens[0];
+
+            var tokArray = splitTokens[0].Split(',');
+
+            switch (tokArray[0])
+            {
+                case "damage":
+                    if (tokArray.Count() == 7)
+                    {
+                        var minp = float.Parse(tokArray[5]);
+                        var maxp = float.Parse(tokArray[6]);
+                        if (float.Parse(tokArray[4]) == 1)
+                            retval = Math.Round(float.Parse(tokArray[4]) * minp) + "-" + Math.Round(float.Parse(tokArray[4]) * maxp);
+                        else
+                            retval = Math.Round(float.Parse(tokArray[4]) * ((minp + maxp) / 2)).ToString();
+                    }
+                    else
+                    {
+                        switch (tokArray[4])
+                        {
+                            case "w":
+                                var min = (float.Parse(tokArray[11]) + 1.0) * 405 + float.Parse(tokArray[6]) * 1000 + float.Parse(tokArray[7]) * 3185; /*(AmountModifierPercent + 1) * 405 * 0.3 + */
+                                var max = (float.Parse(tokArray[11]) + 1.0) * 607 + float.Parse(tokArray[6]) * 1000 + float.Parse(tokArray[8]) * 3185; /*(AmountModifierPercent + 1) * 607 * 0.3 + */
+                                //console.log("(" + tokArray[11] + " + 1.0) * 405 + " + tokArray[6] + " * 1000 + " + tokArray[8]  + " * 3185");
+                                if (float.Parse(tokArray[5]) == 1)
+                                    retval = Math.Round(float.Parse(tokArray[5]) * min) + "-" + Math.Round(float.Parse(tokArray[5]) * max);
+                                else
+                                    retval = Math.Round(float.Parse(tokArray[5]) * ((min + max) / 2)).ToString();
+                                break;
+                            case "s":
+                                var mins = float.Parse(tokArray[6]) * 1000 + float.Parse(tokArray[7]) * 3185;
+                                var maxs = float.Parse(tokArray[6]) * 1000 + float.Parse(tokArray[8]) * 3185;
+                                if (float.Parse(tokArray[5]) == 1)
+                                    retval = Math.Round(float.Parse(tokArray[5]) * mins) + "-" + Math.Round(float.Parse(tokArray[5]) * maxs);
+                                else
+                                    retval = Math.Round(float.Parse(tokArray[5]) * ((mins + maxs) / 2)).ToString();
+                                break;
+                        }
+                    }
+                    break;
+                case "healing":
+                    if (tokArray.Count() == 5)
+                    {
+                        var minh = float.Parse(tokArray[2]) * 1000 + float.Parse(tokArray[3]) * 14520;
+                        var maxh = float.Parse(tokArray[2]) * 1000 + float.Parse(tokArray[4]) * 14520;
+                        if (float.Parse(tokArray[1]) == 1)
+                            retval = Math.Round(float.Parse(tokArray[1]) * minh) + "-" + Math.Round(float.Parse(tokArray[1]) * maxh);
+                        else
+                            retval = Math.Round(float.Parse(tokArray[1]) * ((minh + maxh) / 2)).ToString();
+                    }
+                    else
+                    {
+                        var mina = float.Parse(tokArray[2]);
+                        var maxa = float.Parse(tokArray[3]);
+                        if (float.Parse(tokArray[1]) == 1)
+                            retval = Math.Round(float.Parse(tokArray[1]) * mina) + "-" + Math.Round(float.Parse(tokArray[1]) * maxa);
+                        else
+                            retval = Math.Round(float.Parse(tokArray[1]) * ((mina + maxa) / 2)).ToString();
+                    }
+                    break;
+            }
+            return retval;
         }
     }
 }

@@ -83,7 +83,6 @@ namespace GomLib.Models
         {
             if (obj == null)
                 return null;
-            Item itm = null;
             if (obj.GetType() == typeof(Item))
             {
                 return ((Item)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
@@ -306,7 +305,7 @@ namespace GomLib.Models
                 Dictionary<string, XElement> enhancements = new Dictionary<string, XElement>();
                 for (var i = 0; i < itm.EnhancementSlots.Count; i++)
                 {
-                    enhancements.Add(itm.EnhancementSlots[i].Slot.ConvertToString(), itm.EnhancementSlots[i].EnhancementToHTML());
+                    enhancements.Add(itm.EnhancementSlots[i].Slot.ConvertToString(), itm.EnhancementSlots[i].ToHTML());
                 }
                 List<string> sortOrder = new List<string>
                     {
@@ -397,7 +396,7 @@ namespace GomLib.Models
                                 if (itm.UseAbility.Fqn.StartsWith("abl.player.") && String.IsNullOrEmpty(itm.UseAbility.Description)){
                                     string puasehere = "";
                                 }
-                            string ablDesc = itm.UseAbility.Description ?? "";
+                            string ablDesc = itm.UseAbility.ParsedDescription ?? "";
                             if (ablDesc == "") break;
                             ablDesc = System.Text.RegularExpressions.Regex.Replace(ablDesc, @"\r\n?|\n", "<br />");
                             tooltip.Add(new XElement("div",
@@ -412,15 +411,31 @@ namespace GomLib.Models
             {
                 string itmDesc = itm.Description;
                 //regex_newline.Replace(itmDesc, "<br />");
-                itmDesc = System.Text.RegularExpressions.Regex.Replace(itmDesc, @"\r\n?|\n", "<br />");
-                tooltip.Add(new XElement("div",
-                    XClass("torctip_desc"),
-                    itmDesc
-                    ));
+                itmDesc = System.Text.RegularExpressions.Regex.Replace(itmDesc, @"\r\n?|\n", "\n");
+                //itmDesc = itmDesc.Replace("<br />", "\n");
+                XElement desc = new XElement("div",
+                    XClass("torctip_desc"));
+                if (itmDesc.Contains('\n'))
+                {
+                    var splits = itmDesc.Split('\n');
+                    foreach (var split in splits)
+                    {
+                        desc.Add(split, new XElement("br"));
+                    }
+                }
+                else
+                {
+                    desc.Add(itmDesc);
+                }
+                tooltip.Add(desc);
+            }
+            if (itm.SetBonusId != 0)
+            {
+                tooltip.Add(itm.SetBonus.ToHTML());
             }
             return tooltip;
         }
-        private static XElement EnhancementToHTML(this ItemEnhancement itm)
+        private static XElement ToHTML(this ItemEnhancement itm)
         {
             string slot = itm.Slot.ConvertToString();
             //StringBuilder enhancement = new StringBuilder();
@@ -429,8 +444,8 @@ namespace GomLib.Models
                 );
             if (itm.ModificationId != 0)
             {
-                if (itm.Slot == EnhancementType.ColorCrystal)
-                    slot = itm.Modification.Name;
+                //if (itm.Slot == EnhancementType.ColorCrystal)
+                slot = itm.Modification.Name;
                 enhancement.Add(new XElement("div",
                     XClass("torctip_mslot"),
                     new XElement("a",
@@ -454,6 +469,32 @@ namespace GomLib.Models
                         String.Format("{0}: Open", slot)
                     ));
             return enhancement;
+        }
+        private static XElement ToHTML(this SetBonusEntry itm)
+        {
+            if (!String.IsNullOrEmpty(itm.Name))
+            {
+                XElement enhancement = new XElement("div",
+                    XClass("torctip_set_wrapper"),
+                    new XElement("div",
+                        XClass("torctip_set_name"),
+                        new XElement("span", String.Format("{0} (", itm.Name)),
+                        new XElement("span", new XAttribute("id", "set_count"), 1),
+                        new XElement("span", String.Format("/{0})", itm.MaxItemCount))
+                    ));
+
+                //add item list here eventually
+                foreach(var kvp in itm.BonusAbilityByNum)
+                {
+                    enhancement.Add(new XElement("div",
+                        XClass("torctip_set_bonus"),
+                        String.Format("({0}) {1}", kvp.Key, kvp.Value.ParsedDescription)
+                        ));
+                }
+                return enhancement;
+            }
+            else
+                return null;
         }
         #endregion
 
@@ -505,16 +546,16 @@ namespace GomLib.Models
                         new XElement("div",
                             XClass(""),
                             new XElement("span",
-                                XClass("torctip_skill_o"),
+                                XClass("torctip_diff_orange"),
                                 String.Format("{0} ", itm.SkillOrange)),
                             new XElement("span",
-                                XClass("torctip_skill_y"),
+                                XClass("torctip_diff_yellow"),
                                 String.Format("{0} ", itm.SkillYellow)),
                             new XElement("span",
-                                XClass("torctip_skill_g"),
+                                XClass("torctip_diff_green"),
                                 String.Format("{0} ", itm.SkillGreen)),
                             new XElement("span",
-                                XClass("torctip_skill_grey"),
+                                XClass("torctip_diff_gray"),
                                 String.Format("{0} ", itm.SkillGrey)))
                     );
                 if (itm.MissionDescriptionId == 0)
