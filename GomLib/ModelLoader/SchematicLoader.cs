@@ -103,7 +103,7 @@ namespace GomLib.ModelLoader
             }*/
 
             schem.MissionCost = (int)obj.Data.ValueOrDefault<long>("prfMissionCost", 0);
-            //schem.MissionFaction = FactionExtensions.ToFaction((long)obj.Data.ValueOrDefault<long>("prfMissionFaction", 0));
+            schem.MissionFaction = FactionExtensions.ToFaction((long)obj.Data.ValueOrDefault<long>("prfMissionFaction", 0));
             schem.MissionUnlockable = obj.Data.ValueOrDefault<bool>("prfMissionUnlockable", false);
             schem.MissionLight = (int)obj.Data.ValueOrDefault<long>("prfMissionRewardLight", 0);
             schem.MissionLightCrit = (int)obj.Data.ValueOrDefault<long>("prfMissionRewardLightCritical", 0);
@@ -230,16 +230,25 @@ namespace GomLib.ModelLoader
                 throw new InvalidOperationException("Attempting to set Id of a schematic to one that's already taken");
             }
 
-            /*var variationsTable = _dom.GetObject("prfSchematicVariationsPrototype");
+            /*var variationsTable = _dom.GetObject("prfSchematicVariationsPrototype"); // turn this into a loader
             var variationsMasterList = variationsTable.Data.Get<Dictionary<object, object>>("prfSchematicVariationMasterList");
             variationsTable.Unload();
 
-            object vList;
+            string itemname = "";
+            if (schem.ItemId != 0)
+            {
+                if (schem.Item != null)
+                {
+                    itemname = schem.Item.Name;
+                }
+            }
+
+            object vList; //this doesn't belong here, it's worth of it's own pseudogameobject.
             if (variationsMasterList.TryGetValue(obj.Id, out vList))
             {
-                Dictionary<long, string> mods = new Dictionary<long, string>();
+                Dictionary<long, ModPackage> mods = new Dictionary<long, ModPackage>();
                 var modpackTable = _dom.GetObject("itmModifierPackageTablePrototype");
-                var itmModifierPackages = modpackTable.Data.Get<Dictionary<object, object>>("itmModifierPackages");
+                var itmModifierPackages = modpackTable.Data.Get<Dictionary<object, object>>("itmModifierPackagesList");
                 modpackTable.Unload();
                 //strtable "str.gui.itm.modifiers"
                 var strTable = _dom.stringTable.Find("str.gui.itm.modifiers");
@@ -250,10 +259,13 @@ namespace GomLib.ModelLoader
                     {
                         long strId = ((GomObjectData)modpack).Get<long>("itmModPkgNameId");
                         string text = strTable.GetText(strId, "str.gui.itm.modifiers");
-                        mods.Add((long)kvp.Value, text);
+                        Dictionary<Stat, float> modStats = ((GomObjectData)modpack).ValueOrDefault<Dictionary<object, object>>("itmModPkgAttributePercentages", new Dictionary<object, object>()).ToDictionary(x => StatExtensions.ToStat((ScriptEnum)x.Key), x => ((long)x.Value) / 100.0f);
+                        text = text.Replace("<<1>>", itemname);
+                        mods.Add((long)kvp.Value, new ModPackage((long)kvp.Value, strId, text, modStats));
                     }
                 }
                 string paushere = "";
+                schem.Variations = mods;
             }*/
 
             obj.Unload();

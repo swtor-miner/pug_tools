@@ -8,11 +8,19 @@ namespace GomLib.Models
 {
     public class Schematic : GameObject, IEquatable<Schematic>
     {
+        #region Properties
         public ulong NodeId { get; set; }
         public ulong NameId { get; set; }
         public string Name { get { return _name ?? (_name = ""); } set { if (_name != value) { _name = value; } } }
         private string _name;
         public Profession CrewSkillId { get; set; }
+        public string CrewSkillName
+        {
+            get
+            {
+                return CrewSkillId.ToString();
+            }
+        }
         [Newtonsoft.Json.JsonIgnore]
         public Item Item
         {
@@ -75,7 +83,11 @@ namespace GomLib.Models
         public int MissionYieldDescriptionId { get; set; }
         public string MissionYieldDescription { get; set; }
         public bool Deprecated { get; set; }
+        public Dictionary<long, ModPackage> Variations { get; set; }
 
+        #endregion
+
+        #region IEquatable<Schematic>
         public override int GetHashCode()
         {
             int hash = Name.GetHashCode();
@@ -260,6 +272,7 @@ namespace GomLib.Models
                 return false;
             return true;
         }
+        #endregion
 
         public override string ToString(bool verbose)
         {
@@ -267,17 +280,71 @@ namespace GomLib.Models
             string n = Environment.NewLine;
 
             txt.Append(String.Format("* {0}{1}", Item.Name, n)); //Item.Description.Replace("\r\n", replaceWith).Replace("\n", replaceWith).Replace("\r", replaceWith), n));
-            List<string> reqs = new List<string>();
+            /*List<string> reqs = new List<string>();
             foreach (var kvp in Materials)
             {
                 var mat = _dom.itemLoader.Load(kvp.Key);
                 reqs.Add(String.Format("{0}x {1}", kvp.Value, mat.Name)); //, mat.Description));
             }
             if (reqs.Count > 0)
-                txt.Append(String.Format(" * {0}{1}", String.Join(n + " * ", reqs), n));
+                txt.Append(String.Format(" * {0}{1}", String.Join(n + " * ", reqs), n));*/
             return txt.ToString();
         }
-
+        [Newtonsoft.Json.JsonIgnore]
+        public override List<SQLProperty> SQLProperties
+        {
+            get
+            {
+                return new List<SQLProperty>
+                    {                //(SQL Column Name, C# Property Name, SQL Column type statement, isUnique/PrimaryKey, Serialize value to json)
+                        new SQLProperty("NodeId", "Id", "bigint(20) unsigned NOT NULL", true),
+                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("NameId", "NameId", "bigint(20) NOT NULL"),
+                        new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Fqn", "Fqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("CrewSkillId", "CrewSkillId", "int(11) NOT NULL"),
+                        new SQLProperty("CrewSkillName", "CrewSkillName", "varchar(50) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("SkillOrange", "SkillOrange", "int(11) NOT NULL"),
+                        new SQLProperty("SkillYellow", "SkillYellow", "int(11) NOT NULL"),
+                        new SQLProperty("SkillGreen", "SkillGreen", "int(11) NOT NULL"),
+                        new SQLProperty("SkillGrey", "SkillGrey", "int(11) NOT NULL"),
+                        new SQLProperty("ItemId", "ItemId", "bigint(20) unsigned NOT NULL"),
+                        new SQLProperty("ItemParentId", "ItemParentId", "bigint(20) unsigned NOT NULL"),
+                        /*new SQLProperty("Materials", "Materials",
+                        new SQLProperty("CraftingTime", "CraftingTime",
+                        new SQLProperty("CraftingTimeT1", "CraftingTimeT1",
+                        new SQLProperty("CraftingTimeT2", "CraftingTimeT2",
+                        new SQLProperty("CraftingTimeT3", "CraftingTimeT3",
+                        new SQLProperty("Workstation", "Workstation",
+                        new SQLProperty("Subtype", "Subtype",
+                        new SQLProperty("Research1", "Research1",
+                        new SQLProperty("ResearchQuantity1", "ResearchQuantity1",
+                        new SQLProperty("ResearchChance1", "ResearchChance1",
+                        new SQLProperty("Research2", "Research2",
+                        new SQLProperty("ResearchQuantity2", "ResearchQuantity2",
+                        new SQLProperty("ResearchChance2", "ResearchChance2",
+                        new SQLProperty("Research3", "Research3",
+                        new SQLProperty("ResearchQuantity3", "ResearchQuantity3",
+                        new SQLProperty("ResearchChance3", "ResearchChance3",
+                        new SQLProperty("MissionCost", "MissionCost",
+                        new SQLProperty("MissionDescriptionId", "MissionDescriptionId",
+                        new SQLProperty("MissionDescription", "MissionDescription",
+                        new SQLProperty("MissionUnlockable", "MissionUnlockable",
+                        new SQLProperty("MissionLight", "MissionLight",
+                        new SQLProperty("MissionLightCrit", "MissionLightCrit",
+                        new SQLProperty("MissionDark", "MissionDark",
+                        new SQLProperty("MissionDarkCrit", "MissionDarkCrit",
+                        new SQLProperty("TrainingCost", "TrainingCost",
+                        new SQLProperty("DisableDisassemble", "DisableDisassemble",
+                        new SQLProperty("DisableCritical", "DisableCritical",
+                        new SQLProperty("MissionFaction", "MissionFaction",
+                        new SQLProperty("MissionYieldDescriptionId", "MissionYieldDescriptionId",
+                        new SQLProperty("MissionYieldDescription", "MissionYieldDescription",
+                        new SQLProperty("Deprecated", "Deprecated",
+                        new SQLProperty("Variations", "Variations*/
+                    };
+            }
+        }
         public override XElement ToXElement(bool verbose)
         {
             XElement schem = new XElement("Schematic");
@@ -311,11 +378,11 @@ namespace GomLib.Models
                 }
                 XElement resmats = new XElement("ResearchReturnedMaterials");
                 if (Research1 != null)
-                    resmats.Add(RequiredMatToXElement(_dom, ResearchQuantity1, Research1.ShortId, verbose));
+                    resmats.Add(RequiredMatToXElement(_dom, ResearchQuantity1, Research1.Id, verbose));
                 if (Research2 != null)
-                    resmats.Add(RequiredMatToXElement(_dom, ResearchQuantity2, Research2.ShortId, verbose));
+                    resmats.Add(RequiredMatToXElement(_dom, ResearchQuantity2, Research2.Id, verbose));
                 if (Research3 != null)
-                    resmats.Add(RequiredMatToXElement(_dom, ResearchQuantity3, Research3.ShortId, verbose));
+                    resmats.Add(RequiredMatToXElement(_dom, ResearchQuantity3, Research3.Id, verbose));
                 schem.Add(resmats);
             }
             else
@@ -347,7 +414,6 @@ namespace GomLib.Models
 
             return schem;
         }
-
         private XElement RequiredMatToXElement(DataObjectModel dom, int i, ulong id, bool verbose)
         {
             var itm = dom.itemLoader.Load(id);
@@ -359,5 +425,24 @@ namespace GomLib.Models
             }*/
             return mat;
         }
+    }
+
+    public class ModPackage : PseudoGameObject
+    {
+        public override string ToString()
+        {
+            return string.Format("{0} {1}: {2}",
+                Id, Name, AtrributePercentages);
+        }
+
+        public ModPackage(long id, long nId, string n, Dictionary<Stat, float> modStats)
+        {
+            NameId = nId;
+            Id = id;
+            Name = n;
+            AtrributePercentages = modStats;
+        }
+        public long NameId { get; set; }
+        Dictionary<Stat, float> AtrributePercentages { get; set; }
     }
 }

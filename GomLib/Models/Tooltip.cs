@@ -546,16 +546,16 @@ namespace GomLib.Models
                         new XElement("div",
                             XClass(""),
                             new XElement("span",
-                                XClass("torctip_diff_orange"),
+                                XClass("torctip_hard"),
                                 String.Format("{0} ", itm.SkillOrange)),
                             new XElement("span",
-                                XClass("torctip_diff_yellow"),
+                                XClass("torctip_medium"),
                                 String.Format("{0} ", itm.SkillYellow)),
                             new XElement("span",
-                                XClass("torctip_diff_green"),
+                                XClass("torctip_easy"),
                                 String.Format("{0} ", itm.SkillGreen)),
                             new XElement("span",
-                                XClass("torctip_diff_gray"),
+                                XClass("torctip_trivial"),
                                 String.Format("{0} ", itm.SkillGrey)))
                     );
                 if (itm.MissionDescriptionId == 0)
@@ -571,16 +571,27 @@ namespace GomLib.Models
                         foreach (var kvp in itm.Materials)
                         {
                             var mat = (Item)new GameObject().Load(kvp.Key, itm._dom);
+                            var matfileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", mat.Icon));
                             components.Add(new XElement("div",
                                 XClass("torctip_stat"),
-                                new XElement("span",
-                                    String.Format("{0}x ", kvp.Value)),
-                                new XElement("a",
-                                    XClass(String.Format("torctip_{0}", mat.Quality.ToString())),
-                                    new XAttribute("href", String.Format("http://torcommunity.com/database/items/view/?item={0}", mat.Base62Id)),
-                                    new XAttribute("data-torc", "norestyle"),
-                                    mat.Name)
-                            ));
+                                new XElement("div",
+                                    new XAttribute("class", String.Format("torctip_image torctip_image_{0} small_border", stringQual)),
+                                    new XElement("img",
+                                        new XAttribute("src", String.Format("http://torcommunity.com/db/icons/{0}_{1}.png", matfileId.ph, matfileId.sh)),
+                                        new XAttribute("alt", itm.Name),
+                                        XClass("small_image"))),
+                                    new XElement("div",
+                                        new XAttribute("class", "torctip_name"),
+                                        new XElement("span",
+                                            String.Format("{0}x ", kvp.Value)),
+                                        new XElement("a",
+                                            new XAttribute("href", String.Format("http://torcommunity.com/db/{0}", mat.Base62Id)),
+                                            new XAttribute("data-torc", "norestyle"),
+                                            itm.Name
+                                        )
+                                    )
+                                )
+                            );
                         }
                     }
                     else
