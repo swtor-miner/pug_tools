@@ -97,6 +97,7 @@ namespace GomLib
         public StrongholdLoader strongholdLoader;
         public TalentLoader talentLoader;
         public SetBonusLoader setBonusLoader;
+        public CodexCatByFactionLoader cdxCatTotalsLoader;
 
         private void initializeModelLoaders()
         {
@@ -143,6 +144,7 @@ namespace GomLib
             strongholdLoader = new StrongholdLoader(this);
             talentLoader = new TalentLoader(this);
             setBonusLoader = new SetBonusLoader(this);
+            cdxCatTotalsLoader = new CodexCatByFactionLoader(this);
         }
 
         public void Dispose()

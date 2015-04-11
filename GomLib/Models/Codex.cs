@@ -21,6 +21,7 @@ namespace GomLib.Models
         public string Image { get; set; }
         public bool IsHidden { get; set; }
 
+        public string CategoryName { get; set; }
         public long CategoryId { get; set; }
         public Faction Faction { get; set; }
         public List<ClassSpec> Classes { get; set; }
@@ -41,6 +42,10 @@ namespace GomLib.Models
             if (LocalizedDescription != null) foreach (var x in LocalizedDescription) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
             if (Image != null) { hash ^= Image.GetHashCode(); }
             hash ^= CategoryId.GetHashCode();
+            if (CategoryName != null)
+            {
+                hash ^= CategoryName.GetHashCode();
+            }
             hash ^= Faction.GetHashCode();
             hash ^= IsHidden.GetHashCode();
             hash ^= ClassRestricted.GetHashCode();
@@ -70,6 +75,8 @@ namespace GomLib.Models
             if (ReferenceEquals(this, cdx)) return true;
 
             if (this.CategoryId != cdx.CategoryId)
+                return false;
+            if (this.CategoryName != cdx.CategoryName)
                 return false;
             if (this.Classes != null)
             {
@@ -139,7 +146,7 @@ namespace GomLib.Models
                 new XElement("NodeId", NodeId),
                 new XAttribute("Id", Id),
                 //new XAttribute("Hash", GetHashCode()),
-                new XElement("CategoryId", CategoryId));
+                new XElement("Category", new XAttribute("Id", CategoryId), CategoryName));
             if (verbose)
             {
                 string reqclasses = null;

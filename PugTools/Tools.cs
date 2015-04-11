@@ -80,7 +80,8 @@ namespace tor_tools
                 "AchCategories",
                 "testHashes",
                 "Tooltips",
-                "Set Bonuses"
+                "Set Bonuses",
+                "Codex Category Totals"
             });
             comboBoxExtractTypes.SelectedIndex = 0;
             cbxExtractFormat.SelectedIndex = 0;
@@ -506,6 +507,11 @@ namespace tor_tools
                     extensions = testFile.getTypes();
 
                     ExportICONS = extensions.Contains("ICONS");
+                    if (extensions.Contains("CDXCAT"))
+                    {
+                        DisableButtons();
+                        getPrototypeObjects("CodexCategoryTotals", "cdxCategoryTotalsPrototype", "cdxFactionToClassToPlanetToTotalLookupList");
+                    }
                     if(extensions.Contains("SBN"))
                     {
                         DisableButtons();

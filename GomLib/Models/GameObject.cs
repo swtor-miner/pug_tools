@@ -232,6 +232,10 @@ namespace GomLib.Models
                     GomLib.Models.SetBonusEntry setEntry = new GomLib.Models.SetBonusEntry();
                     dom.setBonusLoader.Load(setEntry, (long)id, (GomObjectData)gomObjectData);
                     return setEntry;
+                case "CodexCategoryTotals":
+                    GomLib.Models.CodexCatByFaction cdxCatByFaction = new GomLib.Models.CodexCatByFaction();
+                    dom.cdxCatTotalsLoader.Load(cdxCatByFaction, (long)id, (Dictionary<object, object>)gomObjectData);
+                    return cdxCatByFaction;
                 default:
                     throw new IndexOutOfRangeException();
             }

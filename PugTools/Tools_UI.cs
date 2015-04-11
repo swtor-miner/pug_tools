@@ -183,6 +183,8 @@ namespace tor_tools
                         break;
                     case "Set Bonuses": t = () => getPrototypeObjects("SetBonuses", "itmSetBonusesPrototype", "itmSetBonuses");
                         break;
+                    case "Codex Category Totals": t = () => getPrototypeObjects("CodexCategoryTotals", "cdxCategoryTotalsPrototype", "cdxFactionToClassToPlanetToTotalLookupList");
+                        break;
                         
                 }
                 if (t != null)

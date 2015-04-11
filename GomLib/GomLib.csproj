@@ -136,6 +136,7 @@
     <Compile Include="ModelLoader\AdvancedClassLoader.cs" />
     <Compile Include="ModelLoader\AreaLoader.cs" />
     <Compile Include="ModelLoader\ClassSpecLoader.cs" />
+    <Compile Include="ModelLoader\CodexCatByFactionLoader.cs" />
     <Compile Include="ModelLoader\CodexLoader.cs" />
     <Compile Include="ModelLoader\CollectionLoader.cs" />
     <Compile Include="ModelLoader\CompanionLoader.cs" />
@@ -155,6 +156,7 @@
     <Compile Include="ModelLoader\_EmptyLoader.cs" />
     <Compile Include="Models\AchievementCategory.cs" />
     <Compile Include="Models\Appearances.cs" />
+    <Compile Include="Models\CodexCatByFaction.cs" />
     <Compile Include="Models\Conquest.cs" />
     <Compile Include="Models\SetBonusEntry.cs" />
     <Compile Include="Models\Tooltip.cs" />

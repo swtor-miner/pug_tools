@@ -22,6 +22,8 @@ namespace tor_tools
         public List<string> getTypes()
         {
             fileTypes.Clear();
+            if (this.chkCdxCat.Checked)
+                fileTypes.Add("CDXCAT");
             if (this.chkSetBonus.Checked)
                 fileTypes.Add("SBN");
             if (this.chkGOM.Checked)
@@ -115,6 +117,7 @@ namespace tor_tools
             this.chkTAL.Checked = value;
             this.chkICONS.Checked = value;
             this.chkSetBonus.Checked = value;
+            this.chkCdxCat.Checked = value;
         }
     }
 }
