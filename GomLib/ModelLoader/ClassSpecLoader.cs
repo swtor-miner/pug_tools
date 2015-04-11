@@ -71,11 +71,31 @@ namespace GomLib.ModelLoader
             spec._dom = _dom;
             spec.References = obj.References;
             spec.IsPlayerClass = obj.Name.StartsWith("class.pc.");
-            spec.AbilityPackageId = obj.Data.ValueOrDefault<ulong>("chrAbilityPackage", 0);
-            spec.AlignmentDark = (int)obj.Data.ValueOrDefault<float>("chrAlignmentDark", 0);
-            spec.AlignmentLight = (int)obj.Data.ValueOrDefault<float>("chrAlignmentLight", 0);
-            spec.Icon = obj.Data.ValueOrDefault<string>("chrClassDataIcon", null);
-            spec.NameId = obj.Data.ValueOrDefault<long>("chrClassDataNameId", 0); // Index into str.gui.classnames
+            if(spec.IsPlayerClass)
+            {
+                spec.IsPlayerAdvancedClass = obj.Name.StartsWith("class.pc.advanced");
+            }
+            else
+            {
+                spec.IsPlayerAdvancedClass = false;
+            }
+
+            if (!spec.IsPlayerAdvancedClass)
+            {
+                spec.AbilityPackageId = obj.Data.ValueOrDefault<ulong>("chrAbilityPackage", 0);
+                spec.AlignmentDark = (int)obj.Data.ValueOrDefault<float>("chrAlignmentDark", 0);
+                spec.AlignmentLight = (int)obj.Data.ValueOrDefault<float>("chrAlignmentLight", 0);
+                spec.Icon = obj.Data.ValueOrDefault<string>("chrClassDataIcon", null);
+                spec.NameId = obj.Data.ValueOrDefault<long>("chrClassDataNameId", 0); // Index into str.gui.classnames
+            }
+            else
+            {
+                spec.NameId = obj.Data.ValueOrDefault<long>("chrAdvancedClassDataNameId", 0);
+                spec.Icon = null;
+                spec.AlignmentDark = 0;
+                spec.AlignmentLight = 0;
+
+            }
             //spec.Id = (int)spec.NameId;
 
             spec.Name = classNames.GetText(spec.NameId, obj.Name);

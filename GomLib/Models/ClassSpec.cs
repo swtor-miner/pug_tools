@@ -12,6 +12,7 @@ namespace GomLib.Models
         //public ulong Id { get; set; }
         public int DataHash { get; set; }
         public bool IsPlayerClass { get; set; }
+        public bool IsPlayerAdvancedClass { get; set; }
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
         public long NameId { get; set; }
@@ -104,6 +105,8 @@ namespace GomLib.Models
             }
             hash ^= this.Fqn.GetHashCode();
             hash ^= this.Id.GetHashCode();
+            hash ^= this.IsPlayerAdvancedClass.GetHashCode();
+
             return hash;
         }
 
@@ -138,6 +141,8 @@ namespace GomLib.Models
             if (this.Id != itm.Id)
                 return false;
             if (this.IsPlayerClass != itm.IsPlayerClass)
+                return false;
+            if (this.IsPlayerAdvancedClass != itm.IsPlayerAdvancedClass)
                 return false;
             var dComp = new DictionaryComparer<string, string>();
             if (!dComp.Equals(this.LocalizedName, itm.LocalizedName))
