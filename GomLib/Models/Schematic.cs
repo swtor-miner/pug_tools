@@ -18,7 +18,24 @@ namespace GomLib.Models
         {
             get
             {
-                return CrewSkillId.ToString();
+                switch (CrewSkillId)
+                {
+                    case Profession.Archaeology: return "Archaeology";
+                    case Profession.Bioanalysis: return "Bioanalysis";
+                    case Profession.Scavenging: return "Scavenging";
+                    case Profession.Artifice: return "Artifice";
+                    case Profession.Armormech: return "Armormech";
+                    case Profession.Armstech: return "Armstech";
+                    case Profession.Biochem: return "Biochem";
+                    case Profession.Cybertech: return "Cybertech";
+                    case Profession.Synthweaving: return "Synthweaving";
+                    case Profession.Slicing: return "Slicing";
+                    case Profession.Diplomacy: return "Diplomacy";
+                    case Profession.Investigation: return "Investigation";
+                    case Profession.TreasureHunting: return "Treasure Hunting";
+                    case Profession.UnderworldTrading: return "Underworld Trading";
+                    default: return "None";
+                }
             }
         }
         [Newtonsoft.Json.JsonIgnore]
@@ -43,7 +60,7 @@ namespace GomLib.Models
         public int SkillGrey { get; set; }
 
         public ulong ItemId { get; set; }
-        public ulong ItemParentId { get; set; }
+        public string ItemBase62Id { get { return ItemId.ToMaskedBase62(); } }
 
         public Dictionary<ulong, int> Materials { get; set; }
 
@@ -83,7 +100,33 @@ namespace GomLib.Models
         public int MissionYieldDescriptionId { get; set; }
         public string MissionYieldDescription { get; set; }
         public bool Deprecated { get; set; }
+        public string Category { get; set; }
+        public string SubCategory { get; set; }
+        public string Quality { get; set; }
         public Dictionary<long, ModPackage> Variations { get; set; }
+        public List<ulong> LearnedIds { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        public string LearnedBase62Ids
+        {
+            get
+            {
+                return String.Join(", ", LearnedIds.Where(x => x != 0).Select(x => x.ToMaskedBase62()));
+            }
+        }
+        [Newtonsoft.Json.JsonIgnore]
+        public string HashedIcon
+        {
+            get
+            {
+                string icon = "none";
+                if (this.Item != null)
+                {
+                    icon = Item.Icon;
+                }
+                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", icon));
+                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+            }
+        }
 
         #endregion
 
@@ -183,8 +226,6 @@ namespace GomLib.Models
             if (this.Id != sch.Id)
                 return false;
             if (this.ItemId != sch.ItemId)
-                return false;
-            if (this.ItemParentId != sch.ItemParentId)
                 return false;
 
             var uiComp = new DictionaryComparer<ulong, int>();
@@ -308,8 +349,12 @@ namespace GomLib.Models
                         new SQLProperty("SkillYellow", "SkillYellow", "int(11) NOT NULL"),
                         new SQLProperty("SkillGreen", "SkillGreen", "int(11) NOT NULL"),
                         new SQLProperty("SkillGrey", "SkillGrey", "int(11) NOT NULL"),
-                        new SQLProperty("ItemId", "ItemId", "bigint(20) unsigned NOT NULL"),
-                        new SQLProperty("ItemParentId", "ItemParentId", "bigint(20) unsigned NOT NULL"),
+                        new SQLProperty("ItemBase62Id", "ItemBase62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("LearnedBase62Ids", "LearnedBase62Ids", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Category", "Category", "varchar(65) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("SubCategory", "SubCategory", "varchar(65) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Quality", "Quality", "varchar(15) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Icon", "HashedIcon", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         /*new SQLProperty("Materials", "Materials",
                         new SQLProperty("CraftingTime", "CraftingTime",
                         new SQLProperty("CraftingTimeT1", "CraftingTimeT1",

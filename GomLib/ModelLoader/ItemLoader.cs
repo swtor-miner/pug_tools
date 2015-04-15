@@ -14,6 +14,8 @@ namespace GomLib.ModelLoader
         Dictionary<object, object> itemAppearances;
         Dictionary<long, string> itemAppearanceAssets;
         Dictionary<ulong, HashSet<ulong>> questRewardRefs;
+        public Dictionary<ulong, List<ulong>> schematicLookupMap;
+        Dictionary<ulong, ulong> childLookupMap;
 
         DataObjectModel _dom;
 
@@ -28,6 +30,8 @@ namespace GomLib.ModelLoader
             itemAppearances = new Dictionary<object, object>();
             itemAppearanceAssets = new Dictionary<long, string>();
             questRewardRefs = new Dictionary<ulong, HashSet<ulong>>();
+            schematicLookupMap = new Dictionary<ulong, List<ulong>>();
+            childLookupMap = new Dictionary<ulong, ulong>();
         }
 
         public string ClassName
@@ -458,8 +462,32 @@ namespace GomLib.ModelLoader
 
             itm.SetBonusId = gom.Data.ValueOrDefault<long>("ItemSetBonusId", 0);
 
+            
+            LoadChildMap();
+            ulong cId;
+            childLookupMap.TryGetValue(itm.Id, out cId);
+            itm.ChildId = cId;
+
             gom.Unload();
             return itm;
+        }
+
+        public void LoadChildMap()
+        {
+            if (schematicLookupMap.Count == 0) //load child and parent items
+            {
+                var debugmap = _dom.GetObject("prfDebugSchematicMapPrototype");
+                var childmap = debugmap.Data.ValueOrDefault<Dictionary<object, object>>("schemChildMap", new Dictionary<object, object>());
+                debugmap.Unload();
+                childLookupMap = childmap.ToDictionary(x => (ulong)x.Key, x => (ulong)((List<object>)x.Value).First());
+                foreach (var kvp in childLookupMap)
+                {
+                    if (!schematicLookupMap.ContainsKey(kvp.Value)) //don't know if items can have more than one parent item, they can't have more than one child.
+                        schematicLookupMap.Add(kvp.Value, new List<ulong> { kvp.Key });
+                    else
+                        schematicLookupMap[kvp.Value].Add(kvp.Key);
+                }
+            }
         }
 
         private string AppearanceTags(GomLib.GomObject itemAppearance)

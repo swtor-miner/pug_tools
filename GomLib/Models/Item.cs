@@ -108,12 +108,13 @@ namespace GomLib.Models
         public AuctionSubCategory AuctionSubCategory { get; set; }
         public AppearanceColor AppearanceColor { get; set; }
         public ulong EquipAbilityId { get; set; }
-
+        [Newtonsoft.Json.JsonIgnore]
+        public string EquipAbilityB62Id { get { return EquipAbilityId.ToMaskedBase62(); } }
         [Newtonsoft.Json.JsonIgnore]
         public Ability EquipAbility { get; set; }
 
         public ulong UseAbilityId { get; set; }
-
+        public string UseAbilityB62Id { get { return UseAbilityId.ToMaskedBase62(); } }
         [Newtonsoft.Json.JsonIgnore]
         public Ability UseAbility { get; set; }
         
@@ -123,8 +124,11 @@ namespace GomLib.Models
         public Conversation Conversation { get; set; }
 
         public long ModifierSpec { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
         public Schematic Schematic { get; set; }
         public ulong SchematicId { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        public string SchematicB62Id { get { return SchematicId.ToMaskedBase62(); } }
         public string TreasurePackageSpec { get; set; }
         public long TreasurePackageId { get; set; }
         public long MountSpec { get; set; }
@@ -168,6 +172,8 @@ namespace GomLib.Models
         public string RepublicAppearanceTag { get; set; }
 
         public ulong TeachesRef { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        public string TeachesRefB62 { get { return TeachesRef.ToMaskedBase62(); } }
         public bool IsStrongholdDecoration { get; set; }
         public List<long> StrongholdSourceList { get; set; }
         public Dictionary<long, string> StrongholdSourceNameDict { get; set; }
@@ -191,6 +197,18 @@ namespace GomLib.Models
             set
             {
                 _SetBonus = value;
+            }
+        }
+
+        public ulong ChildId { get; set; }
+        public string ChildBase62Id
+        {
+            get
+            {
+                if (ChildId != 0)
+                    return ChildId.ToMaskedBase62();
+                else
+                    return "";
             }
         }
 
@@ -584,7 +602,7 @@ namespace GomLib.Models
                         new SQLProperty("EnhancementSlots", "EnhancementSlots", "text COLLATE utf8_unicode_ci NOT NULL", false, true),
                         new SQLProperty("EnhancementSubCategory", "EnhancementSubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("EnhancementType", "EnhancementType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("EquipAbilityId", "EquipAbilityId", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("EquipAbilityId", "EquipAbilityB62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("GiftRank", "GiftRank", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("GiftType", "GiftType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Icon", "HashedIcon", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
@@ -603,7 +621,7 @@ namespace GomLib.Models
                         new SQLProperty("RequiredValorRank", "RequiredValorRank", "int(11) NOT NULL"),
                         new SQLProperty("RequiresAlignment", "RequiresAlignment", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("RequiresSocial", "RequiresSocial", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("SchematicId", "SchematicId", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("SchematicId", "SchematicB62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("ShieldSpec", "ShieldSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Slots", "Slots", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("StatModifiers", "StatModifiers", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
@@ -611,10 +629,11 @@ namespace GomLib.Models
                         new SQLProperty("TreasurePackageId", "TreasurePackageId", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("TreasurePackageSpec", "TreasurePackageSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("UniqueLimit", "UniqueLimit", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("UseAbilityId", "UseAbilityId", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("UseAbilityId", "UseAbilityB62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Value", "Value", "int(11) NOT NULL"),
                         new SQLProperty("VendorStackSize", "VendorStackSize", "bigint(20) NOT NULL"),
                         new SQLProperty("WeaponSpec", "WeaponSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("TeachesRef", "TeachesRefB62", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("TypeBitSet", "TypeBitSet", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("StackCount", "StackCount", "int(11) NOT NULL"),
                         new SQLProperty("MaxDurability", "MaxDurability", "int(11) NOT NULL"),
@@ -625,7 +644,8 @@ namespace GomLib.Models
                         new SQLProperty("AuctionCategoryId", "AuctionCategoryId", "int(11) NOT NULL"),
                         new SQLProperty("AuctionCategory", "AuctionCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"), //in for testing
                         new SQLProperty("AuctionSubCategoryId", "AuctionSubCategoryId", "int(11) NOT NULL"),
-                        new SQLProperty("AuctionSubCategory", "AuctionSubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL")//,
+                        new SQLProperty("AuctionSubCategory", "AuctionSubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("ChildBase62Id", "ChildBase62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
                         //new SQLProperty("Tooltip", "Tooltip", "varchar(1000) COLLATE utf8_unicode_ci NOT NULL")
                     };
             }

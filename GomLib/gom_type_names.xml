@@ -8125,4 +8125,6 @@
   <gom_type Id="4611686284095450007" name="ahItemSlotCategories" desc="" />
   <!-- itm. -->
   <gom_type Id="4611686347206970000" name="ItemSetBonusId" desc="" />
+  <!-- prfDebugSchematicMapPrototype -->
+  <gom_type Id="4611686284556820001" name="schemChildMap" desc="" />
 </gom_types>

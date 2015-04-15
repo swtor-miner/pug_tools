@@ -117,7 +117,7 @@ namespace GomLib.ModelLoader
                 //schem.Id = schem.NameId;
             }
 
-            if ((schem.Name == null) && (schem.Item != null))
+            if (String.IsNullOrEmpty(schem.Name) && (schem.Item != null))
             {
                 schem.Name = schem.Item.LocalizedName["enMale"];
             }
@@ -229,6 +229,39 @@ namespace GomLib.ModelLoader
             {
                 throw new InvalidOperationException("Attempting to set Id of a schematic to one that's already taken");
             }
+
+            if (schem.MissionDescriptionId != 0)
+            {
+                schem.Category = "Mission";
+                schem.Quality = "mission";
+            }
+            else {
+                if (schem.ItemId != 0)
+                {
+                    if (schem.Item != null)
+                    {
+                        if (schem.Item.AuctionCategory != null) schem.Category = schem.Item.AuctionCategory.ToString();
+                        if (schem.Item.AuctionSubCategory != null) schem.SubCategory = schem.Item.AuctionSubCategory.ToString();
+                        schem.Quality = ((schem.Item.IsModdable && (schem.Item.Quality == ItemQuality.Prototype)) ? "moddable" : schem.Item.Quality.ToString().ToLower());
+                    }
+                    else
+                    {
+                        schem.Category = "Unknown";
+                        schem.Quality = "cheap";
+                    }
+                }
+                else
+                {
+                    schem.Category = "Unknown";
+                    schem.Quality = "mission";
+                }
+            }
+
+            _dom.itemLoader.LoadChildMap();
+            List<ulong> pIds;
+            _dom.itemLoader.schematicLookupMap.TryGetValue(schem.Id, out pIds);
+            schem.LearnedIds = pIds ?? new List<ulong>(); //null coalesce so we don't have to account for it later.
+
 
             /*var variationsTable = _dom.GetObject("prfSchematicVariationsPrototype"); // turn this into a loader
             var variationsMasterList = variationsTable.Data.Get<Dictionary<object, object>>("prfSchematicVariationMasterList");

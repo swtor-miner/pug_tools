@@ -115,7 +115,7 @@ namespace GomLib.Models
                     new XElement("div",
                         new XAttribute("class", "torctip_name"),
                         new XElement("a",
-                            new XAttribute("href", String.Format("http://torcommunity.com/db/{0}", itm.Base62Id)),
+                            new XAttribute("href", String.Format("http://torcommunity.com/database/item/{0}", itm.Base62Id)),
                             new XAttribute("data-torc", "norestyle"),
                             itm.Name
                             )),
@@ -348,6 +348,32 @@ namespace GomLib.Models
             if (itm.WeaponSpec != null)
                 tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format("Requires {0}", itm.WeaponSpec.Name)));
             System.Text.RegularExpressions.Regex regex_newline = new System.Text.RegularExpressions.Regex("(\r\n|\r|\n)");
+            if (itm.EquipAbilityId != 0)
+            {
+                if (itm.EquipAbility != null)
+                {
+                    string ablDesc = itm.EquipAbility.ParsedDescription ?? "";
+                    if (ablDesc != "")
+                    {
+                        XElement desc = new XElement("div",
+                            XClass("torctip_use"),
+                            "Equip: ");
+                        if (ablDesc.Contains('\n'))
+                        {
+                            var splits = ablDesc.Split('\n');
+                            foreach (var split in splits)
+                            {
+                                desc.Add(split, new XElement("br"));
+                            }
+                        }
+                        else
+                        {
+                            desc.Add(ablDesc);
+                        }
+                        tooltip.Add(desc);
+                    }
+                }
+            }
             if (itm.UseAbilityId != 0)
             {
                 if (itm.UseAbility != null)
@@ -450,7 +476,7 @@ namespace GomLib.Models
                     XClass("torctip_mslot"),
                     new XElement("a",
                         XClass(String.Format("torctip_{0}", itm.Modification.Quality.ToString())),
-                        new XAttribute("href", String.Format("http://torcommunity.com/database/items/view/?item={0}", itm.Modification.Base62Id)),
+                        new XAttribute("href", String.Format("http://torcommunity.com/database/item/{0}/{1}/", itm.Modification.Base62Id, itm.Modification.Name.LinkString())),
                         new XAttribute("data-torc", "norestyle"),
                         String.Format("{0} ({1})", slot, itm.Modification.Rating.ToString()))
                     ));
@@ -527,17 +553,18 @@ namespace GomLib.Models
                     new XElement("div",
                         new XAttribute("class", "torctip_name"),
                         new XElement("a",
-                            new XAttribute("href", String.Format("http://torcommunity.com/db/{0}", itm.Base62Id)),
+                            new XAttribute("href", String.Format("http://torcommunity.com/database/item/{0}/{1}/", itm.Base62Id, itm.Name.LinkString())),
                             new XAttribute("data-torc", "norestyle"),
                             itm.Name
                             ))
                 );
                 XElement inner = new XElement("div",
-                XClass("torctip_tooltip"),
-                new XElement("span",
-                    XClass(String.Format("torctip_{0}", stringQual)),
-                    itm.Name)
-                );
+                    XClass("torctip_tooltip"),
+                    new XElement("span",
+                        XClass(String.Format("torctip_{0}", stringQual)),
+                        itm.Name)
+                    );
+                
                 XElement skill = new XElement("div",
                         XClass(""),
                         new XElement("span",
@@ -571,24 +598,24 @@ namespace GomLib.Models
                         foreach (var kvp in itm.Materials)
                         {
                             var mat = (Item)new GameObject().Load(kvp.Key, itm._dom);
+                            var matstringQual = ((mat.IsModdable && (mat.Quality == ItemQuality.Prototype)) ? "moddable" : mat.Quality.ToString().ToLower());
                             var matfileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", mat.Icon));
                             components.Add(new XElement("div",
-                                XClass("torctip_stat"),
+                                XClass("torctip_mat"),
+                                new XElement("span", String.Format("{0}x ", kvp.Value)),
                                 new XElement("div",
-                                    new XAttribute("class", String.Format("torctip_image torctip_image_{0} small_border", stringQual)),
+                                    new XAttribute("class", String.Format("torctip_image torctip_image_{0} small_border", matstringQual)),
                                     new XElement("img",
                                         new XAttribute("src", String.Format("http://torcommunity.com/db/icons/{0}_{1}.png", matfileId.ph, matfileId.sh)),
                                         new XAttribute("alt", itm.Name),
                                         XClass("small_image"))),
-                                    new XElement("div",
-                                        new XAttribute("class", "torctip_name"),
-                                        new XElement("span",
-                                            String.Format("{0}x ", kvp.Value)),
-                                        new XElement("a",
-                                            new XAttribute("href", String.Format("http://torcommunity.com/db/{0}", mat.Base62Id)),
-                                            new XAttribute("data-torc", "norestyle"),
-                                            itm.Name
-                                        )
+                                new XElement("div",
+                                    new XAttribute("class", "torctip_mat_name"),
+                                    new XElement("a",
+                                        XClass(String.Format("torctip_{0}", matstringQual)),
+                                        new XAttribute("href", String.Format("http://torcommunity.com/database/item/{0}/{1}/", mat.Base62Id, LinkString(mat.Name))),
+                                        new XAttribute("data-torc", "norestyle"),
+                                        mat.Name)
                                     )
                                 )
                             );
@@ -606,11 +633,15 @@ namespace GomLib.Models
                     {
                         inner.Add(new XElement("div", "Crafted Item Missing!"));
                     }
+                    inner.Add(new XElement("div",
+                        XClass("torctip_main"),
+                        String.Format("Requires {0} ({1})", itm.CrewSkillName, itm.SkillOrange))
+                    );
                     tooltip.Add(inner);
                 }
                 else
                 {
-                    tooltip.Add(skill, new XElement("div",
+                    inner.Add(skill, new XElement("div",
                         XClass("torctip_mission"),
                         new XElement("div",
                             XClass("torctip_main"),
@@ -628,6 +659,7 @@ namespace GomLib.Models
                             XClass("torctip_mission_faction"),
                             itm.MissionFaction.ToString())
                         ));
+                    tooltip.Add(inner);
                 }
             }
 
@@ -650,6 +682,20 @@ namespace GomLib.Models
             }*/
         #endregion
 
+        private static string LinkString(this string name)
+        {
+            string cleaned = name;
+            cleaned = cleaned.Replace(".", "")
+                .Replace(",", "")
+                .Replace("'", "")
+                .Replace("\"", "")
+                .Replace("[", "")
+                .Replace("]", "")
+                .Replace("(", "")
+                .Replace(")", "")
+                .Replace(" ", "+");
+            return cleaned.ToLower();
+        }
         private static XAttribute XClass(string classname)
         {
             return new XAttribute("class", classname);
