@@ -480,6 +480,63 @@ namespace GomLib.Models
                 Id, Name, AtrributePercentages);
         }
 
+        public override XElement ToXElement()
+        {
+            XElement packageElem = new XElement("Package", new XAttribute("Id", Id));
+            packageElem.Add(new XElement("Name", Name));
+            XElement statsElem = new XElement("Stats");
+            foreach(KeyValuePair<Stat, float> kvp in AtrributePercentages)
+            {
+                statsElem.Add(new XElement("Stat", new XAttribute("Id", kvp.Key), kvp.Value));
+            }
+            packageElem.Add(statsElem);
+
+            return packageElem;
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = NameId.GetHashCode();
+            hash ^= Name.GetHashCode();
+            hash ^= Id.GetHashCode();
+            foreach(KeyValuePair<Stat, float> kvp in AtrributePercentages)
+            {
+                hash ^= kvp.Key.GetHashCode();
+                hash ^= kvp.Value.GetHashCode();
+            }
+
+            return hash;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
+
+            return Equals(obj as ModPackage);
+        }
+
+        public bool Equals(ModPackage obj)
+        {
+            if (obj == null)
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
+
+            if (this.Id != obj.Id)
+                return false;
+            if (this.NameId != obj.NameId)
+                return false;
+            if (this.AtrributePercentages.Count != obj.AtrributePercentages.Count)
+                return false;
+            if (!this.AtrributePercentages.SequenceEqual(obj.AtrributePercentages))
+                return false;
+
+            return true;
+        }
+
         public ModPackage(long id, long nId, string n, Dictionary<Stat, float> modStats)
         {
             NameId = nId;
@@ -488,6 +545,6 @@ namespace GomLib.Models
             AtrributePercentages = modStats;
         }
         public long NameId { get; set; }
-        Dictionary<Stat, float> AtrributePercentages { get; set; }
+        public Dictionary<Stat, float> AtrributePercentages { get; set; }
     }
 }

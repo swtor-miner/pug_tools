@@ -117,7 +117,7 @@ namespace GomLib.ModelLoader
                 //schem.Id = schem.NameId;
             }
 
-            if (String.IsNullOrEmpty(schem.Name) && (schem.Item != null))
+            if ((schem.Name == null) && (schem.Item != null))
             {
                 schem.Name = schem.Item.LocalizedName["enMale"];
             }
@@ -229,77 +229,6 @@ namespace GomLib.ModelLoader
             {
                 throw new InvalidOperationException("Attempting to set Id of a schematic to one that's already taken");
             }
-
-            if (schem.MissionDescriptionId != 0)
-            {
-                schem.Category = "Mission";
-                schem.Quality = "mission";
-            }
-            else {
-                if (schem.ItemId != 0)
-                {
-                    if (schem.Item != null)
-                    {
-                        if (schem.Item.AuctionCategory != null) schem.Category = schem.Item.AuctionCategory.ToString();
-                        if (schem.Item.AuctionSubCategory != null) schem.SubCategory = schem.Item.AuctionSubCategory.ToString();
-                        schem.Quality = ((schem.Item.IsModdable && (schem.Item.Quality == ItemQuality.Prototype)) ? "moddable" : schem.Item.Quality.ToString().ToLower());
-                    }
-                    else
-                    {
-                        schem.Category = "Unknown";
-                        schem.Quality = "cheap";
-                    }
-                }
-                else
-                {
-                    schem.Category = "Unknown";
-                    schem.Quality = "mission";
-                }
-            }
-
-            _dom.itemLoader.LoadChildMap();
-            List<ulong> pIds;
-            _dom.itemLoader.schematicLookupMap.TryGetValue(schem.Id, out pIds);
-            schem.LearnedIds = pIds ?? new List<ulong>(); //null coalesce so we don't have to account for it later.
-
-
-            /*var variationsTable = _dom.GetObject("prfSchematicVariationsPrototype"); // turn this into a loader
-            var variationsMasterList = variationsTable.Data.Get<Dictionary<object, object>>("prfSchematicVariationMasterList");
-            variationsTable.Unload();
-
-            string itemname = "";
-            if (schem.ItemId != 0)
-            {
-                if (schem.Item != null)
-                {
-                    itemname = schem.Item.Name;
-                }
-            }
-
-            object vList; //this doesn't belong here, it's worth of it's own pseudogameobject.
-            if (variationsMasterList.TryGetValue(obj.Id, out vList))
-            {
-                Dictionary<long, ModPackage> mods = new Dictionary<long, ModPackage>();
-                var modpackTable = _dom.GetObject("itmModifierPackageTablePrototype");
-                var itmModifierPackages = modpackTable.Data.Get<Dictionary<object, object>>("itmModifierPackagesList");
-                modpackTable.Unload();
-                //strtable "str.gui.itm.modifiers"
-                var strTable = _dom.stringTable.Find("str.gui.itm.modifiers");
-
-                foreach(var kvp in (Dictionary<object, object>)vList){
-                    object modpack;
-                    if (itmModifierPackages.TryGetValue(kvp.Value, out modpack))
-                    {
-                        long strId = ((GomObjectData)modpack).Get<long>("itmModPkgNameId");
-                        string text = strTable.GetText(strId, "str.gui.itm.modifiers");
-                        Dictionary<Stat, float> modStats = ((GomObjectData)modpack).ValueOrDefault<Dictionary<object, object>>("itmModPkgAttributePercentages", new Dictionary<object, object>()).ToDictionary(x => StatExtensions.ToStat((ScriptEnum)x.Key), x => ((long)x.Value) / 100.0f);
-                        text = text.Replace("<<1>>", itemname);
-                        mods.Add((long)kvp.Value, new ModPackage((long)kvp.Value, strId, text, modStats));
-                    }
-                }
-                string paushere = "";
-                schem.Variations = mods;
-            }*/
 
             obj.Unload();
             return schem;

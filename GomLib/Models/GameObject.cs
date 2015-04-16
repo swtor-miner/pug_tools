@@ -236,6 +236,10 @@ namespace GomLib.Models
                     GomLib.Models.CodexCatByFaction cdxCatByFaction = new GomLib.Models.CodexCatByFaction();
                     dom.cdxCatTotalsLoader.Load(cdxCatByFaction, (long)id, (Dictionary<object, object>)gomObjectData);
                     return cdxCatByFaction;
+                case "SchematicVariations":
+                    GomLib.Models.SchematicVariation schemVariation = new GomLib.Models.SchematicVariation();
+                    dom.schemVariationLoader.Load(schemVariation, (ulong)id, (Dictionary<object, object>)gomObjectData);
+                    return schemVariation;
                 default:
                     throw new IndexOutOfRangeException();
             }

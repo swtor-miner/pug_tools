@@ -81,7 +81,8 @@ namespace tor_tools
                 "testHashes",
                 "Tooltips",
                 "Set Bonuses",
-                "Codex Category Totals"
+                "Codex Category Totals",
+                "Schematic Variations"
             });
             comboBoxExtractTypes.SelectedIndex = 0;
             cbxExtractFormat.SelectedIndex = 0;
@@ -673,6 +674,12 @@ namespace tor_tools
                         addtolist("Getting Item Appearances.");
                         getObjects("ipp.", "ItemAppearances");
                         //getItemApps();
+                    }
+                    if (extensions.Contains("SCHVARI"))
+                    {
+                        DisableButtons();
+                        addtolist("Getting Schematic Variations");
+                        getPrototypeObjects("SchematicVariations", "prfSchematicVariationsPrototype", "prfSchematicVariationMasterList");
                     }
                     addtolist("Completed extraction of all supported objects.");
                 }

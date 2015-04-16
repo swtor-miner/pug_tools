@@ -71,8 +71,11 @@ namespace tor_tools
 
                                 newElement = CompareElements(oldElement, newElement);
 
-                                newElement.Add(new XAttribute("Status", "Changed"));
-                                if (newElement.Elements().Count() > 0) { stringTables.Add(newElement); }
+                                if (newElement != null)
+                                {
+                                    newElement.Add(new XAttribute("Status", "Changed"));
+                                    if (newElement.Elements().Count() > 0) { stringTables.Add(newElement); }
+                                }
                             }
                         }
                         else

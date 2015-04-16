@@ -98,6 +98,7 @@ namespace GomLib
         public TalentLoader talentLoader;
         public SetBonusLoader setBonusLoader;
         public CodexCatByFactionLoader cdxCatTotalsLoader;
+        public SchematicVariationLoader schemVariationLoader;
 
         private void initializeModelLoaders()
         {
@@ -145,6 +146,7 @@ namespace GomLib
             talentLoader = new TalentLoader(this);
             setBonusLoader = new SetBonusLoader(this);
             cdxCatTotalsLoader = new CodexCatByFactionLoader(this);
+            schemVariationLoader = new SchematicVariationLoader(this);
         }
 
         public void Dispose()
@@ -417,6 +419,7 @@ namespace GomLib
                 strongholdLoader.Flush();
                 talentLoader.Flush();
                 setBonusLoader.Flush();
+                schemVariationLoader.Flush();
 
                 /*foreach (var DomEntry in DomTypeMap)
                 {

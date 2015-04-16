@@ -84,6 +84,8 @@ namespace tor_tools
                 fileTypes.Add("ICONS");
             if (this.chkTORC.Checked)
                 fileTypes.Add("TORC");
+            if (this.chkSchemVaris.Checked)
+                fileTypes.Add("SCHVARI");
             return fileTypes;
         }
 
@@ -118,6 +120,7 @@ namespace tor_tools
             this.chkICONS.Checked = value;
             this.chkSetBonus.Checked = value;
             this.chkCdxCat.Checked = value;
+            this.chkSchemVaris.Checked = value;
         }
     }
 }
