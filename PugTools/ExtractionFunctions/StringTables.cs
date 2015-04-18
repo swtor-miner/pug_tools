@@ -182,7 +182,19 @@ namespace tor_tools
             {
                 foreach (var entry in stb.data)
                 {
-                    stringTable.Add(new XElement("Entry", entry.Value.localizedText["enMale"], new XAttribute("Id", entry.Key)));
+                    //If we are doing a compare build then strip the entries without any values.
+                    if (chkBuildCompare.Checked)
+                    {
+                        string value = entry.Value.localizedText["enMale"];
+                        if (value != null && value.Length > 0)
+                        {
+                            stringTable.Add(new XElement("Entry", new XAttribute("Id", entry.Key), value));
+                        }
+                    }
+                    else
+                    {
+                        stringTable.Add(new XElement("Entry", new XAttribute("Id", entry.Key), entry.Value.localizedText["enMale"]));
+                    }
                 }
 
             }
