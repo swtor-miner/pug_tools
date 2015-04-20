@@ -724,6 +724,10 @@ namespace tor_tools
             else
             {
                 ProcessGom();
+                if(chkBuildCompare.Checked && ExportGOM)
+                {
+                    ProcessEffectChanges();
+                }
                 ProcessGomFields();
             }
 

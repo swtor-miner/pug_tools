@@ -481,7 +481,66 @@ namespace tor_tools
         private bool ExportGOM = false;
         private bool ExportNPP = false;
         private bool ExportICONS = false;
+        private void ProcessEffectChanges()
+        {
+            IEnumerable<GomObject> currentAblObjects = currentDom.GetObjectsStartingWith("abl.").Where(x => x.GetType() == typeof(GomObject));
+            IEnumerable<GomObject> previousAblObjects = previousDom.GetObjectsStartingWith("abl.").Where(x => x.GetType() == typeof(GomObject));
 
+            //Build a dictionary of effects so we can quickly look them up.
+            Dictionary<string, GomObject> currentEffectByNameID = new Dictionary<string, GomObject>();
+            foreach(GomObject obj in currentAblObjects)
+            {
+                if(!obj.Name.Contains("/"))
+                {
+                    //Only care about effect nodes.
+                    continue;
+                }
+
+                string[] nameArray = obj.Name.Split('/');
+                string name = nameArray[0] + '/' + nameArray[2];
+                currentEffectByNameID.Add(name, obj);
+            }
+
+            Dictionary<string, GomObject> previousEffectByNameID = new Dictionary<string, GomObject>();
+            foreach (GomObject obj in previousAblObjects)
+            {
+                if (!obj.Name.Contains("/"))
+                {
+                    //Only care about effect nodes.
+                    continue;
+                }
+
+                string[] nameArray = obj.Name.Split('/');
+                string name = nameArray[0] + '/' + nameArray[2];
+                previousEffectByNameID.Add(name, obj);
+            }
+
+            foreach(KeyValuePair<string, GomObject> currentPair in currentEffectByNameID)
+            {
+                GomObject prevObj;
+                if(previousEffectByNameID.TryGetValue(currentPair.Key, out prevObj))
+                {
+                    if(!prevObj.Equals(currentPair.Value))
+                    {
+                        //Effect node not equal!
+                        XElement oldElement = prevObj.Print();
+                        prevObj.Unload();
+                        XElement newElement = currentPair.Value.Print();
+                        currentPair.Value.Unload();
+
+                        newElement = CompareElements(oldElement, newElement);
+                        oldElement = null;
+                        if (newElement != null)
+                        {
+                            var regex = new Regex(Regex.Escape("."));
+                            var newText = regex.Replace(currentPair.Key, "\\", 1);
+
+                            WriteFile(new XDocument(newElement), String.Format("\\GOM\\ChangedEffects\\{0}.xml", newText), false);
+                        }
+                    }
+                }
+            }
+        }
         private void ProcessGom()
         {
             var currentObjects = currentDom.GetObjectsStartingWith("").Where(x => x.GetType() == typeof(GomObject));
@@ -512,14 +571,14 @@ namespace tor_tools
                     {
                         if (!prevObject.Equals(curObject))
                         {
-                            addtolist2(String.Format("Changed: {0}", curObject.Name));
+                            //Outputting these changes is a huge time sink for something that isn't really useful.
+                            //addtolist2(String.Format("Changed: {0}", curObject.Name));
                             chaObjects.Add(prevObject, curObject);
                         }
                         prevObject.Unload();
                     }
                     else
                     {
-                        addtolist2(String.Format("New: {0}", curObject.Name));
                         newObjects.Add(curObject);
                     }
                     curObject.Unload();
@@ -531,7 +590,6 @@ namespace tor_tools
                 foreach (var removedName in removedNames)
                 {
                     progressUpdate(i, count);
-                    addtolist2(String.Format("Removed: {0}", removedName));
                     remObjects.Add(previousDom.GetObject(removedName));
                     i++;
                 }
