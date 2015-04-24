@@ -47,19 +47,15 @@ namespace GomLib.Models
         public Dictionary<string, string> LocalizedName { get; set; }
         public long DescriptionId { get; set; }
         [Newtonsoft.Json.JsonIgnore]
-        internal string _Description;
-        public string Description
+        public string _Description
         {
             get
             {
-                return _Description;
-            }
-            set
-            {
-                //_Description = System.Text.RegularExpressions.Regex.Replace(value, @"\r\n?|\n", "<br />");
-                _Description = value;
+                return System.Text.RegularExpressions.Regex.Replace(Description, @"\r\n?|\n", "<br />");
             }
         }
+        public string Description { get; set; }
+
         public Dictionary<string, string> LocalizedDescription { get; set; }
         public int Value { get; set; }
         public int Durability { get; set; }
@@ -174,7 +170,7 @@ namespace GomLib.Models
         public ulong TeachesRef { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         public string TeachesRefB62 { get { return TeachesRef.ToMaskedBase62(); } }
-        public bool IsStrongholdDecoration { get; set; }
+        public bool IsUnknownBool { get; set; }
         public List<long> StrongholdSourceList { get; set; }
         public Dictionary<long, string> StrongholdSourceNameDict { get; set; }
 
@@ -211,6 +207,24 @@ namespace GomLib.Models
                     return "";
             }
         }
+        public bool IsMtxItem { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        internal string mtxRarity { get; set; }
+        public string MTXRarity
+        {
+            get
+            {
+                return mtxRarity;
+            }
+            set
+            {
+                if (value != "0x00")
+                {
+                    mtxRarity = value.Replace("itmMTXRarity", "");
+                    IsMtxItem = true;
+                }
+            }
+        }
 
         [Newtonsoft.Json.JsonIgnore]
         public string Tooltip
@@ -219,6 +233,180 @@ namespace GomLib.Models
             {
                 return new Tooltip(this).HTML;
             }
+        }
+        #endregion
+        #region FlatData Properties and Methods
+        public string ArmoringBId { get; set; }
+        public string ModificationBId { get; set; }
+        public string EnhancementBId { get; set; }
+        public string ColorCrystalBId { get; set; }
+        public string BarrelBId { get; set; }
+        public string HiltBId { get; set; }
+
+        //primary
+        public int Endurance { get; set; }
+        public int Presence { get; set; }
+        public int Aim { get; set; }
+        public int Cunning { get; set; }
+        public int Strength { get; set; }
+        public int Willpower { get; set; }
+        //secondary
+        public int AbsorptionRating { get; set; }
+        public int CriticalRating { get; set; }
+        public int DefenseRating { get; set; }
+        public int Power { get; set; }
+        //tertiary
+        public int AccuracyRating { get; set; }
+        public int AlacrityRating { get; set; }
+        public int ShieldRating { get; set; }
+        public int SurgeRating { get; set; }
+        //quarternary
+        public int ExpertiseRating { get; set; }
+        public int ForcePower { get; set; }
+        public int TechPower { get; set; }
+        public int TechHealingPower { get; set; }
+        public int ForceHealingPower { get; set; }
+        // Derived
+        public int Armor { get; set; }
+        public string AdaptiveArmor { get; set; }
+        public float WeaponMinDamage { get; set; }
+        public float WeaponMaxDamage { get; set; }
+        public int ModLevel { get; set; }
+
+        public static List<long> ArmorSpecIds = new List<long> { -8622546409652942944, 589686270506543030, 5763611092890301551 };
+        public static List<ArmorSpec> ArmorSpecs = new List<ArmorSpec> { };
+        public static Item FillFlatData(Item itm)
+        {
+            foreach (var stat in itm.StatModifiers)
+            {
+                switch (stat.Stat)
+                {
+                    case Stat.GlanceRating: itm.ShieldRating = stat.Modifier; break;
+                    case Stat.Strength: itm.Strength = stat.Modifier; break;
+                    case Stat.Aim: itm.Aim = stat.Modifier; break;
+                    case Stat.Cunning: itm.Cunning = stat.Modifier; break;
+                    case Stat.Endurance: itm.Endurance = stat.Modifier; break;
+                    case Stat.Presence: itm.Presence = stat.Modifier; break;
+                    case Stat.Willpower: itm.Willpower = stat.Modifier; break;
+                    case Stat.ExpertiseRating: itm.ExpertiseRating = stat.Modifier; break;
+                    case Stat.AbsorptionRating: itm.AbsorptionRating = stat.Modifier; break;
+                    case Stat.AttackPowerRating: itm.Power = stat.Modifier; break;
+                    case Stat.ForcePowerRating: itm.ForcePower = stat.Modifier; break;
+                    case Stat.TechPowerRating: itm.TechPower = stat.Modifier; break;
+                    case Stat.AccuracyRating: itm.AccuracyRating = stat.Modifier; break;
+                    case Stat.CriticalChanceRating: itm.CriticalRating = stat.Modifier; break;
+                    case Stat.DefenseRating: itm.DefenseRating = stat.Modifier; break;
+                    case Stat.TechHealingPower: itm.TechHealingPower = stat.Modifier; break;
+                    case Stat.ForceHealingPower: itm.ForceHealingPower = stat.Modifier; break;
+                    case Stat.SurgeRating: itm.SurgeRating = stat.Modifier; break;
+                    case Stat.AlacrityRating: itm.AlacrityRating = stat.Modifier; break;
+                    default:
+                        break;
+                }
+            }
+            foreach (var mod in itm.EnhancementSlots)
+            {
+
+                switch (mod.Slot)
+                {
+                    case EnhancementType.Hilt: itm.HiltBId = mod.ModificationId.ToMaskedBase62(); break;
+                    case EnhancementType.Harness: itm.ArmoringBId = mod.ModificationId.ToMaskedBase62(); break;
+                    case EnhancementType.Overlay: itm.ModificationBId = mod.ModificationId.ToMaskedBase62(); break;
+                    case EnhancementType.Support: itm.EnhancementBId = mod.ModificationId.ToMaskedBase62(); break;
+                    case EnhancementType.Barrel: itm.BarrelBId = mod.ModificationId.ToMaskedBase62(); break;
+                    case EnhancementType.PowerCrystal: itm.HiltBId = mod.ModificationId.ToMaskedBase62(); break;
+                    case EnhancementType.ColorCrystal: itm.ColorCrystalBId = mod.ModificationId.ToMaskedBase62(); break;
+                    default:
+                        break;
+                }
+            }
+
+            //slot
+            bool isEquipable = false;
+            if (itm.Slots.Count > 1) //the Any slot was removed from the item by the itemloader
+            {
+                isEquipable = true;
+            }
+            //armor, rating etc if gear
+            itm.ModLevel = itm.ItemLevel;
+            itm.AdaptiveArmor = "";
+            if (itm.WeaponSpec != null)
+            {
+                List<int> mainSlots = new List<int> { 1, 3, 9 };
+                ItemEnhancement mainMod = null;
+                if (itm.EnhancementSlots != null)
+                {
+                    var potentials = itm.EnhancementSlots.Where(x => x.Slot.IsBaseMod());
+                    if (potentials.Count() != 0)
+                        mainMod = itm.EnhancementSlots.Where(x => x.Slot.IsBaseMod()).Single();
+                }
+                ItemQuality qual = ItemQuality.Premium;
+                if (itm.EnhancementSlots.Count() != 0)
+                {
+                    if (mainMod != null)
+                    {
+                        if (mainMod.ModificationId != 0)
+                        {
+                            itm.ModLevel = mainMod.Modification.ItemLevel;
+                            qual = mainMod.Modification.Quality;
+                        }
+                        //else
+                        //nothing premium is what we want
+                    }
+                }
+                else
+                {
+                    itm.ModLevel = itm.ItemLevel;
+                    qual = itm.Quality;
+                }
+                try
+                {
+                    itm.WeaponMinDamage = itm._dom.data.weaponPerLevel.GetStat(itm.WeaponSpec.Id, itm.ModLevel, qual, Stat.MinWeaponDamage);
+                    itm.WeaponMaxDamage = itm._dom.data.weaponPerLevel.GetStat(itm.WeaponSpec.Id, itm.ModLevel, qual, Stat.MaxWeaponDamage);  //change this so items without barrels use level 1 premium numbers
+                    itm.TechPower = (int)itm._dom.data.weaponPerLevel.GetStat(itm.WeaponSpec.Id, itm.ModLevel, qual, Stat.TechPowerRating);
+                    itm.ForcePower = (int)itm._dom.data.weaponPerLevel.GetStat(itm.WeaponSpec.Id, itm.ModLevel, qual, Stat.ForcePowerRating);
+                }
+                catch (Exception e)
+                {
+                    string dosomething = ""; //suppress for now, break here to debug
+                }
+            }
+            else if (isEquipable)
+            {
+                ArmorSpec arm = itm.ArmorSpec;
+                if (arm != null)
+                {
+                    var temp = itm.EnhancementSlots.Where(x => x.Slot == EnhancementType.Harness);
+                    if (temp.Count() != 0)
+                        if (temp.First().ModificationId != 0)
+                            itm.ModLevel = temp.First().Modification.ItemLevel;
+                    if (arm.DebugSpecName == "adaptive")
+                    {
+                        List<int> armorValues = new List<int>();
+                        if (ArmorSpecs.Count == 0)
+                        {
+                            foreach (var armorId in ArmorSpecIds)
+                            {
+                                ArmorSpecs.Add(ArmorSpec.Load(itm._dom, armorId));
+                            }
+                        }
+                        foreach (var armorspec in ArmorSpecs)
+                        {
+                            try
+                            {
+                                armorValues.Add(itm._dom.data.armorPerLevel.GetArmor(armorspec, itm.ModLevel, itm.Quality, itm.Slots.Where(x => x != SlotType.Any).First()));
+                            }
+                            catch(Exception ex){} //this is here to catch errors for adaptive implants and such.
+                        }
+                        itm.AdaptiveArmor = String.Join(",", armorValues);
+                    }
+                    else
+                    {
+                        itm.Armor = itm._dom.data.armorPerLevel.GetArmor(arm, itm.ModLevel, itm.Quality, itm.Slots.Where(x => x != SlotType.Any).First());
+                    }
+                }
+            }
+            return itm;
         }
         #endregion
 
@@ -402,7 +590,7 @@ namespace GomLib.Models
                 return false;
             if (this.IsModdable != itm.IsModdable)
                 return false;
-            if (this.IsStrongholdDecoration != itm.IsStrongholdDecoration)
+            if (this.IsUnknownBool != itm.IsUnknownBool)
                 return false;
             if (this.ItemLevel != itm.ItemLevel)
                 return false;
@@ -575,12 +763,13 @@ namespace GomLib.Models
         {
             get
             {
+                if (Id != 0) FillFlatData(this);
                 return new List<SQLProperty>
                     {                //(SQL Column Name, C# Property Name, SQL Column type statement, isUnique/PrimaryKey, Serialize value to json)
                         new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("CleanName", "CleanName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("NodeId", "Id", "bigint(20) unsigned NOT NULL", true),
-                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("NodeId", "Id", "bigint(20) unsigned NOT NULL"),
+                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL", true),
                         new SQLProperty("NameId", "NameId", "bigint(20) NOT NULL"),
                         new SQLProperty("Fqn", "Fqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("ItemLevel", "ItemLevel", "int(11) NOT NULL"),
@@ -590,16 +779,16 @@ namespace GomLib.Models
                         new SQLProperty("Binding", "Binding", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("CombinedRating", "CombinedRating", "int(11) NOT NULL"),
                         new SQLProperty("CombinedRequiredLevel", "CombinedRequiredLevel", "int(11) NOT NULL"),
-                        new SQLProperty("CombinedStatModifiers", "CombinedStatModifiers", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        //new SQLProperty("CombinedStatModifiers", "CombinedStatModifiers", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("ConsumedOnUse", "ConsumedOnUse", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("ConversationFqn", "ConversationFqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("DamageType", "DamageType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("Description", "Description", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Description", "_Description", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("DescriptionId", "DescriptionId", "bigint(20) NOT NULL"),
                         new SQLProperty("DisassembleCategory", "DisassembleCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Durability", "Durability", "int(11) NOT NULL"),
                         new SQLProperty("EnhancementCategory", "EnhancementCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("EnhancementSlots", "EnhancementSlots", "text COLLATE utf8_unicode_ci NOT NULL", false, true),
+                        //new SQLProperty("EnhancementSlots", "EnhancementSlots", "text COLLATE utf8_unicode_ci NOT NULL", false, true),
                         new SQLProperty("EnhancementSubCategory", "EnhancementSubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("EnhancementType", "EnhancementType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("EquipAbilityId", "EquipAbilityB62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
@@ -613,7 +802,7 @@ namespace GomLib.Models
                         new SQLProperty("Quality", "Quality", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Rating", "Rating", "int(11) NOT NULL"),
                         new SQLProperty("RequiredAlignmentInverted", "RequiredAlignmentInverted", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("RequiredClasses", "RequiredClasses", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        //new SQLProperty("RequiredClasses", "RequiredClasses", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("RequiredGender", "RequiredGender", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("RequiredProfession", "RequiredProfession", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("RequiredProfessionLevel", "RequiredProfessionLevel", "int(11) NOT NULL"),
@@ -647,6 +836,37 @@ namespace GomLib.Models
                         new SQLProperty("AuctionSubCategory", "AuctionSubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("ChildBase62Id", "ChildBase62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
                         //new SQLProperty("Tooltip", "Tooltip", "varchar(1000) COLLATE utf8_unicode_ci NOT NULL")
+                        /* Flat Data */
+                        new SQLProperty("ArmoringBId", "ArmoringBId", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("ModificationBId", "ModificationBId", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("EnhancementBId", "EnhancementBId", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("ColorCrystalBId", "ColorCrystalBId", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("BarrelBId", "BarrelBId", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("HiltBId", "HiltBId", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Endurance","Endurance", "int(11) NOT NULL"),
+                        new SQLProperty("Presence","Presence", "int(11) NOT NULL"),
+                        new SQLProperty("Aim","Aim", "int(11) NOT NULL"),
+                        new SQLProperty("Cunning","Cunning", "int(11) NOT NULL"),
+                        new SQLProperty("Strength","Strength", "int(11) NOT NULL"),
+                        new SQLProperty("Willpower","Willpower", "int(11) NOT NULL"),
+                        new SQLProperty("AbsorptionRating","AbsorptionRating", "int(11) NOT NULL"),
+                        new SQLProperty("CriticalRating","CriticalRating", "int(11) NOT NULL"),
+                        new SQLProperty("DefenseRating","DefenseRating", "int(11) NOT NULL"),
+                        new SQLProperty("Power","Power", "int(11) NOT NULL"),
+                        new SQLProperty("AccuracyRating","AccuracyRating", "int(11) NOT NULL"),
+                        new SQLProperty("AlacrityRating","AlacrityRating", "int(11) NOT NULL"),
+                        new SQLProperty("ShieldRating","ShieldRating", "int(11) NOT NULL"),
+                        new SQLProperty("SurgeRating","SurgeRating", "int(11) NOT NULL"),
+                        new SQLProperty("ExpertiseRating","ExpertiseRating", "int(11) NOT NULL"),
+                        new SQLProperty("ForcePower","ForcePower", "int(11) NOT NULL"),
+                        new SQLProperty("TechPower","TechPower", "int(11) NOT NULL"),
+                        new SQLProperty("TechHealingPower","TechHealingPower", "int(11) NOT NULL"),
+                        new SQLProperty("ForceHealingPower","ForceHealingPower", "int(11) NOT NULL"),
+                        new SQLProperty("Armor", "Armor", "int(11) NOT NULL"),
+                        new SQLProperty("AdaptiveArmor", "AdaptiveArmor", "varchar(25) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("WeaponMinDamage", "WeaponMinDamage", "float(10,1) NOT NULL"),
+                        new SQLProperty("WeaponMaxDamage", "WeaponMaxDamage", "float(10,1) NOT NULL"),
+                        new SQLProperty("ModLevel", "ModLevel", "int(11) NOT NULL"),
                     };
             }
         }

@@ -206,6 +206,10 @@ namespace GomLib.Models
             return hash;
         }
 
+        public override string ToString()
+        {
+            return Id.ToMaskedBase62();
+        }
         public static void Load(DataObjectModel dom)
         {
             if (WeaponSpecList == null)

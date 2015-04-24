@@ -40,8 +40,8 @@ namespace tor_tools
                 {"tal.", true},*/
                 {"sche", "Schematics"},
                 /*{"dec.", true},*/
-                {"itm.", "Item"}/*,
-                {"apt.", true},
+                {"itm.", "Item"}//,
+                /*{"apt.", true},
                 {"apc.", true},
                 {"class.",true},
                 {"ipp.",true},
@@ -78,7 +78,8 @@ namespace tor_tools
                         /*if (itm.GetType() == typeof(GomLib.Models.Item)){
                             OutputIcon(((GomLib.Models.Item)itm).Icon, "TORC");
                         }*/
-                        //WriteFile(t.Base62Id + Environment.NewLine, "newtips.txt", true);
+                        //if(((GomLib.Models.Schematic)t.obj).NameId != 0)
+                            //WriteFile(t.Base62Id + ";" + ((GomLib.Models.Schematic)t.obj).Fqn + ";" + ((GomLib.Models.Schematic)t.obj).MissionFaction + ";" + ((GomLib.Models.Schematic)t.obj).Name + Environment.NewLine, "schematics.txt", true);
                         iList.Add(t);
                     }
                     i++;

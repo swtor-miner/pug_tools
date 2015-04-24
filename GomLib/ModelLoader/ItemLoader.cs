@@ -438,7 +438,8 @@ namespace GomLib.ModelLoader
 
             itm.StrongholdSourceList = sourceList.ConvertAll(x => (long)x);
 
-            itm.IsStrongholdDecoration = gom.Data.ValueOrDefault<bool>("itmIsDecoration", false);
+            itm.IsUnknownBool = gom.Data.ValueOrDefault<bool>("itmIsUnknownBool", false);
+            itm.MTXRarity = gom.Data.ValueOrDefault<ScriptEnum>("itmMTXRarity", new ScriptEnum()).ToString();
 
             var sourceProto = _dom.GetObject("itmSourceProto");
 

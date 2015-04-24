@@ -7885,7 +7885,6 @@
   <!-- itm.* -->
   <!-- <gom_type Id="4611686347205490001" name="" desc="" /> -->
   <gom_type Id="4611686351806507002" name="itmDecorationSource" desc="List of long Ids looked up in itmSourceProto" />
-  <gom_type Id="4611687140279310003" name="itmIsDecoration" desc="Item is a Stronghold Decoration" />
   <!-- wevConquestInfosPrototype -->
   <gom_type Id="4611686301864004002" name="wevConquestTable" desc="List of Conquests indexed by long" />
   <!-- wevConquestInfosPrototype - Conquests -->
@@ -8125,6 +8124,7 @@
   <gom_type Id="4611686284095450007" name="ahItemSlotCategories" desc="" />
   <!-- itm. -->
   <gom_type Id="4611686347206970000" name="ItemSetBonusId" desc="" />
+  <gom_type Id="4611687140279310003" name="itmIsUnknownBool" desc="Item is a ??? Item" />
   <!-- prfDebugSchematicMapPrototype -->
   <gom_type Id="4611686284556820001" name="schemChildMap" desc="" />
 </gom_types>

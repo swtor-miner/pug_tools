@@ -33,7 +33,7 @@ namespace GomLib
         public static string ToSQL(object obj, SQLData sql, string patchVersion)
         {
             string s = "', '";
-            string value = String.Format("('{0}', '', '{1}', '{2}')", sqlSani(patchVersion), String.Join(s, GetPropertyValues(obj, sql.SQLProperties)), obj.GetHashCode());
+            string value = String.Format("('{0}', '', '{0}', '{1}', '{2}')", sqlSani(patchVersion), String.Join(s, GetPropertyValues(obj, sql.SQLProperties)), obj.GetHashCode());
             return value;
         }
 

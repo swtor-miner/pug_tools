@@ -61,7 +61,8 @@ namespace tor_tools
                 {"AchCategories", new SQLInitStore("achcategories", new GomLib.Models.AchievementCategory())},
                 {"Achievements", new SQLInitStore("achievement", new GomLib.Models.Achievement())},
                 {"Items", new SQLInitStore("item", new GomLib.Models.Item())},
-                {"Tooltip", new SQLInitStore("tooltip", new GomLib.Models.Tooltip())},
+                {"Schematics", new SQLInitStore("schematic", new GomLib.Models.Schematic())},
+                {"Tooltip", new SQLInitStore("tooltip", new GomLib.Models.Tooltip())}
             };
 
             #endregion
@@ -291,13 +292,13 @@ namespace tor_tools
                 SqlData = ((GomLib.Models.PseudoGameObject)obj).SQLInfo(); //returns the SQLInfo related to the type. It's just a list of SQLProperties right now.
             }
             var names = SqlData.SQLProperties.Select(x => x.Name).ToList(); //Use linq to suck all the sql column names into a list.
-            InitBegin = String.Format("INSERT INTO `{0}` (`current_version`, `previous_version`, `{1}`, `Hash`) VALUES ", name, String.Join("`, `", names)); //join the name list together and create a basic insert query for the type
-            InitEnd = String.Format(@";
-ON DUPLICATE KEY UPDATE 
-previous_version = IF((@update_record := (Hash <> VALUES(Hash))), current_version, previous_version),
-current_version = IF(@update_record, VALUES(current_version), current_version),
+            InitBegin = String.Format(@"USE `tor_dump`;
+INSERT INTO `{0}` (`current_version`, `previous_version`, `first_seen`, `{1}`, `Hash`) VALUES ", name, String.Join("`, `", names)); //join the name list together and create a basic insert query for the type
+            InitEnd = String.Format(@"ON DUPLICATE KEY UPDATE 
+`previous_version` = IF((@update_record := (`Hash` <> VALUES(`Hash`))), `current_version`, `previous_version`),
+`current_version` = IF(@update_record, VALUES(`current_version`), `current_version`),
 {0}
-Hash = IF(@update_record, VALUES(Hash), Hash);", String.Join(Environment.NewLine, names.Select(x => String.Format("`{0}` = IF(@update_record, VALUES(`{0}`), `{0}`),", x)))); //same thing, but slightly reversed. Use linq to take the name list and turn it into a formatted string for each row, then join those lines together with with a newline. It's better to use the String.Join/Format options so you're not spawning a billion new strings like when you + them together.
+`Hash` = IF(@update_record, VALUES(`Hash`), `Hash`);", String.Join(Environment.NewLine, names.Select(x => String.Format("`{0}` = IF(@update_record, VALUES(`{0}`), `{0}`),", x)))); //same thing, but slightly reversed. Use linq to take the name list and turn it into a formatted string for each row, then join those lines together with with a newline. It's better to use the String.Join/Format options so you're not spawning a billion new strings like when you + them together.
         }
         internal SQLData SqlData;
 

@@ -25,8 +25,9 @@ DROP TABLE IF EXISTS `{0}`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `{0}` (
-  `current_version` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `previous_version` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `current_version` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
+  `previous_version` varchar(25) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `first_seen` varchar(25) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
 {1}
   `Hash` int(11) NOT NULL,
 {2}

@@ -17,6 +17,13 @@ namespace GomLib.Models
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
         public long DescriptionId { get; set; }
+        public string _Description
+        {
+            get
+            {
+                return System.Text.RegularExpressions.Regex.Replace(Description, @"\r\n?|\n", "<br />");
+            }
+        }
         public string Description { get; set; }
         public string ParsedDescription
         {
@@ -69,11 +76,12 @@ namespace GomLib.Models
                     }
                     //console.log(type);
                     while (retval.IndexOf(fullToken) != -1) { //sometimes there's multiple instance of the same token.
+                        bool breakloop = false;
                         switch (type) {
-                            case "Healing":
+                            /*case "Healing":
                             case "Damage":
                                 retval = retval.Replace(fullToken, generateTokenString(value));
-                                break;
+                                break;*/
                             case "Duration":
                                 retval = retval.Replace(fullToken, value + durationText);
                                 break;
@@ -83,9 +91,11 @@ namespace GomLib.Models
                                 break;
                             default:
                                 //console.log(type);
-                                retval = retval.Replace(fullToken, "Unknown Token: " + type);
+                                //retval = retval.Replace(fullToken, "Unknown Token: " + type);
+                                breakloop = true;
                                 break;
                         }
+                        if (breakloop) break;
                     }
         
                 }
@@ -501,7 +511,7 @@ namespace GomLib.Models
                         new SQLProperty("NodeId", "NodeId", "bigint(20) unsigned NOT NULL", true),
                         new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("NameId", "NameId", "bigint(20) NOT NULL"),
-                        new SQLProperty("Description", "Description", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Description", "_Description", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("DescriptionId", "DescriptionId", "bigint(20) NOT NULL"),
                         new SQLProperty("Fqn", "Fqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Level", "Level", "int(11) NOT NULL"),
