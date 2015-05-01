@@ -172,12 +172,23 @@ namespace GomLib.Models
         {
             XElement achievement = new XElement("Achievement");
 
+            string visibility;
+            if(Visibility == AchievementVisibility.Completion)
+            {
+                visibility = "On Completion";
+            } else if(Visibility == AchievementVisibility.Progress) {
+                visibility = "On task started";
+            } else {
+                visibility = "Always";
+            }
+
             achievement.Add(
                 new XElement("Name", Name),
                 new XElement("Description", Description),
                 new XElement("Fqn", Fqn),
                 new XAttribute("Id", Id),
-                new XElement("Icon", Icon));
+                new XElement("Icon", Icon),
+                new XElement("Visbility", visibility));
 
             if (verbose)
             {
