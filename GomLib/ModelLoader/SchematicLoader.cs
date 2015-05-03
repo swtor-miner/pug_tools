@@ -13,6 +13,7 @@ namespace GomLib.ModelLoader
         StringTable missionStrTable;
         Dictionary<ulong, Schematic> idMap;
         Dictionary<string, Schematic> nameMap;
+        //static int maxMats = 0;
 
         DataObjectModel _dom;
 
@@ -117,7 +118,7 @@ namespace GomLib.ModelLoader
                 //schem.Id = schem.NameId;
             }
 
-            if ((schem.Name == null) && (schem.Item != null))
+            if (String.IsNullOrEmpty(schem.Name) && (schem.Item != null))
             {
                 schem.Name = schem.Item.LocalizedName["enMale"];
             }
@@ -149,6 +150,7 @@ namespace GomLib.ModelLoader
                     schem.Materials.Add((ulong)mat_quantity.Key, (int)(long)mat_quantity.Value);
                     matIdx++;
                 }
+                //if (materials.Count > maxMats) maxMats = materials.Count;
             }
 
             var researchChance = (Dictionary<object, object>)obj.Data.ValueOrDefault<Dictionary<object, object>>("prfSchematicResearchChances", null);
@@ -223,13 +225,54 @@ namespace GomLib.ModelLoader
                     }
                     idx++;
                 }
+                if(materials!= null)
+                    if (materials.Count + researchMaterials.Count > maxMats) maxMats = materials.Count + researchMaterials.Count;
+                if (researchMaterials.Count > maxMats) maxMats = researchMaterials.Count;
             }
+            if (schem.MissionDescriptionId != 0)
+            {
+                schem.Category = "Mission";
+                schem.Quality = "mission";
+            }
+            else
+            {
+                if (schem.ItemId != 0)
+                {
+                    if (schem.Item != null)
+                    {
+                        if (schem.Item.AuctionCategory != null) schem.Category = schem.Item.AuctionCategory.ToString();
+                        if (schem.Item.AuctionSubCategory != null) schem.SubCategory = schem.Item.AuctionSubCategory.ToString();
+                        schem.Quality = ((schem.Item.IsModdable && (schem.Item.Quality == ItemQuality.Prototype)) ? "moddable" : schem.Item.Quality.ToString().ToLower());
+                    }
+                    else
+                    {
+                        schem.Category = "Unknown";
+                        schem.Quality = "cheap";
+                    }
+                }
+                else
+                {
+                    schem.Category = "Unknown";
+                    schem.Quality = "mission";
+                }
+            }
+
+            _dom.itemLoader.LoadChildMap();
+            List<ulong> pIds;
+            _dom.itemLoader.schematicLookupMap.TryGetValue(schem.Id, out pIds);
+            schem.LearnedIds = pIds ?? new List<ulong>(); //null coalesce so we don't have to account for it later.
 
             if (idMap.Values.Where(s => s.Id == schem.Id).Count() > 0)
             {
                 throw new InvalidOperationException("Attempting to set Id of a schematic to one that's already taken");
             }
-
+            if (obj.References != null)
+            {
+                if (obj.References.ContainsKey("trainerTaught"))
+                {
+                    schem.TrainerTaught = true;
+                }
+            }
             obj.Unload();
             return schem;
         }

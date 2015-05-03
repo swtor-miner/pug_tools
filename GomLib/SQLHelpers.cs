@@ -22,10 +22,25 @@ namespace GomLib
                 var x = obj.GetType().GetProperty(property.PropertyName);
                 if (x == null)
                     continue;
-                if(property.JsonSerialize)
+                if (property.JsonSerialize)
+                {
                     results.Add(sqlSani(JsonConvert.SerializeObject(x.GetValue(obj), settings)));
+                }
                 else
-                    results.Add(sqlSani((x.GetValue(obj) ?? "").ToString()));
+                {
+                    var val = x.GetValue(obj) ?? "";
+                    var valType = val.GetType().ToString();
+                    switch (valType)
+                    {
+                        case "System.Boolean": //this is convert the Boolean values to 0/1 instead of true/false string
+                            var intval = Convert.ToInt32(val);
+                            results.Add(sqlSani(intval.ToString()));
+                            break;
+                        default:
+                            results.Add(sqlSani(val.ToString()).ToString());
+                            break;
+                    }
+                }
             }
             return results;
         }
@@ -155,6 +170,7 @@ namespace GomLib
                     break;
                 }
             }
+            if (sb.Length > 7) { return sb.ToString().Substring(0, 7); } //didn't realize that some of these were longer than 7
             return sb.ToString();
         }
 

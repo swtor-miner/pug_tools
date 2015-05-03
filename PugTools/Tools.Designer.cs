@@ -79,6 +79,7 @@
             this.gbxExtract = new System.Windows.Forms.GroupBox();
             this.comboBoxExtractTypes = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.SmartLinkDomCheckBox = new System.Windows.Forms.CheckBox();
             this.gbxFormat.SuspendLayout();
             this.gbxDB.SuspendLayout();
             this.gbxFQN.SuspendLayout();
@@ -479,6 +480,7 @@
             // 
             // gbxPath
             // 
+            this.gbxPath.Controls.Add(this.SmartLinkDomCheckBox);
             this.gbxPath.Controls.Add(this.btnUnloadAllData);
             this.gbxPath.Controls.Add(this.CrossLinkDomCheckBox);
             this.gbxPath.Controls.Add(this.labelAssetsFolder);
@@ -620,6 +622,17 @@
             this.label6.Text = "Click and select what you want from the dialog window. The default is to dump eve" +
     "rything.";
             // 
+            // SmartLinkDomCheckBox
+            // 
+            this.SmartLinkDomCheckBox.AutoSize = true;
+            this.SmartLinkDomCheckBox.Cursor = System.Windows.Forms.Cursors.Default;
+            this.SmartLinkDomCheckBox.Location = new System.Drawing.Point(468, 65);
+            this.SmartLinkDomCheckBox.Name = "SmartLinkDomCheckBox";
+            this.SmartLinkDomCheckBox.Size = new System.Drawing.Size(74, 17);
+            this.SmartLinkDomCheckBox.TabIndex = 47;
+            this.SmartLinkDomCheckBox.Text = "Smart-Lnk";
+            this.SmartLinkDomCheckBox.UseVisualStyleBackColor = true;
+            // 
             // Tools
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -707,6 +720,7 @@
         private System.Windows.Forms.GroupBox gbxExtract;
         private System.Windows.Forms.ComboBox comboBoxExtractTypes;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.CheckBox SmartLinkDomCheckBox;
     }
 }
 

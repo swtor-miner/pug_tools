@@ -144,6 +144,9 @@
     <Compile Include="ModelLoader\AppearanceLoader.cs" />
     <Compile Include="ModelLoader\ConquestLoader.cs" />
     <Compile Include="ModelLoader\DisciplineLoader.cs" />
+    <Compile Include="ModelLoader\LegacyTitleLoader.cs" />
+    <Compile Include="ModelLoader\ReputationGroupLoader.cs" />
+    <Compile Include="ModelLoader\ReputationRankLoader.cs" />
     <Compile Include="ModelLoader\SchematicVariationLoader.cs" />
     <Compile Include="ModelLoader\SetBonusLoader.cs" />
     <Compile Include="ModelLoader\StrongholdLoader.cs" />
@@ -159,6 +162,9 @@
     <Compile Include="Models\Appearances.cs" />
     <Compile Include="Models\CodexCatByFaction.cs" />
     <Compile Include="Models\Conquest.cs" />
+    <Compile Include="Models\LegacyTitle.cs" />
+    <Compile Include="Models\ReputationGroup.cs" />
+    <Compile Include="Models\ReputationRank.cs" />
     <Compile Include="Models\SchematicVariation.cs" />
     <Compile Include="Models\SetBonusEntry.cs" />
     <Compile Include="Models\Tooltip.cs" />

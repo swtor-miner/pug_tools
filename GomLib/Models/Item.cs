@@ -121,7 +121,19 @@ namespace GomLib.Models
 
         public long ModifierSpec { get; set; }
         [Newtonsoft.Json.JsonIgnore]
-        public Schematic Schematic { get; set; }
+        public Schematic _Schematic { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        public Schematic Schematic
+        {
+            get
+            {
+                if(_Schematic == null)
+                {
+                    _Schematic = _dom.schematicLoader.Load(SchematicId);
+                }
+                return _Schematic;
+            }
+        }
         public ulong SchematicId { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         public string SchematicB62Id { get { return SchematicId.ToMaskedBase62(); } }
@@ -130,6 +142,59 @@ namespace GomLib.Models
         public long MountSpec { get; set; }
         public Gender RequiredGender { get; set; }
         public int RequiredValorRank { get; set; }
+        public int RequiredReputationId { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        public ReputationGroup _RequiredReputation { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        public ReputationGroup RequiredReputation
+        {
+            get
+            {
+                if(_RequiredReputation == null)
+                    _RequiredReputation = _dom.reputationGroupLoader.Load(RequiredReputationId);
+                return _RequiredReputation;
+            }
+        }
+        public string RequiredReputationName
+        {
+            get
+            {
+                if (RequiredReputation != null)
+                {
+                    if (RequiredReputation.GroupEmpireTitle != RequiredReputation.GroupRepublicTitle)
+                    {
+                        return String.Join(" / ", RequiredReputation.GroupEmpireTitle, RequiredReputation.GroupRepublicTitle);
+                    }
+                    else
+                        return RequiredReputation.GroupEmpireTitle;
+                }
+                return null;
+            }
+        }
+        public int RequiredReputationLevelId { get; set; }
+        public ReputationRank _RequiredReputationLevel { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        public ReputationRank RequiredReputationLevel
+        {
+            get
+            {
+                if (_RequiredReputationLevel == null)
+                    _RequiredReputationLevel = _dom.reputationRankLoader.Load(RequiredReputationLevelId);
+                return _RequiredReputationLevel;
+            }
+        }
+        public string RequiredReputationLevelName
+        {
+            get
+            {
+                if (RequiredReputationLevel != null)
+                {
+                    return RequiredReputationLevel.RankTitle;
+                }
+                return null;
+            }
+        }
+
         public bool ConsumedOnUse { get; set; }
         public int TypeBitSet { get; set; }
         public bool IsModdable { get; set; }
@@ -226,6 +291,21 @@ namespace GomLib.Models
             }
         }
 
+        public bool IsDecoration { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        public Decoration _Decoration { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        public Decoration Decoration
+        {
+            get
+            {
+                if (_Decoration == null)
+                {
+                    _Decoration = _dom.decorationLoader.Load(TeachesRef);
+                }
+                return _Decoration;
+            }
+        }
         [Newtonsoft.Json.JsonIgnore]
         public string Tooltip
         {
@@ -273,6 +353,7 @@ namespace GomLib.Models
         public float WeaponMaxDamage { get; set; }
         public int ModLevel { get; set; }
 
+        public List<string> MaterialForSchems { get; set; }
         public static List<long> ArmorSpecIds = new List<long> { -8622546409652942944, 589686270506543030, 5763611092890301551 };
         public static List<ArmorSpec> ArmorSpecs = new List<ArmorSpec> { };
         public static Item FillFlatData(Item itm)
@@ -769,7 +850,7 @@ namespace GomLib.Models
                         new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("CleanName", "CleanName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("NodeId", "Id", "bigint(20) unsigned NOT NULL"),
-                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL", true),
+                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL", true),
                         new SQLProperty("NameId", "NameId", "bigint(20) NOT NULL"),
                         new SQLProperty("Fqn", "Fqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("ItemLevel", "ItemLevel", "int(11) NOT NULL"),
@@ -810,6 +891,10 @@ namespace GomLib.Models
                         new SQLProperty("RequiredValorRank", "RequiredValorRank", "int(11) NOT NULL"),
                         new SQLProperty("RequiresAlignment", "RequiresAlignment", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("RequiresSocial", "RequiresSocial", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("RequiredReputationId", "RequiredReputationId", "int(11) NOT NULL"),
+                        new SQLProperty("RequiredReputationLevelId", "RequiredReputationLevelId", "int(11) NOT NULL"),
+                        new SQLProperty("RequiredReputation", "RequiredReputationName", "varchar(255) NOT NULL"),
+                        new SQLProperty("RequiredReputationLevel", "RequiredReputationLevelName", "varchar(255) NOT NULL"),
                         new SQLProperty("SchematicId", "SchematicB62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("ShieldSpec", "ShieldSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Slots", "Slots", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
@@ -867,6 +952,9 @@ namespace GomLib.Models
                         new SQLProperty("WeaponMinDamage", "WeaponMinDamage", "float(10,1) NOT NULL"),
                         new SQLProperty("WeaponMaxDamage", "WeaponMaxDamage", "float(10,1) NOT NULL"),
                         new SQLProperty("ModLevel", "ModLevel", "int(11) NOT NULL"),
+                        new SQLProperty("MaterialForSchems","MaterialForSchems", "TEXT NOT NULL", false, true),
+                        new SQLProperty("SourceNames","StrongholdSourceNameDict", "TEXT NOT NULL", false, true),
+
                     };
             }
         }

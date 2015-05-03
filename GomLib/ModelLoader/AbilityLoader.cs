@@ -153,8 +153,8 @@ namespace GomLib.ModelLoader
             abl.DescriptionId = descLookupData.Get<long>("strLocalizedTextRetrieverStringID");
             abl.LocalizedDescription = TryGetLocalizedDescription(abl.Fqn, descLookupData);
             abl.Description = TryGetDescription(abl.Fqn, descLookupData);
-                        
-            abl.Id = (ulong)(abl.NameId >> 32);
+
+            abl.Id = gom.Id; //(ulong)(abl.NameId >> 32);
 
             List<object> abilityEffectList = gom.Data.Get<List<object>>("ablEffectIDs");
 

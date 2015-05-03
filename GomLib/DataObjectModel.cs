@@ -99,6 +99,9 @@ namespace GomLib
         public SetBonusLoader setBonusLoader;
         public CodexCatByFactionLoader cdxCatTotalsLoader;
         public SchematicVariationLoader schemVariationLoader;
+        public LegacyTitleLoader legacyTitleLoader;
+        public ReputationGroupLoader reputationGroupLoader;
+        public ReputationRankLoader reputationRankLoader;  
 
         private void initializeModelLoaders()
         {
@@ -147,6 +150,9 @@ namespace GomLib
             setBonusLoader = new SetBonusLoader(this);
             cdxCatTotalsLoader = new CodexCatByFactionLoader(this);
             schemVariationLoader = new SchematicVariationLoader(this);
+            legacyTitleLoader = new LegacyTitleLoader(this);
+            reputationGroupLoader = new ReputationGroupLoader(this);
+            reputationRankLoader = new ReputationRankLoader(this);
         }
 
         public void Dispose()
@@ -420,6 +426,9 @@ namespace GomLib
                 talentLoader.Flush();
                 setBonusLoader.Flush();
                 schemVariationLoader.Flush();
+                legacyTitleLoader.Flush();
+                reputationGroupLoader.Flush();
+                reputationRankLoader.Flush();
 
                 /*foreach (var DomEntry in DomTypeMap)
                 {

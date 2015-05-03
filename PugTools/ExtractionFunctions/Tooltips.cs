@@ -30,15 +30,15 @@ namespace tor_tools
             LoadData();
             Dictionary<string, string> gameObjects = new Dictionary<string, string>
             {
-                /*{"ach.", true},
-                {"abl.", true},
-                {"apn.", true},
+                //{"ach.", true},
+                //{"abl.", "Ability"},
+                /*{"apn.", true},
                 {"cdx.", true},
                 {"cnv.", true},
                 {"npc.", true},
                 {"qst.", true},
                 {"tal.", true},*/
-                {"sche", "Schematics"},
+                //{"sche", "Schematics"},
                 /*{"dec.", true},*/
                 {"itm.", "Item"}//,
                 /*{"apt.", true},
@@ -162,24 +162,28 @@ namespace tor_tools
                                 htmlStream.WriteTo(html);
                         }*/
 
+                        string icon = "";
                         if (t.obj.GetType() == typeof(GomLib.Models.Item))
+                            icon = ((GomLib.Models.Item)t.obj).Icon;
+                        if (t.obj.GetType() == typeof(GomLib.Models.Ability))
+                            icon = ((GomLib.Models.Ability)t.obj).Icon;
+                        if (!String.IsNullOrEmpty(icon))
                         {
-                            if (iconNames.Contains(((GomLib.Models.Item)t.obj).Icon))
+                            if (iconNames.Contains(icon))
                                 continue;
                             else
-                                iconNames.Add(((GomLib.Models.Item)t.obj).Icon);
-                            using (MemoryStream iconStream = GetIcon(((GomLib.Models.Item)t.obj).Icon))
+                                iconNames.Add(icon);
+                            using (MemoryStream iconStream = GetIcon(icon))
                             {
                                 if (iconStream != null)
                                 {
-                                    var iconEntry = zipArchive.CreateEntry(String.Format("icons/{0}.png", GetIconFilename(((GomLib.Models.Item)t.obj).Icon)), CompressionLevel.Fastest);
-                                    using(var a = iconEntry.Open())
+                                    var iconEntry = zipArchive.CreateEntry(String.Format("icons/{0}.png", GetIconFilename(icon)), CompressionLevel.Fastest);
+                                    using (var a = iconEntry.Open())
                                         iconStream.WriteTo(a);
                                     //using (Writer writer = new BinaryWriter(iconEntry.Open()))
-                                        //writer.(iconStream);
+                                    //writer.(iconStream);
                                 }
                             }
-                            
                         }
                     }
                 }

@@ -235,7 +235,7 @@ namespace GomLib.ModelLoader
                 //itm.Rating = Tables.ItemRating.GetRating(itm.ItemLevel, ItemQuality.Premium);
             //}
             itm.RequiresAlignment = (bool)gom.Data.ValueOrDefault<bool>("itmAlignmentRequired", false);
-            itm.RequiredAlignmentTier = (int)gom.Data.ValueOrDefault<long>("itmRequiredAlignmentTier", int.MaxValue);
+            itm.RequiredAlignmentTier = (int)gom.Data.ValueOrDefault<long>("itmRequiredAlignmentTier", 0);
             itm.RequiredAlignmentInverted = (bool)gom.Data.ValueOrDefault<bool>("itmRequiredAlignmentInverted", false);
 
             itm.itmCraftedCategory = gom.Data.ValueOrDefault<long>("itmCraftedCategory", 0);
@@ -267,6 +267,12 @@ namespace GomLib.ModelLoader
             itm.RequiresSocial = (bool)gom.Data.ValueOrDefault<bool>("itmSocialScoreRequired", false);
             itm.RequiredSocialTier = (int)gom.Data.ValueOrDefault<long>("itmRequiredSocialScoreTier", 0);
             itm.RequiredValorRank = (int)gom.Data.ValueOrDefault<long>("itmRequiredValorRank", 0);
+            GomObjectData repContainer = gom.Data.ValueOrDefault<GomObjectData>("itmReputationContainer", null);
+            if (repContainer != null)
+            {
+                itm.RequiredReputationId = (int)repContainer.ValueOrDefault<long>("itmRequiredReputations", 0);
+                itm.RequiredReputationLevelId = (int)repContainer.ValueOrDefault<long>("itmRequiredReputationLevel", 0);
+            }
 
             // Item is a recipe/schematic/mount
             object schematic = gom.Data.ValueOrDefault<object>("itmTeaches", null);
@@ -277,7 +283,7 @@ namespace GomLib.ModelLoader
                 {
                     case "itmTeachesSchematic":
                         itm.SchematicId = gom.Data.Get<ulong>("itemTeachesRef");
-                        itm.Schematic = _dom.schematicLoader.Load(itm.SchematicId);
+                        //itm.Schematic = _dom.schematicLoader.Load(itm.SchematicId);
                         break;
                     case "itmTeachesMount":
                         var mountId = gom.Data.Get<ulong>("itemTeachesRef");
@@ -297,6 +303,8 @@ namespace GomLib.ModelLoader
                         break;
                     case "itmTeachesDecoration":
                         itm.TeachesRef = gom.Data.Get<ulong>("itemTeachesRef");
+                        //itm.Decoration = _dom.decorationLoader.Load(itm.TeachesRef);
+                        itm.IsDecoration = true;
                         break;
                     case "itmTeachesApartmentLabel":
                         var apartmentLabelId = gom.Data.Get<ulong>("itemTeachesRef");
@@ -469,9 +477,20 @@ namespace GomLib.ModelLoader
             childLookupMap.TryGetValue(itm.Id, out cId);
             itm.ChildId = cId;
 
+
+            if (gom.References != null)
+            {
+                if (gom.References.ContainsKey("materialFor"))
+                {
+                    itm.MaterialForSchems = gom.References["materialFor"].Select(x => x.ToMaskedBase62()).ToList();
+                    if (gom.References["materialFor"].Count > maxCount)
+                        maxCount = gom.References["materialFor"].Count;
+                }
+            }
             gom.Unload();
             return itm;
         }
+        public static int maxCount { get; set; }
 
         public void LoadChildMap()
         {

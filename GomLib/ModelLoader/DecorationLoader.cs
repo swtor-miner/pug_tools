@@ -106,7 +106,7 @@ namespace GomLib.ModelLoader
             dec.decPrevObjRotationY = gom.Data.ValueOrDefault<float>("decPrevObjRotationY", 0);
 
             dec.UnlockingItemId = gom.Data.ValueOrDefault<ulong>("decUnlockingItemId", 0);
-            dec.UnlockingItem = _dom.itemLoader.Load(dec.UnlockingItemId);
+            //dec.UnlockingItem = _dom.itemLoader.Load(dec.UnlockingItemId);
             dec.SourceDict = dec.UnlockingItem.StrongholdSourceNameDict;
 
             if (dec.UseItemName)

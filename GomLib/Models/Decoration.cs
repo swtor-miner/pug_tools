@@ -20,7 +20,19 @@ namespace GomLib.Models
         public ulong UnlockingItemId { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]
-        public Item UnlockingItem { get; set; }
+        public Item _UnlockingItem { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        public Item UnlockingItem
+        {
+            get
+            {
+                if(_UnlockingItem == null)
+                {
+                    _UnlockingItem = _dom.itemLoader.Load(UnlockingItemId);
+                }
+                return _UnlockingItem;
+            }
+        }
         public ulong DecorationId { get; set; }
         public GameObject DecorationObject { get; set; }
         public string State { get; set; }

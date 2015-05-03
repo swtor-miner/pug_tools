@@ -165,6 +165,21 @@ namespace GomLib.Models
         public ulong UnknownInt2 { get; set; }
         public Dictionary<int, ulong> CooldownTimerSpecs { get; set; }
 
+        [Newtonsoft.Json.JsonIgnore]
+        public string HashedIcon
+        {
+            get
+            {
+                string icon = "none";
+                if (Icon != null)
+                {
+                    icon = Icon;
+                }
+                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", icon));
+                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+            }
+        }
+
         public override int GetHashCode()  //should be fixed.
         {
             int hash = Level.GetHashCode();
@@ -508,14 +523,14 @@ namespace GomLib.Models
                 return new List<SQLProperty>
                     {                //(SQL Column Name, C# Property Name, SQL Column type statement, isUnique/PrimaryKey, Serialize value to json)
                         new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("NodeId", "NodeId", "bigint(20) unsigned NOT NULL", true),
-                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("NodeId", "NodeId", "bigint(20) unsigned NOT NULL"),
+                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL", true),
                         new SQLProperty("NameId", "NameId", "bigint(20) NOT NULL"),
-                        new SQLProperty("Description", "_Description", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Description", "ParsedDescription", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("DescriptionId", "DescriptionId", "bigint(20) NOT NULL"),
                         new SQLProperty("Fqn", "Fqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Level", "Level", "int(11) NOT NULL"),
-                        new SQLProperty("Icon", "Icon", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Icon", "HashedIcon", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("IsHidden", "IsHidden", "tinyint(1) NOT NULL"),
                         new SQLProperty("IsPassive", "IsPassive", "tinyint(1) NOT NULL"),
                         new SQLProperty("Cooldown", "Cooldown", "float NOT NULL"),

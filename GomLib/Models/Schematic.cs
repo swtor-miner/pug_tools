@@ -64,6 +64,19 @@ namespace GomLib.Models
 
         public Dictionary<ulong, int> Materials { get; set; }
 
+        [Newtonsoft.Json.JsonIgnore]
+        public Dictionary<string, int> MaterialsB62
+        {
+            get
+            {
+                if (Materials != null)
+                {
+                    return Materials.ToDictionary(x => x.Key.ToMaskedBase62(), x => x.Value);
+                }
+                return null;
+            }
+        }
+
         public int CraftingTime { get; set; }
         public int CraftingTimeT1 { get; set; }
         public int CraftingTimeT2 { get; set; }
@@ -127,6 +140,7 @@ namespace GomLib.Models
                 return String.Format("{0}_{1}", fileId.ph, fileId.sh);
             }
         }
+        public bool TrainerTaught { get; set; }
 
         #endregion
 
@@ -339,7 +353,7 @@ namespace GomLib.Models
                 return new List<SQLProperty>
                     {                //(SQL Column Name, C# Property Name, SQL Column type statement, isUnique/PrimaryKey, Serialize value to json)
                         new SQLProperty("NodeId", "Id", "bigint(20) unsigned NOT NULL", true),
-                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
                         new SQLProperty("NameId", "NameId", "bigint(20) NOT NULL"),
                         new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Fqn", "Fqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
@@ -355,14 +369,16 @@ namespace GomLib.Models
                         new SQLProperty("SubCategory", "SubCategory", "varchar(65) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Quality", "Quality", "varchar(15) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Icon", "HashedIcon", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        /*new SQLProperty("Materials", "Materials",
-                        new SQLProperty("CraftingTime", "CraftingTime",
-                        new SQLProperty("CraftingTimeT1", "CraftingTimeT1",
-                        new SQLProperty("CraftingTimeT2", "CraftingTimeT2",
-                        new SQLProperty("CraftingTimeT3", "CraftingTimeT3",
-                        new SQLProperty("Workstation", "Workstation",
-                        new SQLProperty("Subtype", "Subtype",
-                        new SQLProperty("Research1", "Research1",
+                        new SQLProperty("TrainerTaught","TrainerTaught", "tinyint(1) NOT NULL"),
+                        new SQLProperty("TrainingCost", "TrainingCost", "int(11) NOT NULL"),
+                        new SQLProperty("Materials", "MaterialsB62", "varchar(155) COLLATE latin1_general_cs NOT NULL", false, true),
+                        new SQLProperty("CraftingTime", "CraftingTime", "int(11) NOT NULL"),
+                        new SQLProperty("CraftingTimeT1", "CraftingTimeT1", "int(11) NOT NULL"),
+                        new SQLProperty("CraftingTimeT2", "CraftingTimeT2", "int(11) NOT NULL"),
+                        new SQLProperty("CraftingTimeT3", "CraftingTimeT3", "int(11) NOT NULL"),
+                        //new SQLProperty("Workstation", "Workstation",
+                        //new SQLProperty("Subtype", "Subtype",
+                        /*new SQLProperty("Research1", "Research1",
                         new SQLProperty("ResearchQuantity1", "ResearchQuantity1",
                         new SQLProperty("ResearchChance1", "ResearchChance1",
                         new SQLProperty("Research2", "Research2",
@@ -370,23 +386,22 @@ namespace GomLib.Models
                         new SQLProperty("ResearchChance2", "ResearchChance2",
                         new SQLProperty("Research3", "Research3",
                         new SQLProperty("ResearchQuantity3", "ResearchQuantity3",
-                        new SQLProperty("ResearchChance3", "ResearchChance3",
-                        new SQLProperty("MissionCost", "MissionCost",
-                        new SQLProperty("MissionDescriptionId", "MissionDescriptionId",
-                        new SQLProperty("MissionDescription", "MissionDescription",
-                        new SQLProperty("MissionUnlockable", "MissionUnlockable",
-                        new SQLProperty("MissionLight", "MissionLight",
-                        new SQLProperty("MissionLightCrit", "MissionLightCrit",
-                        new SQLProperty("MissionDark", "MissionDark",
-                        new SQLProperty("MissionDarkCrit", "MissionDarkCrit",
-                        new SQLProperty("TrainingCost", "TrainingCost",
-                        new SQLProperty("DisableDisassemble", "DisableDisassemble",
-                        new SQLProperty("DisableCritical", "DisableCritical",
-                        new SQLProperty("MissionFaction", "MissionFaction",
-                        new SQLProperty("MissionYieldDescriptionId", "MissionYieldDescriptionId",
-                        new SQLProperty("MissionYieldDescription", "MissionYieldDescription",
-                        new SQLProperty("Deprecated", "Deprecated",
-                        new SQLProperty("Variations", "Variations*/
+                        new SQLProperty("ResearchChance3", "ResearchChance3",*/
+                        new SQLProperty("MissionCost", "MissionCost", "int(11) NOT NULL"),
+                        new SQLProperty("MissionDescriptionId", "MissionDescriptionId", "int(11) NOT NULL"),
+                        new SQLProperty("MissionDescription", "MissionDescription", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("MissionUnlockable", "MissionUnlockable", "tinyint(1) NOT NULL"),
+                        new SQLProperty("MissionLight", "MissionLight", "int(11) NOT NULL"),
+                        new SQLProperty("MissionLightCrit", "MissionLightCrit", "int(11) NOT NULL"),
+                        new SQLProperty("MissionDark", "MissionDark", "int(11) NOT NULL"),
+                        new SQLProperty("MissionDarkCrit", "MissionDarkCrit", "int(11) NOT NULL"),
+                        new SQLProperty("DisableDisassemble", "DisableDisassemble", "tinyint(1) NOT NULL"),
+                        new SQLProperty("DisableCritical", "DisableCritical", "tinyint(1) NOT NULL"),
+                        new SQLProperty("MissionFaction", "MissionFaction", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("MissionYieldDescriptionId", "MissionYieldDescriptionId", "int(11) NOT NULL"),
+                        new SQLProperty("MissionYieldDescription", "MissionYieldDescription", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Deprecated", "Deprecated", "tinyint(1) NOT NULL"),
+                        /*new SQLProperty("Variations", "Variations*/
                     };
             }
         }

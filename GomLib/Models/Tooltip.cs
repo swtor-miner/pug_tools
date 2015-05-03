@@ -91,6 +91,10 @@ namespace GomLib.Models
             {
                 return ((Schematic)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
             }
+            if (obj.GetType() == typeof(Ability))
+            {
+                return ((Ability)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
+            }
             return "<div>Not implemented</div>";
         }
     }
@@ -135,12 +139,28 @@ namespace GomLib.Models
                     XClass(String.Format("torctip_{0}", stringQual)),
                     itm.Name)
                 );
+            //MTX
+            if (itm.IsMtxItem)
+            {
+                tooltip.Add(new XElement("div",
+                    XClass("torctip_val"),
+                    "Cartel Market Item"
+                    ));
+            }
             //binding
             if (itm.Binding != 0)
             {
                 tooltip.Add(new XElement("div",
                     XClass("torctip_main"),
                     String.Format("Binds on {0}", itm.Binding.ToString())
+                    ));
+            }
+            //unique
+            if (itm.UniqueLimit > 0)
+            {
+                tooltip.Add(new XElement("div",
+                    XClass("torctip_main"),
+                    "Unique"
                     ));
             }
             //slot
@@ -156,6 +176,8 @@ namespace GomLib.Models
             //armor, rating etc if gear
             float techpower = 0;
             float forcepower = 0;
+            float absorbchance = 0;
+            float shieldchance = 0;
             var level = itm.ItemLevel;
             if (itm.WeaponSpec != null)
             {
@@ -214,6 +236,63 @@ namespace GomLib.Models
             }
             else if (isEquipable)
             {
+                ArmorSpec shield = itm.ShieldSpec;
+                if (shield != null)
+                {
+                    List<int> mainSlots = new List<int> { 1, 3, 9 };
+                    ItemEnhancement mainMod = null;
+                    if (itm.EnhancementSlots != null)
+                    {
+                        var potentials = itm.EnhancementSlots.Where(x => x.Slot.IsBaseMod());
+                        if (potentials.Count() != 0)
+                            mainMod = itm.EnhancementSlots.Where(x => x.Slot.IsBaseMod()).Single();
+                    }
+                    //if (mainMod.Count == 0
+                    ItemQuality qual = ItemQuality.Premium;
+                    if (itm.EnhancementSlots.Count() != 0)
+                    {
+                        if (mainMod != null)
+                        {
+                            if (mainMod.ModificationId != 0)
+                            {
+                                level = mainMod.Modification.ItemLevel;
+                                qual = mainMod.Modification.Quality;
+                            }
+                            //else
+                            //nothing premium is what we want
+                        }
+                    }
+                    else
+                    {
+                        level = itm.ItemLevel;
+                        qual = itm.Quality;
+                    }
+                    try
+                    {
+                        techpower = itm._dom.data.shieldPerLevel.GetShield(itm.ArmorSpec, qual, level, Stat.TechPowerRating);
+                        forcepower = itm._dom.data.shieldPerLevel.GetShield(itm.ArmorSpec, qual, level, Stat.ForcePowerRating);
+                        absorbchance = itm._dom.data.shieldPerLevel.GetShield(itm.ArmorSpec, qual, level, Stat.MeleeShieldAbsorb);
+                        shieldchance = itm._dom.data.shieldPerLevel.GetShield(itm.ArmorSpec, qual, level, Stat.MeleeShieldChance);
+                    }
+                    catch (Exception e)
+                    {
+                        string dosomething = ""; //suppress for now, break here to debug
+                    }
+                    if (absorbchance > 0)
+                        tooltip.Add(new XElement("div",
+                            XClass("torctip_main"),
+                            String.Format("Shield Absorb: {0}%", (absorbchance * 100).ToString("n1"))
+                            ));
+                    if (shieldchance > 0)
+                        tooltip.Add(new XElement("div",
+                            XClass("torctip_main"),
+                            String.Format("Shield Chance: {0}%", (shieldchance * 100).ToString("n1"))
+                            ));
+                    tooltip.Add(new XElement("div",
+                        XClass("torctip_main"),
+                        String.Format("{0} (Rating {1})", shield.Name, itm.CombinedRating)
+                        ));
+                }
                 ArmorSpec arm = itm.ArmorSpec;
                 if (arm != null)
                 {
@@ -341,12 +420,99 @@ namespace GomLib.Models
                 tooltip.Add(enhance);
             }
 
+            //requirements
             if (itm.RequiredLevel != 0)
                 tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format("Requires Level {0}", itm.RequiredLevel)));
+            if (itm.RequiredClasses.Count != 0)
+                tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format("Requires {0}", String.Join(",",itm.RequiredClasses.Select(x => x.Name)))));
             if (itm.ArmorSpec != null)
                 tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format("Requires {0}", itm.ArmorSpec.Name)));
             if (itm.WeaponSpec != null)
                 tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format("Requires {0}", itm.WeaponSpec.Name)));
+            if (itm.RequiredGender != Gender.None)
+                tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format("{0} Clothing", itm.RequiredGender.ToString())));
+            if (itm.RequiredProfession != Profession.None)
+                tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format("Requires {0} ({1})", itm.RequiredProfession.ConvertToString(), itm.RequiredProfessionLevel)));
+            if (itm.RequiredValorRank > 0)
+            {
+                tooltip.Add(new XElement("div",
+                    XClass("torctip_main"),
+                    String.Format("Requires Valor Rank ({0})", itm.RequiredValorRank)
+                    ));
+            }
+            if (itm.RequiresAlignment)
+            {
+                string alignment = "";
+                string reqAlignType = (itm.RequiredAlignmentInverted) ? " or below" : "or above";
+                string tier = "";
+                switch(Math.Sign(itm.RequiredAlignmentTier)){
+                    case -1:
+                        alignment = "Dark";
+                        tier = String.Format("{0} ", (-itm.RequiredAlignmentTier).ToRoman());
+                        break;
+                    case 1:
+                        alignment = "Light";
+                        tier = String.Format("{0} ", itm.RequiredAlignmentTier.ToRoman());
+                        break;
+                    default:
+                        alignment = "Neutral";
+                        break;
+                }
+                
+                tooltip.Add(new XElement("div",
+                    XClass("torctip_main"),
+                    String.Format("Requires {0} {1}{2}", alignment, tier, reqAlignType)
+                    ));
+            }
+            if (itm.RequiresSocial)
+            {
+                tooltip.Add(new XElement("div",
+                    XClass("torctip_main"),
+                    String.Format("Requires Social {0} or above", itm.RequiredSocialTier.ToRoman())
+                    ));
+            }
+
+            if (itm.RequiredReputationId != 0)
+            {
+                tooltip.Add(new XElement("div",
+                    XClass("torctip_main"),
+                    String.Format("Requires {1} standing with {0}", itm.RequiredReputationName, itm.RequiredReputationLevelName)
+                    ));
+            }
+            //decoration before abilities
+            if (itm.IsDecoration && itm.Decoration != null)
+            {
+                tooltip.Add(
+                    new XElement("div",
+                        XClass("torctip_main"),
+                        new XElement("span",
+                            XClass("torctip_main"),
+                            "Stronghold Decoration: "),
+                        new XElement("span",
+                            XClass("torctip_val"),
+                            String.Format("{0} - {1}", itm.Decoration.CategoryName, itm.Decoration.SubCategoryName))
+                    ),
+                    new XElement("div",
+                        XClass("torctip_main"),
+                        new XElement("span",
+                            XClass("torctip_main"),
+                            "Hook Type: "),
+                        new XElement("span",
+                            XClass("torctip_val"),
+                            String.Join(", ", itm.Decoration.AvailableHooks))
+                    ),
+                    new XElement("div",
+                        XClass("torctip_main"),
+                        new XElement("span",
+                            XClass("torctip_main"),
+                            "You own: "),
+                        new XElement("span",
+                            XClass("torctip_val"),
+                            String.Format("0/{0}", itm.Decoration.MaxUnlockLimit))
+                    )
+                );
+            }
+            //abilities/description
             System.Text.RegularExpressions.Regex regex_newline = new System.Text.RegularExpressions.Regex("(\r\n|\r|\n)");
             if (itm.EquipAbilityId != 0)
             {
@@ -431,6 +597,21 @@ namespace GomLib.Models
                                 ));
                             break;
                     }
+                }
+            }
+            //Decoration Source
+            if (itm.IsDecoration || itm.StrongholdSourceList.Count > 0)
+            {
+                if (!itm.IsDecoration) {
+                    string pusfgs = "";
+                }
+                tooltip.Add(new XElement("br"));
+                foreach (var kvp in itm.StrongholdSourceNameDict)
+                {
+                    tooltip.Add(new XElement("div",
+                        XClass("torctip_val"),
+                        String.Format("Source: {0}", kvp.Value)
+                    ));
                 }
             }
             if (itm.Description != "")
@@ -665,21 +846,119 @@ namespace GomLib.Models
 
             return tooltip;
         }
-        /*string stringQual = ((itm.IsModdable && (itm.Quality == ItemQuality.Prototype)) ? "moddable" : itm.Quality.ToString().ToLower());
-            XElement tooltip = new XElement("div",
-                XClass("torctip_tooltip"),
-                new XElement("span",
-                    XClass(String.Format("torctip_{0}", stringQual)),
-                    itm.Name)
-                );
-            //binding
-            if (itm.Binding != 0)
+        #endregion
+
+        #region ability
+        public static XElement GetHTML(this Ability itm)
+        {
+            if (itm.Id == 0) return new XElement("div", "Not Found");
+            string icon = "none";
+            string stringQual = "ability";
+            icon = itm.Icon;
+
+            XElement tooltip = new XElement("div", new XAttribute("class", "torctip_wrapper"));
+            var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", icon));
+
+            if (itm != null)
             {
                 tooltip.Add(new XElement("div",
-                    XClass("torctip_main"),
-                    String.Format("Binds on {0}", itm.Binding.ToString())
-                    ));
-            }*/
+                    new XAttribute("class", String.Format("torctip_image torctip_image_{0}", stringQual)),
+                    new XElement("img",
+                        new XAttribute("src", String.Format("http://torcommunity.com/db/icons/{0}_{1}.png", fileId.ph, fileId.sh)),
+                        new XAttribute("alt", ""))),
+                    new XElement("div",
+                        new XAttribute("class", "torctip_name"),
+                        new XElement("a",
+                            new XAttribute("href", String.Format("http://torcommunity.com/database/ability/{0}/{1}/", itm.Base62Id, itm.Name.LinkString())),
+                            new XAttribute("data-torc", "norestyle"),
+                            itm.Name
+                            ))
+                );
+                XElement inner = new XElement("div",
+                    XClass("torctip_tooltip"),
+                    new XElement("span",
+                        XClass(String.Format("torctip_{0}", stringQual)),
+                        itm.Name)
+                    );
+
+                XElement cast = new XElement("div");
+                if (itm.IsPassive) {
+                    cast.Add(new XElement("span",
+                            XClass("torctip_white"),
+                            "Passive")
+                        );
+                }
+                else if(itm.CastingTime > 0){
+                    cast.Add(new XElement("span",
+                            XClass("torctip_stat"),
+                            "Activation: "),
+                        new XElement("span",
+                            XClass("torctip_white"),
+                            String.Format("{0}s", itm.CastingTime)
+                        )
+                    );
+                }
+                else if(itm.ChannelingTime > 0){
+                        cast.Add(new XElement("span",
+                            XClass("torctip_stat"),
+                            "Channeled: "),
+                        new XElement("span",
+                            XClass("torctip_white"),
+                            String.Format("{0}s", itm.ChannelingTime)
+                        )
+                    );
+                }
+                else{
+                    cast.Add(new XElement("span",
+                            XClass("torctip_white"),
+                            "Instant")
+                        );
+                }
+                inner.Add(cast);
+
+                XElement playerblock = new XElement("div");
+                string costType = "";
+                float cost = 0;
+                if(itm.ApCost > 0) {
+                    costType = "Heat/Ammo: ";
+                    cost = itm.ApCost;
+                }
+                else if(itm.ForceCost > 0) {
+                    costType = "Force: ";
+                    cost = itm.ForceCost;
+                }
+                else if(itm.EnergyCost > 0) {
+                    costType = "Energy: ";
+                    cost = itm.EnergyCost;
+                }
+                if (costType != "" && cost != 0)
+                {
+                    playerblock.Add(XStat(costType, cost.ToString()));
+                }
+                if (itm.Cooldown > 0)
+                {
+                    playerblock.Add(XStat("Cooldown: ", String.Format("{0}s", itm.Cooldown.ToString())));
+                }
+                if (itm.MaxRange > 0)
+                {
+                    playerblock.Add(XStat("Range: ", String.Format("{0}m", Math.Round(itm.MaxRange * 10).ToString())));
+                }
+                if (playerblock.HasElements)
+                {
+                    inner.Add(new XElement("br"), playerblock);
+                }
+
+                inner.Add(new XElement("br"),
+                    new XElement("div",
+                        XClass("torctip_white"),
+                        itm.Description)
+                    );
+                tooltip.Add(inner);
+            }
+
+            return tooltip;
+        }
+
         #endregion
 
         private static string LinkString(this string name)
@@ -696,9 +975,40 @@ namespace GomLib.Models
                 .Replace(" ", "+");
             return cleaned.ToLower();
         }
+        public static string ToRoman(this int number)
+        {
+            if ((number < 0) || (number > 3999))
+                return number.ToString();
+            if (number < 1) return string.Empty;
+            if (number >= 1000) return "M" + ToRoman(number - 1000);
+            if (number >= 900) return "CM" + ToRoman(number - 900); //EDIT: i've typed 400 instead 900
+            if (number >= 500) return "D" + ToRoman(number - 500);
+            if (number >= 400) return "CD" + ToRoman(number - 400);
+            if (number >= 100) return "C" + ToRoman(number - 100);
+            if (number >= 90) return "XC" + ToRoman(number - 90);
+            if (number >= 50) return "L" + ToRoman(number - 50);
+            if (number >= 40) return "XL" + ToRoman(number - 40);
+            if (number >= 10) return "X" + ToRoman(number - 10);
+            if (number >= 9) return "IX" + ToRoman(number - 9);
+            if (number >= 5) return "V" + ToRoman(number - 5);
+            if (number >= 4) return "IV" + ToRoman(number - 4);
+            if (number >= 1) return "I" + ToRoman(number - 1);
+            throw new ArgumentOutOfRangeException("something bad happened");
+        }
         private static XAttribute XClass(string classname)
         {
             return new XAttribute("class", classname);
+        }
+        private static XElement XStat(string text, string value)
+        {
+            return new XElement("div",
+                new XElement("span",
+                    XClass("torctip_stat"),
+                    text),
+                new XElement("span",
+                    XClass("torctip_white"),
+                    value)
+                );
         }
         #region ConvertToString
         public static string ConvertToString(this SlotType slot) //replace these with friendly names
@@ -708,20 +1018,20 @@ namespace GomLib.Models
                 case SlotType.EquipHumanMainHand: return "Main Hand (Melee)";
                 case SlotType.EquipHumanOffHand: return "Off-Hand (Melee)";
                 case SlotType.EquipHumanWrist: return "Wrist";
-                case SlotType.EquipHumanBelt: return "Belt";
+                case SlotType.EquipHumanBelt: return "Waist";
                 case SlotType.EquipHumanChest: return "Chest";
                 case SlotType.EquipHumanEar: return "Ear";
-                case SlotType.EquipHumanFace: return "Face";
-                case SlotType.EquipHumanFoot: return "Foot";
-                case SlotType.EquipHumanGlove: return "Glove";
+                case SlotType.EquipHumanFace: return "Head";
+                case SlotType.EquipHumanFoot: return "Feet";
+                case SlotType.EquipHumanGlove: return "Hands";
                 case SlotType.EquipHumanImplant: return "Implant";
-                case SlotType.EquipHumanLeg: return "Leg";
-                case SlotType.EquipDroidUpper: return "DroidUpper";
-                case SlotType.EquipDroidLower: return "DroidLower";
+                case SlotType.EquipHumanLeg: return "Legs";
+                case SlotType.EquipDroidUpper: return "Core";
+                case SlotType.EquipDroidLower: return "Motor";
                 case SlotType.EquipDroidShield: return "DroidShield";
                 case SlotType.EquipDroidGyro: return "DroidGyro";
-                case SlotType.EquipDroidUtility: return "DroidUtility";
-                case SlotType.EquipDroidSensor: return "DroidSensor";
+                case SlotType.EquipDroidUtility: return "Parts";
+                case SlotType.EquipDroidSensor: return "Sensor Unit";
                 case SlotType.EquipDroidSpecial: return "DroidSpecial";
                 case SlotType.EquipDroidWeapon1: return "DroidWeapon1";
                 case SlotType.EquipDroidWeapon2: return "DroidWeapon2";
@@ -733,8 +1043,8 @@ namespace GomLib.Models
                 case SlotType.EquipHumanRangedTertiary: return "RangedTertiary";
                 case SlotType.EquipHumanCustomRanged: return "CustomRanged";
                 case SlotType.EquipHumanCustomMelee: return "CustomMelee";
-                case SlotType.EquipHumanShield: return "Shield";
-                case SlotType.EquipHumanOutfit: return "Outfit";
+                case SlotType.EquipHumanShield: return "Offhand (General)";
+                case SlotType.EquipHumanOutfit: return "Customization";
                 case SlotType.EquipDroidLeg: return "DroidLeg";
                 case SlotType.EquipDroidFeet: return "DroidFeet";
                 case SlotType.EquipDroidOutfit: return "DroidOutfit";
@@ -743,7 +1053,7 @@ namespace GomLib.Models
                 case SlotType.EquipHumanLightSide: return "LightSide";
                 case SlotType.EquipHumanDarkSide: return "DarkSide";
                 case SlotType.EquipHumanRelic: return "Relic";
-                case SlotType.EquipHumanFocus: return "Focus";
+                case SlotType.EquipHumanFocus: return "Offhand (General)";
                 case SlotType.EquipSpaceShipArmor: return "SpaceShipArmor";
                 case SlotType.EquipSpaceBeamGenerator: return "SpaceBeamGenerator";
                 case SlotType.EquipSpaceBeamCharger: return "SpaceBeamCharger";
@@ -1031,6 +1341,27 @@ namespace GomLib.Models
                 case EnhancementType.Modulator: return "debug_Modulator";
                 case EnhancementType.Dye: return "Dye";
                 default: return "Unknown";
+            }
+        }
+        public static string ConvertToString(this Profession crewSkillId)
+        {
+            switch (crewSkillId)
+            {
+                case Profession.Archaeology: return "Archaeology";
+                case Profession.Bioanalysis: return "Bioanalysis";
+                case Profession.Scavenging: return "Scavenging";
+                case Profession.Artifice: return "Artifice";
+                case Profession.Armormech: return "Armormech";
+                case Profession.Armstech: return "Armstech";
+                case Profession.Biochem: return "Biochem";
+                case Profession.Cybertech: return "Cybertech";
+                case Profession.Synthweaving: return "Synthweaving";
+                case Profession.Slicing: return "Slicing";
+                case Profession.Diplomacy: return "Diplomacy";
+                case Profession.Investigation: return "Investigation";
+                case Profession.TreasureHunting: return "Treasure Hunting";
+                case Profession.UnderworldTrading: return "Underworld Trading";
+                default: return "None";
             }
         }
         #endregion
