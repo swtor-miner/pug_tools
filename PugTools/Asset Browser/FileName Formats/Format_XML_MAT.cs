@@ -36,7 +36,13 @@ namespace tor_tools
                     string temp = fileName.Split('/').Last();
                     string fileNameNoExtension = temp.Substring(3, (temp.IndexOf('.') - 3));
                     string fullDirectory = directory + '/' + fileNameNoExtension + '/';
-                    var actionList = doc.Element("aam").Element("actions").Elements("action");
+                    XElement aamElement = doc.Element("aam");
+                    if(aamElement == null)
+                    {
+                        return;
+                    }
+                    var actionList = aamElement.Element("actions").Elements("action");
+
                     foreach (var action in actionList)
                     {
                         var actionName = action.Attribute("name").Value;
@@ -109,7 +115,12 @@ namespace tor_tools
                         else
                             fileNames.Add(fullDirectory + actionName);
                     }
-                    var networkList = doc.Element("aam").Element("networks").Descendants("literal");
+                    XElement networkElem = aamElement.Element("networks");
+                    if(networkElem == null)
+                    {
+                        return;
+                    }
+                    var networkList = networkElem.Descendants("literal");
                     foreach (var network in networkList)
                     {
                         var fqnName = network.Attribute("fqn").Value;
