@@ -306,6 +306,9 @@ namespace GomLib.Models
                 return _Decoration;
             }
         }
+
+        public bool BindsToSlot { get; set; }
+
         [Newtonsoft.Json.JsonIgnore]
         public string Tooltip
         {
@@ -861,7 +864,7 @@ namespace GomLib.Models
                         new SQLProperty("CombinedRating", "CombinedRating", "int(11) NOT NULL"),
                         new SQLProperty("CombinedRequiredLevel", "CombinedRequiredLevel", "int(11) NOT NULL"),
                         //new SQLProperty("CombinedStatModifiers", "CombinedStatModifiers", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("ConsumedOnUse", "ConsumedOnUse", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("ConsumedOnUse", "ConsumedOnUse", "tinyint(1) NOT NULL"),
                         new SQLProperty("ConversationFqn", "ConversationFqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("DamageType", "DamageType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Description", "_Description", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
@@ -876,21 +879,24 @@ namespace GomLib.Models
                         new SQLProperty("GiftRank", "GiftRank", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("GiftType", "GiftType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Icon", "HashedIcon", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("IsModdable", "IsModdable", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("MaxStack", "MaxStack", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("IsDecoration", "IsDecoration", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsModdable", "IsModdable", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsMtxItem", "IsMtxItem", "tinyint(1) NOT NULL"),
+                        new SQLProperty("BindsToSlot", "BindsToSlot", "tinyint(1) NOT NULL"),
+                        new SQLProperty("MaxStack", "MaxStack", "int(11) NOT NULL"),
                         new SQLProperty("ModifierSpec", "ModifierSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("MountSpec", "MountSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Quality", "Quality", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Rating", "Rating", "int(11) NOT NULL"),
-                        new SQLProperty("RequiredAlignmentInverted", "RequiredAlignmentInverted", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("RequiredAlignmentInverted", "RequiredAlignmentInverted", "tinyint(1) NOT NULL"),
                         //new SQLProperty("RequiredClasses", "RequiredClasses", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("RequiredGender", "RequiredGender", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("RequiredProfession", "RequiredProfession", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("RequiredGender", "RequiredGender", "varchar(10) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("RequiredProfession", "RequiredProfession", "varchar(35) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("RequiredProfessionLevel", "RequiredProfessionLevel", "int(11) NOT NULL"),
                         new SQLProperty("RequiredSocialTier", "RequiredSocialTier", "int(11) NOT NULL"),
                         new SQLProperty("RequiredValorRank", "RequiredValorRank", "int(11) NOT NULL"),
-                        new SQLProperty("RequiresAlignment", "RequiresAlignment", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("RequiresSocial", "RequiresSocial", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("RequiresAlignment", "RequiresAlignment", "tinyint(1) NOT NULL"),
+                        new SQLProperty("RequiresSocial", "RequiresSocial", "tinyint(1) NOT NULL"),
                         new SQLProperty("RequiredReputationId", "RequiredReputationId", "int(11) NOT NULL"),
                         new SQLProperty("RequiredReputationLevelId", "RequiredReputationLevelId", "int(11) NOT NULL"),
                         new SQLProperty("RequiredReputation", "RequiredReputationName", "varchar(255) NOT NULL"),

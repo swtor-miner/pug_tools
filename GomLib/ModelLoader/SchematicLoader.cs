@@ -225,9 +225,9 @@ namespace GomLib.ModelLoader
                     }
                     idx++;
                 }
-                if(materials!= null)
-                    if (materials.Count + researchMaterials.Count > maxMats) maxMats = materials.Count + researchMaterials.Count;
-                if (researchMaterials.Count > maxMats) maxMats = researchMaterials.Count;
+                //if(materials!= null)
+                //    if (materials.Count + researchMaterials.Count > maxMats) maxMats = materials.Count + researchMaterials.Count;
+                //if (researchMaterials.Count > maxMats) maxMats = researchMaterials.Count;
             }
             if (schem.MissionDescriptionId != 0)
             {

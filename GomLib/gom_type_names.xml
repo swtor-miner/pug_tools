@@ -8125,6 +8125,7 @@
   <!-- itm. -->
   <gom_type Id="4611686347206970000" name="ItemSetBonusId" desc="" />
   <gom_type Id="4611687140279310003" name="itmIsUnknownBool" desc="Item is a ??? Item" />
+  <gom_type Id="4611686347574357000" name="itmBindsToSlot" desc="Item binds to slot it's equiped in" />
   <!-- prfDebugSchematicMapPrototype -->
   <gom_type Id="4611686284556820001" name="schemChildMap" desc="" />
 </gom_types>

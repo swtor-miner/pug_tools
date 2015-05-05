@@ -226,6 +226,8 @@ namespace GomLib.ModelLoader
             itm.Id = gom.Id;
 
             itm.Quality = Models.ItemQualityExtensions.ToItemQuality((ScriptEnum)gom.Data.ValueOrDefault<ScriptEnum>("itmBaseQuality", null));
+            if ((itm.Quality == ItemQuality.Prototype) && (itm.EnhancementSlots.Count > 1))
+                itm.Quality = ItemQuality.Moddable;
             //if (itm.EnhancementType != EnhancementType.None)
             //{
                 itm.Rating = _dom.data.itemRating.GetRating(itm.ItemLevel, itm.Quality);
@@ -426,7 +428,7 @@ namespace GomLib.ModelLoader
                     { itm.DamageType = ItemDamageType.None; break; }
             }*/
 
-            itm.IsModdable = ((itm.Quality == ItemQuality.Prototype) && (itm.EnhancementSlots.Count > 1)) || itm.Quality == ItemQuality.Moddable;
+            itm.IsModdable = (itm.Quality == ItemQuality.Moddable);
 
             ItemSubCategoryExtensions.SetCategory(itm);
 
@@ -477,6 +479,7 @@ namespace GomLib.ModelLoader
             childLookupMap.TryGetValue(itm.Id, out cId);
             itm.ChildId = cId;
 
+            itm.BindsToSlot = gom.Data.ValueOrDefault<bool>("itmBindsToSlot", false);
 
             if (gom.References != null)
             {

@@ -154,6 +154,13 @@ namespace GomLib.Models
                     XClass("torctip_main"),
                     String.Format("Binds on {0}", itm.Binding.ToString())
                     ));
+                if (itm.BindsToSlot)
+                {
+                    tooltip.Add(new XElement("div",
+                        XClass("torctip_main"),
+                        "Binds to Slot"
+                        ));
+                }
             }
             //unique
             if (itm.UniqueLimit > 0)
@@ -307,12 +314,22 @@ namespace GomLib.Models
                         if (temp.Count() != 0)
                             if (temp.First().ModificationId != 0)
                                 level = temp.First().Modification.ItemLevel;
-                        int armor = itm._dom.data.armorPerLevel.GetArmor(arm, level, itm.Quality, itm.Slots.Where(x => x != SlotType.Any).First());
-                        if (armor > 0)
-                            tooltip.Add(new XElement("div",
-                                XClass("torctip_main"),
-                                String.Format("{0} Armor (Rating {1})", armor, itm.CombinedRating)
-                                ));
+                        try
+                        {
+                            var qual = itm.Quality;
+                            if (qual == ItemQuality.Moddable) qual = ItemQuality.Prototype;
+                            int armor = itm._dom.data.armorPerLevel.GetArmor(arm, level, qual, itm.Slots.Where(x => x != SlotType.Any).First());
+
+                            if (armor > 0)
+                                tooltip.Add(new XElement("div",
+                                    XClass("torctip_main"),
+                                    String.Format("{0} Armor (Rating {1})", armor, itm.CombinedRating)
+                                    ));
+                        }
+                        catch (Exception ex)
+                        {
+                            string sdfkljn = "";
+                        }
                     }
                 }
                 else if (itm.CombinedRating != 0)
