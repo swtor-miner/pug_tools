@@ -18,6 +18,7 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 using GomLib;
 using System.IO.Compression;
+using System.Drawing.Imaging;
 
 namespace tor_tools
 {
@@ -35,12 +36,12 @@ namespace tor_tools
                 /*{"apn.", true},
                 {"cdx.", true},
                 {"cnv.", true},
-                {"npc.", true},
-                {"qst.", true},
-                {"tal.", true},*/
+                {"npc.", true},*/
+                {"qst.", "Mission"},
+                //{"tal.", true},*/
                 //{"sche", "Schematics"},
                 /*{"dec.", true},*/
-                {"itm.", "Item"}//,
+                //{"itm.", "Item"}//,
                 /*{"apt.", true},
                 {"apc.", true},
                 {"class.",true},
@@ -164,9 +165,11 @@ namespace tor_tools
 
                         string icon = "";
                         if (t.obj.GetType() == typeof(GomLib.Models.Item))
-                            icon = ((GomLib.Models.Item)t.obj).Icon;
+                            icon = String.Format("icons/{0}", ((GomLib.Models.Item)t.obj).Icon);
                         if (t.obj.GetType() == typeof(GomLib.Models.Ability))
-                            icon = ((GomLib.Models.Ability)t.obj).Icon;
+                            icon = String.Format("icons/{0}", ((GomLib.Models.Ability)t.obj).Icon);
+                        if (t.obj.GetType() == typeof(GomLib.Models.Quest))
+                            icon = String.Format("codex/{0}", ((GomLib.Models.Quest)t.obj).Icon);
                         if (!String.IsNullOrEmpty(icon))
                         {
                             if (iconNames.Contains(icon))
@@ -177,7 +180,7 @@ namespace tor_tools
                             {
                                 if (iconStream != null)
                                 {
-                                    var iconEntry = zipArchive.CreateEntry(String.Format("icons/{0}.png", GetIconFilename(icon)), CompressionLevel.Fastest);
+                                    var iconEntry = zipArchive.CreateEntry(String.Format("icons/{0}.jpg", GetIconFilename(icon)), CompressionLevel.Fastest);
                                     using (var a = iconEntry.Open())
                                         iconStream.WriteTo(a);
                                     //using (Writer writer = new BinaryWriter(iconEntry.Open()))
@@ -198,7 +201,7 @@ namespace tor_tools
         private MemoryStream GetIcon(string icon)
         {
             if (icon == null) return null;
-            using (var file = currentDom._assets.FindFile(String.Format("/resources/gfx/icons/{0}.dds", icon)))
+            using (var file = currentDom._assets.FindFile(String.Format("/resources/gfx/{0}.dds", icon)))
             {
                 if (file == null) return null;
                 var filename = String.Join("_", file.FileInfo.ph, file.FileInfo.sh);
@@ -217,6 +220,9 @@ namespace tor_tools
                 DevIL.Image dds;
                 using (MemoryStream iconStream = (MemoryStream)file.OpenCopyInMemory())
                     dds = imp.LoadImageFromStream(DevIL.ImageType.Dds, iconStream);
+                var myparams = new EncoderParameters(1);
+                myparams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 90L);
+                ImageCodecInfo jpgEncoder = GetEncoder(ImageFormat.Jpeg);
 
                 DevIL.ImageExporter exp = new DevIL.ImageExporter();
                 if (dds.Width == 52 && dds.Height == 52) // needs cropped
@@ -236,12 +242,27 @@ namespace tor_tools
                     }
 
                     Bitmap croppedIconBM = iconBM.Clone(new Rectangle(0, 0, 50, 50), iconBM.PixelFormat); // crop Bitmap
-                    croppedIconBM.Save(outputStream, System.Drawing.Imaging.ImageFormat.Png); //Bitmap to PNG Stream
+                    //croppedIconBM.Save(outputStream, System.Drawing.Imaging.ImageFormat.Png); //Bitmap to PNG Stream
+                    croppedIconBM.Save(outputStream, jpgEncoder, myparams); //Bitmap to PNG Stream
                 }
                 else
                 {
+                    var iconData = dds.GetImageData(0);
 
-                    exp.SaveImageToStream(dds, DevIL.ImageType.Png, outputStream); //save DDS to stream in PNG format
+                    System.Drawing.Bitmap iconBM = new System.Drawing.Bitmap(iconData.Width, iconData.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+                    for (int k = 0; k < iconData.Height * iconData.Width; k++) // loop through image data
+                    {
+                        Color iconPixel = Color.FromArgb(iconData.Data[k * 4 + 3], // copy pixel values
+                                    iconData.Data[k * 4 + 0],
+                                    iconData.Data[k * 4 + 1],
+                                    iconData.Data[k * 4 + 2]);
+
+                        iconBM.SetPixel(k % iconData.Width, (int)k / iconData.Width, iconPixel); //save pixel in new bitmap
+                    }
+                    
+                    iconBM.Save(outputStream, jpgEncoder, myparams); //Bitmap to PNG Stream
+                    //exp.SaveImageToStream(dds, DevIL.ImageType.Png, outputStream); //save DDS to stream in PNG format
                 }
 
                 //WriteFile(outputStream, String.Format("/{0}/Images/{1}.png", directory, filename));
@@ -309,12 +330,27 @@ namespace tor_tools
         private string GetIconFilename(string icon)
         {
             if (icon == null) return "";
-            using (var file = currentDom._assets.FindFile(String.Format("/resources/gfx/icons/{0}.dds", icon)))
+            using (var file = currentDom._assets.FindFile(String.Format("/resources/gfx/{0}.dds", icon)))
             {
                 if (file == null)
                     return "";
                 return String.Join("_", file.FileInfo.ph, file.FileInfo.sh);
             }
+        }
+
+        private ImageCodecInfo GetEncoder(ImageFormat format)
+        {
+
+            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
+
+            foreach (ImageCodecInfo codec in codecs)
+            {
+                if (codec.FormatID == format.Guid)
+                {
+                    return codec;
+                }
+            }
+            return null;
         }
     }
 }

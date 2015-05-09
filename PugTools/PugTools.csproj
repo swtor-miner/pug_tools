@@ -257,6 +257,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Smart_Link.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Tools_Process.cs">
       <SubType>Form</SubType>
     </Compile>

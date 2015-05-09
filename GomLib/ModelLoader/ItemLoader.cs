@@ -486,14 +486,15 @@ namespace GomLib.ModelLoader
                 if (gom.References.ContainsKey("materialFor"))
                 {
                     itm.MaterialForSchems = gom.References["materialFor"].Select(x => x.ToMaskedBase62()).ToList();
-                    if (gom.References["materialFor"].Count > maxCount)
-                        maxCount = gom.References["materialFor"].Count;
+                }
+                if (gom.References.ContainsKey("rewardFrom"))
+                {
+                    itm.RewardFromQuests = gom.References["rewardFrom"].Select(x => x.ToMaskedBase62()).ToList();
                 }
             }
             gom.Unload();
             return itm;
         }
-        public static int maxCount { get; set; }
 
         public void LoadChildMap()
         {

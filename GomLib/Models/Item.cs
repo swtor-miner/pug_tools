@@ -355,8 +355,12 @@ namespace GomLib.Models
         public float WeaponMinDamage { get; set; }
         public float WeaponMaxDamage { get; set; }
         public int ModLevel { get; set; }
+        //offhand stats
+        public float AbsorbChance { get; set; }
+        public float ShieldChance { get; set; }
 
         public List<string> MaterialForSchems { get; set; }
+        public List<string> RewardFromQuests { get; set; }
         public static List<long> ArmorSpecIds = new List<long> { -8622546409652942944, 589686270506543030, 5763611092890301551 };
         public static List<ArmorSpec> ArmorSpecs = new List<ArmorSpec> { };
         public static Item FillFlatData(Item itm)
@@ -457,6 +461,51 @@ namespace GomLib.Models
             }
             else if (isEquipable)
             {
+                var qual = itm.Quality;
+                if (qual == ItemQuality.Moddable) qual = ItemQuality.Prototype;
+                ArmorSpec shield = itm.ShieldSpec;
+                if (shield != null)
+                {
+                    List<int> mainSlots = new List<int> { 1, 3, 9 };
+                    ItemEnhancement mainMod = null;
+                    if (itm.EnhancementSlots != null)
+                    {
+                        var potentials = itm.EnhancementSlots.Where(x => x.Slot.IsBaseMod());
+                        if (potentials.Count() != 0)
+                            mainMod = itm.EnhancementSlots.Where(x => x.Slot.IsBaseMod()).Single();
+                    }
+                    //if (mainMod.Count == 0
+                    qual = ItemQuality.Premium;
+                    if (itm.EnhancementSlots.Count() != 0)
+                    {
+                        if (mainMod != null)
+                        {
+                            if (mainMod.ModificationId != 0)
+                            {
+                                itm.ModLevel = mainMod.Modification.ItemLevel;
+                                qual = mainMod.Modification.Quality;
+                            }
+                            //else
+                            //nothing premium is what we want
+                        }
+                    }
+                    else
+                    {
+                        itm.ModLevel = itm.ItemLevel;
+                        qual = itm.Quality;
+                    }
+                    try
+                    {
+                        itm.TechPower = (int)itm._dom.data.shieldPerLevel.GetShield(itm.ArmorSpec, qual, itm.ModLevel, Stat.TechPowerRating);
+                        itm.ForcePower = (int)itm._dom.data.shieldPerLevel.GetShield(itm.ArmorSpec, qual, itm.ModLevel, Stat.ForcePowerRating);
+                        itm.AbsorbChance = itm._dom.data.shieldPerLevel.GetShield(itm.ArmorSpec, qual, itm.ModLevel, Stat.MeleeShieldAbsorb);
+                        itm.ShieldChance = itm._dom.data.shieldPerLevel.GetShield(itm.ArmorSpec, qual, itm.ModLevel, Stat.MeleeShieldChance);
+                    }
+                    catch (Exception e)
+                    {
+                        string dosomething = ""; //suppress for now, break here to debug
+                    }
+                }
                 ArmorSpec arm = itm.ArmorSpec;
                 if (arm != null)
                 {
@@ -478,7 +527,7 @@ namespace GomLib.Models
                         {
                             try
                             {
-                                armorValues.Add(itm._dom.data.armorPerLevel.GetArmor(armorspec, itm.ModLevel, itm.Quality, itm.Slots.Where(x => x != SlotType.Any).First()));
+                                armorValues.Add(itm._dom.data.armorPerLevel.GetArmor(armorspec, itm.ModLevel, qual, itm.Slots.Where(x => x != SlotType.Any).First()));
                             }
                             catch(Exception ex){} //this is here to catch errors for adaptive implants and such.
                         }
@@ -486,7 +535,7 @@ namespace GomLib.Models
                     }
                     else
                     {
-                        itm.Armor = itm._dom.data.armorPerLevel.GetArmor(arm, itm.ModLevel, itm.Quality, itm.Slots.Where(x => x != SlotType.Any).First());
+                        itm.Armor = itm._dom.data.armorPerLevel.GetArmor(arm, itm.ModLevel, qual, itm.Slots.Where(x => x != SlotType.Any).First());
                     }
                 }
             }
@@ -957,8 +1006,11 @@ namespace GomLib.Models
                         new SQLProperty("AdaptiveArmor", "AdaptiveArmor", "varchar(25) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("WeaponMinDamage", "WeaponMinDamage", "float(10,1) NOT NULL"),
                         new SQLProperty("WeaponMaxDamage", "WeaponMaxDamage", "float(10,1) NOT NULL"),
+                        new SQLProperty("AbsorbChance", "AbsorbChance", "float(10,1) NOT NULL"),
+                        new SQLProperty("ShieldChance", "ShieldChance", "float(10,1) NOT NULL"),
                         new SQLProperty("ModLevel", "ModLevel", "int(11) NOT NULL"),
                         new SQLProperty("MaterialForSchems","MaterialForSchems", "TEXT NOT NULL", false, true),
+                        new SQLProperty("RewardFromQuests","RewardFromQuests", "TEXT NOT NULL", false, true),
                         new SQLProperty("SourceNames","StrongholdSourceNameDict", "TEXT NOT NULL", false, true),
 
                     };

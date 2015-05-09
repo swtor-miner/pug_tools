@@ -14,6 +14,8 @@ namespace GomLib.ModelLoader
         Dictionary<string, Quest> nameMap;
 
         Dictionary<object, object> fullQuestRewardsTable;
+        Dictionary<long, Dictionary<long, float>> fullCreditRewardsTable;
+        Dictionary<long, long> experienceTable;
 
         DataObjectModel _dom;
 
@@ -28,6 +30,8 @@ namespace GomLib.ModelLoader
             idMap = new Dictionary<ulong, Quest>();
             nameMap = new Dictionary<string, Quest>();
             fullQuestRewardsTable = new Dictionary<object, object>();
+            fullCreditRewardsTable = new Dictionary<long, Dictionary<long, float>>();
+            experienceTable = new Dictionary<long, long>();
         }
 
         public string ClassName
@@ -92,7 +96,8 @@ namespace GomLib.ModelLoader
             qst.TextLookup = textMap;
 
             long questGuid = obj.Data.ValueOrDefault<long>("qstQuestDefinitionGUID", 0);
-            qst.Id = (ulong)(questGuid >> 32);
+            //qst.Id = (ulong)(questGuid >> 32);
+            qst.Id = obj.Id;
             qst.RequiredLevel = (int)obj.Data.ValueOrDefault<long>("qstReqMinLevel", 0);
             qst.IsRepeatable = obj.Data.ValueOrDefault<bool>("qstIsRepeatable", false);
             qst.XpLevel = (int)obj.Data.ValueOrDefault<long>("qstXpLevel", 0);
@@ -120,8 +125,8 @@ namespace GomLib.ModelLoader
             var strings = (List<object>)obj.Data.ValueOrDefault<List<object>>("qstStringIdVariableDefinition_ProtoVarList", null);
             LoadRequiredClasses(qst, obj);
 
-            long nameId = questGuid + 0x58;
-            var nameLookup = (GomObjectData)textMap[nameId];
+            qst.NameId = questGuid + 0x58;
+            var nameLookup = (GomObjectData)textMap[qst.NameId];
             qst.Name = _dom.stringTable.TryGetString(qst.Fqn, nameLookup);
             qst.LocalizedName = _dom.stringTable.TryGetLocalizedStrings(qst.Fqn, nameLookup);
 
@@ -220,6 +225,10 @@ namespace GomLib.ModelLoader
             if (fullQuestRewardsTable.Count == 0)
             {
                 fullQuestRewardsTable = _dom.GetObject("qstRewardsInfoPrototype").Data.Get<Dictionary<object, object>>("qstRewardsInfoData");
+                fullCreditRewardsTable = _dom.GetObject("qstrewardscreditsData").Data.Get<Dictionary<object, object>>("qstRewardsPerLevelData")
+                    .ToDictionary(x=> (long)x.Key, x => ((Dictionary<object, object>)x.Value).ToDictionary(y => (long)y.Key, y => (float)y.Value));
+                experienceTable = _dom.GetObject("qstExperiencePrototype").Data.Get<Dictionary<object, object>>("qstExperienceTable")
+                    .ToDictionary(x => (long)x.Key, x => (long)x.Value);
             }
             //try
             //{
@@ -281,6 +290,13 @@ namespace GomLib.ModelLoader
                 reward.Id = Convert.ToUInt64(reward.IsAlwaysProvided) + reward.RewardItemId + Convert.ToUInt64(reward.NumberOfItem);
                 qst.Rewards.Add(reward);
             }
+            qst.CreditRewardType = obj.Data.ValueOrDefault<long>("creditRewardType", 0);
+            if (qst.CreditRewardType != 0)
+            {
+                qst.CreditsRewarded = fullCreditRewardsTable[qst.CreditRewardType][qst.XpLevel];
+            }
+            if(qst.XpLevel != 0)
+                qst.XP = experienceTable[qst.XpLevel];
         }
 
         private void LoadBranches(ref Quest qst, GomObject obj)

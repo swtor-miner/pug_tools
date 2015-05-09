@@ -8,7 +8,7 @@ namespace GomLib.Models
 {
     public class QuestBranch : IEquatable<QuestBranch>
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public int DbId { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         public Quest Quest { get; set; }

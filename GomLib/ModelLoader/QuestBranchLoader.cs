@@ -25,7 +25,7 @@ namespace GomLib.ModelLoader
             QuestBranch branch = new QuestBranch();
 
             branch.Quest = qst;
-            branch.Id = (int)obj.ValueOrDefault<long>("qstBranchId", 0);
+            branch.Id = obj.ValueOrDefault<long>("qstBranchId", 0);
 
             var qstSteps = obj.ValueOrDefault<List<object>>("qstSteps", null);
             branch.Steps = new List<QuestStep>();

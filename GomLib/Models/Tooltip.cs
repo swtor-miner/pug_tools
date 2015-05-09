@@ -95,6 +95,10 @@ namespace GomLib.Models
             {
                 return ((Ability)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
             }
+            if (obj.GetType() == typeof(Quest))
+            {
+                return ((Quest)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
+            }
             return "<div>Not implemented</div>";
         }
     }
@@ -606,12 +610,31 @@ namespace GomLib.Models
                                     string puasehere = "";
                                 }
                             string ablDesc = itm.UseAbility.ParsedDescription ?? "";
-                            if (ablDesc == "") break;
-                            ablDesc = System.Text.RegularExpressions.Regex.Replace(ablDesc, @"\r\n?|\n", "<br />");
-                            tooltip.Add(new XElement("div",
-                                XClass("torctip_use"),
-                                String.Format("Use: {0}", ablDesc)
-                                ));
+                            //if (ablDesc == "") break;
+                            //ablDesc = System.Text.RegularExpressions.Regex.Replace(ablDesc, @"\r\n?|\n", "<br />");
+                            //tooltip.Add(new XElement("div",
+                            //    XClass("torctip_use"),
+                            //    String.Format("Use: {0}", ablDesc)
+                            //    ));
+                            if (ablDesc != "")
+                            {
+                                XElement desc = new XElement("div",
+                                    XClass("torctip_use"),
+                                    "Use: ");
+                                if (ablDesc.Contains('\n'))
+                                {
+                                    var splits = ablDesc.Split('\n');
+                                    foreach (var split in splits)
+                                    {
+                                        desc.Add(split, new XElement("br"));
+                                    }
+                                }
+                                else
+                                {
+                                    desc.Add(ablDesc);
+                                }
+                                tooltip.Add(desc);
+                            }
                             break;
                     }
                 }
@@ -906,24 +929,10 @@ namespace GomLib.Models
                         );
                 }
                 else if(itm.CastingTime > 0){
-                    cast.Add(new XElement("span",
-                            XClass("torctip_stat"),
-                            "Activation: "),
-                        new XElement("span",
-                            XClass("torctip_white"),
-                            String.Format("{0}s", itm.CastingTime)
-                        )
-                    );
+                    cast.Add(XStat("Activation: ", String.Format("{0}s", itm.CastingTime)));
                 }
                 else if(itm.ChannelingTime > 0){
-                        cast.Add(new XElement("span",
-                            XClass("torctip_stat"),
-                            "Channeled: "),
-                        new XElement("span",
-                            XClass("torctip_white"),
-                            String.Format("{0}s", itm.ChannelingTime)
-                        )
-                    );
+                    cast.Add(XStat("Channeled: ", String.Format("{0}s", itm.ChannelingTime)));
                 }
                 else{
                     cast.Add(new XElement("span",
@@ -977,6 +986,182 @@ namespace GomLib.Models
         }
 
         #endregion
+        #region mission
+        public static XElement GetHTML(this Quest itm)
+        {
+            if (itm.Id == 0) return new XElement("div", "Not Found");
+            string icon = "none";
+            string stringQual = "mission";
+            icon = itm.Icon;
+
+            XElement tooltip = new XElement("div", new XAttribute("class", "torctip_wrapper"));
+            var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", icon));
+
+            if (itm != null)
+            {
+                XElement inner = new XElement("div",
+                    XClass("torctip_tooltip"),
+                    new XElement("span",
+                        XClass(String.Format("torctip_{0}", stringQual)),
+                        itm.Name)
+                    );
+
+                XElement rewards = new XElement("div",
+                    XClass("torctip_rewards"),
+                    new XElement("span",
+                        "Mission Rewards")
+                    );
+                int rewardCount = 0;
+                if (itm.XP != 0 && itm.Difficulty != QuestDifficulty.NoExp)
+                {
+                    rewards.Add(new XElement("div",
+                        new XElement("span",
+                            "Experience: "),
+                        new XElement("span",
+                            XClass("torctip_use"),
+                            itm.XP)
+                        )
+                    );
+                    rewardCount++;
+                }
+                if (itm.CreditsRewarded != 0)
+                {
+                    rewards.Add(new XElement("div",
+                        new XElement("span",
+                            "Credits: "),
+                        new XElement("span",
+                            XClass("torctip_use"),
+                            itm.CreditsRewarded)
+                        )
+                    );
+                    rewardCount++;
+                }
+                if (itm.Rewards != null)
+                {
+                    XElement items = new XElement("div",
+                            XClass("torctip_rwd_itms"));
+                    XElement providedRewards = new XElement("div",
+                        new XElement("div",
+                            "Provided Rewards:"));
+                    Dictionary<ulong, XElement> providedClassRewards = new Dictionary<ulong,XElement>();
+                    XElement selectOneRewards = new XElement("div",
+                        new XElement("div",
+                            "Select One Reward:"));
+                    Dictionary<ulong, XElement> selectOneClassRewards = new Dictionary<ulong,XElement>();
+                    foreach (var kvp in itm.Rewards)
+                    {
+                        var mat = kvp.RewardItem;
+                        var matstringQual = ((mat.IsModdable && (mat.Quality == ItemQuality.Prototype)) ? "moddable" : mat.Quality.ToString().ToLower());
+                        var matfileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", mat.Icon));
+                        XElement matElement = new XElement("div",
+                            XClass("torctip_rwd"),
+                            new XAttribute("style", "display:inline;"),
+                            new XElement("a",
+                                new XAttribute("href", String.Format("http://torcommunity.com/database/item/{0}/{1}/", mat.Base62Id, LinkString(mat.Name))),
+                                new XAttribute("data-torc", "norestyle"),
+                                new XAttribute("class", String.Format("torctip_image torctip_image_{0}", matstringQual)),
+                                new XElement("img",
+                                    new XAttribute("src", String.Format("http://torcommunity.com/db/icons/{0}_{1}.png", matfileId.ph, matfileId.sh)),
+                                    new XAttribute("alt", mat.Name),
+                                    XClass("image")
+                                )
+                            )
+                        );
+                        if (kvp.NumberOfItem > 1)
+                        {
+                            matElement.Element("a").Add(new XElement("span",
+                                    XClass("torctip_rwd_overlay"),
+                                    kvp.NumberOfItem
+                                )
+                            );
+                        }
+                        if (kvp.IsAlwaysProvided)
+                        {
+                            if (kvp.Classes.Count > 0)
+                            {
+                                foreach (var cls in kvp.Classes)
+                                {
+                                    if (!providedClassRewards.ContainsKey(cls.Id))
+                                    {
+                                        providedClassRewards.Add(cls.Id,
+                                            new XElement("div",
+                                                XClass(String.Format("torctip_class_restrict torc_cls_{0}", cls.GetFaction())),
+                                                new XElement("span", cls.Name)
+                                            )
+                                        );
+                                    }
+                                    providedClassRewards[cls.Id].Add(matElement);
+                                }
+                            }
+                            else
+                            {
+                                providedRewards.Add(matElement);
+                            }
+                        }
+                        else
+                        {
+                            if (kvp.Classes.Count > 0)
+                            {
+                                foreach (var cls in kvp.Classes)
+                                {
+                                    if (!selectOneClassRewards.ContainsKey(cls.Id))
+                                    {
+                                        selectOneClassRewards.Add(cls.Id,
+                                            new XElement("div",
+                                                XClass(String.Format("torctip_class_restrict torc_cls_{0}", cls.GetFaction())),
+                                                new XElement("span", cls.Name)
+                                            )
+                                        );
+                                    }
+                                    selectOneClassRewards[cls.Id].Add(matElement);
+                                }
+                            }
+                            else
+                            {
+                                selectOneRewards.Add(matElement);
+                            }
+                        }
+                        rewardCount++;
+                    }
+                    if (providedClassRewards.Count > 0)
+                        providedRewards.Add(providedClassRewards.Values.OrderBy(x => x.Attribute("class").Value).ThenBy(x => x.Element("span").Value));
+                    if (selectOneClassRewards.Count > 0)
+                        selectOneRewards.Add(selectOneClassRewards.Values.OrderBy(x => x.Attribute("class").Value).ThenBy(x => x.Element("span").Value));
+                    if (providedRewards.Elements().Count() > 1)
+                        rewards.Add(providedRewards);
+                    if (selectOneRewards.Elements().Count() > 1)
+                        rewards.Add(selectOneRewards);
+                }
+                if(rewardCount > 0)
+                    inner.Add(rewards);
+
+                if (itm.BranchCount == 1)
+                {
+                    XElement desc = new XElement("div",
+                            XClass("torctip_white"),
+                            new XElement("br"));
+                    string misDesc = itm.Branches[0].Steps[1].JournalText;
+                    if (misDesc.Contains('\n'))
+                    {
+                        var splits = misDesc.Split('\n');
+                        foreach (var split in splits)
+                        {
+                            desc.Add(split, new XElement("br"));
+                        }
+                    }
+                    else
+                    {
+                        desc.Add(misDesc);
+                    }
+                    inner.Add(desc);
+                }
+                tooltip.Add(inner);
+            }
+
+            return tooltip;
+        }
+
+        #endregion
 
         private static string LinkString(this string name)
         {
@@ -1012,6 +1197,25 @@ namespace GomLib.Models
             if (number >= 1) return "I" + ToRoman(number - 1);
             throw new ArgumentOutOfRangeException("something bad happened");
         }
+        internal static List<ulong> ImpClasses = new List<ulong> {
+            16140902893827567561, //Sith Warrior
+            16141024490216983174, //Sith Marauder
+            16141180228828243745, //Sith Juggernaut
+            16140943676484767978, //Imperial Agent
+            16141046347418927959, //Sniper
+            16140905232405801950, //Operative
+            16141010271067846579, //Sith Inquisitor
+            16141163438392504574, //Sith Assassin
+            16141067119934185414, //Stih Sorcerer
+            16141170711935532310, //Bounty Hunter
+            16141007401395916385, //Powertech
+            16141111589108060476, //Mercenary
+        };
+        public static string GetFaction(this ClassSpec cls)
+        {
+            if (ImpClasses.Contains(cls.Id)) return "Imperial";
+            return "Republic";
+        }
         private static XAttribute XClass(string classname)
         {
             return new XAttribute("class", classname);
@@ -1020,7 +1224,7 @@ namespace GomLib.Models
         {
             return new XElement("div",
                 new XElement("span",
-                    XClass("torctip_stat"),
+                    XClass("torctip_val"),
                     text),
                 new XElement("span",
                     XClass("torctip_white"),

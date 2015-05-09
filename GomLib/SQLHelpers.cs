@@ -129,6 +129,19 @@ namespace GomLib
         }
 
         /// <summary>
+        /// Convert a the last 5 bytes of a ulong value to a Base62 string
+        /// </summary>
+        /// <param name="original">ulong</param>
+        /// <returns>Base62 string</returns>
+        public static string ToMaskedBase62(this long id)
+        {
+            long maskedId = (long)(id & 0xFFFFFFFFFF);
+            List<byte> maskedBytes = BitConverter.GetBytes(maskedId).ToList();
+            maskedBytes.RemoveRange(5, 3);
+            return maskedBytes.ToArray().ToBase62();
+        }
+
+        /// <summary>
         /// Convert a byte array
         /// </summary>
         /// <param name="original">Byte array</param>

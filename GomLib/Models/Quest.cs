@@ -10,10 +10,12 @@ namespace GomLib.Models
 {
     public class Quest : GameObject, IEquatable<Quest>
     {
+        #region Properties
         internal Dictionary<object,object> TextLookup { get; set; }
 
         public ulong NodeId { get; set; }
         public string Name { get; set; }
+        public long NameId { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
         public string Icon { get; set; }
         public bool IsRepeatable { get; set; }
@@ -26,7 +28,7 @@ namespace GomLib.Models
         public bool IsBonus { get; set; }
         public bool BonusShareable { get; set; }
         public long CategoryId { get; set; }
-        public string Category { get; set; }//QuestCategory Category { get; set; }
+        public string Category { get; set; }
         public List<QuestBranch> Branches { get; set; }
         public Dictionary<ulong, QuestItem> Items { get; set; }
         public ClassSpecList Classes { get; set; }
@@ -52,8 +54,109 @@ namespace GomLib.Models
         public List<ulong> BonusMissionsIds { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         public List<object> ItemMap { get; set; }
+        public long CreditRewardType { get; set; }
+        public float CreditsRewarded { get; set; }
+        public long XP { get; set; }
+        #endregion
+        #region FlatQuestProperties
+            [Newtonsoft.Json.JsonIgnore]
+            public string CleanName
+        {
+            get
+            {
+                if (Name == null || Name == "")
+                    return "Unnamed_Quest";
+                //return Name.Replace("'", "");
+                return System.IO.Path.GetInvalidFileNameChars().Aggregate(Name, (current, c) => current.Replace(c.ToString(), string.Empty)).Replace("'", "").Replace(" ", "_");
+            }
+        }
+            [Newtonsoft.Json.JsonIgnore]
+            public string HashedIcon
+            {
+                get
+                {
+                    var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", this.Icon));
+                    return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+                }
+            }
+            #region Branches
+            public int BranchCount
+            {
+                get
+                {
+                    return Branches.Count;
+                }
+            }
+            [Newtonsoft.Json.JsonIgnore]
+            internal List<string> _BranchIds { get; set; }
+            [Newtonsoft.Json.JsonIgnore]
+            public List<string> BranchIds
+            {
+                get
+                {
+                    if (_BranchIds == null)
+                    {
+                        _BranchIds = Branches.Select(x => x.Id.ToMaskedBase62()).ToList();
+                    }
+                    return _BranchIds;
+                }
+            }
+            #endregion
+            #region Rewards
+            [Newtonsoft.Json.JsonIgnore]
+            internal List<string> _RewardIds { get; set; }
+            [Newtonsoft.Json.JsonIgnore]
+            public List<string> RewardIds
+            {
+                get
+                {
+                    if (_RewardIds == null)
+                    {
+                        if (Rewards == null) return new List<string>();
+                        _RewardIds = Rewards.Select(x => x.Id.ToMaskedBase62()).ToList();
+                    }
+                    return _RewardIds;
+                }
+            }
+            #endregion
+            #region Bonus Missions
+            [Newtonsoft.Json.JsonIgnore]
+            internal List<string> _BonusMissionsB62Ids { get; set; }
+            [Newtonsoft.Json.JsonIgnore]
+            public List<string> BonusMissionsB62Ids
+            {
+                get
+                {
+                    if(_BonusMissionsB62Ids == null)
+                    {
+                        if (BonusMissionsIds == null) return new List<string>();
+                        _BonusMissionsB62Ids = BonusMissionsIds.Select(x => x.ToMaskedBase62()).ToList();
+                    }
+                    return _BonusMissionsB62Ids;
+                }
+            }
+            #endregion
+            #region Classes
+            [Newtonsoft.Json.JsonIgnore]
+            internal List<string> _ClassesB62 { get; set; }
+            [Newtonsoft.Json.JsonIgnore]
+            public List<string> ClassesB62
+            {
+                get
+                {
+                    if (_ClassesB62 == null)
+                    {
+                        if (Classes == null) return new List<string>();
+                        _ClassesB62 = Classes.Select(x => x.Base62Id).ToList();
+                    }
+                    return _ClassesB62;
+                }
+            }
+            #endregion
+        #endregion
 
-        public override int GetHashCode()
+        #region IEquatable<Quest>
+            public override int GetHashCode()
         {
             int hash = Name.GetHashCode();
             if (Icon != null) { hash ^= Icon.GetHashCode(); }
@@ -71,7 +174,6 @@ namespace GomLib.Models
             foreach (var x in Classes) { hash ^= x.Id.GetHashCode(); }
             return hash;
         }
-
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
@@ -83,7 +185,6 @@ namespace GomLib.Models
 
             return Equals(qst);
         }
-
         public bool Equals(Quest qst)
         {
             if (qst == null) return false;
@@ -185,7 +286,48 @@ namespace GomLib.Models
                 return false;
             return true;
         }
+        #endregion
 
+        #region Output Function
+        public override List<SQLProperty> SQLProperties
+        {
+            get
+            {
+                return new List<SQLProperty>
+                    {                //(SQL Column Name, C# Property Name, SQL Column type statement, isUnique/PrimaryKey, Serialize value to json)
+                        new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("CleanName", "CleanName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL", true),
+                        new SQLProperty("NameId", "NameId", "bigint(20) NOT NULL"),
+                        new SQLProperty("Fqn", "Fqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("LocalizedName", "LocalizedName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", false, true),
+                        new SQLProperty("Icon", "HashedIcon", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("IsRepeatable", "IsRepeatable", "tinyint(1) NOT NULL"),
+                        new SQLProperty("RequiredLevel", "RequiredLevel", "int(11) NOT NULL"),
+                        new SQLProperty("XpLevel", "XpLevel", "int(11) NOT NULL"),
+                        new SQLProperty("XP", "XP", "int(11) NOT NULL"),
+                        new SQLProperty("Difficulty", "Difficulty", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("CanAbandon", "CanAbandon", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsHidden", "IsHidden", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsClassQuest", "IsClassQuest", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsBonus", "IsBonus", "tinyint(1) NOT NULL"),
+                        new SQLProperty("BonusShareable", "BonusShareable", "tinyint(1) NOT NULL"),
+                        new SQLProperty("CategoryId", "CategoryId", "bigint(20) NOT NULL"),
+                        new SQLProperty("Category", "Category", "varchar(255) COLLATE latin1_general_cs NOT NULL"),
+                        new SQLProperty("BranchCount", "BranchCount", "int(11) NOT NULL"),
+                        new SQLProperty("Branches", "Branches", "TEXT NOT NULL", false, true),
+                        //new SQLProperty("Items", "Items", "TEXT NOT NULL", false, true),
+                        new SQLProperty("Classes", "ClassesB62", "varchar(255) COLLATE latin1_general_cs NOT NULL", false, true),
+                        new SQLProperty("RewardIds", "RewardIds", "varchar(255) COLLATE latin1_general_cs NOT NULL", false, true),
+                        new SQLProperty("Rewards", "Rewards", "TEXT NOT NULL", false, true),
+                        new SQLProperty("CreditsRewarded", "CreditsRewarded", "int(11) NOT NULL"),
+                        new SQLProperty("ReqPrivacy", "ReqPrivacy", "varchar(255) COLLATE latin1_general_cs NOT NULL"),
+                        new SQLProperty("BonusMissionsIds", "BonusMissionsB62Ids", "TEXT NOT NULL", false, true),
+                        //new SQLProperty("ItemMap", "ItemMap", "TEXT NOT NULL", false, true),
+
+                    };
+            }
+        }
         public override string ToString(bool verbose)
         {
             string n = Environment.NewLine;
@@ -217,13 +359,11 @@ namespace GomLib.Models
 
             return txtFile.ToString();
         }
-
+        #region XML
         [Newtonsoft.Json.JsonIgnore]
         public Dictionary<string, XElement> LoadedNpcs;
         [Newtonsoft.Json.JsonIgnore]
         public Dictionary<string, XElement> LoadedQuests;
-        
-
         public override XElement ToXElement(bool verbose)
         {
             var questNode = new XElement("Quest", new XElement("Name", Name),
@@ -302,7 +442,6 @@ namespace GomLib.Models
             }
             return questNode;
         }
-
         public void QuestItemsGivenOrTakenToXElement(XElement questNode, List<GomLib.Models.QuestItem> givenItems, List<GomLib.Models.QuestItem> takenItems)
         {
             XElement itemsGiven = QuestItemListToXElement("ItemsGiven", givenItems);
@@ -310,7 +449,6 @@ namespace GomLib.Models
 
             questNode.Add(itemsGiven, itemsTaken);
         }
-
         private XElement QuestItemListToXElement(string elementName, List<GomLib.Models.QuestItem> Items)
         {
             XElement itemsElement = new XElement(elementName);
@@ -329,6 +467,8 @@ namespace GomLib.Models
             }
             return itemsElement;
         }
+        #endregion
+        #endregion
     }
 
     public class QuestReward : GameObject, IEquatable<QuestReward>
@@ -340,8 +480,33 @@ namespace GomLib.Models
             get { return _dom.itemLoader.Load(RewardItemId); }
             set { RewardItem = value; }
         }
+        public string Base62Id
+        {
+            get
+            {
+                return RewardItemId.ToMaskedBase62();
+            }
+        }
+        [Newtonsoft.Json.JsonIgnore]
         public ulong RewardItemId { get; set; }
+        #region Classes
+        [Newtonsoft.Json.JsonIgnore]
         public ClassSpecList Classes { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        internal List<string> _ClassesB62 { get; set; }
+        public List<string> ClassesB62
+        {
+            get
+            {
+                if (_ClassesB62 == null)
+                {
+                    if (Classes == null) return new List<string>();
+                    _ClassesB62 = Classes.Select(x => x.Base62Id).ToList();
+                }
+                return _ClassesB62;
+            }
+        }
+        #endregion
         public long NumberOfItem { get; set; }
         public long MinLevel { get; set; }
         public long MaxLevel { get; set; }

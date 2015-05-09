@@ -8128,4 +8128,6 @@
   <gom_type Id="4611686347574357000" name="itmBindsToSlot" desc="Item binds to slot it's equiped in" />
   <!-- prfDebugSchematicMapPrototype -->
   <gom_type Id="4611686284556820001" name="schemChildMap" desc="" />
+  <!-- qstExperiencePrototype -->
+  <gom_type Id="4611686298731624001" name="qstExperienceTable" desc="" />
 </gom_types>
