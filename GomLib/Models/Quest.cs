@@ -75,7 +75,7 @@ namespace GomLib.Models
             {
                 get
                 {
-                    var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", this.Icon));
+                    var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/codex/{0}.dds", this.Icon));
                     return String.Format("{0}_{1}", fileId.ph, fileId.sh);
                 }
             }

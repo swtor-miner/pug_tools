@@ -545,18 +545,7 @@ namespace GomLib.Models
                         XElement desc = new XElement("div",
                             XClass("torctip_use"),
                             "Equip: ");
-                        if (ablDesc.Contains('\n'))
-                        {
-                            var splits = ablDesc.Split('\n');
-                            foreach (var split in splits)
-                            {
-                                desc.Add(split, new XElement("br"));
-                            }
-                        }
-                        else
-                        {
-                            desc.Add(ablDesc);
-                        }
+                        AddStringWithBreaks(ref desc, ablDesc);
                         tooltip.Add(desc);
                     }
                 }
@@ -621,18 +610,7 @@ namespace GomLib.Models
                                 XElement desc = new XElement("div",
                                     XClass("torctip_use"),
                                     "Use: ");
-                                if (ablDesc.Contains('\n'))
-                                {
-                                    var splits = ablDesc.Split('\n');
-                                    foreach (var split in splits)
-                                    {
-                                        desc.Add(split, new XElement("br"));
-                                    }
-                                }
-                                else
-                                {
-                                    desc.Add(ablDesc);
-                                }
+                                AddStringWithBreaks(ref desc, ablDesc);
                                 tooltip.Add(desc);
                             }
                             break;
@@ -662,18 +640,7 @@ namespace GomLib.Models
                 //itmDesc = itmDesc.Replace("<br />", "\n");
                 XElement desc = new XElement("div",
                     XClass("torctip_desc"));
-                if (itmDesc.Contains('\n'))
-                {
-                    var splits = itmDesc.Split('\n');
-                    foreach (var split in splits)
-                    {
-                        desc.Add(split, new XElement("br"));
-                    }
-                }
-                else
-                {
-                    desc.Add(itmDesc);
-                }
+                AddStringWithBreaks(ref desc, itmDesc);
                 tooltip.Add(desc);
             }
             if (itm.SetBonusId != 0)
@@ -744,7 +711,6 @@ namespace GomLib.Models
                 return null;
         }
         #endregion
-
         #region schematic
         public static XElement GetHTML(this Schematic itm)
         {
@@ -887,7 +853,6 @@ namespace GomLib.Models
             return tooltip;
         }
         #endregion
-
         #region ability
         public static XElement GetHTML(this Ability itm)
         {
@@ -1006,19 +971,116 @@ namespace GomLib.Models
                         itm.Name)
                     );
 
+                XElement desc = new XElement("div",
+                        XClass("torctip_white"));
+                string journalText = itm.Branches.Select(x => x.Steps.Select(y => y.JournalText).FirstOrDefault(z=> !String.IsNullOrEmpty(z))).FirstOrDefault(z=> !String.IsNullOrEmpty(z));
+                if(!String.IsNullOrEmpty(journalText))
+                    AddStringWithBreaks(ref desc, journalText);
+                inner.Add(desc);
+                XElement taskText = new XElement("span",
+                    XClass("torctip_tsk_txt"),
+                    "Tasks:");
+                bool taskAdded = false;
+                foreach (var branch in itm.Branches)
+                {
+                    int stepNum = 1;
+                    XElement branchElement = new XElement("div",
+                            XClass("torctip_branch"));
+                    bool addElement = false;
+                    foreach (var step in branch.Steps)
+                    {
+                        bool addTask = false;
+                        if(step.Tasks.Count > 0)
+                        {
+                            XElement taskCont = new XElement("div",
+                                XClass("torc_task_cont"),
+                                new XElement("span",
+                                    XClass("torc_brnch_id"),
+                                    String.Format("{0}) ",stepNum))
+                            );
+                            XElement taskInner = new XElement("div",
+                                XClass("torc_mis_tasks"));
+                            
+                            foreach (var task in step.Tasks)
+                            {
+                                if (String.IsNullOrEmpty(task.String)) continue;
+                                if(task.ShowCount)
+                                {
+                                    taskInner.Add(new XElement("div",
+                                        XClass("torc_task"),
+                                        String.Format("{0}: ", task.String),
+                                        new XElement("span",
+                                            XClass("torctip_val"),
+                                            String.Format("0/{0}", task.CountMax))
+                                        )
+                                    );
+                                }
+                                else
+                                {
+                                    taskInner.Add(new XElement("div",
+                                        XClass("torc_task"),
+                                        task.String)
+                                    );
+                                }
+                                addTask = true;
+                                addElement = true;
+                            }
+                            if (addTask)
+                            {
+                                taskCont.Add(taskInner);
+                                branchElement.Add(taskCont);
+                            }
+                        }
+
+                        if (addTask)
+                        {
+                            stepNum++;
+                        }
+                    }
+                    if (addElement)
+                    {
+                        if (!taskAdded)
+                        {
+                            inner.Add(taskText);
+                        }
+                        inner.Add(branchElement);
+                    }
+                }
+                if (itm.Classes.Count > 0)
+                {
+                    XElement requiredClasses = new XElement("div",
+                        XClass("torctip_rqd_cls"),
+                        new XElement("span",
+                            "Requires: "));
+                    List<ClassSpec> classes = itm.Classes.OrderBy(x => x.GetFaction()).ThenBy(x => x.Name).ToList();
+                    for (int i = 0; i < classes.Count; i++)
+                    {
+                        string joiner = ",";
+                        if (i == classes.Count - 1)
+                            joiner = "";
+                        requiredClasses.Add(new XElement("span",
+                            XClass(String.Format("torc_cls_{0}", classes[i].GetFaction())),
+                            String.Format("{0}{1} ", classes[i].Name, joiner))                            
+                        );
+                    }
+                    inner.Add(requiredClasses);
+                }
                 XElement rewards = new XElement("div",
                     XClass("torctip_rewards"),
                     new XElement("span",
                         "Mission Rewards")
                     );
+                XElement rewardContainer = new XElement("div",
+                    XClass("torctip_rwd_inner"));
                 int rewardCount = 0;
                 if (itm.XP != 0 && itm.Difficulty != QuestDifficulty.NoExp)
                 {
-                    rewards.Add(new XElement("div",
+                    rewardContainer.Add(new XElement("div",
+                        XClass("torctip_rwd_info"),
                         new XElement("span",
                             "Experience: "),
                         new XElement("span",
-                            XClass("torctip_use"),
+                            XClass("torctip_exp"),
                             itm.XP)
                         )
                     );
@@ -1026,11 +1088,12 @@ namespace GomLib.Models
                 }
                 if (itm.CreditsRewarded != 0)
                 {
-                    rewards.Add(new XElement("div",
+                    rewardContainer.Add(new XElement("div",
+                        XClass("torctip_rwd_info"),
                         new XElement("span",
                             "Credits: "),
                         new XElement("span",
-                            XClass("torctip_use"),
+                            XClass("torctip_credits"),
                             itm.CreditsRewarded)
                         )
                     );
@@ -1041,13 +1104,18 @@ namespace GomLib.Models
                     XElement items = new XElement("div",
                             XClass("torctip_rwd_itms"));
                     XElement providedRewards = new XElement("div",
+                        XClass("torctip_rwd_items"),
                         new XElement("div",
                             "Provided Rewards:"));
                     Dictionary<ulong, XElement> providedClassRewards = new Dictionary<ulong,XElement>();
                     XElement selectOneRewards = new XElement("div",
+                        XClass("torctip_rwd_items"),
                         new XElement("div",
                             "Select One Reward:"));
                     Dictionary<ulong, XElement> selectOneClassRewards = new Dictionary<ulong,XElement>();
+                    HashSet<ulong> clsIds = new HashSet<ulong>();
+                    clsIds.UnionWith(itm.Classes.Select(x => x.Id).ToList());
+                    AddBaseClassIds(clsIds);
                     foreach (var kvp in itm.Rewards)
                     {
                         var mat = kvp.RewardItem;
@@ -1067,7 +1135,7 @@ namespace GomLib.Models
                                 )
                             )
                         );
-                        if (kvp.NumberOfItem > 1)
+                        if (kvp.RewardItem.MaxStack > 1)
                         {
                             matElement.Element("a").Add(new XElement("span",
                                     XClass("torctip_rwd_overlay"),
@@ -1081,6 +1149,8 @@ namespace GomLib.Models
                             {
                                 foreach (var cls in kvp.Classes)
                                 {
+                                    if (clsIds.Count > 0 && !clsIds.Contains(cls.Id))
+                                        continue;
                                     if (!providedClassRewards.ContainsKey(cls.Id))
                                     {
                                         providedClassRewards.Add(cls.Id,
@@ -1104,6 +1174,8 @@ namespace GomLib.Models
                             {
                                 foreach (var cls in kvp.Classes)
                                 {
+                                    if (clsIds.Count > 0 && !clsIds.Contains(cls.Id))
+                                        continue;
                                     if (!selectOneClassRewards.ContainsKey(cls.Id))
                                     {
                                         selectOneClassRewards.Add(cls.Id,
@@ -1128,41 +1200,47 @@ namespace GomLib.Models
                     if (selectOneClassRewards.Count > 0)
                         selectOneRewards.Add(selectOneClassRewards.Values.OrderBy(x => x.Attribute("class").Value).ThenBy(x => x.Element("span").Value));
                     if (providedRewards.Elements().Count() > 1)
-                        rewards.Add(providedRewards);
+                        rewardContainer.Add(providedRewards);
                     if (selectOneRewards.Elements().Count() > 1)
-                        rewards.Add(selectOneRewards);
+                        rewardContainer.Add(selectOneRewards);
                 }
-                if(rewardCount > 0)
-                    inner.Add(rewards);
-
-                if (itm.BranchCount == 1)
+                if (rewardCount > 0)
                 {
-                    XElement desc = new XElement("div",
-                            XClass("torctip_white"),
-                            new XElement("br"));
-                    string misDesc = itm.Branches[0].Steps[1].JournalText;
-                    if (misDesc.Contains('\n'))
-                    {
-                        var splits = misDesc.Split('\n');
-                        foreach (var split in splits)
-                        {
-                            desc.Add(split, new XElement("br"));
-                        }
-                    }
-                    else
-                    {
-                        desc.Add(misDesc);
-                    }
-                    inner.Add(desc);
+                    rewards.Add(rewardContainer);
+                    inner.Add(rewards);
                 }
+
                 tooltip.Add(inner);
             }
 
+            if(itm.BranchCount > 1)
+            {
+                string sflsoljh = "";
+            }
             return tooltip;
         }
 
         #endregion
 
+        #region HelperMethods
+        private static void AddStringWithBreaks(ref XElement element, string desc)
+        {
+            if (desc.Contains('\n'))
+            {
+                var splits = desc.Split('\n');
+                int count = splits.Count();
+                for (int i = 0; i < count; i++)
+                {
+                    element.Add(splits[i]);
+                    if (i != count)
+                        element.Add(new XElement("br"));
+                }
+            }
+            else
+            {
+                element.Add(desc);
+            }
+        }
         private static string LinkString(this string name)
         {
             string cleaned = name;
@@ -1206,11 +1284,55 @@ namespace GomLib.Models
             16140905232405801950, //Operative
             16141010271067846579, //Sith Inquisitor
             16141163438392504574, //Sith Assassin
-            16141067119934185414, //Stih Sorcerer
+            16141067119934185414, //Sith Sorcerer
             16141170711935532310, //Bounty Hunter
             16141007401395916385, //Powertech
             16141111589108060476, //Mercenary
         };
+        internal static void AddBaseClassIds(HashSet<ulong> clsIds)
+        {
+            if (clsIds.Contains(16140902893827567561))//Sith Warrior
+            {
+                clsIds.Add(16141024490216983174); //Sith Marauder
+                clsIds.Add(16141180228828243745); //Sith Juggernaut
+            }
+            if (clsIds.Contains(16140943676484767978)) //Imperial Agent
+            {
+                clsIds.Add(16141046347418927959); //Sniper
+                clsIds.Add(16140905232405801950); //Operative
+            }
+            if (clsIds.Contains(16141010271067846579)) //Sith Inquisitor
+            {
+                clsIds.Add(16141163438392504574); //Sith Assassin
+                clsIds.Add(16141067119934185414);  //Sith Sorcerer
+            }
+            if (clsIds.Contains(16141170711935532310)) //Bounty Hunter
+            {
+                clsIds.Add(16141007401395916385); //Powertech
+                clsIds.Add(16141111589108060476); //Mercenary
+            }
+
+            if (clsIds.Contains(16141179471541245792)) //Jedi Consular
+            {
+                clsIds.Add(16140939761890536394); //Jedi Sage
+                clsIds.Add(16141082698337403481); //Jedi Shadow
+            }
+            if (clsIds.Contains(16140912704077491401)) //Smuggler
+            {
+                clsIds.Add(16141041084185282043); //Gunslinger
+                clsIds.Add(16141067128654459200); //Scoundrel
+            }
+            if (clsIds.Contains(16140973599688231714)) //Trooper
+            {
+                clsIds.Add(16141067504602942620); //Commando
+                clsIds.Add(16141087184558207941); //Vanguard
+            }
+            if (clsIds.Contains(16141119516274073244)) //Jedi Knight
+            {
+                clsIds.Add(16140975849784542883); //Jedi Guardian
+                clsIds.Add(16141180228828243745); //Jedi Sentinel
+            }
+        }
         public static string GetFaction(this ClassSpec cls)
         {
             if (ImpClasses.Contains(cls.Id)) return "Imperial";
@@ -1585,6 +1707,7 @@ namespace GomLib.Models
                 default: return "None";
             }
         }
+        #endregion
         #endregion
     }
 }
