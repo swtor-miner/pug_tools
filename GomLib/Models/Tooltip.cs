@@ -974,9 +974,11 @@ namespace GomLib.Models
                 XElement desc = new XElement("div",
                         XClass("torctip_white"));
                 string journalText = itm.Branches.Select(x => x.Steps.Select(y => y.JournalText).FirstOrDefault(z=> !String.IsNullOrEmpty(z))).FirstOrDefault(z=> !String.IsNullOrEmpty(z));
-                if(!String.IsNullOrEmpty(journalText))
+                if (!String.IsNullOrEmpty(journalText))
+                {
                     AddStringWithBreaks(ref desc, journalText);
-                inner.Add(desc);
+                    inner.Add(desc);
+                }
                 XElement taskText = new XElement("span",
                     XClass("torctip_tsk_txt"),
                     "Tasks:");
@@ -1216,6 +1218,11 @@ namespace GomLib.Models
             if(itm.BranchCount > 1)
             {
                 string sflsoljh = "";
+            }
+            if (itm.Base62Id == "xxScuD3")
+            {
+                string sflsoljh = "";
+                tooltip.Descendants().Where(x => x.Value == null).Remove();
             }
             return tooltip;
         }
