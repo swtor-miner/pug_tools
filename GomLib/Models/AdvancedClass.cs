@@ -94,7 +94,7 @@ namespace GomLib.Models
         public ulong UtiltyPkgId { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         internal AbilityPackage _UtilityPkg;
-        [Newtonsoft.Json.JsonIgnore]
+        //[Newtonsoft.Json.JsonIgnore]
         public AbilityPackage UtilityPkg
         {
             get
@@ -111,7 +111,7 @@ namespace GomLib.Models
         public List<ulong> AdvancedClassPkgIds { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         internal List<AbilityPackage> _AdvancedClassPkgs;
-        [Newtonsoft.Json.JsonIgnore]
+        //[Newtonsoft.Json.JsonIgnore]
         public List<AbilityPackage> AdvancedClassPkgs
         {
             get
@@ -129,7 +129,7 @@ namespace GomLib.Models
         public List<ulong> BaseClassPkgIds { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         internal List<AbilityPackage> _BaseClassPkgs;
-        [Newtonsoft.Json.JsonIgnore]
+        //[Newtonsoft.Json.JsonIgnore]
         public List<AbilityPackage> BaseClassPkgs
         {
             get
