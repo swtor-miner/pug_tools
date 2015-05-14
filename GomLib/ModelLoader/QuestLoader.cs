@@ -16,6 +16,7 @@ namespace GomLib.ModelLoader
         Dictionary<object, object> fullQuestRewardsTable;
         Dictionary<long, Dictionary<long, float>> fullCreditRewardsTable;
         Dictionary<long, long> experienceTable;
+        Dictionary<QuestDifficulty, float> experienceDifficultyMultiplierTable;
 
         DataObjectModel _dom;
 
@@ -32,6 +33,7 @@ namespace GomLib.ModelLoader
             fullQuestRewardsTable = new Dictionary<object, object>();
             fullCreditRewardsTable = new Dictionary<long, Dictionary<long, float>>();
             experienceTable = new Dictionary<long, long>();
+            experienceDifficultyMultiplierTable = new Dictionary<QuestDifficulty, float>();
         }
 
         public string ClassName
@@ -229,6 +231,11 @@ namespace GomLib.ModelLoader
                     .ToDictionary(x=> (long)x.Key, x => ((Dictionary<object, object>)x.Value).ToDictionary(y => (long)y.Key, y => (float)y.Value));
                 experienceTable = _dom.GetObject("qstExperiencePrototype").Data.Get<Dictionary<object, object>>("qstExperienceTable")
                     .ToDictionary(x => (long)x.Key, x => (long)x.Value);
+                var qstExperienceMultiplierPrototype = _dom.GetObject("qstExperienceMultiplierPrototype");
+                experienceDifficultyMultiplierTable = qstExperienceMultiplierPrototype.Data.ValueOrDefault<Dictionary<object, object>>("qstExperienceMultiplierTable", new Dictionary<object, object>())
+                    .ToDictionary(x=> QuestDifficultyExtensions.ToQuestDifficulty((ScriptEnum)x.Key), x=> (float)x.Value);
+                // Subscriber XP: base xp * difficulty multiplier * (1.2853 - level * .0012)
+                // F2P XP: base xp * difficulty multiplier * (1.2573 - level * .0012)
             }
             //try
             //{
@@ -295,8 +302,18 @@ namespace GomLib.ModelLoader
             {
                 qst.CreditsRewarded = fullCreditRewardsTable[qst.CreditRewardType][qst.XpLevel];
             }
-            if(qst.XpLevel != 0)
-                qst.XP = experienceTable[qst.XpLevel];
+            if (qst.XpLevel != 0)
+            {
+                // Subscriber XP: base xp * difficulty multiplier * (1.2853 - level * .0012)
+                // F2P XP: base xp * difficulty multiplier * (1.2573 - level * .0012)
+                float diffMulti = experienceDifficultyMultiplierTable[qst.Difficulty];
+                if(qst.IsClassQuest)
+                    qst.SubXP = (long)Math.Round(12 * experienceTable[qst.XpLevel] * diffMulti * (1.2853 - qst.XpLevel * .0012));
+                else
+                    qst.SubXP = (long)Math.Round(experienceTable[qst.XpLevel] * diffMulti * (1.2853 - qst.XpLevel * .0012));
+                qst.F2PXP = (long)Math.Round(experienceTable[qst.XpLevel] * diffMulti * (1.2573 - qst.XpLevel * .0012));
+                qst.XP = (long)Math.Round(experienceTable[qst.XpLevel] * diffMulti);
+            }
         }
 
         private void LoadBranches(ref Quest qst, GomObject obj)

@@ -1082,8 +1082,14 @@ namespace GomLib.Models
                         new XElement("span",
                             "Experience: "),
                         new XElement("span",
-                            XClass("torctip_exp"),
-                            itm.XP)
+                            new XElement("span",
+                                XClass("torctip_exp"),
+                                String.Format("{0} (Sub)", itm.SubXP.ToString("n0"))),
+                            " / ",
+                            new XElement("span",
+                                XClass("torctip_exp_f2p"),
+                                String.Format("{0} (F2P)", itm.F2PXP.ToString("n0")))
+                            )
                         )
                     );
                     rewardCount++;
@@ -1109,18 +1115,18 @@ namespace GomLib.Models
                         XClass("torctip_rwd_items"),
                         new XElement("div",
                             "Provided Rewards:"));
-                    Dictionary<ulong, XElement> providedClassRewards = new Dictionary<ulong,XElement>();
+                    Dictionary<string, XElement> providedClassRewards = new Dictionary<string,XElement>();
                     XElement selectOneRewards = new XElement("div",
                         XClass("torctip_rwd_items"),
                         new XElement("div",
                             "Select One Reward:"));
-                    Dictionary<ulong, XElement> selectOneClassRewards = new Dictionary<ulong,XElement>();
+                    Dictionary<string, XElement> selectOneClassRewards = new Dictionary<string,XElement>();
                     HashSet<ulong> clsIds = new HashSet<ulong>();
                     clsIds.UnionWith(itm.Classes.Select(x => x.Id).ToList());
                     AddBaseClassIds(clsIds);
-                    foreach (var kvp in itm.Rewards)
+                    foreach (var rew in itm.Rewards)
                     {
-                        var mat = kvp.RewardItem;
+                        var mat = rew.RewardItem;
                         var matstringQual = ((mat.IsModdable && (mat.Quality == ItemQuality.Prototype)) ? "moddable" : mat.Quality.ToString().ToLower());
                         var matfileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", mat.Icon));
                         XElement matElement = new XElement("div",
@@ -1137,58 +1143,90 @@ namespace GomLib.Models
                                 )
                             )
                         );
-                        if (kvp.RewardItem.MaxStack > 1)
+                        if (rew.RewardItem.MaxStack > 1)
                         {
                             matElement.Element("a").Add(new XElement("span",
                                     XClass("torctip_rwd_overlay"),
-                                    kvp.NumberOfItem
+                                    rew.NumberOfItem
                                 )
                             );
                         }
-                        if (kvp.IsAlwaysProvided)
+                        if (rew.IsAlwaysProvided)
                         {
-                            if (kvp.Classes.Count > 0)
+                            if (rew.Classes.Count > 0 && itm.Classes.Count > 1)
                             {
-                                foreach (var cls in kvp.Classes)
+                                foreach (var cls in rew.Classes)
                                 {
                                     if (clsIds.Count > 0 && !clsIds.Contains(cls.Id))
                                         continue;
-                                    if (!providedClassRewards.ContainsKey(cls.Id))
+                                    if (!providedClassRewards.ContainsKey(cls.Name))
                                     {
-                                        providedClassRewards.Add(cls.Id,
+                                        providedClassRewards.Add(cls.Name,
                                             new XElement("div",
                                                 XClass(String.Format("torctip_class_restrict torc_cls_{0}", cls.GetFaction())),
                                                 new XElement("span", cls.Name)
                                             )
                                         );
                                     }
-                                    providedClassRewards[cls.Id].Add(matElement);
+                                    providedClassRewards[cls.Name].Add(matElement);
                                 }
+                            }
+                            else if (rew.MinLevel != 1 || rew.MaxLevel != 60)
+                            {
+                                string levelRestrict = String.Format("Level {0}-{1}", rew.MinLevel, rew.MaxLevel);
+                                if (!providedClassRewards.ContainsKey(levelRestrict))
+                                {
+                                    providedClassRewards.Add(levelRestrict,
+                                        new XElement("div",
+                                            XClass("torctip_class_restrict torc_cls_level"),
+                                            new XElement("span", levelRestrict)
+                                        )
+                                    );
+                                }
+                                providedClassRewards[levelRestrict].Add(matElement);
                             }
                             else
                             {
                                 providedRewards.Add(matElement);
                             }
                         }
+                        else if (rew.MinLevel != 1 || rew.MaxLevel != 60)
+                        {
+                            string ruhroh = "";
+                        }
                         else
                         {
-                            if (kvp.Classes.Count > 0)
+                            if (rew.Classes.Count > 0 && itm.Classes.Count > 1)
                             {
-                                foreach (var cls in kvp.Classes)
+                                foreach (var cls in rew.Classes)
                                 {
                                     if (clsIds.Count > 0 && !clsIds.Contains(cls.Id))
                                         continue;
-                                    if (!selectOneClassRewards.ContainsKey(cls.Id))
+                                    if (!selectOneClassRewards.ContainsKey(cls.Name))
                                     {
-                                        selectOneClassRewards.Add(cls.Id,
+                                        selectOneClassRewards.Add(cls.Name,
                                             new XElement("div",
                                                 XClass(String.Format("torctip_class_restrict torc_cls_{0}", cls.GetFaction())),
                                                 new XElement("span", cls.Name)
                                             )
                                         );
                                     }
-                                    selectOneClassRewards[cls.Id].Add(matElement);
+                                    selectOneClassRewards[cls.Name].Add(matElement);
                                 }
+                            }
+                            else if (rew.MinLevel != 1 || rew.MaxLevel != 60)
+                            {
+                                string levelRestrict = String.Format("Level {0}-{1}", rew.MinLevel, rew.MaxLevel);
+                                if (!selectOneClassRewards.ContainsKey(levelRestrict))
+                                {
+                                    selectOneRewards.Add(levelRestrict,
+                                        new XElement("div",
+                                            XClass("torctip_class_restrict torc_cls_level"),
+                                            new XElement("span", levelRestrict)
+                                        )
+                                    );
+                                }
+                                selectOneClassRewards[levelRestrict].Add(matElement);
                             }
                             else
                             {

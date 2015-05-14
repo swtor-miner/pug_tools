@@ -57,6 +57,8 @@ namespace GomLib.Models
         public long CreditRewardType { get; set; }
         public float CreditsRewarded { get; set; }
         public long XP { get; set; }
+        public long SubXP { get; set; }
+        public long F2PXP { get; set; }
         #endregion
         #region FlatQuestProperties
             [Newtonsoft.Json.JsonIgnore]
