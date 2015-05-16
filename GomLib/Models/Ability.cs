@@ -17,6 +17,7 @@ namespace GomLib.Models
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
         public long DescriptionId { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
         public string _Description
         {
             get
@@ -54,25 +55,32 @@ namespace GomLib.Models
                     //console.log("Full: " + fullToken);
 
                     var durationText = "";
-                    if ((end - start) > 5) {
-                        string[] durationList = new string[] {"", "", ""};
-                        var partialToken = fullToken.Substring(4, fullToken.Length - 7);
-                        //console.log("Partial:" + partialToken);
+                    if (end > 5) {
+                        try
+                        {
+                            string[] durationList = new string[] { "", "", "" };
+                            var partialToken = fullToken.Substring(4, fullToken.Length - 7);
+                            //console.log("Partial:" + partialToken);
 
-                        durationList = partialToken.Replace("%d", "").Split('/').ToArray();
-                        //console.log(durationList);
+                            durationList = partialToken.Replace("%d", "").Split('/').ToArray();
+                            //console.log(durationList);
 
-                        int pValue;
-                        Int32.TryParse(value.ToString(), out pValue);
+                            int pValue;
+                            Int32.TryParse(value.ToString(), out pValue);
 
-                        durationText = "";
-                        if (pValue <= 0)
-                            durationText = durationList[0];
-                        else if (pValue > 1)
-                            durationText = durationList[2];
-                        else
-                            durationText = durationList[1];
-                        //console.log(pValue + durationText);
+                            durationText = "";
+                            if (pValue <= 0)
+                                durationText = durationList[0];
+                            else if (pValue > 1)
+                                durationText = durationList[2];
+                            else
+                                durationText = durationList[1];
+                            //console.log(pValue + durationText);
+                        }
+                        catch (Exception ex)
+                        {
+                            //this happens when the tokens are malformed
+                        }
                     }
                     //console.log(type);
                     while (retval.IndexOf(fullToken) != -1) { //sometimes there's multiple instance of the same token.

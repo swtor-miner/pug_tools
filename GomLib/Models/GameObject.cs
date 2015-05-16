@@ -153,7 +153,7 @@ namespace GomLib.Models
         {
             return new SQLData(SQLProperties);
         }
-
+        [Newtonsoft.Json.JsonIgnore]
         public virtual List<SQLProperty> SQLProperties { get; set; }
     }
 
@@ -275,7 +275,7 @@ namespace GomLib.Models
         {
             return new SQLData(SQLProperties);
         }
-
+        [Newtonsoft.Json.JsonIgnore]
         public virtual List<SQLProperty> SQLProperties {get; set;}
     }
 

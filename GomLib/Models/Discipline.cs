@@ -9,10 +9,42 @@ namespace GomLib.Models
     public class Discipline : PseudoGameObject, IEquatable<Discipline>
     {
         public ulong NodeId { get; set; }
-        //public Dictionary<string, string> LocalizedTitle { get; set; }
-        //public string Title { get; set; }
-
+        public string Icon { get; set; }
+        public long SortIdx { get; set; }
+        public ulong ClassId { get; set; }
+        public ulong PathApcId { get; set; }
         //[Newtonsoft.Json.JsonIgnore]
+        public AbilityPackage PathAbilities { get; set; }
+        public long DescriptionId { get; set; }
+        public long NameId { get; set; }
+        public Dictionary<string, string> LocalizedName { get; set; }
+        public string Description { get; set; }
+        public Dictionary<string, string> LocalizedDescription { get; set; }
+        public long ClassNameId { get; set; }
+        public Dictionary<string, string> LocalizedClassName { get; set; }
+        public string ClassName { get; set; }
+        public string Role { get; set; }
+        public Dictionary<ulong, int> BaseAbilityIds { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        internal List<Ability> _BaseAbilities;
+        //[Newtonsoft.Json.JsonIgnore]
+        public List<Ability> BaseAbilities
+        {
+            get
+            {
+                if (_BaseAbilities == null)
+                {
+                    _BaseAbilities = new List<Ability>();
+                    for (int i = 0; i < 4; i++)
+                    {
+                        var abl = _dom.abilityLoader.Load(BaseAbilityIds.ElementAt(i).Key);
+                        abl.Level = BaseAbilityIds.ElementAt(i).Value;
+                        _BaseAbilities.Add(abl);
+                    }
+                }
+                return _BaseAbilities;
+            }
+        }
 
         public override HashSet<string> GetDependencies()
         {
@@ -26,7 +58,6 @@ namespace GomLib.Models
             int hash = NodeId.GetHashCode();
             return hash;
         }
-
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
@@ -38,7 +69,6 @@ namespace GomLib.Models
 
             return Equals(obj2);
         }
-
         public bool Equals(Discipline obj)
         {
             if (obj == null) return false;
@@ -90,55 +120,7 @@ namespace GomLib.Models
             return true;
         }
 
-        public string Icon { get; set; }
-
-        public long SortIdx { get; set; }
-
-        public ulong ClassId { get; set; }
-
-        public ulong PathApcId { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
-        public AbilityPackage PathAbilities { get; set; }
-
-        public long DescriptionId { get; set; }
-
-        public long NameId { get; set; }
-
-        public Dictionary<string, string> LocalizedName { get; set; }
-
-        public string Description { get; set; }
-
-        public Dictionary<string, string> LocalizedDescription { get; set; }
-
-        public long ClassNameId { get; set; }
-
-        public Dictionary<string, string> LocalizedClassName { get; set; }
-
-        public string ClassName { get; set; }
-
-        public string Role { get; set; }
-
-        public Dictionary<ulong, int> BaseAbilityIds { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
-        internal List<Ability> _BaseAbilities;
-        [Newtonsoft.Json.JsonIgnore]
-        public List<Ability> BaseAbilities
-        {
-            get
-            {
-                if (_BaseAbilities == null)
-                {
-                    _BaseAbilities = new List<Ability>();
-                    for (int i = 0; i < 4; i++)
-                    {
-                        var abl = _dom.abilityLoader.Load(BaseAbilityIds.ElementAt(i).Key);
-                        abl.Level = BaseAbilityIds.ElementAt(i).Value;
-                        _BaseAbilities.Add(abl);
-                    }
-                }
-                return _BaseAbilities;
-            }
-        }
+        
 
         public override XElement ToXElement(bool verbose)
         {

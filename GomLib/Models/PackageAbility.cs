@@ -14,7 +14,7 @@ namespace GomLib.Models
 
         public ulong PackageId { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
+        //[Newtonsoft.Json.JsonIgnore]
         public Ability Ability { get; set; }
 
         public ulong AbilityId { get; set; }
@@ -85,7 +85,7 @@ namespace GomLib.Models
 
         public ulong PackageId { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
+        //[Newtonsoft.Json.JsonIgnore]
         public Talent Talent { get; set; }
 
         public long UtilityTier { get; set; }
