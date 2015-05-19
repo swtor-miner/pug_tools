@@ -29,6 +29,7 @@ namespace tor_tools
             SmartLinkAbilities(dom);
             SmartLinkAchievements(dom);
             SmartLinkCodex(dom);
+            SmartLinkConversations(dom);
             SmartLinkDecorations(dom);
             SmartLinkEncounters(dom);
             SmartLinkItems(dom);
@@ -115,6 +116,62 @@ namespace tor_tools
                     foreach (ulong cdxPlanet in cdxPlanets)
                     {
                         dom.AddCrossLink(cdxPlanet, "cdxOnThisPlanet", node.Id);//cdx node
+                    }
+                }
+                node.Unload();
+            }
+        }
+        private void SmartLinkConversations(DataObjectModel dom)
+        {
+            List<GomObject> nodeList;
+            addtolist2("Smart-linking conversations...");//Load cnv
+            nodeList = dom.GetObjectsStartingWith("cnv.");
+            foreach (GomObject node in nodeList)
+            {
+                Dictionary<object, object> dialogNodes = node.Data.ValueOrDefault<Dictionary<object, object>>("cnvTreeDialogNodes_Prototype", null);
+                if (dialogNodes != null)
+                {
+                    foreach (KeyValuePair<object, object> dNode in dialogNodes)
+                    {
+                        Dictionary<object, object> questGrants = ((GomObjectData)dNode.Value).ValueOrDefault<Dictionary<object, object>>("cnvNodeQuestGrants", null);
+                        if (questGrants != null)
+                        {
+                            foreach (KeyValuePair<object, object> questPair in questGrants)
+                            {
+                                if (!(bool)questPair.Value)
+                                {
+                                    string paus = "";
+                                }
+                                dom.AddCrossLink((ulong)questPair.Key, "conversationStarts", node.Id);
+                                dom.AddCrossLink(node.Id, "startsQuest", (ulong)questPair.Key);
+                            }
+                        }
+                        Dictionary<object, object> questEnds = ((GomObjectData)dNode.Value).ValueOrDefault<Dictionary<object, object>>("cnvNodeQuestEnds", null);
+                        if (questEnds != null)
+                        {
+                            foreach (KeyValuePair<object, object> questPair in questEnds)
+                            {
+                                if (!(bool)questPair.Value)
+                                {
+                                    string paus = "";
+                                }
+                                dom.AddCrossLink((ulong)questPair.Key, "conversationEnds", node.Id);
+                                dom.AddCrossLink(node.Id, "endsQuest", (ulong)questPair.Key);
+                            }
+                        }
+                        Dictionary<object, object> questProgress = ((GomObjectData)dNode.Value).ValueOrDefault<Dictionary<object, object>>("cnvNodeQuestProgress", null);
+                        if (questProgress != null)
+                        {
+                            foreach (KeyValuePair<object, object> questPair in questProgress)
+                            {
+                                if (!(bool)questPair.Value)
+                                {
+                                    string paus = "";
+                                }
+                                dom.AddCrossLink((ulong)questPair.Key, "conversationProgresses", node.Id);
+                                dom.AddCrossLink(node.Id, "ProgressesQuest", (ulong)questPair.Key);
+                            }
+                        }
                     }
                 }
                 node.Unload();
