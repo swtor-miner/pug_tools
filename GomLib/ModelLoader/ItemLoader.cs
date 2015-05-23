@@ -481,6 +481,8 @@ namespace GomLib.ModelLoader
 
             itm.BindsToSlot = gom.Data.ValueOrDefault<bool>("itmBindsToSlot", false);
 
+            itm.RepFactionId = (int)gom.Data.ValueOrDefault<long>("reputationFactionIndex", 0);
+
             if (gom.References != null)
             {
                 if (gom.References.ContainsKey("materialFor"))

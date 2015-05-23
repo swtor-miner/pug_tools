@@ -197,7 +197,6 @@ namespace GomLib.Models
 
         public bool ConsumedOnUse { get; set; }
         public int TypeBitSet { get; set; }
-        public bool IsModdable { get; set; }
 
         public long itmCraftedCategory { get; set; }
 
@@ -272,7 +271,6 @@ namespace GomLib.Models
                     return "";
             }
         }
-        public bool IsMtxItem { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         internal string mtxRarity { get; set; }
         public string MTXRarity
@@ -286,7 +284,6 @@ namespace GomLib.Models
                 if (value != "0x00")
                 {
                     mtxRarity = value.Replace("itmMTXRarity", "");
-                    IsMtxItem = true;
                 }
             }
         }
@@ -308,6 +305,27 @@ namespace GomLib.Models
         }
 
         public bool BindsToSlot { get; set; }
+        public int RepFactionId { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        internal string _RepFactionName { get; set; }
+        public string RepFactionName
+        {
+            get
+            {
+                if (_RepFactionName == null)
+                {
+                    var faction = _dom.reputationGroupLoader.Load(RepFactionId);
+                    if (faction != null)
+                    {
+                        if(faction.GroupRepublicTitle != faction.GroupEmpireTitle)
+                            _RepFactionName = String.Format("{0} / {1}", faction.GroupRepublicTitle, faction.GroupEmpireTitle);
+                        else
+                            _RepFactionName = faction.GroupEmpireTitle;
+                    }
+                }
+                return _RepFactionName;
+            }
+        }
 
         [Newtonsoft.Json.JsonIgnore]
         public string Tooltip
@@ -363,6 +381,33 @@ namespace GomLib.Models
         public List<string> RewardFromQuests { get; set; }
         public static List<long> ArmorSpecIds = new List<long> { -8622546409652942944, 589686270506543030, 5763611092890301551 };
         public static List<ArmorSpec> ArmorSpecs = new List<ArmorSpec> { };
+
+        //typebitflags
+        public bool IsArmor { get; set; }
+        public bool IsWeapon { get; set; }
+        public bool HasGTNCategory { get; set; }
+        public bool Unk8 { get; set; }
+        public bool HasConversation { get; set; }
+        public bool IsCrafted { get; set; }
+        public bool CanBeDisassembled { get; set; }
+        public bool HasDurability { get; set; }
+        public bool IsModdable { get; set; }
+        public bool IsMod { get; set; }
+        public bool CanHaveStats { get; set; }
+        public bool Unk800 { get; set; }
+        public bool IsGift { get; set; }
+        public bool IsMissionItem { get; set; }
+        public bool Unk4000 { get; set; }
+        public bool IsShipPart { get; set; }
+        public bool Unk10000 { get; set; }
+        public bool IsCmpCstmztn { get; set; }
+        public bool HasUniqueLimit { get; set; }
+        public bool HasOnUse { get; set; }
+        public bool IsEquipable { get; set; }
+        public bool IsCurrency { get; set; }
+        public bool IsMtxItem { get; set; }
+        public bool IsRepItem { get; set; }
+
         public static Item FillFlatData(Item itm)
         {
             foreach (var stat in itm.StatModifiers)
@@ -539,8 +584,43 @@ namespace GomLib.Models
                     }
                 }
             }
+
+            ProcessFlags(itm);
+
+
             return itm;
         }
+        public static Item ProcessFlags(Item itm)
+        {
+            var flags = ((ItemTypeFlags)itm.TypeBitSet);
+            itm.IsArmor = flags.HasFlag(ItemTypeFlags.IsArmor);
+            itm.IsWeapon = flags.HasFlag(ItemTypeFlags.IsWeapon);
+            itm.HasGTNCategory = flags.HasFlag(ItemTypeFlags.HasGTNCategory);
+            itm.Unk8 = flags.HasFlag(ItemTypeFlags.Unk8);
+            itm.HasConversation = flags.HasFlag(ItemTypeFlags.HasConversation);
+            itm.IsCrafted = flags.HasFlag(ItemTypeFlags.IsCrafted);
+            itm.CanBeDisassembled = flags.HasFlag(ItemTypeFlags.CanBeDisassembled);
+            itm.HasDurability = flags.HasFlag(ItemTypeFlags.HasDurability);
+            itm.IsModdable = flags.HasFlag(ItemTypeFlags.IsModdable);
+            itm.IsMod = flags.HasFlag(ItemTypeFlags.IsMod);
+            itm.CanHaveStats = flags.HasFlag(ItemTypeFlags.CanHaveStats);
+            itm.Unk800 = flags.HasFlag(ItemTypeFlags.Unk800);
+            itm.IsGift = flags.HasFlag(ItemTypeFlags.IsGift);
+            itm.IsMissionItem = flags.HasFlag(ItemTypeFlags.IsMissionItem);
+            itm.Unk4000 = flags.HasFlag(ItemTypeFlags.Unk4000);
+            itm.IsShipPart = flags.HasFlag(ItemTypeFlags.IsShipPart);
+            itm.Unk10000 = flags.HasFlag(ItemTypeFlags.Unk10000);
+            itm.IsCmpCstmztn = flags.HasFlag(ItemTypeFlags.IsCmpCstmztn);
+            itm.HasUniqueLimit = flags.HasFlag(ItemTypeFlags.HasUniqueLimit);
+            itm.HasOnUse = flags.HasFlag(ItemTypeFlags.HasOnUse);
+            itm.IsEquipable = flags.HasFlag(ItemTypeFlags.IsEquipable);
+            itm.IsCurrency = flags.HasFlag(ItemTypeFlags.IsCurrency);
+            itm.IsMtxItem = flags.HasFlag(ItemTypeFlags.IsMtxItem);
+            itm.IsRepItem = flags.HasFlag(ItemTypeFlags.IsRepItem);
+
+            return itm;
+        }
+        
         #endregion
 
         public void AddStat(ItemStat stat)
@@ -896,9 +976,13 @@ namespace GomLib.Models
         {
             get
             {
-                if (Id != 0) FillFlatData(this);
+                if (Id != 0)
+                {
+                    FillFlatData(this);
+                    ProcessFlags(this);
+                }
                 return new List<SQLProperty>
-                    {                //(SQL Column Name, C# Property Name, SQL Column type statement, isUnique/PrimaryKey, Serialize value to json)
+                    {                //(SQL Column Name, C# Property Name, SQL Column type statement, Unk100000/PrimaryKey, Serialize value to json)
                         new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("CleanName", "CleanName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("NodeId", "Id", "bigint(20) unsigned NOT NULL"),
@@ -929,8 +1013,6 @@ namespace GomLib.Models
                         new SQLProperty("GiftType", "GiftType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Icon", "HashedIcon", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("IsDecoration", "IsDecoration", "tinyint(1) NOT NULL"),
-                        new SQLProperty("IsModdable", "IsModdable", "tinyint(1) NOT NULL"),
-                        new SQLProperty("IsMtxItem", "IsMtxItem", "tinyint(1) NOT NULL"),
                         new SQLProperty("BindsToSlot", "BindsToSlot", "tinyint(1) NOT NULL"),
                         new SQLProperty("MaxStack", "MaxStack", "int(11) NOT NULL"),
                         new SQLProperty("ModifierSpec", "ModifierSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
@@ -975,8 +1057,8 @@ namespace GomLib.Models
                         new SQLProperty("AuctionSubCategoryId", "AuctionSubCategoryId", "int(11) NOT NULL"),
                         new SQLProperty("AuctionSubCategory", "AuctionSubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("ChildBase62Id", "ChildBase62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
-                        //new SQLProperty("Tooltip", "Tooltip", "varchar(1000) COLLATE utf8_unicode_ci NOT NULL")
                         /* Flat Data */
+                        new SQLProperty("Tooltip", "Tooltip", "TEXT NOT NULL"),
                         new SQLProperty("ArmoringBId", "ArmoringBId", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("ModificationBId", "ModificationBId", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("EnhancementBId", "EnhancementBId", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
@@ -1012,7 +1094,31 @@ namespace GomLib.Models
                         new SQLProperty("MaterialForSchems","MaterialForSchems", "TEXT NOT NULL", false, true),
                         new SQLProperty("RewardFromQuests","RewardFromQuests", "TEXT NOT NULL", false, true),
                         new SQLProperty("SourceNames","StrongholdSourceNameDict", "TEXT NOT NULL", false, true),
-
+                        //typebitset
+                        new SQLProperty("IsArmor", "IsArmor", "tinyint(1) NOT NULL"), 
+                        new SQLProperty("IsWeapon", "IsWeapon", "tinyint(1) NOT NULL"),
+                        new SQLProperty("HasGTNCategory", "HasGTNCategory", "tinyint(1) NOT NULL"),
+                        new SQLProperty("Unk8", "Unk8", "tinyint(1) NOT NULL"),
+                        new SQLProperty("HasConversation", "HasConversation", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsCrafted", "IsCrafted", "tinyint(1) NOT NULL"),
+                        new SQLProperty("CanBeDisassembled", "CanBeDisassembled", "tinyint(1) NOT NULL"),
+                        new SQLProperty("HasDurability", "HasDurability", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsModdable", "IsModdable", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsMod", "IsMod", "tinyint(1) NOT NULL"),
+                        new SQLProperty("CanHaveStats", "CanHaveStats", "tinyint(1) NOT NULL"),
+                        new SQLProperty("Unk800", "Unk800", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsGift", "IsGift", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsMissionItem", "IsMissionItem", "tinyint(1) NOT NULL"),
+                        new SQLProperty("Unk4000", "Unk4000", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsShipPart", "IsShipPart", "tinyint(1) NOT NULL"),
+                        new SQLProperty("Unk10000", "Unk10000", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsCmpCstmztn", "IsCmpCstmztn", "tinyint(1) NOT NULL"),
+                        new SQLProperty("HasUniqueLimit", "HasUniqueLimit", "tinyint(1) NOT NULL"),
+                        new SQLProperty("HasOnUse", "HasOnUse", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsEquipable", "IsEquipable", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsCurrency", "IsCurrency", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsMtxItem", "IsMtxItem", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsRepItem", "IsRepItem", "tinyint(1) NOT NULL"),
                     };
             }
         }

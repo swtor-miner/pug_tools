@@ -37,11 +37,11 @@ namespace tor_tools
                 {"cdx.", true},
                 {"cnv.", true},
                 {"npc.", true},*/
-                {"qst.", "Mission"},
+                //{"qst.", "Mission"},
                 //{"tal.", true},*/
                 //{"sche", "Schematics"},
                 /*{"dec.", true},*/
-                //{"itm.", "Item"}//,
+                {"itm.", "Item"}//,
                 /*{"apt.", true},
                 {"apc.", true},
                 {"class.",true},
@@ -164,8 +164,8 @@ namespace tor_tools
                         }*/
 
                         string icon = "";
-                        if (t.obj.GetType() == typeof(GomLib.Models.Item))
-                            icon = String.Format("icons/{0}", ((GomLib.Models.Item)t.obj).Icon);
+                        //if (t.obj.GetType() == typeof(GomLib.Models.Item))
+                            //icon = String.Format("icons/{0}", ((GomLib.Models.Item)t.obj).Icon);
                         if (t.obj.GetType() == typeof(GomLib.Models.Ability))
                             icon = String.Format("icons/{0}", ((GomLib.Models.Ability)t.obj).Icon);
                         if (t.obj.GetType() == typeof(GomLib.Models.Quest))

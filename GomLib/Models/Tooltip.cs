@@ -136,7 +136,8 @@ namespace GomLib.Models
         }
         public static XElement ItemInnerHTML(this Item itm)
         {
-            string stringQual = ((itm.IsModdable && (itm.Quality == ItemQuality.Prototype)) ? "moddable" : itm.Quality.ToString().ToLower());
+            Item.ProcessFlags(itm);
+            string stringQual = itm.Quality.ToString().ToLower();
             XElement tooltip = new XElement("div",
                 XClass("torctip_tooltip"),
                 new XElement("span",
@@ -150,6 +151,20 @@ namespace GomLib.Models
                     XClass("torctip_val"),
                     "Cartel Market Item"
                     ));
+            }
+            //Reputation item
+            if (itm.IsRepItem)
+            {
+                tooltip.Add(
+                    new XElement("div",
+                        XClass("torctip_rep"),
+                        "Reputation Trophy"
+                    ),
+                    new XElement("div",
+                        XClass("torctip_rep"),
+                        itm.RepFactionName
+                    )
+                );
             }
             //binding
             if (itm.Binding != 0)
@@ -167,7 +182,7 @@ namespace GomLib.Models
                 }
             }
             //unique
-            if (itm.UniqueLimit > 0)
+            if (itm.HasUniqueLimit)
             {
                 tooltip.Add(new XElement("div",
                     XClass("torctip_main"),
@@ -623,11 +638,11 @@ namespace GomLib.Models
                 if (!itm.IsDecoration) {
                     string pusfgs = "";
                 }
-                tooltip.Add(new XElement("br"));
+                //tooltip.Add(new XElement("br"));
                 foreach (var kvp in itm.StrongholdSourceNameDict)
                 {
                     tooltip.Add(new XElement("div",
-                        XClass("torctip_val"),
+                        XClass("torctip_source"),
                         String.Format("Source: {0}", kvp.Value)
                     ));
                 }
