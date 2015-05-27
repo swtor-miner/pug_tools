@@ -247,45 +247,75 @@ namespace GomLib.Models
         Chrmovebonus = 237
     }
 
-    public class StatD
+    public class StatData
     {
-        private Dictionary<string, string> StatLookup { get; set; }
+        private Dictionary<string, DetailedStat> StatLookup { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]
         DataObjectModel _dom;
 
-        public StatD(DataObjectModel dom)
+        public StatData(DataObjectModel dom)
         {
             _dom = dom;
         }
 
-        public string ToStat(string str)
+        public DetailedStat ToStat(string str)
         {
-            if (String.IsNullOrEmpty(str)) { return "Undefined"; }
+            if (String.IsNullOrEmpty(str)) { return new DetailedStat("Undefined"); }
 
             if (StatLookup == null)
             {
-                StatLookup = new Dictionary<string, string>();
+                StatLookup = new Dictionary<string, DetailedStat>();
                 var modStatData = _dom.GetObject("modStatData");
                 Dictionary<object, object> modStatDescriptions = modStatData.Data.Get<Dictionary<object, object>>("modStatDescriptions");
                 modStatData = null;
+                StringTable table = _dom.stringTable.Find("str.gui.stats");
                 foreach (var stat in modStatDescriptions)
                 {
+                    DetailedStat detStat = new DetailedStat();
                     string lookupName = stat.Key.ToString();
-                    string displayName = ((GomLib.GomObjectData)stat.Value).ValueOrDefault<string>("modStatDisplayName", stat.Key.ToString());
-                    StatLookup.Add(lookupName, displayName);
+                    detStat.Minimum = ((GomLib.GomObjectData)stat.Value).ValueOrDefault<float>("modStatMinimum", 0f);
+                    detStat.DisplayName = ((GomLib.GomObjectData)stat.Value).ValueOrDefault<string>("modStatDisplayName", stat.Key.ToString());
+                    detStat.Maximum = ((GomLib.GomObjectData)stat.Value).ValueOrDefault<float>("modStatMaximum", 0f);
+                    detStat.IsMeta = ((GomLib.GomObjectData)stat.Value).ValueOrDefault<bool>("modStatIsMetaStat", false);
+                    detStat.NumFormat = ((GomLib.GomObjectData)stat.Value).ValueOrDefault<ScriptEnum>("modStatDisplayNumberFormat", new ScriptEnum()).ToString();
+                    detStat.StringId = ((GomLib.GomObjectData)stat.Value).ValueOrDefault<long>("modStatDisplayNameStringID", 0) + 972058473267200;
+                    detStat.LocalizedDisplayName = table.GetLocalizedText(detStat.StringId, "str.gui.stats");
+                    StatLookup.Add(lookupName, detStat);
                 }
                 modStatDescriptions = null;
             }
 
-            if (!StatLookup.ContainsKey(str)) { return str; }
+            if (!StatLookup.ContainsKey(str)) { return null; }
             else { return StatLookup[str]; }
         }
 
-        public string ToStat(ScriptEnum val)
+        public DetailedStat ToStat(ScriptEnum val)
         {
             if (val == null) { return ToStat(String.Empty); }
             return ToStat(val.ToString());
+        }
+    }
+
+    public class DetailedStat
+    {
+        public DetailedStat() { }
+        public DetailedStat(string name)
+        {
+            DisplayName = name;
+        }
+
+        public float Minimum { get; set; }
+        public float Maximum { get; set; }
+        public string DisplayName { get; set; }
+        public bool IsMeta { get; set; }
+        public string NumFormat { get; set; }
+        public long StringId { get; set; }
+        public Dictionary<string, string> LocalizedDisplayName { get; set; }
+
+        public override string ToString()
+        {
+            return DisplayName;
         }
     }
 

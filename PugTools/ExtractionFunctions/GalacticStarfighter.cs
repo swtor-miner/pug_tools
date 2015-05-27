@@ -47,7 +47,7 @@ namespace tor_tools
                     txtFile.Append(t + "Description: " + ship.Description + n);
                     txtFile.Append(t + "Category: " + ship.Category.Replace("scFF", "") + n);
                     txtFile.Append(t + "Stats: " + n + t);
-                    txtFile.Append(t + string.Join(n + t + t, ship.Stats.Select(x => currentDom.statD.ToStat(x.Key) + ": " + x.Value).ToArray()).Replace("Space PvP ", "").Replace("Space PVP ", ""));
+                    txtFile.Append(t + string.Join(n + t + t, ship.Stats.Select(x => currentDom.statData.ToStat(x.Key) + ": " + x.Value).ToArray()).Replace("Space PvP ", "").Replace("Space PVP ", ""));
                     txtFile.Append(n + n);
 
                     foreach (var containerMapSlot in ship.MajorComponentSlots)
@@ -91,12 +91,12 @@ namespace tor_tools
                                         }
                                         foreach (var stat in ((GomLib.Models.Talent)comp.TalentList[0]).RankStats.First().DefensiveStats)
                                         {
-                                            txtFile.Append(t + t + t + t + currentDom.statD.ToStat(stat.Stat).Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_')
+                                            txtFile.Append(t + t + t + t + currentDom.statData.ToStat(stat.Stat).ToString().Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_')
                                                 + ": " + stat.Value + " (" + stat.Modifier + ")" + n);
                                         }
                                         foreach (var stat in ((GomLib.Models.Talent)comp.TalentList[0]).RankStats.First().OffensiveStats)
                                         {
-                                            txtFile.Append(t + t + t + t + currentDom.statD.ToStat(stat.Stat).Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_')
+                                            txtFile.Append(t + t + t + t + currentDom.statData.ToStat(stat.Stat).ToString().Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_')
                                                 + ": " + stat.Value + " (" + stat.Modifier + ")" + n);
                                         }
                                     }
@@ -124,12 +124,12 @@ namespace tor_tools
                                                     + " (" + ((ScriptEnum)((List<object>)column.Value)[1]).ToString().Replace("scFFComponentTalentTarget", "") + ")" + n);
                                                 foreach (var stat in ((GomLib.Models.Talent)((List<object>)column.Value)[0]).RankStats.First().DefensiveStats)
                                                 {
-                                                    txtFile.Append(t + t + t + t + t + t + currentDom.statD.ToStat(stat.Stat).Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_')
+                                                    txtFile.Append(t + t + t + t + t + t + currentDom.statData.ToStat(stat.Stat).ToString().Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_')
                                                         + ": " + stat.Value + " (" + stat.Modifier + ")" + n);
                                                 }
                                                 foreach (var stat in ((GomLib.Models.Talent)((List<object>)column.Value)[0]).RankStats.First().OffensiveStats)
                                                 {
-                                                    txtFile.Append(t + t + t + t + t + t + currentDom.statD.ToStat(stat.Stat).Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_')
+                                                    txtFile.Append(t + t + t + t + t + t + currentDom.statData.ToStat(stat.Stat).ToString().Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_')
                                                         + ": " + stat.Value + " (" + stat.Modifier + ")" + n);
                                                 }
                                             }
@@ -138,12 +138,12 @@ namespace tor_tools
                                                 txtFile.Append(t + t + t + t + t + ((GomLib.Models.Talent)((List<object>)column.Value)[0]).Description.Replace("\n", " ") + " (Ship)" + n);
                                                 foreach (var stat in ((GomLib.Models.Talent)((List<object>)column.Value)[0]).RankStats.First().DefensiveStats)
                                                 {
-                                                    txtFile.Append(t + t + t + t + t + t + currentDom.statD.ToStat(stat.Stat).Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_')
+                                                    txtFile.Append(t + t + t + t + t + t + currentDom.statData.ToStat(stat.Stat).ToString().Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_')
                                                         + ": " + stat.Value + " (" + stat.Modifier + ")" + n);
                                                 }
                                                 foreach (var stat in ((GomLib.Models.Talent)((List<object>)column.Value)[0]).RankStats.First().OffensiveStats)
                                                 {
-                                                    txtFile.Append(t + t + t + t + t + t + currentDom.statD.ToStat(stat.Stat).Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_')
+                                                    txtFile.Append(t + t + t + t + t + t + currentDom.statData.ToStat(stat.Stat).ToString().Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_')
                                                         + ": " + stat.Value + " (" + stat.Modifier + ")" + n);
                                                 }
                                             }
@@ -201,12 +201,12 @@ namespace tor_tools
                                         }
                                         foreach (var stat in ((GomLib.Models.Talent)comp.TalentList[0]).RankStats.First().DefensiveStats)
                                         {
-                                            txtFile.Append(t + t + t + t + currentDom.statD.ToStat(stat.Stat).Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_')
+                                            txtFile.Append(t + t + t + t + currentDom.statData.ToStat(stat.Stat).ToString().Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_')
                                                 + ": " + stat.Value + " (" + stat.Modifier + ")" + n);
                                         }
                                         foreach (var stat in ((GomLib.Models.Talent)comp.TalentList[0]).RankStats.First().OffensiveStats)
                                         {
-                                            txtFile.Append(t + t + t + t + currentDom.statD.ToStat(stat.Stat).Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_')
+                                            txtFile.Append(t + t + t + t + currentDom.statData.ToStat(stat.Stat).ToString().Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_')
                                                 + ": " + stat.Value + " (" + stat.Modifier + ")" + n);
                                         }
                                     }
@@ -230,12 +230,12 @@ namespace tor_tools
                                                     + " (" + ((ScriptEnum)((List<object>)column.Value)[1]).ToString().Replace("scFFComponentTalentTarget", "") + ")" + n);
                                                 foreach (var stat in ((GomLib.Models.Talent)((List<object>)column.Value)[0]).RankStats.First().DefensiveStats)
                                                 {
-                                                    txtFile.Append(t + t + t + t + t + t + currentDom.statD.ToStat(stat.Stat).Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_')
+                                                    txtFile.Append(t + t + t + t + t + t + currentDom.statData.ToStat(stat.Stat).ToString().Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_')
                                                         + ": " + stat.Value + " (" + stat.Modifier + ")" + n);
                                                 }
                                                 foreach (var stat in ((GomLib.Models.Talent)((List<object>)column.Value)[0]).RankStats.First().OffensiveStats)
                                                 {
-                                                    txtFile.Append(t + t + t + t + t + t + currentDom.statD.ToStat(stat.Stat).Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_')
+                                                    txtFile.Append(t + t + t + t + t + t + currentDom.statData.ToStat(stat.Stat).ToString().Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_')
                                                         + ": " + stat.Value + " (" + stat.Modifier + ")" + n);
                                                 }
                                             }
@@ -244,12 +244,12 @@ namespace tor_tools
                                                 txtFile.Append(t + t + t + t + t + ((GomLib.Models.Talent)((List<object>)column.Value)[0]).Description.Replace("\n", " ") + " (Ship)" + n);
                                                 foreach (var stat in ((GomLib.Models.Talent)((List<object>)column.Value)[0]).RankStats.First().DefensiveStats)
                                                 {
-                                                    txtFile.Append(t + t + t + t + t + t + currentDom.statD.ToStat(stat.Stat).Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_')
+                                                    txtFile.Append(t + t + t + t + t + t + currentDom.statData.ToStat(stat.Stat).ToString().Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_')
                                                         + ": " + stat.Value + " (" + stat.Modifier + ")" + n);
                                                 }
                                                 foreach (var stat in ((GomLib.Models.Talent)((List<object>)column.Value)[0]).RankStats.First().OffensiveStats)
                                                 {
-                                                    txtFile.Append(t + t + t + t + t + t + currentDom.statD.ToStat(stat.Stat).Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_')
+                                                    txtFile.Append(t + t + t + t + t + t + currentDom.statData.ToStat(stat.Stat).ToString().Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_')
                                                         + ": " + stat.Value + " (" + stat.Modifier + ")" + n);
                                                 }
                                             }

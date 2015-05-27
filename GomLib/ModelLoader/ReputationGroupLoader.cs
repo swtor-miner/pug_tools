@@ -50,6 +50,8 @@ namespace GomLib.ModelLoader
             rank.GroupRepublicTitleId = obj.ValueOrDefault<long>("repGroupInfoRepublicTitle", 0);
             rank.GroupRepublicDescription = _dom.stringTable.TryGetString("str.lgc.reputation", rank.GroupRepublicDescriptionId);
             rank.GroupRepublicTitle = _dom.stringTable.TryGetString("str.lgc.reputation", rank.GroupRepublicTitleId);
+            StringTable repTable = _dom.stringTable.Find("str.lgc.reputation");
+            rank.LocalizedGroupRepublicTitle = repTable.GetLocalizedText(rank.GroupRepublicTitleId, "str.lgc.reputation");
             rank.GroupRepublicRankTitles = obj.Get<List<object>>("repGroupInfoRepublicRankTitles");
             rank.GroupRepublicIcon = obj.ValueOrDefault<string>("repGroupInfoIconRepublic", "");
             rank.GroupRepublicRankLegacyTitles = new Dictionary<object, object>();
@@ -59,6 +61,7 @@ namespace GomLib.ModelLoader
             rank.GroupEmpireTitleId = obj.ValueOrDefault<long>("repGroupInfoEmpireTitle", 0);
             rank.GroupEmpireDescription = _dom.stringTable.TryGetString("str.lgc.reputation", rank.GroupEmpireDescriptionId);
             rank.GroupEmpireTitle = _dom.stringTable.TryGetString("str.lgc.reputation", rank.GroupEmpireTitleId);
+            rank.LocalizedGroupEmpireTitle = repTable.GetLocalizedText(rank.GroupEmpireTitleId, "str.lgc.reputation");
             rank.GroupEmpireRankTitles = obj.Get<List<object>>("repGroupInfoEmpireRankTitles");
             rank.GroupEmpireIcon = obj.ValueOrDefault<string>("repGroupInfoIconEmpire", "");
             rank.GroupEmpireRankLegacyTitles = new Dictionary<object, object>();

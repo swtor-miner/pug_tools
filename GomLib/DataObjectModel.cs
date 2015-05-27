@@ -92,7 +92,7 @@ namespace GomLib
         public SCFFPatternLoader scFFPatternLoader;
         public SCFFShipLoader scFFShipLoader;
         public SchematicLoader schematicLoader;
-        public Models.StatD statD;
+        public Models.StatData statData;
         //public Models.StatExtensions statExtensions;
         public StrongholdLoader strongholdLoader;
         public TalentLoader talentLoader;
@@ -101,7 +101,8 @@ namespace GomLib
         public SchematicVariationLoader schemVariationLoader;
         public LegacyTitleLoader legacyTitleLoader;
         public ReputationGroupLoader reputationGroupLoader;
-        public ReputationRankLoader reputationRankLoader;  
+        public ReputationRankLoader reputationRankLoader;
+        public DetailedAppearanceColorLoader detailedAppearanceColorLoader;
 
         private void initializeModelLoaders()
         {
@@ -153,6 +154,7 @@ namespace GomLib
             legacyTitleLoader = new LegacyTitleLoader(this);
             reputationGroupLoader = new ReputationGroupLoader(this);
             reputationRankLoader = new ReputationRankLoader(this);
+            detailedAppearanceColorLoader = new DetailedAppearanceColorLoader(this);
         }
 
         public void Dispose()
@@ -317,7 +319,7 @@ namespace GomLib
 
                 Loaded = true;
 
-                statD = new Models.StatD(this);
+                statData = new Models.StatData(this);
                 foreach (DomType t in DomTypeMap.Values)
                 {
                     //Console.WriteLine(t.Name);
@@ -392,7 +394,7 @@ namespace GomLib
                 BucketFiles = new List<string>();
 
                 gomTypeLoader = null;
-                statD = null;
+                statData = null;
 
                 //Flush the ModelLoader Stored entries
                 scriptObjectReader.Flush();
@@ -429,6 +431,7 @@ namespace GomLib
                 legacyTitleLoader.Flush();
                 reputationGroupLoader.Flush();
                 reputationRankLoader.Flush();
+                detailedAppearanceColorLoader.Flush();
 
                 /*foreach (var DomEntry in DomTypeMap)
                 {

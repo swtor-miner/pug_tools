@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GomLib.Models;
+using System.Drawing;
 
 namespace GomLib.ModelLoader
 {
@@ -184,6 +185,77 @@ namespace GomLib.ModelLoader
         public void Flush()
         {
             itmAppearanceDatatable = null;
+        }
+    }
+    public class DetailedAppearanceColorLoader
+    {
+        public DataObjectModel _dom;
+        private Dictionary<long, DetailedAppearanceColor> idMap;
+
+        public DetailedAppearanceColorLoader(DataObjectModel dom){
+            _dom = dom;
+            Flush();
+        }
+        public void Flush()
+        {
+            idMap = new Dictionary<long, DetailedAppearanceColor>();
+        }
+
+        public DetailedAppearanceColor Load(long id)
+        {
+            if (idMap.Count == 0)
+            {
+                Initialize();
+            }
+            DetailedAppearanceColor ret;
+            idMap.TryGetValue(id, out ret);
+            return ret;
+        }
+
+        private void Initialize()
+        {
+            var itmAppearanceColorsPrototype = _dom.GetObject("itmAppearanceColorsPrototype");
+            var itmAppColorTable = itmAppearanceColorsPrototype.Data.ValueOrDefault<List<object>>("itmAppColorTable", new List<object>());
+            var itmAppColorIdLookup = itmAppearanceColorsPrototype.Data.ValueOrDefault<Dictionary<object, object>>("itmAppColorIdLookup", new Dictionary<object, object>());
+            itmAppearanceColorsPrototype.Unload();
+            StringTable stringTable = _dom.stringTable.Find("str.gui.colornames");
+
+            foreach (GomObjectData gom in itmAppColorTable.ConvertAll(x => (GomObjectData)x))
+            {
+                DetailedAppearanceColor det = new DetailedAppearanceColor();
+                det.ColorId = gom.ValueOrDefault<long>("itmAppColorId", 0);
+                if (itmAppColorIdLookup.ContainsKey(det.ColorId))
+                {
+                    det.ShortId = (long)itmAppColorIdLookup[det.ColorId];
+                }
+                det.ColorNameId = gom.ValueOrDefault<long>("itmAppColorName", 0);
+                det.ColorName = stringTable.GetText(det.ColorNameId, "str.gui.colornames");
+                det.LocalizedColorName = stringTable.GetLocalizedText(det.ColorNameId, "str.gui.colornames");
+                det.ColorSchemeId = gom.ValueOrDefault<long>("itmAppColorSchemeId", 0);
+                det.HueName = gom.ValueOrDefault<string>("itmAppColorHueName", "");
+                det.UnknownBool1 = gom.ValueOrDefault<bool>("4611686298195974006", false);
+                det.UnknownBool2 = gom.ValueOrDefault<bool>("4611686298195974007", false);
+
+                GomObjectData pal1 = (GomObjectData)gom.ValueOrDefault<object>("itmAppColorPalette1Rep", null);
+                if (pal1 != null)
+                {
+                    byte a = Convert.ToByte((255f * pal1.ValueOrDefault<float>("a", 0f)));
+                    byte r = Convert.ToByte((255f * pal1.ValueOrDefault<float>("r", 0f)));
+                    byte g = Convert.ToByte((255f * pal1.ValueOrDefault<float>("g", 0f)));
+                    byte b = Convert.ToByte((255f * pal1.ValueOrDefault<float>("b", 0f)));
+                    det.Palette1Rep = Color.FromArgb(a, r, g, b);
+                }
+                GomObjectData pal2 = (GomObjectData)gom.ValueOrDefault<object>("itmAppColorPalette2Rep", null);
+                if (pal2 != null)
+                {
+                    byte a = Convert.ToByte((255f * pal2.ValueOrDefault<float>("a", 0f)));
+                    byte r = Convert.ToByte((255f * pal2.ValueOrDefault<float>("r", 0f)));
+                    byte g = Convert.ToByte((255f * pal2.ValueOrDefault<float>("g", 0f)));
+                    byte b = Convert.ToByte((255f * pal2.ValueOrDefault<float>("b", 0f)));
+                    det.Palette2Rep = Color.FromArgb(a, r, g, b);
+                }
+                idMap.Add(det.ShortId, det);
+            }
         }
     }
 }

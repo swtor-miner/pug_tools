@@ -10,6 +10,8 @@ namespace GomLib.Models
 {
     public class Tooltip : GameObject
     {
+        public static string language = "enMale";
+        public static Dictionary<long, Dictionary<string, string>> TooltipNameMap = new Dictionary<long, Dictionary<string, string>>();
         public Tooltip() { }
         public Tooltip(ulong id, DataObjectModel dom) {
             _dom = dom;
@@ -107,6 +109,10 @@ namespace GomLib.Models
         #region item
         public static XElement GetHTML(this Item itm) //Behold linq!
         {
+            if (ConvertNameMap.Count == 0)
+            {
+                LoadNameMap(itm._dom);
+            }
             if (itm.Id == 0) return new XElement("div", "Not Found");
 
             XElement tooltip = new XElement("div", new XAttribute("class", "torctip_wrapper"));
@@ -125,7 +131,7 @@ namespace GomLib.Models
                         new XElement("a",
                             new XAttribute("href", String.Format("http://torcommunity.com/database/item/{0}", itm.Base62Id)),
                             new XAttribute("data-torc", "norestyle"),
-                            itm.Name
+                            itm.LocalizedName[Tooltip.language]
                             )),
                     itm.ItemInnerHTML()
                 );
@@ -138,40 +144,77 @@ namespace GomLib.Models
         {
             Item.ProcessFlags(itm);
             string stringQual = itm.Quality.ToString().ToLower();
+            string localizedRating = Tooltip.TooltipNameMap[836131348283473][Tooltip.language].Replace("<<1>>", "{1}");
             XElement tooltip = new XElement("div",
                 XClass("torctip_tooltip"),
                 new XElement("span",
                     XClass(String.Format("torctip_{0}", stringQual)),
-                    itm.Name)
+                    itm.LocalizedName[Tooltip.language])
                 );
             //MTX
             if (itm.IsMtxItem)
             {
                 tooltip.Add(new XElement("div",
                     XClass("torctip_val"),
-                    "Cartel Market Item"
+                    Tooltip.TooltipNameMap[836131348283729][Tooltip.language] // Cartel Market Item
                     ));
             }
             //Reputation item
-            if (itm.IsRepItem)
+            if (itm.IsRepTrophy)
             {
+                string repName = "";
+                if (itm.LocalizedRepFactionName["Imperial"][Tooltip.language] != itm.LocalizedRepFactionName["Republic"][Tooltip.language])
+                {
+                    repName = String.Format("{0} / {1}", itm.LocalizedRepFactionName["Imperial"][Tooltip.language], itm.LocalizedRepFactionName["Republic"][Tooltip.language]);
+                }
+                else
+                    repName = itm.LocalizedRepFactionName["Imperial"][Tooltip.language];
                 tooltip.Add(
                     new XElement("div",
                         XClass("torctip_rep"),
-                        "Reputation Trophy"
+                        Tooltip.TooltipNameMap[836131348283741][Tooltip.language] // "Reputation Trophy"
                     ),
                     new XElement("div",
                         XClass("torctip_rep"),
-                        itm.RepFactionName
+                        repName
                     )
                 );
+            }
+            //gift
+            if (itm.IsGift)
+            {
+                if (itm.GiftType != GiftType.None)
+                {
+                    tooltip.Add(
+                        new XElement("div",
+                            Tooltip.TooltipNameMap[836131348283395 + (int)itm.GiftType][Tooltip.language]),
+                        new XElement("div",
+                            String.Format("{0} {1}", Tooltip.TooltipNameMap[836131348283411][Tooltip.language], itm.GiftRankNum)) //Rank
+                        );
+
+                }
             }
             //binding
             if (itm.Binding != 0)
             {
+                string binding = String.Format("Binds on {0}", itm.Binding.ToString());
+                switch(binding){
+                    case "Binds on Equip":
+                        binding = Tooltip.TooltipNameMap[946314439294988][Tooltip.language];
+                        break;
+                    case "Binds on Pickup":
+                        binding = Tooltip.TooltipNameMap[946314439294989][Tooltip.language];
+                        break;
+                    case "Binds on Legacy":
+                        binding = Tooltip.TooltipNameMap[946314439294994][Tooltip.language];
+                        break;
+                    case "Binds on Use":
+                        binding = Tooltip.TooltipNameMap[946314439295248][Tooltip.language];
+                        break;
+                }
                 tooltip.Add(new XElement("div",
                     XClass("torctip_main"),
-                    String.Format("Binds on {0}", itm.Binding.ToString())
+                    binding
                     ));
                 if (itm.BindsToSlot)
                 {
@@ -186,8 +229,37 @@ namespace GomLib.Models
             {
                 tooltip.Add(new XElement("div",
                     XClass("torctip_main"),
-                    "Unique"
+                    Tooltip.TooltipNameMap[836131348283436][Tooltip.language] //"Unique"
                     ));
+            }
+            if (itm.IsMod && itm.DyeId != 0)
+            {
+                string name = "";
+                if(itm.DyeColor.LocalizedColorName != null){
+                    name = itm.DyeColor.LocalizedColorName[Tooltip.language] ;}
+                string blks = String.Format("{0} {{0}} ({1})", name, Tooltip.TooltipNameMap[836131348283461][Tooltip.language]);
+                switch (itm.EnhancementType)
+                {
+                    case EnhancementType.Dye:
+                        blks = String.Format(blks, Tooltip.TooltipNameMap[1173453784744196][Tooltip.language]);
+                        break;
+                    case EnhancementType.ColorCrystal:
+                        blks = String.Format(blks, Tooltip.TooltipNameMap[1173453784743941][Tooltip.language]);
+                        break;
+                }
+                tooltip.Add(new XElement("div",
+                    blks),
+                    new XElement("div",
+                        new XElement("span",
+                            XClass("torctip_val"),
+                            Tooltip.TooltipNameMap[836131348284082][Tooltip.language]),
+                        GetDyeBlock(itm.DyeColor.Palette1Rep)),
+                    new XElement("div",
+                        new XElement("span",
+                            XClass("torctip_val"),
+                            Tooltip.TooltipNameMap[836131348284083][Tooltip.language]),
+                        GetDyeBlock(itm.DyeColor.Palette2Rep))
+                );
             }
             //slot
             bool isEquipable = false;
@@ -195,7 +267,7 @@ namespace GomLib.Models
             {
                 tooltip.Add(new XElement("div",
                     XClass("torctip_main"),
-                    String.Join(", ", itm.Slots.Select(x => x.ConvertToString()).Where(x => x != null).ToList())
+                    String.Join(", ", itm.Slots.Select(x => x.ConvertToString(Tooltip.language)).Where(x => x != null).ToList())
                     ));
                 isEquipable = true;
             }
@@ -248,6 +320,25 @@ namespace GomLib.Models
                 {
                     string dosomething = ""; //suppress for now, break here to debug
                 }
+                string replaceString = String.Format(" {{0}} {0} {1}", Tooltip.TooltipNameMap[836131348283440][Tooltip.language], localizedRating);
+                string dType = itm.WeaponSpec.DamageType;
+                switch (dType)
+                {
+                    case "Kinetic":
+                        dType = Tooltip.TooltipNameMap[946314439294990][Tooltip.language];
+                        break;
+                    case "Energy":
+                        dType = Tooltip.TooltipNameMap[946314439294991][Tooltip.language];
+                        break;
+                    case "Elemental":
+                        dType = Tooltip.TooltipNameMap[946314439294992][Tooltip.language];
+                        break;
+                    case "Internal":
+                        dType = Tooltip.TooltipNameMap[946314439294993][Tooltip.language];
+                        break;
+                    default:
+                        break;
+                }
                 tooltip.Add(new XElement("div",
                     XClass("torctip_main"),
                     new XElement("span",
@@ -257,7 +348,7 @@ namespace GomLib.Models
                     new XElement("span",
                         XClass("torctip_maxDam"),
                         max.ToString("0.0")),
-                    String.Format(" {0} Damage (Rating {1})", itm.WeaponSpec.DamageType, itm.CombinedRating)
+                    String.Format(replaceString, dType, itm.CombinedRating) // " {0} Damage (Rating {1})"
                     ));
             }
             else if (isEquipable)
@@ -307,26 +398,30 @@ namespace GomLib.Models
                     if (absorbchance > 0)
                         tooltip.Add(new XElement("div",
                             XClass("torctip_main"),
-                            String.Format("Shield Absorb: {0}%", (absorbchance * 100).ToString("n1"))
+                            String.Format(Tooltip.TooltipNameMap[836131348283463][Tooltip.language].Replace("<<1>>", "{0}"), (absorbchance * 100).ToString("n1")) //"Shield Absorb: {0}%"
                             ));
                     if (shieldchance > 0)
                         tooltip.Add(new XElement("div",
                             XClass("torctip_main"),
-                            String.Format("Shield Chance: {0}%", (shieldchance * 100).ToString("n1"))
+                            String.Format(Tooltip.TooltipNameMap[836131348283464][Tooltip.language].Replace("<<1>>", "{0}"), (shieldchance * 100).ToString("n1")) //"Shield Chance: {0}%"
                             ));
+                    string ratingReplace = String.Format("{{0}} {0}", localizedRating);
                     tooltip.Add(new XElement("div",
                         XClass("torctip_main"),
-                        String.Format("{0} (Rating {1})", shield.Name, itm.CombinedRating)
+                        String.Format(ratingReplace, shield.LocalizedName[Tooltip.language], itm.CombinedRating) //"{0} (Rating {1})"
                         ));
                 }
                 ArmorSpec arm = itm.ArmorSpec;
                 if (arm != null)
                 {
                     if (arm.DebugSpecName == "adaptive")
+                    {
+                        string adapRepString = String.Format("{0} {1}", Tooltip.TooltipNameMap[836131348283702][Tooltip.language], localizedRating.Replace("1","0"));
                         tooltip.Add(new XElement("div",
                             XClass("torctip_main"),
-                            String.Format("Adaptive Armor (Rating {0})", itm.CombinedRating)
+                            String.Format(adapRepString, itm.CombinedRating) //"Adaptive Armor (Rating {0})"
                             ));
+                    }
                     else
                     {
                         var temp = itm.EnhancementSlots.Where(x => x.Slot == EnhancementType.Harness);
@@ -340,10 +435,13 @@ namespace GomLib.Models
                             int armor = itm._dom.data.armorPerLevel.GetArmor(arm, level, qual, itm.Slots.Where(x => x != SlotType.Any).First());
 
                             if (armor > 0)
+                            {
+                                string armRepString = String.Format("{{0}} {0} {1}", Tooltip.TooltipNameMap[836131348283506][Tooltip.language], localizedRating);
                                 tooltip.Add(new XElement("div",
                                     XClass("torctip_main"),
-                                    String.Format("{0} Armor (Rating {1})", armor, itm.CombinedRating)
+                                    String.Format(armRepString, armor, itm.CombinedRating) //"{0} Armor (Rating {1})"
                                     ));
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -354,7 +452,7 @@ namespace GomLib.Models
                 else if (itm.CombinedRating != 0)
                     tooltip.Add(new XElement("div",
                         XClass("torctip_main"),
-                        String.Format("Item Rating {0}", itm.CombinedRating)
+                        String.Format("{0} {1}", Tooltip.TooltipNameMap[836131348284091][Tooltip.language], itm.CombinedRating) // "Item Rating {0}"
                         ));
             }
             /*else if (itm.CombinedRating != 0)
@@ -367,7 +465,7 @@ namespace GomLib.Models
             {
                 tooltip.Add(new XElement("div",
                     XClass("torctip_main"),
-                    String.Format("Durability: {0}/{0}", itm.MaxDurability)
+                    String.Format("{0}: {1}/{1}", Tooltip.TooltipNameMap[836131348283439][Tooltip.language], itm.MaxDurability) //"Durability: {0}/{0}"
                     ));
             }
             //stats
@@ -378,13 +476,13 @@ namespace GomLib.Models
                     XClass("torctip_stats"),
                     new XElement("span",
                         XClass("torctip_white"),
-                        "Total Stats:")
+                        Tooltip.TooltipNameMap[836131348283465][Tooltip.language]) //"Total Stats:"
                     );
                 if (!isEquipable)
                 {
                     stats.Add(new XElement("div",
                        XClass("torctip_stat"),
-                       String.Format("Armor Rating {0}", itm.CombinedRating)
+                       String.Format("{0} {1}", Tooltip.TooltipNameMap[836131348283465][Tooltip.language], itm.CombinedRating) //"Armor Rating {0}"
                        ));
                 }
                 for (var i = 0; i < itm.CombinedStatModifiers.Count; i++)
@@ -392,7 +490,7 @@ namespace GomLib.Models
                     stats.Add(new XElement("div",
                         XClass("torctip_stat"),
                         //new XAttribute("id", String.Format("torctip_stat_{0}", i)),
-                        String.Format("+{0} {1}", itm.CombinedStatModifiers[i].Modifier, itm.CombinedStatModifiers[i].Stat.ConvertToString())));
+                        String.Format("+{0} {1}", itm.CombinedStatModifiers[i].Modifier, itm.CombinedStatModifiers[i].DetailedStat.ConvertToString(Tooltip.language))));
                 }
                 if (techpower > 0)
                     stats.Add(new XElement("div",
@@ -414,7 +512,7 @@ namespace GomLib.Models
                     XClass("torctip_mods"),
                     new XElement("span",
                         XClass("torctip_white"),
-                        "Item Modifications:")
+                        String.Format("{0}:", Tooltip.TooltipNameMap[836131348283461][Tooltip.language])) //"Item Modifications:"
                     );
 
                 Dictionary<string, XElement> enhancements = new Dictionary<string, XElement>();
@@ -451,7 +549,7 @@ namespace GomLib.Models
                     XClass("torctip_mod"),
                     new XElement("div",
                         XClass("torctip_mslot"),
-                        "Augment: Open")
+                        String.Format("{0}: Open", Tooltip.TooltipNameMap[1173453784743948][Tooltip.language])) // "Augment: Open"
                     ));
                 tooltip.Add(enhance);
             }
@@ -516,7 +614,7 @@ namespace GomLib.Models
                     ));
             }
             //decoration before abilities
-            if (itm.IsDecoration && itm.Decoration != null)
+            if (itm.TeachesType == "Decoration" && itm.Decoration != null)
             {
                 tooltip.Add(
                     new XElement("div",
@@ -632,13 +730,19 @@ namespace GomLib.Models
                     }
                 }
             }
-            //Decoration Source
-            if (itm.IsDecoration || itm.StrongholdSourceList.Count > 0)
+            //Description
+            if (itm.Description != "")
             {
-                if (!itm.IsDecoration) {
-                    string pusfgs = "";
-                }
-                //tooltip.Add(new XElement("br"));
+                string itmDesc = itm.Description;
+                itmDesc = System.Text.RegularExpressions.Regex.Replace(itmDesc, @"\r\n?|\n", "\n");
+                XElement desc = new XElement("div",
+                    XClass("torctip_desc"));
+                AddStringWithBreaks(ref desc, itmDesc);
+                tooltip.Add(desc);
+            }
+            //Decoration Source
+            if (itm.TeachesType == "Decoration" || itm.StrongholdSourceList.Count > 0)
+            {
                 foreach (var kvp in itm.StrongholdSourceNameDict)
                 {
                     tooltip.Add(new XElement("div",
@@ -646,17 +750,6 @@ namespace GomLib.Models
                         String.Format("Source: {0}", kvp.Value)
                     ));
                 }
-            }
-            if (itm.Description != "")
-            {
-                string itmDesc = itm.Description;
-                //regex_newline.Replace(itmDesc, "<br />");
-                itmDesc = System.Text.RegularExpressions.Regex.Replace(itmDesc, @"\r\n?|\n", "\n");
-                //itmDesc = itmDesc.Replace("<br />", "\n");
-                XElement desc = new XElement("div",
-                    XClass("torctip_desc"));
-                AddStringWithBreaks(ref desc, itmDesc);
-                tooltip.Add(desc);
             }
             if (itm.SetBonusId != 0)
             {
@@ -673,9 +766,28 @@ namespace GomLib.Models
                 );
             if (itm.ModificationId != 0)
             {
-                //if (itm.Slot == EnhancementType.ColorCrystal)
-                slot = itm.Modification.Name;
-                enhancement.Add(new XElement("div",
+                slot = itm.Modification.LocalizedName[Tooltip.language];
+                if ((itm.Slot == EnhancementType.ColorCrystal || itm.Slot == EnhancementType.Dye ) && itm.Modification.DyeColor != null)
+                {
+                    XElement colors = new XElement("div",
+                        "[",
+                        GetDyeBlock(itm.Modification.DyeColor.Palette1Rep),
+                        "|",
+                        GetDyeBlock(itm.Modification.DyeColor.Palette2Rep),
+                        "]");
+                    enhancement.Add(new XElement("div",
+                        XClass("torctip_mslot"),
+                        new XElement("a",
+                            XClass(String.Format("torctip_{0}", itm.Modification.Quality.ToString())),
+                            new XAttribute("href", String.Format("http://torcommunity.com/database/item/{0}/{1}/", itm.Modification.Base62Id, itm.Modification.Name.LinkString())),
+                            new XAttribute("data-torc", "norestyle"),
+                            String.Format("{0} ({1})", slot, itm.Modification.Rating.ToString()),
+                            colors)
+                        ));
+                }
+                else
+                {
+                    enhancement.Add(new XElement("div",
                     XClass("torctip_mslot"),
                     new XElement("a",
                         XClass(String.Format("torctip_{0}", itm.Modification.Quality.ToString())),
@@ -683,11 +795,13 @@ namespace GomLib.Models
                         new XAttribute("data-torc", "norestyle"),
                         String.Format("{0} ({1})", slot, itm.Modification.Rating.ToString()))
                     ));
+                }
+                
                 for (var e = 0; e < itm.Modification.CombinedStatModifiers.Count; e++)
                 {
                     enhancement.Add(new XElement("div",
                         XClass("torctip_mstat"),
-                        String.Format("+{0} {1}", itm.Modification.CombinedStatModifiers[e].Modifier, itm.Modification.CombinedStatModifiers[e].Stat.ConvertToString())
+                        String.Format("+{0} {1}", itm.Modification.CombinedStatModifiers[e].Modifier, itm.Modification.CombinedStatModifiers[e].DetailedStat.ConvertToString(Tooltip.language))
                         ));
                 }
             }
@@ -698,6 +812,27 @@ namespace GomLib.Models
                         String.Format("{0}: Open", slot)
                     ));
             return enhancement;
+        }
+
+        private static XElement GetDyeBlock(System.Drawing.Color color)
+        {
+            if (color.Name != "0")
+            {
+                string color2 = String.Format("background-color: rgba({0}, {1}, {2}, {3}); box-shadow: 0px 0px 2px;",
+                    (int)color.R,
+                    (int)color.G,
+                    (int)color.B,
+                    (int)color.A);
+                return new XElement("div",
+                    XClass("torctip_col_block"),
+                    new XAttribute("style",
+                        color2),
+                        " ");
+            }
+            else
+                return new XElement("div",
+                    XClass("torctip_col_block"),
+                    Tooltip.TooltipNameMap[836131348283742][Tooltip.language]); //"No Color"
         }
         private static XElement ToHTML(this SetBonusEntry itm)
         {
@@ -1414,68 +1549,111 @@ namespace GomLib.Models
                 );
         }
         #region ConvertToString
+        public static Dictionary<long, Dictionary<string, string>> ConvertNameMap = new Dictionary<long, Dictionary<string, string>>();
+        public static void LoadNameMap(DataObjectModel dom){
+            StringTable table = dom.stringTable.Find("str.gui.equipslot");
+            foreach (var entry in table.data) ConvertNameMap.Add(entry.Value.Id, entry.Value.localizedText);
+
+            table = dom.stringTable.Find("str.gui.tooltips");
+            foreach (var entry in table.data) Tooltip.TooltipNameMap.Add(entry.Value.Id, entry.Value.localizedText); 
+            table = dom.stringTable.Find("str.gui.items");
+            foreach (var entry in table.data) Tooltip.TooltipNameMap.Add(entry.Value.Id, entry.Value.localizedText);
+            table = dom.stringTable.Find("str.gui.itm.enhancement.types");
+            foreach (var entry in table.data) Tooltip.TooltipNameMap.Add(entry.Value.Id, entry.Value.localizedText);
+        }
+        public static string GetName(long id, string language)
+        {
+            if (ConvertNameMap.ContainsKey(id))
+                return ConvertNameMap[id][language];
+            return null;
+        }
+        public static string GetName(long id, string language, string defaultVal)
+        {
+            var returnVal = GetName(id, language);
+            if (returnVal == null) return defaultVal;
+            return returnVal;
+        }
+
         public static string ConvertToString(this SlotType slot) //replace these with friendly names
+        {
+            return slot.ConvertToString("enMale");
+        }
+        public static string ConvertToString(this SlotType slot, string language) //replace these with friendly names
         {
             switch (slot)
             {
-                case SlotType.EquipHumanMainHand: return "Main Hand (Melee)";
-                case SlotType.EquipHumanOffHand: return "Off-Hand (Melee)";
-                case SlotType.EquipHumanWrist: return "Wrist";
-                case SlotType.EquipHumanBelt: return "Waist";
-                case SlotType.EquipHumanChest: return "Chest";
-                case SlotType.EquipHumanEar: return "Ear";
-                case SlotType.EquipHumanFace: return "Head";
-                case SlotType.EquipHumanFoot: return "Feet";
-                case SlotType.EquipHumanGlove: return "Hands";
-                case SlotType.EquipHumanImplant: return "Implant";
-                case SlotType.EquipHumanLeg: return "Legs";
-                case SlotType.EquipDroidUpper: return "Core";
-                case SlotType.EquipDroidLower: return "Motor";
-                case SlotType.EquipDroidShield: return "DroidShield";
-                case SlotType.EquipDroidGyro: return "DroidGyro";
-                case SlotType.EquipDroidUtility: return "Parts";
-                case SlotType.EquipDroidSensor: return "Sensor Unit";
-                case SlotType.EquipDroidSpecial: return "DroidSpecial";
-                case SlotType.EquipDroidWeapon1: return "DroidWeapon1";
-                case SlotType.EquipDroidWeapon2: return "DroidWeapon2";
-                case SlotType.Upgrade: return "Upgrade";
-                case SlotType.EquipHumanRanged: return "Ranged";
-                case SlotType.EquipHumanHeirloom: return "Heirloom";
-                case SlotType.EquipHumanRangedPrimary: return "Main Hand (Ranged)";
-                case SlotType.EquipHumanRangedSecondary: return "Off-Hand (Ranged)";
-                case SlotType.EquipHumanRangedTertiary: return "RangedTertiary";
-                case SlotType.EquipHumanCustomRanged: return "CustomRanged";
-                case SlotType.EquipHumanCustomMelee: return "CustomMelee";
-                case SlotType.EquipHumanShield: return "Offhand (General)";
-                case SlotType.EquipHumanOutfit: return "Customization";
-                case SlotType.EquipDroidLeg: return "DroidLeg";
-                case SlotType.EquipDroidFeet: return "DroidFeet";
-                case SlotType.EquipDroidOutfit: return "DroidOutfit";
-                case SlotType.EquipDroidChest: return "DroidChest";
-                case SlotType.EquipDroidHand: return "DroidHand";
-                case SlotType.EquipHumanLightSide: return "LightSide";
-                case SlotType.EquipHumanDarkSide: return "DarkSide";
-                case SlotType.EquipHumanRelic: return "Relic";
-                case SlotType.EquipHumanFocus: return "Offhand (General)";
-                case SlotType.EquipSpaceShipArmor: return "SpaceShipArmor";
-                case SlotType.EquipSpaceBeamGenerator: return "SpaceBeamGenerator";
-                case SlotType.EquipSpaceBeamCharger: return "SpaceBeamCharger";
-                case SlotType.EquipSpaceEnergyShield: return "SpaceEnergyShield";
-                case SlotType.EquipSpaceShieldRegenerator: return "SpaceShieldRegenerator";
-                case SlotType.EquipSpaceMissileMagazine: return "SpaceMissileMagazine";
-                case SlotType.EquipSpaceProtonTorpedoes: return "SpaceProtonTorpedoes";
-                case SlotType.EquipSpaceAbilityDefense: return "SpaceAbilityDefense";
-                case SlotType.EquipSpaceAbilityOffense: return "SpaceAbilityOffense";
-                case SlotType.EquipSpaceAbilitySystems: return "SpaceAbilitySystems";
-                case SlotType.EquipSpaceShipAbilityDefense: return "SpaceShipAbilityDefense";
-                case SlotType.EquipSpaceShipAbilityOffense: return "SpaceShipAbilityOffense";
-                case SlotType.EquipSpaceShipAbilitySystems: return "SpaceShipAbilitySystems";
+                case SlotType.EquipHumanMainHand: return GetName(2073124879204376,language);
+                case SlotType.EquipHumanOffHand: return GetName(2073124879204354,language);
+                case SlotType.EquipHumanWrist: return GetName(2073124879204357,language);
+                case SlotType.EquipHumanBelt: return GetName(2073124879204358,language);
+                case SlotType.EquipHumanChest: return GetName(2073124879204355,language);
+                case SlotType.EquipHumanEar: return GetName(2073124879204362,language);
+                case SlotType.EquipHumanFace: return GetName(2073124879204361,language);
+                case SlotType.EquipHumanFoot: return GetName(2073124879204360,language);
+                case SlotType.EquipHumanGlove: return GetName(2073124879204359,language);
+                case SlotType.EquipHumanImplant: return GetName(2073124879204363,language);
+                case SlotType.EquipHumanLeg: return GetName(2073124879204356,language);
+                case SlotType.EquipDroidUpper: return GetName(2073124879204390,language);
+                case SlotType.EquipDroidLower: return GetName(2073124879204392,language);
+                case SlotType.EquipDroidUtility: return GetName(2073124879204394,language);
+                case SlotType.EquipDroidSensor: return GetName(2073124879204388,language);
+                case SlotType.EquipHumanHeirloom: return GetName(2073124879204364,language);
+                case SlotType.EquipHumanRangedPrimary: return GetName(2073124879204365,language);
+                case SlotType.EquipHumanRangedSecondary: return GetName(2073124879204375,language);
+                case SlotType.EquipHumanCustomRanged: return GetName(2073124879204366,language);
+                case SlotType.EquipHumanCustomMelee: return GetName(2073124879204367,language);
+                case SlotType.EquipHumanShield: return GetName(2073124879204358,language);
+                case SlotType.EquipHumanOutfit: return GetName(2073124879204369,language);
+                case SlotType.EquipDroidLeg: return GetName(2073124879204370,language);
+                case SlotType.EquipDroidFeet: return GetName(2073124879204371,language);
+                case SlotType.EquipDroidOutfit: return GetName(2073124879204389,language);
+                case SlotType.EquipDroidChest: return GetName(2073124879204373,language);
+                case SlotType.EquipDroidHand: return GetName(2073124879204374,language);
+                case SlotType.EquipHumanRelic: return GetName(2073124879204377,language);
+                case SlotType.EquipHumanFocus: return GetName(2073124879204368,language);
+                case SlotType.EquipSpaceShipArmor: return GetName(2073124879204381,language);
+                case SlotType.EquipSpaceBeamGenerator: return GetName(2073124879204382,language);
+                case SlotType.EquipSpaceBeamCharger: return GetName(2073124879204383,language);
+                case SlotType.EquipSpaceEnergyShield: return GetName(2073124879204384,language);
+                case SlotType.EquipSpaceShieldRegenerator: return GetName(2073124879204385,language);
+                case SlotType.EquipSpaceMissileMagazine: return GetName(2073124879204386,language);
+                case SlotType.EquipSpaceProtonTorpedoes: return GetName(2073124879204387,language);
+                case SlotType.EquipSpaceAbilityDefense: return GetName(2073124879204651,language);
+                case SlotType.EquipSpaceAbilityOffense: return GetName(2073124879204652,language);
+                case SlotType.EquipSpaceAbilitySystems: return GetName(2073124879204653,language);
                 case SlotType.Any: return null;
+
+                case SlotType.EquipDroidShield:
+                case SlotType.EquipDroidGyro:
+                case SlotType.EquipDroidSpecial:
+                case SlotType.EquipDroidWeapon1:
+                case SlotType.EquipDroidWeapon2:
+                case SlotType.Upgrade:
+                case SlotType.EquipHumanRanged:
+                case SlotType.EquipHumanRangedTertiary:
+                case SlotType.EquipHumanLightSide:
+                case SlotType.EquipHumanDarkSide:
+                case SlotType.EquipSpaceShipAbilityDefense:
+                case SlotType.EquipSpaceShipAbilityOffense:
+                case SlotType.EquipSpaceShipAbilitySystems:
+                    return slot.ToString();
                 default:
                     return "";
             }
         }
+        public static string ConvertToString(this DetailedStat stat) //replace these with friendly names
+        {
+            return ConvertToString(stat, "enMale");
+        }
+        public static string ConvertToString(this DetailedStat stat, string language) //replace these with friendly names
+        {
+            return stat.LocalizedDisplayName[language];
+        }
         public static string ConvertToString(this Stat slot) //replace these with friendly names
+        {
+            return ConvertToString(slot, "enMale");
+        }
+        public static string ConvertToString(this Stat slot, string language) //replace these with friendly names
         {
             switch (slot)
             {

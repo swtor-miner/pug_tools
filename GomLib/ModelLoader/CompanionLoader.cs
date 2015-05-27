@@ -91,7 +91,7 @@ namespace GomLib.ModelLoader
             {
                 CompanionProfessionModifier mod = new CompanionProfessionModifier();
                 mod.Companion = cmp;
-                mod.Stat = _dom.statD.ToStat((ScriptEnum)profKvp.Key);
+                mod.Stat = _dom.statData.ToStat((ScriptEnum)profKvp.Key).ToString();
                 mod.Modifier = (int)(long)profKvp.Value;
                 cmp.ProfessionModifiers.Add(mod);
             }

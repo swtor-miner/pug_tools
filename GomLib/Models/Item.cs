@@ -96,6 +96,7 @@ namespace GomLib.Models
         public EnhancementType EnhancementType { get; set; }
         public GiftType GiftType { get; set; }
         public GiftRank GiftRank { get; set; }
+        public int GiftRankNum { get; set; }
         public int AuctionCategoryId { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         public AuctionCategory AuctionCategory { get; set; }
@@ -103,6 +104,8 @@ namespace GomLib.Models
         [Newtonsoft.Json.JsonIgnore]
         public AuctionSubCategory AuctionSubCategory { get; set; }
         public AppearanceColor AppearanceColor { get; set; }
+        public int DyeId { get; set; }
+        public DetailedAppearanceColor DyeColor { get; set; }
         public ulong EquipAbilityId { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         public string EquipAbilityB62Id { get { return EquipAbilityId.ToMaskedBase62(); } }
@@ -137,7 +140,7 @@ namespace GomLib.Models
         public ulong SchematicId { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         public string SchematicB62Id { get { return SchematicId.ToMaskedBase62(); } }
-        public string TreasurePackageSpec { get; set; }
+        //public string TreasurePackageSpec { get; set; } //unused
         public long TreasurePackageId { get; set; }
         public long MountSpec { get; set; }
         public Gender RequiredGender { get; set; }
@@ -226,14 +229,15 @@ namespace GomLib.Models
         }
 
         public string Model { get; set; }
-        public string ImperialVOModulation { get; set; }
-        public string RepublicVOModulation { get; set; }
+        public string VOModulationImperial { get; set; }
+        public string VOModulationRepublic { get; set; }
         public string ImperialAppearanceTag { get; set; }
         public string RepublicAppearanceTag { get; set; }
 
         public ulong TeachesRef { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         public string TeachesRefB62 { get { return TeachesRef.ToMaskedBase62(); } }
+        public string TeachesType { get; set; }
         public bool IsUnknownBool { get; set; }
         public List<long> StrongholdSourceList { get; set; }
         public Dictionary<long, string> StrongholdSourceNameDict { get; set; }
@@ -241,6 +245,8 @@ namespace GomLib.Models
         public List<ulong> rewardedForQuests { get; set; }
         public Dictionary<ulong, ulong> ippRefs { get; set; }
         public Dictionary<string, string> classAppearance { get; set; }
+        public string AppearanceImperial { get; set; }
+        public string AppearanceRepublic { get; set; }
         public long SetBonusId { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         internal SetBonusEntry _SetBonus { get; set; }
@@ -288,7 +294,13 @@ namespace GomLib.Models
             }
         }
 
-        public bool IsDecoration { get; set; }
+        public bool IsDecoration
+        {
+            get
+            {
+                return (TeachesType == "Decoration");
+            }
+        }
         [Newtonsoft.Json.JsonIgnore]
         public Decoration _Decoration { get; set; }
         [Newtonsoft.Json.JsonIgnore]
@@ -307,6 +319,8 @@ namespace GomLib.Models
         public bool BindsToSlot { get; set; }
         public int RepFactionId { get; set; }
         [Newtonsoft.Json.JsonIgnore]
+        internal ReputationGroup faction { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
         internal string _RepFactionName { get; set; }
         public string RepFactionName
         {
@@ -314,7 +328,7 @@ namespace GomLib.Models
             {
                 if (_RepFactionName == null)
                 {
-                    var faction = _dom.reputationGroupLoader.Load(RepFactionId);
+                    if (faction == null) faction = _dom.reputationGroupLoader.Load(RepFactionId);
                     if (faction != null)
                     {
                         if(faction.GroupRepublicTitle != faction.GroupEmpireTitle)
@@ -324,6 +338,25 @@ namespace GomLib.Models
                     }
                 }
                 return _RepFactionName;
+            }
+        }
+        [Newtonsoft.Json.JsonIgnore]
+        internal Dictionary<string, Dictionary<string, string>> _LocalizedRepFactionName { get; set; }
+        public Dictionary<string, Dictionary<string, string>> LocalizedRepFactionName
+        {
+            get
+            {
+                if (_LocalizedRepFactionName == null)
+                {
+                    _LocalizedRepFactionName = new Dictionary<string, Dictionary<string, string>>();
+                    if (faction == null) faction = _dom.reputationGroupLoader.Load(RepFactionId);
+                    if (faction != null)
+                    {
+                        _LocalizedRepFactionName.Add("Imperial", faction.LocalizedGroupEmpireTitle);
+                        _LocalizedRepFactionName.Add("Republic", faction.LocalizedGroupRepublicTitle);
+                    }
+                }
+                return _LocalizedRepFactionName;
             }
         }
 
@@ -379,6 +412,7 @@ namespace GomLib.Models
 
         public List<string> MaterialForSchems { get; set; }
         public List<string> RewardFromQuests { get; set; }
+        public List<string> RequiredClassesB62 { get; set; }
         public static List<long> ArmorSpecIds = new List<long> { -8622546409652942944, 589686270506543030, 5763611092890301551 };
         public static List<ArmorSpec> ArmorSpecs = new List<ArmorSpec> { };
 
@@ -406,7 +440,7 @@ namespace GomLib.Models
         public bool IsEquipable { get; set; }
         public bool IsCurrency { get; set; }
         public bool IsMtxItem { get; set; }
-        public bool IsRepItem { get; set; }
+        public bool IsRepTrophy { get; set; }
 
         public static Item FillFlatData(Item itm)
         {
@@ -576,13 +610,17 @@ namespace GomLib.Models
                             }
                             catch(Exception ex){} //this is here to catch errors for adaptive implants and such.
                         }
-                        itm.AdaptiveArmor = String.Join(",", armorValues);
+                        itm.AdaptiveArmor = String.Format("[{0}]", String.Join(",", armorValues));
                     }
                     else
                     {
                         itm.Armor = itm._dom.data.armorPerLevel.GetArmor(arm, itm.ModLevel, qual, itm.Slots.Where(x => x != SlotType.Any).First());
                     }
                 }
+            }
+            if (itm.RequiredClasses.Count > 0)
+            {
+                itm.RequiredClassesB62 = itm.RequiredClasses.Select(x => x.Base62Id).ToList();
             }
 
             ProcessFlags(itm);
@@ -616,7 +654,7 @@ namespace GomLib.Models
             itm.IsEquipable = flags.HasFlag(ItemTypeFlags.IsEquipable);
             itm.IsCurrency = flags.HasFlag(ItemTypeFlags.IsCurrency);
             itm.IsMtxItem = flags.HasFlag(ItemTypeFlags.IsMtxItem);
-            itm.IsRepItem = flags.HasFlag(ItemTypeFlags.IsRepItem);
+            itm.IsRepTrophy = flags.HasFlag(ItemTypeFlags.IsRepTrophy);
 
             return itm;
         }
@@ -718,8 +756,12 @@ namespace GomLib.Models
             hash ^= MaxDurability.GetHashCode();
             if (WeaponAppSpec != null) hash ^= WeaponAppSpec.GetHashCode();
             if (Model != null) hash ^= Model.GetHashCode();
-            if (ImperialVOModulation != null) hash ^= ImperialVOModulation.GetHashCode();
-            if (RepublicVOModulation != null) hash ^= RepublicVOModulation.GetHashCode();
+            if (VOModulationImperial != null) hash ^= VOModulationImperial.GetHashCode();
+            if (VOModulationRepublic != null) hash ^= VOModulationRepublic.GetHashCode();
+            hash ^= BindsToSlot.GetHashCode();
+            hash ^= RepFactionId.GetHashCode();
+            hash ^= SetBonusId.GetHashCode();
+            if (MTXRarity != null) hash ^= MTXRarity.GetHashCode();
             return hash;
         }
 
@@ -799,7 +841,7 @@ namespace GomLib.Models
                 return false;
             if (this.ImperialAppearanceTag != itm.ImperialAppearanceTag)
                 return false;
-            if (this.ImperialVOModulation != itm.ImperialVOModulation)
+            if (this.VOModulationImperial != itm.VOModulationImperial)
                 return false;
             if (this.IsModdable != itm.IsModdable)
                 return false;
@@ -838,7 +880,7 @@ namespace GomLib.Models
                 return false;
             if (this.RepublicAppearanceTag != itm.RepublicAppearanceTag)
                 return false;
-            if (this.RepublicVOModulation != itm.RepublicVOModulation)
+            if (this.VOModulationRepublic != itm.VOModulationRepublic)
                 return false;
             if (this.RequiredAlignmentInverted != itm.RequiredAlignmentInverted)
                 return false;
@@ -889,8 +931,8 @@ namespace GomLib.Models
                 return false;
             if (this.TreasurePackageId != itm.TreasurePackageId)
                 return false;
-            if (this.TreasurePackageSpec != itm.TreasurePackageSpec)
-                return false;
+            //if (this.TreasurePackageSpec != itm.TreasurePackageSpec)
+                //return false;
             if (this.TypeBitSet != itm.TypeBitSet)
                 return false;
             if (this.UniqueLimit != itm.UniqueLimit)
@@ -960,7 +1002,7 @@ namespace GomLib.Models
                 txtFile.Append("  StatModifiers: " + StatModifiers + n);
                 txtFile.Append("  SubCategory: " + SubCategory + n);
                 txtFile.Append("  TreasurePackageId: " + TreasurePackageId + n);
-                txtFile.Append("  TreasurePackageSpec: " + TreasurePackageSpec + n);
+                //txtFile.Append("  TreasurePackageSpec: " + TreasurePackageSpec + n);
                 txtFile.Append("  TypeBitSet: " + TypeBitSet + n);
                 txtFile.Append("  UniqueLimit: " + UniqueLimit + n);
                 txtFile.Append("  UseAbility: " + UseAbility + n);
@@ -982,7 +1024,7 @@ namespace GomLib.Models
                     ProcessFlags(this);
                 }
                 return new List<SQLProperty>
-                    {                //(SQL Column Name, C# Property Name, SQL Column type statement, Unk100000/PrimaryKey, Serialize value to json)
+                    {                //(SQL Column Name, C# Property Name, SQL Column type statement, IsUnique/PrimaryKey, Serialize value to json)
                         new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("CleanName", "CleanName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("NodeId", "Id", "bigint(20) unsigned NOT NULL"),
@@ -990,38 +1032,46 @@ namespace GomLib.Models
                         new SQLProperty("NameId", "NameId", "bigint(20) NOT NULL"),
                         new SQLProperty("Fqn", "Fqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("ItemLevel", "ItemLevel", "int(11) NOT NULL"),
-                        new SQLProperty("RequiredLevel", "RequiredLevel", "int(11) NOT NULL"),
-                        new SQLProperty("AppearanceColor", "AppearanceColor", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("AppearanceColor", "AppearanceColor", "TEXT NOT NULL"),
+                        new SQLProperty("AppearanceImperial", "AppearanceImperial", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
+                        new SQLProperty("AppearanceRepublic", "AppearanceRepublic", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
                         new SQLProperty("ArmorSpec", "ArmorSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("AuctionCategoryId", "AuctionCategoryId", "int(11) NOT NULL"),
+                        new SQLProperty("AuctionCategory", "AuctionCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("AuctionSubCategoryId", "AuctionSubCategoryId", "int(11) NOT NULL"),
+                        new SQLProperty("AuctionSubCategory", "AuctionSubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Binding", "Binding", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("CombinedRating", "CombinedRating", "int(11) NOT NULL"),
                         new SQLProperty("CombinedRequiredLevel", "CombinedRequiredLevel", "int(11) NOT NULL"),
-                        //new SQLProperty("CombinedStatModifiers", "CombinedStatModifiers", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("CombinedStatModifiers", "CombinedStatModifiers", "text NOT NULL", false, true),
                         new SQLProperty("ConsumedOnUse", "ConsumedOnUse", "tinyint(1) NOT NULL"),
                         new SQLProperty("ConversationFqn", "ConversationFqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("DamageType", "DamageType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("Description", "_Description", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Description", "_Description", "TEXT NOT NULL"),
                         new SQLProperty("DescriptionId", "DescriptionId", "bigint(20) NOT NULL"),
                         new SQLProperty("DisassembleCategory", "DisassembleCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Durability", "Durability", "int(11) NOT NULL"),
                         new SQLProperty("EnhancementCategory", "EnhancementCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        //new SQLProperty("EnhancementSlots", "EnhancementSlots", "text COLLATE utf8_unicode_ci NOT NULL", false, true),
+                        new SQLProperty("EnhancementSlots", "EnhancementSlots", "text NOT NULL", false, true),
                         new SQLProperty("EnhancementSubCategory", "EnhancementSubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("EnhancementType", "EnhancementType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("EquipAbilityId", "EquipAbilityB62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("GiftRank", "GiftRank", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("EquipAbilityId", "EquipAbilityB62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
+                        new SQLProperty("GiftRank", "GiftRankNum", "int(11) NOT NULL"),
                         new SQLProperty("GiftType", "GiftType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Icon", "HashedIcon", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("IsDecoration", "IsDecoration", "tinyint(1) NOT NULL"),
                         new SQLProperty("BindsToSlot", "BindsToSlot", "tinyint(1) NOT NULL"),
+                        new SQLProperty("MaxDurability", "MaxDurability", "int(11) NOT NULL"),
                         new SQLProperty("MaxStack", "MaxStack", "int(11) NOT NULL"),
+                        new SQLProperty("Model", "Model", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("ModifierSpec", "ModifierSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("MountSpec", "MountSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Quality", "Quality", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Rating", "Rating", "int(11) NOT NULL"),
                         new SQLProperty("RequiredAlignmentInverted", "RequiredAlignmentInverted", "tinyint(1) NOT NULL"),
-                        //new SQLProperty("RequiredClasses", "RequiredClasses", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("RequiredClasses", "RequiredClasses", "text NOT NULL"),
                         new SQLProperty("RequiredGender", "RequiredGender", "varchar(10) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("RequiredLevel", "RequiredLevel", "int(11) NOT NULL"),
                         new SQLProperty("RequiredProfession", "RequiredProfession", "varchar(35) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("RequiredProfessionLevel", "RequiredProfessionLevel", "int(11) NOT NULL"),
                         new SQLProperty("RequiredSocialTier", "RequiredSocialTier", "int(11) NOT NULL"),
@@ -1030,41 +1080,36 @@ namespace GomLib.Models
                         new SQLProperty("RequiresSocial", "RequiresSocial", "tinyint(1) NOT NULL"),
                         new SQLProperty("RequiredReputationId", "RequiredReputationId", "int(11) NOT NULL"),
                         new SQLProperty("RequiredReputationLevelId", "RequiredReputationLevelId", "int(11) NOT NULL"),
-                        new SQLProperty("RequiredReputation", "RequiredReputationName", "varchar(255) NOT NULL"),
+                        new SQLProperty("RequiredReputation", "RequiredReputationName", "varchar(1000) NOT NULL"),
                         new SQLProperty("RequiredReputationLevel", "RequiredReputationLevelName", "varchar(255) NOT NULL"),
-                        new SQLProperty("SchematicId", "SchematicB62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("SchematicId", "SchematicB62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
                         new SQLProperty("ShieldSpec", "ShieldSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Slots", "Slots", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("StatModifiers", "StatModifiers", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("SubCategory", "SubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("TreasurePackageId", "TreasurePackageId", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("TreasurePackageSpec", "TreasurePackageSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("UniqueLimit", "UniqueLimit", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("UseAbilityId", "UseAbilityB62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("Value", "Value", "int(11) NOT NULL"),
-                        new SQLProperty("VendorStackSize", "VendorStackSize", "bigint(20) NOT NULL"),
-                        new SQLProperty("WeaponSpec", "WeaponSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("TeachesRef", "TeachesRefB62", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("TypeBitSet", "TypeBitSet", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("StackCount", "StackCount", "int(11) NOT NULL"),
-                        new SQLProperty("MaxDurability", "MaxDurability", "int(11) NOT NULL"),
+                        new SQLProperty("StatModifiers", "StatModifiers", "TEXT NOT NULL"),
+                        new SQLProperty("SubCategory", "SubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("TeachesRef", "TeachesRefB62", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
+                        new SQLProperty("TeachesType", "TeachesType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("TreasurePackageId", "TreasurePackageId", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        //new SQLProperty("TreasurePackageSpec", "TreasurePackageSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("TypeBitSet", "TypeBitSet", "int(11) NOT NULL"),
+                        new SQLProperty("UniqueLimit", "UniqueLimit", "int(11) NOT NULL"),
+                        new SQLProperty("UseAbilityId", "UseAbilityB62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
+                        new SQLProperty("Value", "Value", "int(11) NOT NULL"),
+                        new SQLProperty("VendorStackSize", "VendorStackSize", "int(11) NOT NULL"),
+                        new SQLProperty("VOModulationImperial", "VOModulationImperial", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("VOModulationRepublic", "VOModulationRepublic", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("WeaponAppSpec", "WeaponAppSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("Model", "Model", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("ImperialVOModulation", "ImperialVOModulation", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("RepublicVOModulation", "RepublicVOModulation", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("AuctionCategoryId", "AuctionCategoryId", "int(11) NOT NULL"),
-                        new SQLProperty("AuctionCategory", "AuctionCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"), //in for testing
-                        new SQLProperty("AuctionSubCategoryId", "AuctionSubCategoryId", "int(11) NOT NULL"),
-                        new SQLProperty("AuctionSubCategory", "AuctionSubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("ChildBase62Id", "ChildBase62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("WeaponSpec", "WeaponSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("ChildBase62Id", "ChildBase62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
                         /* Flat Data */
                         new SQLProperty("Tooltip", "Tooltip", "TEXT NOT NULL"),
-                        new SQLProperty("ArmoringBId", "ArmoringBId", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("ModificationBId", "ModificationBId", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("EnhancementBId", "EnhancementBId", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("ColorCrystalBId", "ColorCrystalBId", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("BarrelBId", "BarrelBId", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("HiltBId", "HiltBId", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("ArmoringBId", "ArmoringBId", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
+                        new SQLProperty("ModificationBId", "ModificationBId", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
+                        new SQLProperty("EnhancementBId", "EnhancementBId", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
+                        new SQLProperty("ColorCrystalBId", "ColorCrystalBId", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
+                        new SQLProperty("BarrelBId", "BarrelBId", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
+                        new SQLProperty("HiltBId", "HiltBId", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
                         new SQLProperty("Endurance","Endurance", "int(11) NOT NULL"),
                         new SQLProperty("Presence","Presence", "int(11) NOT NULL"),
                         new SQLProperty("Aim","Aim", "int(11) NOT NULL"),
@@ -1118,7 +1163,7 @@ namespace GomLib.Models
                         new SQLProperty("IsEquipable", "IsEquipable", "tinyint(1) NOT NULL"),
                         new SQLProperty("IsCurrency", "IsCurrency", "tinyint(1) NOT NULL"),
                         new SQLProperty("IsMtxItem", "IsMtxItem", "tinyint(1) NOT NULL"),
-                        new SQLProperty("IsRepItem", "IsRepItem", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsRepTrophy", "IsRepTrophy", "tinyint(1) NOT NULL"),
                     };
             }
         }
@@ -1231,8 +1276,8 @@ namespace GomLib.Models
                 item.Add(new XElement("ShieldSpec", ShieldSpec),
                     new XElement("Slots", Slots),
                     new XElement("SubCategory", SubCategory),
-                    new XElement("TreasurePackageSpec", TreasurePackageSpec,
-                        new XAttribute("Id", TreasurePackageId)),
+                    //new XElement("TreasurePackageSpec", TreasurePackageSpec,
+                        //new XAttribute("Id", TreasurePackageId)),
                     new XElement("TypeBitSet", TypeBitSet),
                     /*   new XAttribute("Id", TypeBitSet),
                        ((GomLib.Models.ItemTypeFlags)(object)TypeBitSet)
@@ -1245,10 +1290,10 @@ namespace GomLib.Models
                     new XElement("Value", Value),
                     new XElement("VendorStackSize", VendorStackSize),
                     new XElement("WeaponSpec", WeaponSpec));
-                if (ImperialVOModulation != null)
+                if (VOModulationImperial != null)
                 {
-                    item.Add(new XElement("ImpVoiceModulation", ImperialVOModulation),
-                        new XElement("RepublicVoiceModulation", RepublicVOModulation));
+                    item.Add(new XElement("ImpVoiceModulation", VOModulationImperial),
+                        new XElement("RepublicVoiceModulation", VOModulationRepublic));
                 }
                 if (ImperialAppearanceTag != null)
                 {

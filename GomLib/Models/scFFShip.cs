@@ -271,7 +271,7 @@ namespace GomLib.Models
                 if (Stats != null)
                 {
                     //stats.Add("[ " + string.Join("; ", Stats.Select(x => currentDom.statD.ToStat(x.Key) + ", " + x.Value).ToArray()) + "; ]");
-                    stats.Add(Stats.Select(x => new XElement("Stat", new XAttribute("Id", _dom.statD.ToStat(x.Key)), x.Value)));
+                    stats.Add(Stats.Select(x => new XElement("Stat", new XAttribute("Id", _dom.statData.ToStat(x.Key)), x.Value)));
                     if (!verbose)
                     {
                         stats.Elements().Where(x => x.Attribute("Id").Value.Contains("4611") || x.Attribute("Id").Value.Contains("OBSOLETE")).Remove();

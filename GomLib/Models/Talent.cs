@@ -280,7 +280,7 @@ namespace GomLib.Models
                                 }
                             }
                         }
-                        firstStatList += String.Format("{0}, {1}, {2}, {3}, {4}; ", _dom.statD.ToStat(stat.Stat), stat.Value, stat.Modifier, stat.Enabled, affectedAbility);
+                        firstStatList += String.Format("{0}, {1}, {2}, {3}, {4}; ", _dom.statData.ToStat(stat.Stat), stat.Value, stat.Modifier, stat.Enabled, affectedAbility);
                     }
                     rank.Add(new XElement("FirstStatList", firstStatList + "}"));
                     string secondStatList = "{ ";
@@ -301,7 +301,7 @@ namespace GomLib.Models
                                 }
                             }
                         }
-                        secondStatList += String.Format("{0}, {1}, {2}, {3}, {4}; ", _dom.statD.ToStat(stat.Stat), stat.Value, stat.Modifier, stat.Enabled, affectedAbility);
+                        secondStatList += String.Format("{0}, {1}, {2}, {3}, {4}; ", _dom.statData.ToStat(stat.Stat), stat.Value, stat.Modifier, stat.Enabled, affectedAbility);
                     }
 
                     rank.Add(new XElement("SecondStatList", secondStatList + "}"));

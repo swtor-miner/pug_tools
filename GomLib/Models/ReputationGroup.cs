@@ -19,6 +19,7 @@ namespace GomLib.Models
         public long GroupRepublicTitleId { get; set; }                       //repRankInfoTitleId - long lookup : 4611686297436250003 - str.lgc.reputation - 3171541290320165
         public string GroupRepublicDescription { get; set; }                 //repRankInfoTitle - "Outsider"
         public string GroupRepublicTitle { get; set; }                       //repRankInfoTitle - "Outsider"        
+        public Dictionary<string, string> LocalizedGroupRepublicTitle { get; set; }
         public List<object> GroupRepublicRankTitles { get; set; }            //repGroupInfoRepublicRankTitles - 4611686297436250010 - repRankInfoId => lgcTitleLookupId    
         public Dictionary<object, object> GroupRepublicRankLegacyTitles { get; set; }
         public string GroupRepublicIcon { get; set; }                        //repGroupInfoIconRepublic - string : 4611686297701794046 - "rep.makeb.republic"        
@@ -28,6 +29,7 @@ namespace GomLib.Models
         public long GroupEmpireTitleId { get; set; }                         //repGroupInfoEmpireTitleId - long lookup : 4611686297436250002 - str.lgc.reputation - 3171541290320165
         public string GroupEmpireDescription { get; set; }                   //repGroupInfoEmpireDescription - "Outsider"
         public string GroupEmpireTitle { get; set; }                         //repGroupInfoEmpireTitle - "Outsider"      
+        public Dictionary<string, string> LocalizedGroupEmpireTitle { get; set; }
         public List<object> GroupEmpireRankTitles { get; set; }              //repGroupInfoEmpireRankTitles - repRankInfoId => lgcTitleLookupId    
         public Dictionary<object, object> GroupEmpireRankLegacyTitles { get; set; }
         public string GroupEmpireIcon { get; set; }                          //repGroupInfoIconEmpire - string : 4611686297701794046 - "rep.makeb.empire"                

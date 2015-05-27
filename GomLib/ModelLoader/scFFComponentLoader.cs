@@ -107,7 +107,7 @@ namespace GomLib.ModelLoader
                     {
                         float value = 0;
                         stringStats.TryGetValue(stat, out value);
-                        cmp.StatsList.Add(_dom.statD.ToStat(stat).Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_'), (float)value);
+                        cmp.StatsList.Add(_dom.statData.ToStat(stat).ToString().Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_'), (float)value);
                     }
 
                     var unknownMulti = controller.Data.ValueOrDefault<float>("4611686298398014003", 0); // 70, 85 for Cannons, 1E+07 for Railguns, and 1E+08 for Missiles

@@ -90,6 +90,17 @@ namespace GomLib.ModelLoader
             itm._dom = _dom;
             itm.References = obj.References;
             itm.AppearanceColor = Models.AppearanceColorExtensions.ToAppearanceColor((string)gom.Data.ValueOrDefault<string>("itmEnhancementColor", null));
+            if (itm.AppearanceColor != AppearanceColor.None)
+            {
+
+                string oshdfoi = "";
+            }
+            itm.DyeId = (int)gom.Data.ValueOrDefault<long>("itmDyeSlotIdDupe", 0);
+            if (itm.DyeId != 0)
+            {
+                itm.DyeColor = _dom.detailedAppearanceColorLoader.Load(itm.DyeId);
+            }
+
             itm.ArmorSpec = Models.ArmorSpec.Load(_dom, (long)gom.Data.ValueOrDefault<long>("itmArmorSpec", 0));
             itm.Binding = Models.ItemBindingRuleExtensions.ToBindingRule((ScriptEnum)gom.Data.ValueOrDefault<ScriptEnum>("itmBindingRule", null));
 
@@ -151,6 +162,11 @@ namespace GomLib.ModelLoader
 
             itm.GiftRank = Models.GiftRankExtensions.ToGiftRank((ScriptEnum)gom.Data.ValueOrDefault<ScriptEnum>("itmGiftAffectionRank", null));
             itm.GiftType = Models.GiftTypeExtensions.ToGiftType((ScriptEnum)gom.Data.ValueOrDefault<ScriptEnum>("itmGiftType", null));
+            if (itm.GiftType != GiftType.None && itm.GiftRank == GiftRank.None)
+            {
+                itm.GiftRank = GiftRank.Rank1;
+            }
+            itm.GiftRankNum = (int)itm.GiftRank;
             itm.Icon = gom.Data.ValueOrDefault<string>("itmIcon", String.Empty);
             _dom._assets.icons.Add(itm.Icon);
 
@@ -180,12 +196,14 @@ namespace GomLib.ModelLoader
                         itm.classAppearance.Add(classNameLookup[(ulong)appearancePair.Key], itemAppearance.Name);
                         if (classNameLookup[(ulong)appearancePair.Key] == "Agent")
                         {
-                            itm.ImperialVOModulation = itemAppearance.Data.ValueOrDefault<string>("ippVOSoundTypeOverride", "noModulation");
+                            itm.AppearanceImperial = itemAppearance.Id.ToMaskedBase62();
+                            itm.VOModulationImperial = itemAppearance.Data.ValueOrDefault<string>("ippVOSoundTypeOverride", "noModulation");
                             itm.ImperialAppearanceTag = AppearanceTags(itemAppearance);
                         }
                         if (classNameLookup[(ulong)appearancePair.Key] == "Smuggler")
                         {
-                            itm.RepublicVOModulation = itemAppearance.Data.ValueOrDefault<string>("ippVOSoundTypeOverride", "noModulation");
+                            itm.AppearanceRepublic = itemAppearance.Id.ToMaskedBase62();
+                            itm.VOModulationRepublic = itemAppearance.Data.ValueOrDefault<string>("ippVOSoundTypeOverride", "noModulation");
                             itm.RepublicAppearanceTag = AppearanceTags(itemAppearance);
                         }
                         itemAppearance.Unload();
@@ -199,8 +217,8 @@ namespace GomLib.ModelLoader
                         GomLib.GomObject itemAppearance = _dom.GetObject(itmAppearanceSpec);
                         if (itemAppearance != null)
                         {
-                            itm.ImperialVOModulation = itemAppearance.Data.ValueOrDefault<string>("ippVOSoundTypeOverride", "noModulation");
-                            itm.RepublicVOModulation = itm.ImperialVOModulation;
+                            itm.VOModulationImperial = itemAppearance.Data.ValueOrDefault<string>("ippVOSoundTypeOverride", "noModulation");
+                            itm.VOModulationRepublic = itm.VOModulationImperial;
                             itm.ImperialAppearanceTag = AppearanceTags(itemAppearance);
                             itm.RepublicAppearanceTag = itm.ImperialAppearanceTag;
                             itemAppearance.Unload();
@@ -281,39 +299,12 @@ namespace GomLib.ModelLoader
             if (schematic != null)
             {
                 string teachesType = ((ScriptEnum)schematic).ToString();
-                switch (teachesType)
+                if (teachesType == "itmTeachesSchematic")
+                    itm.SchematicId = gom.Data.Get<ulong>("itemTeachesRef");
+                else
                 {
-                    case "itmTeachesSchematic":
-                        itm.SchematicId = gom.Data.Get<ulong>("itemTeachesRef");
-                        //itm.Schematic = _dom.schematicLoader.Load(itm.SchematicId);
-                        break;
-                    case "itmTeachesMount":
-                        var mountId = gom.Data.Get<ulong>("itemTeachesRef");
-                        //itm.Schematic = _dom.schematicLoader.Load(itm.SchematicId);
-                        break;
-                    case "itmTeachesVanityPet":
-                        var petId = gom.Data.Get<ulong>("itemTeachesRef");
-                        //itm.Schematic = _dom.schematicLoader.Load(itm.SchematicId);
-                        break;
-                    case "itmTeachesMtxUnlock":
-                        var unlockId = gom.Data.Get<ulong>("itemTeachesRef");
-                        //itm.Schematic = _dom.schematicLoader.Load(itm.SchematicId);
-                        break;
-                    case "itmTeachesTitle":
-                        var titleId = gom.Data.Get<ulong>("itemTeachesRef");
-                        //itm.Schematic = _dom.schematicLoader.Load(itm.SchematicId);
-                        break;
-                    case "itmTeachesDecoration":
-                        itm.TeachesRef = gom.Data.Get<ulong>("itemTeachesRef");
-                        //itm.Decoration = _dom.decorationLoader.Load(itm.TeachesRef);
-                        itm.IsDecoration = true;
-                        break;
-                    case "itmTeachesApartmentLabel":
-                        var apartmentLabelId = gom.Data.Get<ulong>("itemTeachesRef");
-                        //itm.Schematic = _dom.schematicLoader.Load(itm.SchematicId);
-                        break;
-                    default:
-                        break;
+                    itm.TeachesRef = gom.Data.Get<ulong>("itemTeachesRef");
+                    itm.TeachesType = teachesType.Substring(10);
                 }
             }
 
@@ -341,6 +332,7 @@ namespace GomLib.ModelLoader
                 {
                     ItemStat itmStat = new ItemStat();
                     itmStat.Stat = StatExtensions.ToStat((ScriptEnum)kvp.Key);
+                    itmStat.DetailedStat = _dom.statData.ToStat((ScriptEnum)kvp.Key);
                     itmStat.Modifier = (int)(float)kvp.Value;
                     itm.StatModifiers.Add(itmStat);
                 }
@@ -354,6 +346,7 @@ namespace GomLib.ModelLoader
             {
                 var itmStat = new ItemStat();
                 itmStat.Stat = stat.Stat;
+                itmStat.DetailedStat = stat.DetailedStat;
                 itmStat.Modifier = stat.Modifier;
                 itm.CombinedStatModifiers.Add(itmStat);
             }
@@ -381,6 +374,7 @@ namespace GomLib.ModelLoader
                         {
                             itmStat = new ItemStat();
                             itmStat.Stat = stat.Stat;
+                            itmStat.DetailedStat = stat.DetailedStat;
                             itmStat.Modifier += stat.Modifier;
                             itm.CombinedStatModifiers.Add(itmStat);
                         }

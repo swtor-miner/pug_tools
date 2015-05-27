@@ -73,11 +73,11 @@ namespace tor_tools
         {
             foreach (var stat in rankStat.DefensiveStats)
             {
-                txtFile.Append("    " + currentDom.statD.ToStat(stat.Stat).Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_') + ": " + stat.Value + " (" + stat.Modifier + ")" + Environment.NewLine);
+                txtFile.Append("    " + currentDom.statData.ToStat(stat.Stat).ToString().Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_') + ": " + stat.Value + " (" + stat.Modifier + ")" + Environment.NewLine);
             }
             foreach (var stat in rankStat.OffensiveStats)
             {
-                txtFile.Append("    " + currentDom.statD.ToStat(stat.Stat).Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_') + ": " + stat.Value + " (" + stat.Modifier + ")" + Environment.NewLine);
+                txtFile.Append("    " + currentDom.statData.ToStat(stat.Stat).ToString().Replace("Space PvP ", "").Replace("Space PVP ", "").Replace(' ', '_') + ": " + stat.Value + " (" + stat.Modifier + ")" + Environment.NewLine);
             }
         }
         #endregion

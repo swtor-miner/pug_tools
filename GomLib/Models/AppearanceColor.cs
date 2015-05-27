@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Drawing;
 
 namespace GomLib.Models
 {
@@ -54,4 +55,20 @@ namespace GomLib.Models
             }
         }
     }
+
+    public class DetailedAppearanceColor
+    {
+        public long ColorNameId { get; set; }
+        public string ColorName { get; set; }
+        public Dictionary<string, string> LocalizedColorName { get; set; }
+        public Color Palette1Rep { get; set; }
+        public Color Palette2Rep { get; set; }
+        public bool UnknownBool1 { get; set; }
+        public bool UnknownBool2 { get; set; }
+        public long ColorSchemeId { get; set; }
+        public long ColorId { get; set; }
+        public long ShortId { get; set; }
+        public string HueName { get; set; }
+    }
+
 }
