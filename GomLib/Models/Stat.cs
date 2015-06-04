@@ -268,7 +268,7 @@ namespace GomLib.Models
                 StatLookup = new Dictionary<string, DetailedStat>();
                 var modStatData = _dom.GetObject("modStatData");
                 Dictionary<object, object> modStatDescriptions = modStatData.Data.Get<Dictionary<object, object>>("modStatDescriptions");
-                modStatData = null;
+                modStatData.Unload();
                 StringTable table = _dom.stringTable.Find("str.gui.stats");
                 foreach (var stat in modStatDescriptions)
                 {

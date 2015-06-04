@@ -126,7 +126,9 @@ namespace GomLib.ModelLoader
             itm.Durability = (int)gom.Data.ValueOrDefault<long>("itmMaxDurability", 0);
             itm.EnhancementCategory = Models.EnhancementCategoryExtensions.ToEnhancementCategory((ScriptEnum)gom.Data.ValueOrDefault<ScriptEnum>("itmEnhancementCategory", null));
             itm.EnhancementSubCategory = Models.EnhancementSubCategoryExtensions.ToEnhancementSubCategory((ScriptEnum)gom.Data.ValueOrDefault<ScriptEnum>("itmEnhancementSubCategory", null));
-            itm.EnhancementType = Models.EnhancementTypeExtensions.ToEnhancementType((long)gom.Data.ValueOrDefault<long>("itmEnhancementType", 0));
+            long slotId = (long)gom.Data.ValueOrDefault<long>("itmEnhancementType", 0);
+            itm.EnhancementType = Models.EnhancementTypeExtensions.ToEnhancementType(slotId);
+            itm.DetEnhancementType = _dom.enhanceData.ToEnhancement(slotId);
 
             // Enhancement Slots
             itm.EnhancementSlots = new ItemEnhancementList();
@@ -141,6 +143,7 @@ namespace GomLib.ModelLoader
 
                     ItemEnhancement enh = new ItemEnhancement();
                     enh.Slot = EnhancementTypeExtensions.ToEnhancementType(slot);
+                    enh.DetailedSlot = _dom.enhanceData.ToEnhancement(slot);
                     enh.ModificationId = (ulong)enhancementDefaults[i];
                     if (enh.ModificationId != 0)
                     {
@@ -453,6 +456,7 @@ namespace GomLib.ModelLoader
                 var souceNameLookup = _dom.stringTable.Find("str.gui.item_source");
 
                 itm.StrongholdSourceNameDict = new Dictionary<long, string>();
+                itm.LocalizedStrongholdSourceNameDict = new Dictionary<long, Dictionary<string, string>>();
                 foreach (var source in sourceList)
                 {
                     object sourceNameId;
@@ -461,6 +465,7 @@ namespace GomLib.ModelLoader
                     {
                         string name = souceNameLookup.GetText((long)sourceNameId, "str.gui.item_source");
                         itm.StrongholdSourceNameDict.Add((long)sourceNameId, name);
+                        itm.LocalizedStrongholdSourceNameDict.Add((long)sourceNameId, souceNameLookup.GetLocalizedText((long)sourceNameId, "str.gui.item_source"));
                     }
                 }
             }
@@ -475,7 +480,7 @@ namespace GomLib.ModelLoader
 
             itm.BindsToSlot = gom.Data.ValueOrDefault<bool>("itmBindsToSlot", false);
 
-            itm.RepFactionId = (int)gom.Data.ValueOrDefault<long>("reputationFactionIndex", 0);
+            itm.RepFactionId = (int)gom.Data.ValueOrDefault<long>("reputationFactionIndex", 0); //on trophies
 
             if (gom.References != null)
             {

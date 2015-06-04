@@ -33,7 +33,8 @@ namespace GomLib.Models
         public List<object> GroupEmpireRankTitles { get; set; }              //repGroupInfoEmpireRankTitles - repRankInfoId => lgcTitleLookupId    
         public Dictionary<object, object> GroupEmpireRankLegacyTitles { get; set; }
         public string GroupEmpireIcon { get; set; }                          //repGroupInfoIconEmpire - string : 4611686297701794046 - "rep.makeb.empire"                
-       
+        public Dictionary<string, string> LocalizedGroupleTitle { get; set; }
+
         public override bool Equals(object obj)
         {            
             if (obj == null) return false;

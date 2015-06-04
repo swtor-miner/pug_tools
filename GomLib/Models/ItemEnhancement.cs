@@ -10,6 +10,7 @@ namespace GomLib.Models
     public class ItemEnhancement : IEquatable<ItemEnhancement>
     {
         public EnhancementType Slot { get; set; }
+        public DetailedEnhancementType DetailedSlot { get; set; }
         public ulong ModificationId { get; set; }
 
         [JsonIgnore]

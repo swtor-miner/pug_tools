@@ -66,6 +66,8 @@ namespace GomLib.ModelLoader
             rank.GroupEmpireIcon = obj.ValueOrDefault<string>("repGroupInfoIconEmpire", "");
             rank.GroupEmpireRankLegacyTitles = new Dictionary<object, object>();
 
+            rank.LocalizedGroupleTitle = rank.LocalizedGroupEmpireTitle.ToDictionary(x => x.Key, x => String.Format("{0} / {1}", rank.LocalizedGroupRepublicTitle[x.Key], x.Value));
+
             List<object> repRankData = _dom.GetObject("repRankInfoPrototype").Data.Get<List<object>>("repRankInfoData");
             Dictionary<object, object> lgcTitleData = _dom.GetObject("lgcLegacyTitlesTablePrototype").Data.Get<Dictionary<object, object>>("lgcLegacyTitlesData");
 

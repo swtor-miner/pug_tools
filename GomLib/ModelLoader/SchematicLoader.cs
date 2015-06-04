@@ -115,6 +115,7 @@ namespace GomLib.ModelLoader
             if (schem.NameId > 0)
             {
                 schem.Name = missionStrTable.GetText((int)schem.NameId + strOffset, schem.Fqn);
+                schem.LocalizedName = missionStrTable.GetLocalizedText((int)schem.NameId + strOffset, schem.Fqn);
                 //schem.Id = schem.NameId;
             }
 
@@ -124,7 +125,11 @@ namespace GomLib.ModelLoader
             }
 
             schem.MissionYieldDescriptionId = (int)obj.Data.ValueOrDefault<long>("prfMissionYieldDescriptionId", 0);
-            if (schem.MissionYieldDescriptionId > 0) schem.MissionYieldDescription = missionStrTable.GetText(schem.MissionYieldDescriptionId + strOffset, schem.Fqn);
+            if (schem.MissionYieldDescriptionId > 0)
+            {
+                schem.MissionYieldDescription = missionStrTable.GetText(schem.MissionYieldDescriptionId + strOffset, schem.Fqn);
+                schem.LocalizedMissionYieldDescription = missionStrTable.GetLocalizedText(schem.MissionYieldDescriptionId + strOffset, schem.Fqn);
+            }
 
             schem.MissionDescriptionId = (int)obj.Data.ValueOrDefault<long>("prfMissionDescriptionId", 0);
             if (schem.MissionDescriptionId > 0) schem.MissionDescription = missionStrTable.GetText(schem.MissionDescriptionId + strOffset, schem.Fqn);

@@ -43,6 +43,7 @@ namespace GomLib.ModelLoader
             rank.RankId = obj.ValueOrDefault<long>("repRankInfoId", 0);
             rank.RankTitleId = obj.ValueOrDefault<long>("repRankInfoTitle", 0);
             rank.RankTitle = _dom.stringTable.TryGetString("str.lgc.reputation", rank.RankTitleId);
+            rank.LocalizedRankTitle = _dom.stringTable.TryGetLocalizedStrings("str.lgc.reputation", rank.RankTitleId);
             rank.RankPoints = obj.ValueOrDefault<long>("repRankInfoPoints", 0);
 
             return rank;

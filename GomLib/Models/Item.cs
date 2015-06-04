@@ -94,6 +94,7 @@ namespace GomLib.Models
         public EnhancementCategory EnhancementCategory { get; set; }
         public EnhancementSubCategory EnhancementSubCategory { get; set; }
         public EnhancementType EnhancementType { get; set; }
+        public DetailedEnhancementType DetEnhancementType { get; set; }
         public GiftType GiftType { get; set; }
         public GiftRank GiftRank { get; set; }
         public int GiftRankNum { get; set; }
@@ -197,6 +198,17 @@ namespace GomLib.Models
                 return null;
             }
         }
+        public Dictionary<string, string> LocalizedRequiredReputationLevelName
+        {
+            get
+            {
+                if (RequiredReputationLevel != null)
+                {
+                    return RequiredReputationLevel.LocalizedRankTitle;
+                }
+                return null;
+            }
+        }
 
         public bool ConsumedOnUse { get; set; }
         public int TypeBitSet { get; set; }
@@ -241,6 +253,7 @@ namespace GomLib.Models
         public bool IsUnknownBool { get; set; }
         public List<long> StrongholdSourceList { get; set; }
         public Dictionary<long, string> StrongholdSourceNameDict { get; set; }
+        public Dictionary<long, Dictionary<string, string>> LocalizedStrongholdSourceNameDict { get; set; }
 
         public List<ulong> rewardedForQuests { get; set; }
         public Dictionary<ulong, ulong> ippRefs { get; set; }
@@ -328,7 +341,7 @@ namespace GomLib.Models
             {
                 if (_RepFactionName == null)
                 {
-                    if (faction == null) faction = _dom.reputationGroupLoader.Load(RepFactionId);
+                    if (faction == null) faction = _dom.reputationGroupLoader.Load(RequiredReputationId);
                     if (faction != null)
                     {
                         if(faction.GroupRepublicTitle != faction.GroupEmpireTitle)
@@ -341,19 +354,35 @@ namespace GomLib.Models
             }
         }
         [Newtonsoft.Json.JsonIgnore]
-        internal Dictionary<string, Dictionary<string, string>> _LocalizedRepFactionName { get; set; }
-        public Dictionary<string, Dictionary<string, string>> LocalizedRepFactionName
+        internal Dictionary<string, Dictionary<string, string>> _LocalizedRepFactionDictionary { get; set; }
+        public Dictionary<string, Dictionary<string, string>> LocalizedRepFactionDictionary
+        {
+            get
+            {
+                if (_LocalizedRepFactionDictionary == null)
+                {
+                    _LocalizedRepFactionDictionary = new Dictionary<string, Dictionary<string, string>>();
+                    if (faction == null) faction = _dom.reputationGroupLoader.Load(RepFactionId);
+                    if (faction != null)
+                    {
+                        _LocalizedRepFactionDictionary.Add("Imperial", faction.LocalizedGroupEmpireTitle);
+                        _LocalizedRepFactionDictionary.Add("Republic", faction.LocalizedGroupRepublicTitle);
+                    }
+                }
+                return _LocalizedRepFactionDictionary;
+            }
+        }
+        internal Dictionary<string, string> _LocalizedRepFactionName { get; set; }
+        public Dictionary<string, string> LocalizedRepFactionName
         {
             get
             {
                 if (_LocalizedRepFactionName == null)
                 {
-                    _LocalizedRepFactionName = new Dictionary<string, Dictionary<string, string>>();
-                    if (faction == null) faction = _dom.reputationGroupLoader.Load(RepFactionId);
+                    if (faction == null) faction = _dom.reputationGroupLoader.Load(RequiredReputationId);
                     if (faction != null)
                     {
-                        _LocalizedRepFactionName.Add("Imperial", faction.LocalizedGroupEmpireTitle);
-                        _LocalizedRepFactionName.Add("Republic", faction.LocalizedGroupRepublicTitle);
+                        _LocalizedRepFactionName = faction.LocalizedGroupleTitle;
                     }
                 }
                 return _LocalizedRepFactionName;

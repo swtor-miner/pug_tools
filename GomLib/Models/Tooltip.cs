@@ -109,7 +109,7 @@ namespace GomLib.Models
         #region item
         public static XElement GetHTML(this Item itm) //Behold linq!
         {
-            if (ConvertNameMap.Count == 0)
+            if (Tooltip.TooltipNameMap.Count == 0)
             {
                 LoadNameMap(itm._dom);
             }
@@ -124,12 +124,12 @@ namespace GomLib.Models
                 tooltip.Add(new XElement("div",
                     new XAttribute("class", String.Format("torctip_image torctip_image_{0}", stringQual)),
                     new XElement("img",
-                        new XAttribute("src", String.Format("http://torcommunity.com/db/icons/{0}_{1}.png", fileId.ph, fileId.sh)),
+                        new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.png", fileId.ph, fileId.sh)),
                         new XAttribute("alt", ""))),
                     new XElement("div",
                         new XAttribute("class", "torctip_name"),
                         new XElement("a",
-                            new XAttribute("href", String.Format("http://torcommunity.com/database/item/{0}", itm.Base62Id)),
+                            new XAttribute("href", String.Format("https://torcommunity.com/database/item/{0}", itm.Base62Id)),
                             new XAttribute("data-torc", "norestyle"),
                             itm.LocalizedName[Tooltip.language]
                             )),
@@ -144,7 +144,7 @@ namespace GomLib.Models
         {
             Item.ProcessFlags(itm);
             string stringQual = itm.Quality.ToString().ToLower();
-            string localizedRating = Tooltip.TooltipNameMap[836131348283473][Tooltip.language].Replace("<<1>>", "{1}");
+            string localizedRating = GetLocalizedText(836131348283473).Replace("{0}", "{1}");
             XElement tooltip = new XElement("div",
                 XClass("torctip_tooltip"),
                 new XElement("span",
@@ -156,23 +156,23 @@ namespace GomLib.Models
             {
                 tooltip.Add(new XElement("div",
                     XClass("torctip_val"),
-                    Tooltip.TooltipNameMap[836131348283729][Tooltip.language] // Cartel Market Item
+                    GetLocalizedText(836131348283729) // Cartel Market Item
                     ));
             }
             //Reputation item
             if (itm.IsRepTrophy)
             {
                 string repName = "";
-                if (itm.LocalizedRepFactionName["Imperial"][Tooltip.language] != itm.LocalizedRepFactionName["Republic"][Tooltip.language])
+                if (itm.LocalizedRepFactionDictionary["Imperial"][Tooltip.language] != itm.LocalizedRepFactionDictionary["Republic"][Tooltip.language])
                 {
-                    repName = String.Format("{0} / {1}", itm.LocalizedRepFactionName["Imperial"][Tooltip.language], itm.LocalizedRepFactionName["Republic"][Tooltip.language]);
+                    repName = String.Format("{0} / {1}", itm.LocalizedRepFactionDictionary["Imperial"][Tooltip.language], itm.LocalizedRepFactionDictionary["Republic"][Tooltip.language]);
                 }
                 else
-                    repName = itm.LocalizedRepFactionName["Imperial"][Tooltip.language];
+                    repName = itm.LocalizedRepFactionDictionary["Imperial"][Tooltip.language];
                 tooltip.Add(
                     new XElement("div",
                         XClass("torctip_rep"),
-                        Tooltip.TooltipNameMap[836131348283741][Tooltip.language] // "Reputation Trophy"
+                        GetLocalizedText(836131348283741) // "Reputation Trophy"
                     ),
                     new XElement("div",
                         XClass("torctip_rep"),
@@ -187,9 +187,9 @@ namespace GomLib.Models
                 {
                     tooltip.Add(
                         new XElement("div",
-                            Tooltip.TooltipNameMap[836131348283395 + (int)itm.GiftType][Tooltip.language]),
+                            GetLocalizedText(836131348283395 + (int)itm.GiftType)),
                         new XElement("div",
-                            String.Format("{0} {1}", Tooltip.TooltipNameMap[836131348283411][Tooltip.language], itm.GiftRankNum)) //Rank
+                            String.Format("{0} {1}", GetLocalizedText(836131348283411), itm.GiftRankNum)) //Rank
                         );
 
                 }
@@ -197,19 +197,22 @@ namespace GomLib.Models
             //binding
             if (itm.Binding != 0)
             {
-                string binding = String.Format("Binds on {0}", itm.Binding.ToString());
-                switch(binding){
-                    case "Binds on Equip":
-                        binding = Tooltip.TooltipNameMap[946314439294988][Tooltip.language];
+                string binding = itm.Binding.ToString(); //String.Format("Binds on {0}", itm.Binding.ToString());
+                switch (itm.Binding.ToString())
+                {
+                    case "Equip":
+                        binding = GetLocalizedText(946314439294988);
                         break;
-                    case "Binds on Pickup":
-                        binding = Tooltip.TooltipNameMap[946314439294989][Tooltip.language];
+                    case "Pickup":
+                        binding = GetLocalizedText(946314439294989);
                         break;
-                    case "Binds on Legacy":
-                        binding = Tooltip.TooltipNameMap[946314439294994][Tooltip.language];
+                    case "Legacy":
+                        binding = GetLocalizedText(946314439294994);
                         break;
-                    case "Binds on Use":
-                        binding = Tooltip.TooltipNameMap[946314439295248][Tooltip.language];
+                    case "Use":
+                        binding = GetLocalizedText(946314439295248);
+                        break;
+                    default:
                         break;
                 }
                 tooltip.Add(new XElement("div",
@@ -229,7 +232,7 @@ namespace GomLib.Models
             {
                 tooltip.Add(new XElement("div",
                     XClass("torctip_main"),
-                    Tooltip.TooltipNameMap[836131348283436][Tooltip.language] //"Unique"
+                    GetLocalizedText(836131348283436) //"Unique"
                     ));
             }
             if (itm.IsMod && itm.DyeId != 0)
@@ -237,14 +240,14 @@ namespace GomLib.Models
                 string name = "";
                 if(itm.DyeColor.LocalizedColorName != null){
                     name = itm.DyeColor.LocalizedColorName[Tooltip.language] ;}
-                string blks = String.Format("{0} {{0}} ({1})", name, Tooltip.TooltipNameMap[836131348283461][Tooltip.language]);
+                string blks = String.Format("{0} {{0}} ({1})", name, GetLocalizedText(836131348283461));
                 switch (itm.EnhancementType)
                 {
                     case EnhancementType.Dye:
-                        blks = String.Format(blks, Tooltip.TooltipNameMap[1173453784744196][Tooltip.language]);
+                        blks = String.Format(blks, GetLocalizedText(1173453784744196));
                         break;
                     case EnhancementType.ColorCrystal:
-                        blks = String.Format(blks, Tooltip.TooltipNameMap[1173453784743941][Tooltip.language]);
+                        blks = String.Format(blks, GetLocalizedText(1173453784743941));
                         break;
                 }
                 tooltip.Add(new XElement("div",
@@ -252,12 +255,12 @@ namespace GomLib.Models
                     new XElement("div",
                         new XElement("span",
                             XClass("torctip_val"),
-                            Tooltip.TooltipNameMap[836131348284082][Tooltip.language]),
+                            GetLocalizedText(836131348284082)),
                         GetDyeBlock(itm.DyeColor.Palette1Rep)),
                     new XElement("div",
                         new XElement("span",
                             XClass("torctip_val"),
-                            Tooltip.TooltipNameMap[836131348284083][Tooltip.language]),
+                            GetLocalizedText(836131348284083)),
                         GetDyeBlock(itm.DyeColor.Palette2Rep))
                 );
             }
@@ -320,21 +323,21 @@ namespace GomLib.Models
                 {
                     string dosomething = ""; //suppress for now, break here to debug
                 }
-                string replaceString = String.Format(" {{0}} {0} {1}", Tooltip.TooltipNameMap[836131348283440][Tooltip.language], localizedRating);
+                string replaceString = String.Format(" {{0}} {0} {1}", GetLocalizedText(836131348283440), localizedRating);
                 string dType = itm.WeaponSpec.DamageType;
                 switch (dType)
                 {
                     case "Kinetic":
-                        dType = Tooltip.TooltipNameMap[946314439294990][Tooltip.language];
+                        dType = GetLocalizedText(946314439294990);
                         break;
                     case "Energy":
-                        dType = Tooltip.TooltipNameMap[946314439294991][Tooltip.language];
+                        dType = GetLocalizedText(946314439294991);
                         break;
                     case "Elemental":
-                        dType = Tooltip.TooltipNameMap[946314439294992][Tooltip.language];
+                        dType = GetLocalizedText(946314439294992);
                         break;
                     case "Internal":
-                        dType = Tooltip.TooltipNameMap[946314439294993][Tooltip.language];
+                        dType = GetLocalizedText(946314439294993);
                         break;
                     default:
                         break;
@@ -398,12 +401,12 @@ namespace GomLib.Models
                     if (absorbchance > 0)
                         tooltip.Add(new XElement("div",
                             XClass("torctip_main"),
-                            String.Format(Tooltip.TooltipNameMap[836131348283463][Tooltip.language].Replace("<<1>>", "{0}"), (absorbchance * 100).ToString("n1")) //"Shield Absorb: {0}%"
+                            String.Format(GetLocalizedText(836131348283463), (absorbchance * 100).ToString("n1")) //"Shield Absorb: {0}%"
                             ));
                     if (shieldchance > 0)
                         tooltip.Add(new XElement("div",
                             XClass("torctip_main"),
-                            String.Format(Tooltip.TooltipNameMap[836131348283464][Tooltip.language].Replace("<<1>>", "{0}"), (shieldchance * 100).ToString("n1")) //"Shield Chance: {0}%"
+                            String.Format(GetLocalizedText(836131348283464), (shieldchance * 100).ToString("n1")) //"Shield Chance: {0}%"
                             ));
                     string ratingReplace = String.Format("{{0}} {0}", localizedRating);
                     tooltip.Add(new XElement("div",
@@ -416,7 +419,7 @@ namespace GomLib.Models
                 {
                     if (arm.DebugSpecName == "adaptive")
                     {
-                        string adapRepString = String.Format("{0} {1}", Tooltip.TooltipNameMap[836131348283702][Tooltip.language], localizedRating.Replace("1","0"));
+                        string adapRepString = String.Format("{0} {1}", GetLocalizedText(836131348283702), localizedRating.Replace("1","0"));
                         tooltip.Add(new XElement("div",
                             XClass("torctip_main"),
                             String.Format(adapRepString, itm.CombinedRating) //"Adaptive Armor (Rating {0})"
@@ -436,7 +439,7 @@ namespace GomLib.Models
 
                             if (armor > 0)
                             {
-                                string armRepString = String.Format("{{0}} {0} {1}", Tooltip.TooltipNameMap[836131348283506][Tooltip.language], localizedRating);
+                                string armRepString = String.Format("{{0}} {0} {1}", GetLocalizedText(836131348283506), localizedRating);
                                 tooltip.Add(new XElement("div",
                                     XClass("torctip_main"),
                                     String.Format(armRepString, armor, itm.CombinedRating) //"{0} Armor (Rating {1})"
@@ -452,7 +455,7 @@ namespace GomLib.Models
                 else if (itm.CombinedRating != 0)
                     tooltip.Add(new XElement("div",
                         XClass("torctip_main"),
-                        String.Format("{0} {1}", Tooltip.TooltipNameMap[836131348284091][Tooltip.language], itm.CombinedRating) // "Item Rating {0}"
+                        String.Format("{0} {1}", GetLocalizedText(836131348284091), itm.CombinedRating) // "Item Rating {0}"
                         ));
             }
             /*else if (itm.CombinedRating != 0)
@@ -465,7 +468,7 @@ namespace GomLib.Models
             {
                 tooltip.Add(new XElement("div",
                     XClass("torctip_main"),
-                    String.Format("{0}: {1}/{1}", Tooltip.TooltipNameMap[836131348283439][Tooltip.language], itm.MaxDurability) //"Durability: {0}/{0}"
+                    String.Format("{0}: {1}/{1}", GetLocalizedText(836131348283439), itm.MaxDurability) //"Durability: {0}/{0}"
                     ));
             }
             //stats
@@ -476,13 +479,13 @@ namespace GomLib.Models
                     XClass("torctip_stats"),
                     new XElement("span",
                         XClass("torctip_white"),
-                        Tooltip.TooltipNameMap[836131348283465][Tooltip.language]) //"Total Stats:"
+                        GetLocalizedText(836131348283465)) //"Total Stats:"
                     );
                 if (!isEquipable)
                 {
                     stats.Add(new XElement("div",
                        XClass("torctip_stat"),
-                       String.Format("{0} {1}", Tooltip.TooltipNameMap[836131348283465][Tooltip.language], itm.CombinedRating) //"Armor Rating {0}"
+                       String.Format("{0} {1}", GetLocalizedText(836131348283465), itm.CombinedRating) //"Armor Rating {0}"
                        ));
                 }
                 for (var i = 0; i < itm.CombinedStatModifiers.Count; i++)
@@ -490,18 +493,18 @@ namespace GomLib.Models
                     stats.Add(new XElement("div",
                         XClass("torctip_stat"),
                         //new XAttribute("id", String.Format("torctip_stat_{0}", i)),
-                        String.Format("+{0} {1}", itm.CombinedStatModifiers[i].Modifier, itm.CombinedStatModifiers[i].DetailedStat.ConvertToString(Tooltip.language))));
+                        String.Format("+{0} {1}", itm.CombinedStatModifiers[i].Modifier, itm.CombinedStatModifiers[i].DetailedStat.LocalizedDisplayName[Tooltip.language])));
                 }
                 if (techpower > 0)
                     stats.Add(new XElement("div",
                         XClass("torctip_stat"),
                         //new XAttribute("id", "torctip_stat_tech"),
-                        String.Format("+{0} Tech Power", techpower)));
+                        String.Format("+{0} {1}", techpower, itm._dom.statData.ToStat("STAT_rtg_tech_power").LocalizedDisplayName[Tooltip.language])));
                 if (forcepower > 0)
                     stats.Add(new XElement("div",
                         XClass("torctip_stat"),
                         //new XAttribute("id", "torctip_stat_force"),
-                        String.Format("+{0} Force Power", forcepower)));
+                        String.Format("+{0} {1}", forcepower, itm._dom.statData.ToStat("STAT_rtg_force_power").LocalizedDisplayName[Tooltip.language])));
                 tooltip.Add(stats);
             }
             //Modifications
@@ -512,13 +515,13 @@ namespace GomLib.Models
                     XClass("torctip_mods"),
                     new XElement("span",
                         XClass("torctip_white"),
-                        String.Format("{0}:", Tooltip.TooltipNameMap[836131348283461][Tooltip.language])) //"Item Modifications:"
+                        String.Format("{0}:", GetLocalizedText(836131348283461))) //"Item Modifications:"
                     );
 
                 Dictionary<string, XElement> enhancements = new Dictionary<string, XElement>();
                 for (var i = 0; i < itm.EnhancementSlots.Count; i++)
                 {
-                    enhancements.Add(itm.EnhancementSlots[i].Slot.ConvertToString(), itm.EnhancementSlots[i].ToHTML());
+                    enhancements.Add(itm.EnhancementSlots[i].DetailedSlot.LocalizedDisplayName[Tooltip.language], itm.EnhancementSlots[i].ToHTML());
                 }
                 List<string> sortOrder = new List<string>
                     {
@@ -526,9 +529,9 @@ namespace GomLib.Models
                         "Armoring",
                         "Barrel",
                         "Hilt",
-                        "Modification",
+                        "Mod",
                         "Enhancement",
-                        "Dye"
+                        "Dye Module"
                     };
                 foreach (var key in sortOrder)
                 {
@@ -545,33 +548,47 @@ namespace GomLib.Models
                         enhance.Add(kvp.Value); //append them for compatibility.
                     }
                 }
+                string repString = GetLocalizedText(836131348283476); //"{0}: Open"
                 enhance.Add(new XElement("div",
                     XClass("torctip_mod"),
                     new XElement("div",
                         XClass("torctip_mslot"),
-                        String.Format("{0}: Open", Tooltip.TooltipNameMap[1173453784743948][Tooltip.language])) // "Augment: Open"
+                        String.Format(repString, GetLocalizedText(1173453784743948))) // "Augment: Open"
                     ));
                 tooltip.Add(enhance);
             }
 
             //requirements
+            string reqParanString = GetLocalizedText(836131348283395);  //"Requires {0} ({1})"
+            string reqString = GetLocalizedText(836131348283394);  //"Requires {0}"
             if (itm.RequiredLevel != 0)
-                tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format("Requires Level {0}", itm.RequiredLevel)));
+                tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format(GetLocalizedText(836131348283393), itm.RequiredLevel))); //"Requires Level {0}"
             if (itm.RequiredClasses.Count != 0)
-                tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format("Requires {0}", String.Join(",",itm.RequiredClasses.Select(x => x.Name)))));
+                tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format(reqString, String.Join(",", itm.RequiredClasses.Select(x => x.Name))))); //"Requires {0}"
             if (itm.ArmorSpec != null)
-                tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format("Requires {0}", itm.ArmorSpec.Name)));
-            if (itm.WeaponSpec != null)
-                tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format("Requires {0}", itm.WeaponSpec.Name)));
+                tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format(reqString, itm.ArmorSpec.LocalizedName[Tooltip.language]))); //"Requires {0}"
+            if (itm.WeaponSpec != null && itm.WeaponSpec.LocalizedName != null)
+                tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format(reqString, itm.WeaponSpec.LocalizedName[Tooltip.language]))); //"Requires {0}"
             if (itm.RequiredGender != Gender.None)
-                tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format("{0} Clothing", itm.RequiredGender.ToString())));
+            {
+                string genderString = "";
+                switch(itm.RequiredGender.ToString()){
+                    case "Male":
+                        genderString = GetLocalizedText(836131348283503);
+                        break;
+                    case "Female":
+                        genderString = GetLocalizedText(836131348283502);
+                        break;
+                }
+                tooltip.Add(new XElement("div", XClass("torctip_main"), genderString));
+            }
             if (itm.RequiredProfession != Profession.None)
-                tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format("Requires {0} ({1})", itm.RequiredProfession.ConvertToString(), itm.RequiredProfessionLevel)));
+                tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format(reqParanString, itm.RequiredProfession.ConvertToString(), itm.RequiredProfessionLevel))); //"Requires {0} ({1})"
             if (itm.RequiredValorRank > 0)
             {
                 tooltip.Add(new XElement("div",
                     XClass("torctip_main"),
-                    String.Format("Requires Valor Rank ({0})", itm.RequiredValorRank)
+                    String.Format(reqParanString, GetLocalizedText(836131348283505), itm.RequiredValorRank) //"Requires Valor Rank ({0})"
                     ));
             }
             if (itm.RequiresAlignment)
@@ -600,17 +617,19 @@ namespace GomLib.Models
             }
             if (itm.RequiresSocial)
             {
+                SocialTier soc = itm._dom.socialTierData.ToTier((int)itm.RequiredSocialTier);
                 tooltip.Add(new XElement("div",
                     XClass("torctip_main"),
-                    String.Format("Requires Social {0} or above", itm.RequiredSocialTier.ToRoman())
+                    String.Format(GetLocalizedText(836131348283656), soc.LocalizedName[Tooltip.language]) //"Requires Social {0} or above"
                     ));
             }
 
             if (itm.RequiredReputationId != 0)
             {
+                string repString = GetLocalizedText(836131348283738);
                 tooltip.Add(new XElement("div",
                     XClass("torctip_main"),
-                    String.Format("Requires {1} standing with {0}", itm.RequiredReputationName, itm.RequiredReputationLevelName)
+                    String.Format(repString, itm.LocalizedRequiredReputationLevelName[Tooltip.language], itm.LocalizedRepFactionName[Tooltip.language]) //"Requires {1} standing with {0}"
                     ));
             }
             //decoration before abilities
@@ -621,7 +640,7 @@ namespace GomLib.Models
                         XClass("torctip_main"),
                         new XElement("span",
                             XClass("torctip_main"),
-                            "Stronghold Decoration: "),
+                            GetLocalizedText(836131348284096)), //"Stronghold Decoration: "
                         new XElement("span",
                             XClass("torctip_val"),
                             String.Format("{0} - {1}", itm.Decoration.CategoryName, itm.Decoration.SubCategoryName))
@@ -630,7 +649,7 @@ namespace GomLib.Models
                         XClass("torctip_main"),
                         new XElement("span",
                             XClass("torctip_main"),
-                            "Hook Type: "),
+                            GetLocalizedText(836131348284097)), // "Hook Type: "
                         new XElement("span",
                             XClass("torctip_val"),
                             String.Join(", ", itm.Decoration.AvailableHooks))
@@ -639,7 +658,7 @@ namespace GomLib.Models
                         XClass("torctip_main"),
                         new XElement("span",
                             XClass("torctip_main"),
-                            "You own: "),
+                            GetLocalizedText(836131348284098)), //"You own: "
                         new XElement("span",
                             XClass("torctip_val"),
                             String.Format("0/{0}", itm.Decoration.MaxUnlockLimit))
@@ -657,7 +676,7 @@ namespace GomLib.Models
                     {
                         XElement desc = new XElement("div",
                             XClass("torctip_use"),
-                            "Equip: ");
+                            GetLocalizedText(836131348283442)); //"Equip: "
                         AddStringWithBreaks(ref desc, ablDesc);
                         tooltip.Add(desc);
                     }
@@ -678,7 +697,7 @@ namespace GomLib.Models
                                         XClass("torctip_item"),
                                         new XElement("div",
                                             XClass("torctip_main"),
-                                            String.Format("Requires {0} ({1})", itm.Schematic.CrewSkillId.ToString(), itm.Schematic.SkillOrange),
+                                            String.Format(reqParanString, itm.Schematic.CrewSkillId.ToString(), itm.Schematic.SkillOrange), //"Requires {0} ({1})"
                                             ItemInnerHTML(itm.Schematic.Item))
                                         ));
                                 }
@@ -688,13 +707,13 @@ namespace GomLib.Models
                                         XClass("torctip_mission"),
                                         new XElement("div",
                                             XClass("torctip_main"),
-                                            String.Format("Requires {0} ({1})", itm.Schematic.CrewSkillId.ToString(), itm.Schematic.SkillOrange)),
+                                            String.Format(reqParanString, itm.Schematic.CrewSkillId.ToString(), itm.Schematic.SkillOrange)), //"Requires {0} ({1})"
                                         new XElement("div",
                                             XClass("torctip_mission_name"),
-                                            itm.Schematic.Name),
+                                            itm.Schematic.LocalizedName[Tooltip.language]),
                                         new XElement("div",
                                             XClass("torctip_mission_yield"),
-                                            itm.Schematic.MissionYieldDescription)
+                                            itm.Schematic.LocalizedMissionYieldDescription[Tooltip.language])
                                         ));
                                 }
                                 else
@@ -708,7 +727,7 @@ namespace GomLib.Models
                             break;
                         default:
                             if (itm.UseAbility.Fqn != null)
-                                if (itm.UseAbility.Fqn.StartsWith("abl.player.") && String.IsNullOrEmpty(itm.UseAbility.Description)){
+                                if (itm.UseAbility.Fqn.StartsWith("abl.player.") && String.IsNullOrEmpty(itm.UseAbility.LocalizedDescription[Tooltip.language])){
                                     string puasehere = "";
                                 }
                             string ablDesc = itm.UseAbility.ParsedDescription ?? "";
@@ -722,7 +741,7 @@ namespace GomLib.Models
                             {
                                 XElement desc = new XElement("div",
                                     XClass("torctip_use"),
-                                    "Use: ");
+                                    String.Format("{0} ", GetLocalizedText(836131348283443))); //"Use: ");
                                 AddStringWithBreaks(ref desc, ablDesc);
                                 tooltip.Add(desc);
                             }
@@ -743,11 +762,11 @@ namespace GomLib.Models
             //Decoration Source
             if (itm.TeachesType == "Decoration" || itm.StrongholdSourceList.Count > 0)
             {
-                foreach (var kvp in itm.StrongholdSourceNameDict)
+                foreach (var kvp in itm.LocalizedStrongholdSourceNameDict)
                 {
                     tooltip.Add(new XElement("div",
                         XClass("torctip_source"),
-                        String.Format("Source: {0}", kvp.Value)
+                        String.Format(GetLocalizedText(946314439295249), kvp.Value[Tooltip.language]) // "Source: {0}"
                     ));
                 }
             }
@@ -757,17 +776,18 @@ namespace GomLib.Models
             }
             return tooltip;
         }
+
         private static XElement ToHTML(this ItemEnhancement itm)
         {
-            string slot = itm.Slot.ConvertToString();
-            //StringBuilder enhancement = new StringBuilder();
+            //string slot = itm.Slot.ConvertToString();
+            string slot = itm.DetailedSlot.LocalizedDisplayName[Tooltip.language];
             XElement enhancement = new XElement("div",
                 XClass("torctip_mod")
                 );
             if (itm.ModificationId != 0)
             {
                 slot = itm.Modification.LocalizedName[Tooltip.language];
-                if ((itm.Slot == EnhancementType.ColorCrystal || itm.Slot == EnhancementType.Dye ) && itm.Modification.DyeColor != null)
+                if ((itm.Slot == EnhancementType.ColorCrystal || itm.Slot == EnhancementType.Dye) && itm.Modification.DyeColor != null)
                 {
                     XElement colors = new XElement("div",
                         "[",
@@ -779,7 +799,7 @@ namespace GomLib.Models
                         XClass("torctip_mslot"),
                         new XElement("a",
                             XClass(String.Format("torctip_{0}", itm.Modification.Quality.ToString())),
-                            new XAttribute("href", String.Format("http://torcommunity.com/database/item/{0}/{1}/", itm.Modification.Base62Id, itm.Modification.Name.LinkString())),
+                            new XAttribute("href", String.Format("https://torcommunity.com/database/item/{0}/{1}/", itm.Modification.Base62Id, itm.Modification.LocalizedName[Tooltip.language].LinkString())),
                             new XAttribute("data-torc", "norestyle"),
                             String.Format("{0} ({1})", slot, itm.Modification.Rating.ToString()),
                             colors)
@@ -791,26 +811,29 @@ namespace GomLib.Models
                     XClass("torctip_mslot"),
                     new XElement("a",
                         XClass(String.Format("torctip_{0}", itm.Modification.Quality.ToString())),
-                        new XAttribute("href", String.Format("http://torcommunity.com/database/item/{0}/{1}/", itm.Modification.Base62Id, itm.Modification.Name.LinkString())),
+                        new XAttribute("href", String.Format("https://torcommunity.com/database/item/{0}/{1}/", itm.Modification.Base62Id, itm.Modification.LocalizedName[Tooltip.language].LinkString())),
                         new XAttribute("data-torc", "norestyle"),
                         String.Format("{0} ({1})", slot, itm.Modification.Rating.ToString()))
                     ));
                 }
-                
+
                 for (var e = 0; e < itm.Modification.CombinedStatModifiers.Count; e++)
                 {
                     enhancement.Add(new XElement("div",
                         XClass("torctip_mstat"),
-                        String.Format("+{0} {1}", itm.Modification.CombinedStatModifiers[e].Modifier, itm.Modification.CombinedStatModifiers[e].DetailedStat.ConvertToString(Tooltip.language))
+                        String.Format("+{0} {1}", itm.Modification.CombinedStatModifiers[e].Modifier, itm.Modification.CombinedStatModifiers[e].DetailedStat.LocalizedDisplayName[Tooltip.language])
                         ));
                 }
             }
             else
+            {
                 //empty mod
+                string repString = GetLocalizedText(836131348283476); // "{0}: Open"
                 enhancement.Add(new XElement("div",
                         XClass("torctip_mslot"),
-                        String.Format("{0}: Open", slot)
+                        String.Format(repString, slot)
                     ));
+            }
             return enhancement;
         }
 
@@ -832,7 +855,7 @@ namespace GomLib.Models
             else
                 return new XElement("div",
                     XClass("torctip_col_block"),
-                    Tooltip.TooltipNameMap[836131348283742][Tooltip.language]); //"No Color"
+                    GetLocalizedText(836131348283742)); //"No Color"
         }
         private static XElement ToHTML(this SetBonusEntry itm)
         {
@@ -864,6 +887,10 @@ namespace GomLib.Models
         #region schematic
         public static XElement GetHTML(this Schematic itm)
         {
+            if (Tooltip.TooltipNameMap.Count == 0)
+            {
+                LoadNameMap(itm._dom);
+            }
             if (itm.Id == 0) return new XElement("div", "Not Found");
             string icon = "none";
             string stringQual = "none";
@@ -885,12 +912,12 @@ namespace GomLib.Models
                 tooltip.Add(new XElement("div",
                     new XAttribute("class", String.Format("torctip_image torctip_image_{0}", stringQual)),
                     new XElement("img",
-                        new XAttribute("src", String.Format("http://torcommunity.com/db/icons/{0}_{1}.png", fileId.ph, fileId.sh)),
+                        new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.png", fileId.ph, fileId.sh)),
                         new XAttribute("alt", ""))),
                     new XElement("div",
                         new XAttribute("class", "torctip_name"),
                         new XElement("a",
-                            new XAttribute("href", String.Format("http://torcommunity.com/database/item/{0}/{1}/", itm.Base62Id, itm.Name.LinkString())),
+                            new XAttribute("href", String.Format("https://torcommunity.com/database/item/{0}/{1}/", itm.Base62Id, itm.Name.LinkString())),
                             new XAttribute("data-torc", "norestyle"),
                             itm.Name
                             ))
@@ -943,14 +970,14 @@ namespace GomLib.Models
                                 new XElement("div",
                                     new XAttribute("class", String.Format("torctip_image torctip_image_{0} small_border", matstringQual)),
                                     new XElement("img",
-                                        new XAttribute("src", String.Format("http://torcommunity.com/db/icons/{0}_{1}.png", matfileId.ph, matfileId.sh)),
+                                        new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.png", matfileId.ph, matfileId.sh)),
                                         new XAttribute("alt", itm.Name),
                                         XClass("small_image"))),
                                 new XElement("div",
                                     new XAttribute("class", "torctip_mat_name"),
                                     new XElement("a",
                                         XClass(String.Format("torctip_{0}", matstringQual)),
-                                        new XAttribute("href", String.Format("http://torcommunity.com/database/item/{0}/{1}/", mat.Base62Id, LinkString(mat.Name))),
+                                        new XAttribute("href", String.Format("https://torcommunity.com/database/item/{0}/{1}/", mat.Base62Id, LinkString(mat.Name))),
                                         new XAttribute("data-torc", "norestyle"),
                                         mat.Name)
                                     )
@@ -1006,6 +1033,10 @@ namespace GomLib.Models
         #region ability
         public static XElement GetHTML(this Ability itm)
         {
+            if (Tooltip.TooltipNameMap.Count == 0)
+            {
+                LoadNameMap(itm._dom);
+            }
             if (itm.Id == 0) return new XElement("div", "Not Found");
             string icon = "none";
             string stringQual = "ability";
@@ -1019,12 +1050,12 @@ namespace GomLib.Models
                 tooltip.Add(new XElement("div",
                     new XAttribute("class", String.Format("torctip_image torctip_image_{0}", stringQual)),
                     new XElement("img",
-                        new XAttribute("src", String.Format("http://torcommunity.com/db/icons/{0}_{1}.png", fileId.ph, fileId.sh)),
+                        new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.png", fileId.ph, fileId.sh)),
                         new XAttribute("alt", ""))),
                     new XElement("div",
                         new XAttribute("class", "torctip_name"),
                         new XElement("a",
-                            new XAttribute("href", String.Format("http://torcommunity.com/database/ability/{0}/{1}/", itm.Base62Id, itm.Name.LinkString())),
+                            new XAttribute("href", String.Format("https://torcommunity.com/database/ability/{0}/{1}/", itm.Base62Id, itm.Name.LinkString())),
                             new XAttribute("data-torc", "norestyle"),
                             itm.Name
                             ))
@@ -1104,6 +1135,10 @@ namespace GomLib.Models
         #region mission
         public static XElement GetHTML(this Quest itm)
         {
+            if (Tooltip.TooltipNameMap.Count == 0)
+            {
+                LoadNameMap(itm._dom);
+            }
             if (itm.Id == 0) return new XElement("div", "Not Found");
             string icon = "none";
             string stringQual = "mission";
@@ -1283,11 +1318,11 @@ namespace GomLib.Models
                             XClass("torctip_rwd"),
                             new XAttribute("style", "display:inline;"),
                             new XElement("a",
-                                new XAttribute("href", String.Format("http://torcommunity.com/database/item/{0}/{1}/", mat.Base62Id, LinkString(mat.Name))),
+                                new XAttribute("href", String.Format("https://torcommunity.com/database/item/{0}/{1}/", mat.Base62Id, LinkString(mat.Name))),
                                 new XAttribute("data-torc", "norestyle"),
                                 new XAttribute("class", String.Format("torctip_image torctip_image_{0}", matstringQual)),
                                 new XElement("img",
-                                    new XAttribute("src", String.Format("http://torcommunity.com/db/icons/{0}_{1}.png", matfileId.ph, matfileId.sh)),
+                                    new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.png", matfileId.ph, matfileId.sh)),
                                     new XAttribute("alt", mat.Name),
                                     XClass("image")
                                 )
@@ -1456,7 +1491,7 @@ namespace GomLib.Models
                 return number.ToString();
             if (number < 1) return string.Empty;
             if (number >= 1000) return "M" + ToRoman(number - 1000);
-            if (number >= 900) return "CM" + ToRoman(number - 900); //EDIT: i've typed 400 instead 900
+            if (number >= 900) return "CM" + ToRoman(number - 900);
             if (number >= 500) return "D" + ToRoman(number - 500);
             if (number >= 400) return "CD" + ToRoman(number - 400);
             if (number >= 100) return "C" + ToRoman(number - 100);
@@ -1549,78 +1584,82 @@ namespace GomLib.Models
                 );
         }
         #region ConvertToString
-        public static Dictionary<long, Dictionary<string, string>> ConvertNameMap = new Dictionary<long, Dictionary<string, string>>();
         public static void LoadNameMap(DataObjectModel dom){
-            StringTable table = dom.stringTable.Find("str.gui.equipslot");
-            foreach (var entry in table.data) ConvertNameMap.Add(entry.Value.Id, entry.Value.localizedText);
-
-            table = dom.stringTable.Find("str.gui.tooltips");
-            foreach (var entry in table.data) Tooltip.TooltipNameMap.Add(entry.Value.Id, entry.Value.localizedText); 
-            table = dom.stringTable.Find("str.gui.items");
-            foreach (var entry in table.data) Tooltip.TooltipNameMap.Add(entry.Value.Id, entry.Value.localizedText);
-            table = dom.stringTable.Find("str.gui.itm.enhancement.types");
-            foreach (var entry in table.data) Tooltip.TooltipNameMap.Add(entry.Value.Id, entry.Value.localizedText);
+            AddTableToMap(dom.stringTable.Find("str.gui.equipslot"));
+            AddTableToMap(dom.stringTable.Find("str.gui.tooltips"));
+            AddTableToMap(dom.stringTable.Find("str.gui.items"));
+            AddTableToMap(dom.stringTable.Find("str.gui.itm.enhancement.types"));
+            AddTableToMap(dom.stringTable.Find("str.prf.professions"));
         }
-        public static string GetName(long id, string language)
+
+        private static void AddTableToMap(StringTable table)
         {
-            if (ConvertNameMap.ContainsKey(id))
-                return ConvertNameMap[id][language];
+            foreach (var entry in table.data)
+            {
+                Dictionary<string, string> tempDict = entry.Value.localizedText.ToDictionary(x => x.Key, x => x.Value.Replace("<<1>>", "{0}").Replace("<<2>>", "{1}"));
+                Tooltip.TooltipNameMap.Add(entry.Value.Id, tempDict);
+            }
+        }
+        private static string GetLocalizedText(long id)
+        {
+            return GetLocalizedText(id, Tooltip.language);
+        }
+        public static string GetLocalizedText(long id, string language)
+        {
+            if (Tooltip.TooltipNameMap.ContainsKey(id))
+                return Tooltip.TooltipNameMap[id][language];
             return null;
         }
-        public static string GetName(long id, string language, string defaultVal)
+        public static string GetLocalizedText(long id, string language, string defaultVal)
         {
-            var returnVal = GetName(id, language);
+            var returnVal = GetLocalizedText(id, language);
             if (returnVal == null) return defaultVal;
             return returnVal;
         }
-
-        public static string ConvertToString(this SlotType slot) //replace these with friendly names
-        {
-            return slot.ConvertToString("enMale");
-        }
-        public static string ConvertToString(this SlotType slot, string language) //replace these with friendly names
+        
+        public static string ConvertToString(this SlotType slot, string language)
         {
             switch (slot)
             {
-                case SlotType.EquipHumanMainHand: return GetName(2073124879204376,language);
-                case SlotType.EquipHumanOffHand: return GetName(2073124879204354,language);
-                case SlotType.EquipHumanWrist: return GetName(2073124879204357,language);
-                case SlotType.EquipHumanBelt: return GetName(2073124879204358,language);
-                case SlotType.EquipHumanChest: return GetName(2073124879204355,language);
-                case SlotType.EquipHumanEar: return GetName(2073124879204362,language);
-                case SlotType.EquipHumanFace: return GetName(2073124879204361,language);
-                case SlotType.EquipHumanFoot: return GetName(2073124879204360,language);
-                case SlotType.EquipHumanGlove: return GetName(2073124879204359,language);
-                case SlotType.EquipHumanImplant: return GetName(2073124879204363,language);
-                case SlotType.EquipHumanLeg: return GetName(2073124879204356,language);
-                case SlotType.EquipDroidUpper: return GetName(2073124879204390,language);
-                case SlotType.EquipDroidLower: return GetName(2073124879204392,language);
-                case SlotType.EquipDroidUtility: return GetName(2073124879204394,language);
-                case SlotType.EquipDroidSensor: return GetName(2073124879204388,language);
-                case SlotType.EquipHumanHeirloom: return GetName(2073124879204364,language);
-                case SlotType.EquipHumanRangedPrimary: return GetName(2073124879204365,language);
-                case SlotType.EquipHumanRangedSecondary: return GetName(2073124879204375,language);
-                case SlotType.EquipHumanCustomRanged: return GetName(2073124879204366,language);
-                case SlotType.EquipHumanCustomMelee: return GetName(2073124879204367,language);
-                case SlotType.EquipHumanShield: return GetName(2073124879204358,language);
-                case SlotType.EquipHumanOutfit: return GetName(2073124879204369,language);
-                case SlotType.EquipDroidLeg: return GetName(2073124879204370,language);
-                case SlotType.EquipDroidFeet: return GetName(2073124879204371,language);
-                case SlotType.EquipDroidOutfit: return GetName(2073124879204389,language);
-                case SlotType.EquipDroidChest: return GetName(2073124879204373,language);
-                case SlotType.EquipDroidHand: return GetName(2073124879204374,language);
-                case SlotType.EquipHumanRelic: return GetName(2073124879204377,language);
-                case SlotType.EquipHumanFocus: return GetName(2073124879204368,language);
-                case SlotType.EquipSpaceShipArmor: return GetName(2073124879204381,language);
-                case SlotType.EquipSpaceBeamGenerator: return GetName(2073124879204382,language);
-                case SlotType.EquipSpaceBeamCharger: return GetName(2073124879204383,language);
-                case SlotType.EquipSpaceEnergyShield: return GetName(2073124879204384,language);
-                case SlotType.EquipSpaceShieldRegenerator: return GetName(2073124879204385,language);
-                case SlotType.EquipSpaceMissileMagazine: return GetName(2073124879204386,language);
-                case SlotType.EquipSpaceProtonTorpedoes: return GetName(2073124879204387,language);
-                case SlotType.EquipSpaceAbilityDefense: return GetName(2073124879204651,language);
-                case SlotType.EquipSpaceAbilityOffense: return GetName(2073124879204652,language);
-                case SlotType.EquipSpaceAbilitySystems: return GetName(2073124879204653,language);
+                case SlotType.EquipHumanMainHand: return GetLocalizedText(2073124879204376,language);
+                case SlotType.EquipHumanOffHand: return GetLocalizedText(2073124879204354,language);
+                case SlotType.EquipHumanWrist: return GetLocalizedText(2073124879204357,language);
+                case SlotType.EquipHumanBelt: return GetLocalizedText(2073124879204358,language);
+                case SlotType.EquipHumanChest: return GetLocalizedText(2073124879204355,language);
+                case SlotType.EquipHumanEar: return GetLocalizedText(2073124879204362,language);
+                case SlotType.EquipHumanFace: return GetLocalizedText(2073124879204361,language);
+                case SlotType.EquipHumanFoot: return GetLocalizedText(2073124879204360,language);
+                case SlotType.EquipHumanGlove: return GetLocalizedText(2073124879204359,language);
+                case SlotType.EquipHumanImplant: return GetLocalizedText(2073124879204363,language);
+                case SlotType.EquipHumanLeg: return GetLocalizedText(2073124879204356,language);
+                case SlotType.EquipDroidUpper: return GetLocalizedText(2073124879204390,language);
+                case SlotType.EquipDroidLower: return GetLocalizedText(2073124879204392,language);
+                case SlotType.EquipDroidUtility: return GetLocalizedText(2073124879204394,language);
+                case SlotType.EquipDroidSensor: return GetLocalizedText(2073124879204388,language);
+                case SlotType.EquipHumanHeirloom: return GetLocalizedText(2073124879204364,language);
+                case SlotType.EquipHumanRangedPrimary: return GetLocalizedText(2073124879204365,language);
+                case SlotType.EquipHumanRangedSecondary: return GetLocalizedText(2073124879204375,language);
+                case SlotType.EquipHumanCustomRanged: return GetLocalizedText(2073124879204366,language);
+                case SlotType.EquipHumanCustomMelee: return GetLocalizedText(2073124879204367,language);
+                case SlotType.EquipHumanShield: return GetLocalizedText(2073124879204358,language);
+                case SlotType.EquipHumanOutfit: return GetLocalizedText(2073124879204369,language);
+                case SlotType.EquipDroidLeg: return GetLocalizedText(2073124879204370,language);
+                case SlotType.EquipDroidFeet: return GetLocalizedText(2073124879204371,language);
+                case SlotType.EquipDroidOutfit: return GetLocalizedText(2073124879204389,language);
+                case SlotType.EquipDroidChest: return GetLocalizedText(2073124879204373,language);
+                case SlotType.EquipDroidHand: return GetLocalizedText(2073124879204374,language);
+                case SlotType.EquipHumanRelic: return GetLocalizedText(2073124879204377,language);
+                case SlotType.EquipHumanFocus: return GetLocalizedText(2073124879204368,language);
+                case SlotType.EquipSpaceShipArmor: return GetLocalizedText(2073124879204381,language);
+                case SlotType.EquipSpaceBeamGenerator: return GetLocalizedText(2073124879204382,language);
+                case SlotType.EquipSpaceBeamCharger: return GetLocalizedText(2073124879204383,language);
+                case SlotType.EquipSpaceEnergyShield: return GetLocalizedText(2073124879204384,language);
+                case SlotType.EquipSpaceShieldRegenerator: return GetLocalizedText(2073124879204385,language);
+                case SlotType.EquipSpaceMissileMagazine: return GetLocalizedText(2073124879204386,language);
+                case SlotType.EquipSpaceProtonTorpedoes: return GetLocalizedText(2073124879204387,language);
+                case SlotType.EquipSpaceAbilityDefense: return GetLocalizedText(2073124879204651,language);
+                case SlotType.EquipSpaceAbilityOffense: return GetLocalizedText(2073124879204652,language);
+                case SlotType.EquipSpaceAbilitySystems: return GetLocalizedText(2073124879204653,language);
                 case SlotType.Any: return null;
 
                 case SlotType.EquipDroidShield:
@@ -1641,310 +1680,12 @@ namespace GomLib.Models
                     return "";
             }
         }
-        public static string ConvertToString(this DetailedStat stat) //replace these with friendly names
-        {
-            return ConvertToString(stat, "enMale");
-        }
-        public static string ConvertToString(this DetailedStat stat, string language) //replace these with friendly names
-        {
-            return stat.LocalizedDisplayName[language];
-        }
-        public static string ConvertToString(this Stat slot) //replace these with friendly names
-        {
-            return ConvertToString(slot, "enMale");
-        }
-        public static string ConvertToString(this Stat slot, string language) //replace these with friendly names
-        {
-            switch (slot)
-            {
-                case Stat.Undefined: return "Undefined";
-                case Stat.Strength: return "Strength";
-                case Stat.Aim: return "Aim";
-                case Stat.Cunning: return "Cunning";
-                case Stat.Endurance: return "Endurance";
-                case Stat.Presence: return "Presence";
-                case Stat.Willpower: return "Willpower";
-                case Stat.MaxHealth: return "MaxHealth";
-                case Stat.MaxEnergy: return "MaxEnergy";
-                case Stat.MaxForce: return "MaxForce";
-                case Stat.MaxWeaponDamage: return "debug_MaxWeaponDamage";
-                case Stat.MinWeaponDamage: return "debug_MinWeaponDamage";
-                case Stat.FlurryBlowDelay: return "debug_FlurryBlowDelay";
-                case Stat.FlurryLength: return "debug_FlurryLength";
-                case Stat.RangeMax: return "debug_RangeMax";
-                case Stat.RangeMin: return "debug_RangeMin";
-                case Stat.DamageReductionElemental: return "debug_DamageReductionElemental";
-                case Stat.DamageReductionInternal: return "debug_DamageReductionInternal";
-                case Stat.DamageReductionKinetic: return "debug_DamageReductionKinetic";
-                case Stat.DamageReductionEnergy: return "debug_DamageReductionEnergy";
-                case Stat.RangedDamageBonus: return "debug_RangedDamageBonus";
-                case Stat.MeleeDamageBonus: return "debug_MeleeDamageBonus";
-                case Stat.FlurryDelay: return "debug_FlurryDelay";
-                case Stat.PersuasionScore: return "debug_PersuasionScore";
-                case Stat.PersuasionCrit: return "debug_PersuasionCrit";
-                case Stat.MovementSpeed: return "debug_MovementSpeed";
-                case Stat.MaxAP: return "debug_MaxAP";
-                case Stat.RunSpeed: return "debug_RunSpeed";
-                case Stat.WalkSpeed: return "debug_WalkSpeed";
-                case Stat.ArmorRating: return "debug_ArmorRating";
-                case Stat.ArenaRating: return "debug_ArenaRating";
-                case Stat.RunBackwardsSpeed: return "debug_RunBackwardsSpeed";
-                case Stat.TurnSpeed: return "debug_TurnSpeed";
-                case Stat.EffectInitialCharges: return "debug_EffectInitialCharges";
-                case Stat.EffectMaxCharges: return "debug_EffectMaxCharges";
-                case Stat.CastingTime: return "debug_Casting Time";
-                case Stat.ChannelingTime: return "debug_Channeling Time";
-                case Stat.CooldownTime: return "debug_Cooldown Time";
-                case Stat.Duration: return "debug_Duration";
-                case Stat.GlobalCooldown: return "debug_GlobalCooldown";
-                case Stat.EffectTickTime: return "debug_EffectTickTime";
-                case Stat.ForceCost: return "debug_ForceCost";
-                case Stat.EnergyCost: return "debug_EnergyCost";
-                case Stat.APCost: return "debug_APCost";
-                case Stat.AbilityMaxRange: return "debug_AbilityMaxRange";
-                case Stat.AbilityMinRange: return "debug_AbilityMinRange";
-                case Stat.EffectAuraRadius: return "debug_EffectAuraRadius";
-                case Stat.AbsorbDamagePerHitFixed: return "debug_AbsorbDamagePerHitFixed";
-                case Stat.AbsorbDamagePerHitPercentage: return "debug_AbsorbDamagePerHitPercentage";
-                case Stat.AbsorbDamageMaxFixed: return "debug_AbsorbDamageMaxFixed";
-                case Stat.AbsorbDamageMaxPercentage: return "debug_AbsorbDamageMaxPercentage";
-                case Stat.DamageDoneModifierFixed: return "debug_DamageDoneModifierFixed";
-                case Stat.DamageDoneModifierPercentage: return "debug_DamageDoneModifierPercentage";
-                case Stat.ThreatGeneratedModifierFixed: return "debug_ThreatGeneratedModifierFixed";
-                case Stat.ThreatGeneratedModifierPercentage: return "debug_ThreatGeneratedModifierPercentage";
-                case Stat.HealingDoneModifierFixed: return "debug_HealingDoneModifierFixed";
-                case Stat.HealingDoneModifierPercentage: return "debug_HealingDoneModifierPercentage";
-                case Stat.EffectBallisticImpulseMomentumFixed: return "debug_EffectBallisticImpulseMomentumFixed";
-                case Stat.EffectBallisticImpulseMomentumPercentage: return "debug_EffectBallisticImpulseMomentumPercentage";
-                case Stat.EffectModifyStatFixed: return "debug_EffectModifyStatFixed";
-                case Stat.EffectModifyStatPercentage: return "debug_EffectModifyStatPercentage";
-                case Stat.EffectRestoreApFixed: return "debug_EffectRestoreApFixed";
-                case Stat.EffectRestoreApPercentage: return "debug_EffectRestoreApPercentage";
-                case Stat.EffectRestoreForceFixed: return "debug_EffectRestoreForceFixed";
-                case Stat.EffectRestoreForcePercentage: return "debug_EffectRestoreForcePercentage";
-                case Stat.EffectRestoreEnergyFixed: return "debug_EffectRestoreEnergyFixed";
-                case Stat.EffectRestoreEnergyPercentage: return "debug_EffectRestoreEnergyPercentage";
-                case Stat.EffectSpendApFixed: return "debug_EffectSpendApFixed";
-                case Stat.EffectSpendApPercentage: return "debug_EffectSpendApPercentage";
-                case Stat.EffectSpendForceFixed: return "debug_EffectSpendForceFixed";
-                case Stat.EffectSpendForcePercentage: return "debug_EffectSpendForcePercentage";
-                case Stat.EffectSpendEnergyFixed: return "debug_EffectSpendEnergyFixed";
-                case Stat.EffectSpendEnergyPercentage: return "debug_EffectSpendEnergyPercentage";
-                case Stat.EffectSpendHealthFixed: return "debug_EffectSpendHealthFixed";
-                case Stat.EffectSpendHealthPercentage: return "debug_EffectSpendHealthPercentage";
-                case Stat.EffectAoeRadiusFixed: return "debug_EffectAoeRadiusFixed";
-                case Stat.EffectAoeRadiusPercentage: return "debug_EffectAoeRadiusPercentage";
-                case Stat.EffectAoeConeDistanceFixed: return "debug_EffectAoeConeDistanceFixed";
-                case Stat.EffectAoeConeDistancePercentage: return "debug_EffectAoeConeDistancePercentage";
-                case Stat.EffectAoeConeAngleFixed: return "debug_EffectAoeConeAngleFixed";
-                case Stat.EffectAoeConeAnglePercentage: return "debug_EffectAoeConeAnglePercentage";
-                case Stat.EffectAoeCylinderDistanceFixed: return "debug_EffectAoeCylinderDistanceFixed";
-                case Stat.EffectAoeCylinderDistancePercentage: return "debug_EffectAoeCylinderDistancePercentage";
-                case Stat.EffectAoeCylinderRadiusFixed: return "debug_EffectAoeCylinderRadiusFixed";
-                case Stat.EffectAoeCylinderRadiusPercentage: return "debug_EffectAoeCylinderRadiusPercentage";
-                case Stat.MeleeAccuracy: return "debug_Accuracy";
-                case Stat.MeleeDefense: return "debug_MeleeDefense";
-                case Stat.MeleeCriticalChance: return "debug_MeleeCriticalChance";
-                case Stat.MeleeCriticalDamage: return "debug_MeleeCriticalDamage";
-                case Stat.MeleeShieldChance: return "debug_MeleeShieldChance";
-                case Stat.MeleeShieldAbsorb: return "debug_MeleeShieldAbsorb";
-                case Stat.RangedAccuracy: return "debug_Accuracy";
-                case Stat.RangedDefense: return "debug_RangedDefense";
-                case Stat.RangedCriticalChance: return "debug_RangedCriticalChance";
-                case Stat.RangedCriticalDamage: return "debug_RangedCriticalDamage";
-                case Stat.RangedShieldChance: return "debug_RangedShieldChance";
-                case Stat.RangedShieldAbsorb: return "debug_RangedShieldAbsorb";
-                case Stat.DualWieldAccuracyModifierFixed: return "debug_DualWieldAccuracyModifierFixed";
-                case Stat.CoverDefenseBonus: return "debug_CoverDefenseBonus";
-                case Stat.DualWieldDamagePenalty: return "debug_DualWieldDamagePenalty";
-                case Stat.StealthLevel: return "debug_StealthLevel";
-                case Stat.StealthDetection: return "debug_StealthDetection";
-                case Stat.WeaponAccuracy: return "debug_WeaponAccuracy";
-                case Stat.GlanceRating: return "Shield Rating";
-                case Stat.ForceDamageBonus: return "debug_ForceDamageBonus";
-                case Stat.TechDamageBonus: return "debug_TechDamageBonus";
-                case Stat.ForceCriticalChance: return "debug_ForceCriticalChance";
-                case Stat.ForceCriticalDamageBonus: return "debug_ForceCriticalDamageBonus";
-                case Stat.TechCriticalChance: return "debug_TechCriticalChance";
-                case Stat.TechCriticalDamageBonus: return "debug_TechCriticalDamageBonus";
-                case Stat.ForceRegenOoc: return "debug_ForceRegenOoc";
-                case Stat.EnergyRegen: return "debug_EnergyRegen";
-                case Stat.HealthRegenOoc: return "debug_HealthRegenOoc";
-                case Stat.PvpDamageBonus: return "debug_PvpDamageBonus";
-                case Stat.PvpDamageReduction: return "debug_PvpDamageReduction";
-                case Stat.PvpCriticalChance: return "debug_PvpCriticalChance";
-                case Stat.PvpCriticalChanceReduction: return "debug_PvpCriticalChanceReduction";
-                case Stat.PvpTraumaIgnore: return "debug_PvpTraumaIgnore";
-                case Stat.ExpertiseRating: return "Expertise Rating";
-                case Stat.PvpCriticalDamageReduction: return "debug_PvpCriticalDamageReduction";
-                case Stat.AbsorptionRating: return "Absorption Rating";
-                case Stat.AttackPowerRating: return "Power";
-                case Stat.ForcePowerRating: return "Force Power";
-                case Stat.TechPowerRating: return "Tech Power";
-                case Stat.ForceRegenRating: return "debug_ForceRegenRating";
-                case Stat.EnergyRegenRating: return "debug_EnergyRegenRating";
-                case Stat.AccuracyRating: return "Accuracy Rating";
-                case Stat.CriticalChanceRating: return "Critical Rating";
-                case Stat.ForceRegen: return "debug_ForceRegen";
-                case Stat.PvpTrauma: return "debug_PvpTrauma";
-                case Stat.HealingReceivedModifierPercentage: return "debug_HealingReceivedModifierPercentage";
-                case Stat.HealingReceivedModifierFixed: return "debug_HealingReceivedModifierFixed";
-                case Stat.DamageReceievedModifierPercentage: return "debug_DamageReceievedModifierPercentage";
-                case Stat.DamageReceivedModifierFixed: return "debug_DamageReceivedModifierFixed";
-                case Stat.DefenseRating: return "Defense Rating";
-                case Stat.EffectGenerateHeatModifierFixed: return "debug_EffectGenerateHeatModifierFixed";
-                case Stat.EffectGenerateHeatModifierPercentage: return "debug_EffectGenerateHeatModifierPercentage";
-                case Stat.ArmorPenetration: return "debug_ArmorPenetration";
-                case Stat.Artifice: return "Artifice";
-                case Stat.Armormech: return "Armormech";
-                case Stat.Armstech: return "Armstech";
-                case Stat.Biochem: return "Biochem";
-                case Stat.Cybertech: return "Cybertech";
-                case Stat.Synthweaving: return "Synthweaving";
-                case Stat.Archaeology: return "Archaeology";
-                case Stat.Bioanalysis: return "Bioanalysis";
-                case Stat.Scavenging: return "Scavenging";
-                case Stat.Slicing: return "Slicing";
-                case Stat.Diplomacy: return "Diplomacy";
-                case Stat.Research: return "Research";
-                case Stat.TreasureHunting: return "TreasureHunting";
-                case Stat.UnderworldTrading: return "UnderworldTrading";
-                case Stat.Crafting: return "Crafting";
-                case Stat.Harvesting: return "Harvesting";
-                case Stat.Mission: return "Mission";
-                case Stat.ArtificeEfficiency: return "Artifice Efficiency";
-                case Stat.ArmormechEfficiency: return "Armormech Efficiency";
-                case Stat.ArmstechEfficiency: return "Armstech Efficiency";
-                case Stat.BiochemEfficiency: return "Biochem Efficiency";
-                case Stat.CybertechEfficiency: return "Cybertech Efficiency";
-                case Stat.SynthweavingEfficiency: return "Synthweaving Efficiency";
-                case Stat.ArchaeologyEfficiency: return "Archaeology Efficiency";
-                case Stat.BioanalysisEfficiency: return "Bioanalysis Efficiency";
-                case Stat.ScavengingEfficiency: return "Scavenging Efficiency";
-                case Stat.SlicingEfficiency: return "Slicing Efficiency";
-                case Stat.DiplomacyEfficiency: return "Diplomacy  Efficiency";
-                case Stat.ResearchEfficiency: return "Research Efficiency";
-                case Stat.TreasureHuntingEfficiency: return "TreasureHunting Efficiency";
-                case Stat.UnderworldTradingEfficiency: return "UnderworldTrading Efficiency";
-                case Stat.CraftingEfficiency: return "Crafting Efficiency";
-                case Stat.HarvestingEfficiency: return "Harvesting Efficiency";
-                case Stat.MissionEfficiency: return "Mission Efficiency";
-                case Stat.ArtificeCritical: return "Artifice Critical";
-                case Stat.ArmormechCritical: return "Armormech Critical";
-                case Stat.ArmstechCritical: return "Armstech Critical";
-                case Stat.BiochemCritical: return "Biochem Critical";
-                case Stat.CybertechCritical: return "Cybertech Critical";
-                case Stat.SynthweavingCritical: return "Synthweaving Critical";
-                case Stat.ArchaeologyCritical: return "Archaeology Critical";
-                case Stat.BioanalysisCritical: return "Bioanalysis Critical";
-                case Stat.ScavengingCritical: return "Scavenging Critical";
-                case Stat.SlicingCritical: return "Slicing Critical";
-                case Stat.DiplomacyCritical: return "Diplomacy  Critical";
-                case Stat.ResearchCritical: return "Research Critical";
-                case Stat.TreasureHuntingCritical: return "TreasureHunting Critical";
-                case Stat.UnderworldTradingCritical: return "UnderworldTrading Critical";
-                case Stat.CraftingCritical: return "Crafting Critical";
-                case Stat.HarvestingCritical: return "Harvesting Critical";
-                case Stat.MissionCritical: return "Mission Critical";
-                case Stat.TechHealingPower: return "Tech Healing Power";
-                case Stat.ForceHealingPower: return "Force Healing Power";
-                case Stat.TargetLowDamageModifier: return "debug_TargetLowDamageModifier";
-                case Stat.TargetBleedingDamageModifier: return "debug_TargetBleedingDamageModifier";
-                case Stat.TargetStunnedDamageModifier: return "debug_TargetStunnedDamageModifier";
-                case Stat.CasterStunnedDamageTakenModifier: return "debug_CasterStunnedDamageTakenModifier";
-                case Stat.ProcRateModifier: return "debug_ProcRateModifier";
-                case Stat.RateLimitModifierFixed: return "debug_RateLimitModifierFixed";
-                case Stat.RateLimitModifierPercentage: return "debug_RateLimitModifierPercentage";
-                case Stat.Resolve: return "debug_Resolve";
-                case Stat.ForceAccuracy: return "debug_ForceAccuracy";
-                case Stat.ForceDefense: return "debug_ForceDefense";
-                case Stat.TechAccuracy: return "debug_TechAccuracy";
-                case Stat.TechDefense: return "debug_TechDefense";
-                case Stat.ShipArmor: return "Ship Armor";
-                case Stat.ShipRateOfFire: return "Ship Blaster ROF";
-                case Stat.ShipBlasterDamage: return "Ship Blaster Damage";
-                case Stat.ShipMissileCount: return "Ship Missile Count";
-                case Stat.ShipMissileLevel: return "Ship Missile Level";
-                case Stat.ShipMissileRateOfFire: return "Ship Missile ROF";
-                case Stat.ShipTorpedoCount: return "Ship Torpedo Count";
-                case Stat.ShipTorpedoLevel: return "Ship Torpedo Level";
-                case Stat.ShipTorpedoRateOfFire: return "Ship Torpedo ROF";
-                case Stat.ShipShieldStrength: return "Ship Shield Strength";
-                case Stat.ShipShieldRegen: return "Ship Shield Regen";
-                case Stat.ShipShieldCooldown: return "Ship Shield Cooldown";
-                case Stat.ShipType: return "Ship Type";
-                case Stat.PushbackModifier: return "debug_PushbackModifier";
-                case Stat.TargetOnFireDamageModifier: return "debug_TargetOnFireDamageModifier";
-                case Stat.SurgeRating: return "Surge Rating";
-                case Stat.AlacrityRating: return "Alacrity Rating";
-                case Stat.SpellCastReductionPercentage: return "debug_SpellCastReductionPercentage";
-                case Stat.SpellChannelReductionPercentage: return "debug_SpellChannelReductionPercentage";
-                case Stat.None: return "debug_None";
-                case Stat.UnusedDamageSoak: return "debug_UnusedDamageSoak";
-                case Stat.UnusedEvasion: return "debug_UnusedEvasion";
-                case Stat.UnusedDeflection: return "debug_UnusedDeflection";
-                case Stat.UnusedChrenergy: return "debug_UnusedChrenergy";
-                case Stat.UnusedMetaModifyThreatModifierPercentage: return "debug_UnusedMetaModifyThreatModifierPercentage";
-                case Stat.UnusedMetaModifyThreatModifierFixed: return "debug_UnusedMetaModifyThreatModifierFixed";
-                case Stat.UnusedCbtdeflectchance: return "debug_UnusedCbtdeflectchance";
-                case Stat.UnusedChraction: return "debug_UnusedChraction";
-                case Stat.UnusedCbtthreatreceivedmodifier: return "debug_UnusedCbtthreatreceivedmodifier";
-                case Stat.UnusedChrregenerationrate: return "debug_UnusedChrregenerationrate";
-                case Stat.UnusedCbtcoverdamagereduction: return "debug_UnusedCbtcoverdamagereduction";
-                case Stat.UnusedCbtdamagereceivedmodifier: return "debug_UnusedCbtdamagereceivedmodifier";
-                case Stat.UnusedCbtdamagedealtmodifier: return "debug_UnusedCbtdamagedealtmodifier";
-                case Stat.UnusedCbtCoverThreatGeneratedModifierPercentage: return "debug_UnusedCbtCoverThreatGeneratedModifierPercentage";
-                case Stat.Chrmovebonus: return "debug_Chrmovebonus";
-                default:
-                    return "";
-            }
-        }
-        public static string ConvertToString(this EnhancementType enhancement) //replace these with friendly names
-        {
-            switch (enhancement)
-            {
-                case EnhancementType.None: return "None";
-                case EnhancementType.Hilt: return "Hilt";
-                case EnhancementType.PowerCell: return "debug_PowerCell";
-                case EnhancementType.Harness: return "Armoring";
-                case EnhancementType.Overlay: return "Modification";
-                case EnhancementType.Underlay: return "debug_Underlay";
-                case EnhancementType.Support: return "Enhancement";
-                case EnhancementType.FocusLens: return "debug_FocusLens";
-                case EnhancementType.Trigger: return "debug_Trigger";
-                case EnhancementType.Barrel: return "Barrel";
-                case EnhancementType.PowerCrystal: return "Hilt"; //lightsaber hilt
-                case EnhancementType.Scope: return "debug_Scope";
-                case EnhancementType.Circuitry: return "debug_Circuitry";
-                case EnhancementType.EmitterMatrix: return "debug_EmitterMatrix";
-                case EnhancementType.ColorCrystal: return "Color Crystal";
-                case EnhancementType.ColorCartridge: return "debug_ColorCartridge";
-                case EnhancementType.Modulator: return "debug_Modulator";
-                case EnhancementType.Dye: return "Dye";
-                default: return "Unknown";
-            }
-        }
         public static string ConvertToString(this Profession crewSkillId)
         {
-            switch (crewSkillId)
-            {
-                case Profession.Archaeology: return "Archaeology";
-                case Profession.Bioanalysis: return "Bioanalysis";
-                case Profession.Scavenging: return "Scavenging";
-                case Profession.Artifice: return "Artifice";
-                case Profession.Armormech: return "Armormech";
-                case Profession.Armstech: return "Armstech";
-                case Profession.Biochem: return "Biochem";
-                case Profession.Cybertech: return "Cybertech";
-                case Profession.Synthweaving: return "Synthweaving";
-                case Profession.Slicing: return "Slicing";
-                case Profession.Diplomacy: return "Diplomacy";
-                case Profession.Investigation: return "Investigation";
-                case Profession.TreasureHunting: return "Treasure Hunting";
-                case Profession.UnderworldTrading: return "Underworld Trading";
-                default: return "None";
-            }
+            string profession = GetLocalizedText((int)crewSkillId + 836161413054464);
+            return profession;
         }
+        
         #endregion
         #endregion
     }

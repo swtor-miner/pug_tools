@@ -103,6 +103,8 @@ namespace GomLib
         public ReputationGroupLoader reputationGroupLoader;
         public ReputationRankLoader reputationRankLoader;
         public DetailedAppearanceColorLoader detailedAppearanceColorLoader;
+        public Models.EnhancementData enhanceData;
+        public Models.SocialTierData socialTierData;
 
         private void initializeModelLoaders()
         {
@@ -320,6 +322,8 @@ namespace GomLib
                 Loaded = true;
 
                 statData = new Models.StatData(this);
+                enhanceData = new Models.EnhancementData(this);
+                socialTierData = new Models.SocialTierData(this);
                 foreach (DomType t in DomTypeMap.Values)
                 {
                     //Console.WriteLine(t.Name);
@@ -395,6 +399,8 @@ namespace GomLib
 
                 gomTypeLoader = null;
                 statData = null;
+                enhanceData = null;
+                socialTierData = null;
 
                 //Flush the ModelLoader Stored entries
                 scriptObjectReader.Flush();

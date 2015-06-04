@@ -13,6 +13,7 @@ namespace GomLib.Models
         public long RankPoints { get; set; }   //repRankInfoPoints - long : 4611686297441920002        
         public long RankTitleId { get; set; }  //repRankInfoTitleId - long lookup : 4611686297441920004 - str.lgc.reputation - 3171541290320128
         public string RankTitle { get; set; }  //repRankInfoTitle - "Outsider"
+        public Dictionary<string, string> LocalizedRankTitle { get; set; }
        
         public override bool Equals(object obj)
         {

@@ -8132,4 +8132,6 @@
   <gom_type Id="4611686298731624001" name="qstExperienceTable" desc="" />
   <!-- qstExperienceMultiplierPrototype -->
   <gom_type Id="4611686080314619410" name="qstExperienceMultiplierTable" desc="" />
+  <!-- qstExperienceMultiplierPrototype -->
+  <gom_type Id="4611686298221624001" name="itmEnhancementDestroyOnRemove" desc="" />
 </gom_types>

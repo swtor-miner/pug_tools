@@ -42,32 +42,33 @@ namespace GomLib.Models
             }
         }
 
-        public static EnhancementType ToEnhancementType(this string str)
-        {
-            if (String.IsNullOrEmpty(str)) return EnhancementType.None;
+        // Deprecated - Unused
+        //public static EnhancementType ToEnhancementType(this string str)
+        //{
+        //    if (String.IsNullOrEmpty(str)) return EnhancementType.None;
 
-            switch (str)
-            {
-                case "itmEnhancementTypeNone": return EnhancementType.None;
-                case "itmEnhancementTypeHilt": return EnhancementType.Hilt;
-                case "itmEnhancementTypePowerCell": return EnhancementType.PowerCell;
-                case "itmEnhancementTypeHarness": return EnhancementType.Harness;
-                case "itmEnhancementTypeOverlay": return EnhancementType.Overlay;
-                case "itmEnhancementTypeUnderlay": return EnhancementType.Underlay;
-                case "itmEnhancementTypeSupport": return EnhancementType.Support;
-                case "itmEnhancementTypeFocusLens": return EnhancementType.FocusLens;
-                case "itmEnhancementTypeTrigger": return EnhancementType.Trigger;
-                case "itmEnhancementTypeBarrel": return EnhancementType.Barrel;
-                case "itmEnhancementTypePowerCrystal": return EnhancementType.PowerCrystal;
-                case "itmEnhancementTypeScope": return EnhancementType.Scope;
-                case "itmEnhancementTypeCircuitry": return EnhancementType.Circuitry;
-                case "itmEnhancementTypeEmitterMatrix": return EnhancementType.EmitterMatrix;
-                case "itmEnhancementTypeColorCrystal": return EnhancementType.ColorCrystal;
-                case "itmEnhancementTypeColorCartridge": return EnhancementType.ColorCartridge;
-                case "itmEnhancementTypeModulator": return EnhancementType.Modulator;
-                default: throw new InvalidOperationException("Unknown EnhancementType: " + str);
-            }
-        }
+        //    switch (str)
+        //    {
+        //        case "itmEnhancementTypeNone": return EnhancementType.None;
+        //        case "itmEnhancementTypeHilt": return EnhancementType.Hilt;
+        //        case "itmEnhancementTypePowerCell": return EnhancementType.PowerCell;
+        //        case "itmEnhancementTypeHarness": return EnhancementType.Harness;
+        //        case "itmEnhancementTypeOverlay": return EnhancementType.Overlay;
+        //        case "itmEnhancementTypeUnderlay": return EnhancementType.Underlay;
+        //        case "itmEnhancementTypeSupport": return EnhancementType.Support;
+        //        case "itmEnhancementTypeFocusLens": return EnhancementType.FocusLens;
+        //        case "itmEnhancementTypeTrigger": return EnhancementType.Trigger;
+        //        case "itmEnhancementTypeBarrel": return EnhancementType.Barrel;
+        //        case "itmEnhancementTypePowerCrystal": return EnhancementType.PowerCrystal;
+        //        case "itmEnhancementTypeScope": return EnhancementType.Scope;
+        //        case "itmEnhancementTypeCircuitry": return EnhancementType.Circuitry;
+        //        case "itmEnhancementTypeEmitterMatrix": return EnhancementType.EmitterMatrix;
+        //        case "itmEnhancementTypeColorCrystal": return EnhancementType.ColorCrystal;
+        //        case "itmEnhancementTypeColorCartridge": return EnhancementType.ColorCartridge;
+        //        case "itmEnhancementTypeModulator": return EnhancementType.Modulator;
+        //        default: throw new InvalidOperationException("Unknown EnhancementType: " + str);
+        //    }
+        //}
 
         public static EnhancementType ToEnhancementType(this long val)
         {
@@ -86,6 +87,72 @@ namespace GomLib.Models
                 case 3038083514834894874: return EnhancementType.Dye;
                 default: throw new InvalidOperationException("Unknown EnhancementType: " + val);
             }
+        }
+    }
+
+    public class EnhancementData
+    {
+        private Dictionary<long, DetailedEnhancementType> SlotLookup { get; set; }
+
+        [Newtonsoft.Json.JsonIgnore]
+        DataObjectModel _dom;
+
+        public EnhancementData(DataObjectModel dom)
+        {
+            _dom = dom;
+        }
+
+        public DetailedEnhancementType ToEnhancement(long id)
+        {
+            if (id == 0) { return new DetailedEnhancementType("Undefined"); }
+
+            if (SlotLookup == null)
+            {
+                SlotLookup = new Dictionary<long, DetailedEnhancementType>();
+                var itmEnhancementInfo = _dom.GetObject("itmEnhancementInfoPrototype");
+                Dictionary<object, object> itmEnhancementTypes = itmEnhancementInfo.Data.Get<Dictionary<object, object>>("itmEnhancementTypes");
+                itmEnhancementInfo.Unload();
+                StringTable table = _dom.stringTable.Find("str.gui.itm.enhancement.types");
+                foreach (var enh in itmEnhancementTypes)
+                {
+                    DetailedEnhancementType detEnhance = new DetailedEnhancementType();
+                    detEnhance.IsArmorMod = ((GomLib.GomObjectData)enh.Value).ValueOrDefault<bool>("itmEnhancementTypeIsArmor", false);
+                    detEnhance.StringId = ((GomLib.GomObjectData)enh.Value).ValueOrDefault<long>("itmEnhancementTypeDisplayStringID", 0) + 1173453784743936;
+                    detEnhance.DisplayName = table.GetText(detEnhance.StringId, "str.gui.stats");
+                    detEnhance.LocalizedDisplayName = table.GetLocalizedText(detEnhance.StringId, "str.gui.stats");
+                    detEnhance.Mount = ((GomLib.GomObjectData)enh.Value).ValueOrDefault<string>("itmEnhancementTypeMount", "");
+                    detEnhance.Icon = ((GomLib.GomObjectData)enh.Value).ValueOrDefault<string>("itmEnhancementTypeIconAsset", "");
+                    detEnhance.ModType = ((GomLib.GomObjectData)enh.Value).ValueOrDefault<ScriptEnum>("itmEnhancementModificationType", new ScriptEnum());
+                    detEnhance.IsDestroyed = ((GomLib.GomObjectData)enh.Value).ValueOrDefault<bool>("itmEnhancementDestroyOnRemove", false);
+                    SlotLookup.Add((long)enh.Key, detEnhance);
+                }
+                itmEnhancementTypes = null;
+            }
+
+            if (!SlotLookup.ContainsKey(id)) { return null; }
+            else { return SlotLookup[id]; }
+        }
+    }
+    public class DetailedEnhancementType
+    {
+        public DetailedEnhancementType() { }
+        public DetailedEnhancementType(string name)
+        {
+            DisplayName = name;
+        }
+
+        public string DisplayName { get; set; }
+        public string Icon { get; set; }
+        public string Mount { get; set; } //"The mounting string that the GUI uses to link and item to a mounting point on an image"
+        public ScriptEnum ModType { get; set; }
+        public bool IsArmorMod { get; set; }
+        public bool IsDestroyed { get; set; }
+        public long StringId { get; set; }
+        public Dictionary<string, string> LocalizedDisplayName { get; set; }
+
+        public override string ToString()
+        {
+            return DisplayName;
         }
     }
 }

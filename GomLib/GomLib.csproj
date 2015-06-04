@@ -168,6 +168,7 @@
     <Compile Include="Models\ReputationRank.cs" />
     <Compile Include="Models\SchematicVariation.cs" />
     <Compile Include="Models\SetBonusEntry.cs" />
+    <Compile Include="Models\Social.cs" />
     <Compile Include="Models\Tooltip.cs" />
     <Compile Include="Models\Discipline.cs" />
     <Compile Include="Models\Stronghold.cs" />

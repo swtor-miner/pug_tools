@@ -13,6 +13,7 @@ namespace GomLib.Models
         public ulong NameId { get; set; }
         public string Name { get { return _name ?? (_name = ""); } set { if (_name != value) { _name = value; } } }
         private string _name;
+        public Dictionary<string, string> LocalizedName { get; set; }
         public Profession CrewSkillId { get; set; }
         public string CrewSkillName
         {
@@ -112,6 +113,7 @@ namespace GomLib.Models
         public Faction MissionFaction { get; set; }
         public int MissionYieldDescriptionId { get; set; }
         public string MissionYieldDescription { get; set; }
+        public Dictionary<string, string> LocalizedMissionYieldDescription { get; set; }
         public bool Deprecated { get; set; }
         public string Category { get; set; }
         public string SubCategory { get; set; }
