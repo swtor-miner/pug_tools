@@ -1231,7 +1231,7 @@ namespace tor_tools
                     Dictionary<string, DomType> nodeDict;
                     dom.nodeLookup.TryGetValue(typeof(GomObject), out nodeDict);                    
                     misc_parser.ParseMISC_NODE(nodeDict);
-                    nodeDict.Clear();
+                    //nodeDict.Clear(); //this was destroying dom.nodeLookup causing an annoyingly hard to locate exception.
                     misc_parser.WriteFile();
                     this.namesFound = misc_parser.found;
                     break;
