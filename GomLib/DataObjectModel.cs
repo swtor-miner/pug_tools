@@ -105,6 +105,9 @@ namespace GomLib
         public DetailedAppearanceColorLoader detailedAppearanceColorLoader;
         public Models.EnhancementData enhanceData;
         public Models.SocialTierData socialTierData;
+        public Models.AlignmentData alignmentData;
+        public Models.GroupFinderContentData groupFinderContentData;
+        public PlayerTitleLoader playerTitleLoader;
 
         private void initializeModelLoaders()
         {
@@ -157,6 +160,7 @@ namespace GomLib
             reputationGroupLoader = new ReputationGroupLoader(this);
             reputationRankLoader = new ReputationRankLoader(this);
             detailedAppearanceColorLoader = new DetailedAppearanceColorLoader(this);
+            playerTitleLoader = new PlayerTitleLoader(this);
         }
 
         public void Dispose()
@@ -324,6 +328,8 @@ namespace GomLib
                 statData = new Models.StatData(this);
                 enhanceData = new Models.EnhancementData(this);
                 socialTierData = new Models.SocialTierData(this);
+                alignmentData = new Models.AlignmentData(this);
+                groupFinderContentData = new Models.GroupFinderContentData(this);
                 foreach (DomType t in DomTypeMap.Values)
                 {
                     //Console.WriteLine(t.Name);
@@ -401,6 +407,8 @@ namespace GomLib
                 statData = null;
                 enhanceData = null;
                 socialTierData = null;
+                alignmentData = null;
+                groupFinderContentData = null;
 
                 //Flush the ModelLoader Stored entries
                 scriptObjectReader.Flush();
@@ -438,6 +446,7 @@ namespace GomLib
                 reputationGroupLoader.Flush();
                 reputationRankLoader.Flush();
                 detailedAppearanceColorLoader.Flush();
+                playerTitleLoader.Flush();
 
                 /*foreach (var DomEntry in DomTypeMap)
                 {

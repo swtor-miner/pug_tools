@@ -494,8 +494,8 @@ namespace tor_tools
             DialogResult result = testFile.ShowDialog();
             if (result == System.Windows.Forms.DialogResult.OK)
             {
-                try
-                {
+                //try
+                //{
                     System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
                     sw.Start();
                     
@@ -682,12 +682,12 @@ namespace tor_tools
                         getPrototypeObjects("SchematicVariations", "prfSchematicVariationsPrototype", "prfSchematicVariationMasterList");
                     }
                     addtolist("Completed extraction of all supported objects.");
-                }
-                catch (Exception e)
-                {
-                    //do something here
-                    MessageBox.Show(String.Format("An error occured while loading data. ({0})", e.HResult));
-                }
+                //}
+                //catch (Exception e)
+                //{
+                //    //do something here
+                //    MessageBox.Show(String.Format("An error occured while loading data. ({0})", e.HResult));
+                //}
             }
             GC.Collect();
             EnableButtons();

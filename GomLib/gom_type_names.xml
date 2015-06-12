@@ -8134,4 +8134,15 @@
   <gom_type Id="4611686080314619410" name="qstExperienceMultiplierTable" desc="" />
   <!-- qstExperienceMultiplierPrototype -->
   <gom_type Id="4611686298221624001" name="itmEnhancementDestroyOnRemove" desc="" />
+  <!-- chrForceAlignmentData -->
+  <gom_type Id="4611686124483065041" name="chrForceAlignmentTierTitle" desc="" />
+  <!-- groupFinderContentDataPrototype -->
+  <gom_type Id="4611686285042910002" name="grpFindSortIdx" desc="" />
+  <gom_type Id="4611687153124190005" name="grpFindImperialAvailable" desc="" />
+  <gom_type Id="4611687153124190006" name="grpFindRepublicAvailable" desc="" />
+  <gom_type Id="4611686301671634000" name="grpFindTimes" desc="" />
+  <gom_type Id="4611686301662634002" name="grpFindStartTime" desc="" />
+  <gom_type Id="4611686301662634003" name="grpFindEndTime" desc="" />
+  <!-- grpDailyQuestRewardsPrototype -->
+  <gom_type Id="4611687174637480000" name="grpFindRewardQuests" desc="" />
 </gom_types>

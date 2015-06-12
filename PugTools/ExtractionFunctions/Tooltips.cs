@@ -38,7 +38,7 @@ namespace tor_tools
                 {"cnv.", true},
                 {"npc.", true},*/
                 //{"qst.", "Mission"},
-                //{"tal.", true},*/
+                //{"tal.", "Talent"},
                 //{"sche", "Schematics"},
                 /*{"dec.", true},*/
                 {"itm.", "Item"}//,
@@ -48,6 +48,8 @@ namespace tor_tools
                 {"ipp.",true},
                 {"npp.",true}*/
             };
+            bool frLoaded = currentAssets.loadedFileGroups.Contains("fr-fr");
+            bool deLoaded = currentAssets.loadedFileGroups.Contains("de-de");
             for (int f = 0; f < gameObjects.Count; f++)
             {
                 var gameObj = gameObjects.ElementAt(f);
@@ -57,6 +59,8 @@ namespace tor_tools
                 int i = 0;
                 addtolist2(String.Format("Checking {0}", gameObj.Key));
                 List<GomLib.Models.Tooltip> iList = new List<GomLib.Models.Tooltip>();
+                //List<GomLib.Models.Tooltip> frList = new List<GomLib.Models.Tooltip>();
+                //List<GomLib.Models.Tooltip> deList = new List<GomLib.Models.Tooltip>();
                 foreach (var gom in gomList)
                 {
                     progressUpdate(i, count);
@@ -82,33 +86,56 @@ namespace tor_tools
                         //if(((GomLib.Models.Schematic)t.obj).NameId != 0)
                             //WriteFile(t.Base62Id + ";" + ((GomLib.Models.Schematic)t.obj).Fqn + ";" + ((GomLib.Models.Schematic)t.obj).MissionFaction + ";" + ((GomLib.Models.Schematic)t.obj).Name + Environment.NewLine, "schematics.txt", true);
                         iList.Add(t);
+                        //if (frLoaded)
+                        //{
+                        //    GomLib.Models.Tooltip.language = "frMale";
+                        //    t = new GomLib.Models.Tooltip(gom.Id, currentDom);
+                        //    var table = currentDom.stringTable.Find("str.gui.alignment");
+                        //    frList.Add(t);
+                        //    GomLib.Models.Tooltip.language = "enMale";
+                        //}
+                        //if (deLoaded)
+                        //{
+                        //    GomLib.Models.Tooltip.language = "deMale";
+                        //    t = new GomLib.Models.Tooltip(gom.Id, currentDom);
+                        //    deList.Add(t);
+                        //    GomLib.Models.Tooltip.language = "enMale";
+                        //}
+
                     }
                     i++;
                 }
                 //ObjectListAsSql(gameObj.Value, "Tooltip", iList);
-                CreatCompressedOutput(gameObj.Value, gameObj.Value, iList);
+                //CreatCompressedOutput(gameObj.Value, iList, "en-us");
+                if (frLoaded)
+                    CreatCompressedOutput(gameObj.Value, iList, "fr-fr");
+                if (deLoaded)
+                    CreatCompressedOutput(gameObj.Value, iList, "de-de");
             }
 
-            /*addtolist("Verifying GameObject Hashes");
             bool failed = false;
-            Dictionary<string, string> protoGameObjects = new Dictionary<string, string>
+            //Dictionary<string, string> protoGameObjects = new Dictionary<string, string>
+            //{
+            //    {"mtxStorefrontInfoPrototype", "mtxStorefrontData"},
+            //    {"colCollectionItemsPrototype", "colCollectionItemsData"},
+            //    {"chrCompanionInfo_Prototype", "chrCompanionInfoData"},
+            //    {"scFFShipsDataPrototype", "scFFShipsData"},
+            //    {"wevConquestInfosPrototype", "wevConquestTable"},
+            //    {"achCategoriesTable_Prototype", "achCategoriesData"}
+            //};
+            Dictionary<string, string[]> protoGameObjects = new Dictionary<string, string[]>
             {
-                {"mtxStorefrontInfoPrototype", "mtxStorefrontData"},
-                {"colCollectionItemsPrototype", "colCollectionItemsData"},
-                {"chrCompanionInfo_Prototype", "chrCompanionInfoData"},
-                {"scFFShipsDataPrototype", "scFFShipsData"},
-                {"wevConquestInfosPrototype", "wevConquestTable"},
-                {"achCategoriesTable_Prototype", "achCategoriesData"}
+                //{"Discipline", new string[] {"ablPackagePrototype", "classDisciplinesTable"}},
             };
 
             for (int f = 0; f < protoGameObjects.Count; f++)
             {
                 var gameObj = protoGameObjects.ElementAt(f);
                 Dictionary<object, object> currentDataProto = new Dictionary<object, object>();
-                GomObject currentDataObject = currentDom.GetObject(gameObj.Key);
+                GomObject currentDataObject = currentDom.GetObject(gameObj.Value[0]);
                 if (currentDataObject != null) //fix to ensure old game assets don't throw exceptions.
                 {
-                    currentDataProto = currentDataObject.Data.Get<Dictionary<object, object>>(gameObj.Value);
+                    currentDataProto = currentDataObject.Data.Get<Dictionary<object, object>>(gameObj.Value[1]);
                     currentDataObject.Unload();
                 }
 
@@ -116,60 +143,102 @@ namespace tor_tools
                 var count = currentDataProto.Count();
                 int i = 0;
                 addtolist2(String.Format("Checking {0}", gameObj.Key));
-                bool localfail = false;
+                List<GomLib.Models.Tooltip> iList = new List<GomLib.Models.Tooltip>();
                 foreach (var gom in currentDataProto)
                 {
                     progressUpdate(i, count);
-                    var itm = GomLib.Models.PseudoGameObject.LoadFromProtoName(gameObj.Key, currentDom, gom.Key, (GomObjectData)gom.Value);
-                    var itm2 = GomLib.Models.PseudoGameObject.LoadFromProtoName(gameObj.Key, currentDom, gom.Key, (GomObjectData)gom.Value);
-                    if (itm == null) continue;
-                    if (itm.GetHashCode() != itm2.GetHashCode())
+                    GomLib.Models.PseudoGameObject itm = GomLib.Models.PseudoGameObject.LoadFromProtoName(gameObj.Key, currentDom, gom.Key, (GomObjectData)gom.Value);
+                    bool okToOutput = true;
+                    if (chkBuildCompare.Checked)
                     {
-                        addtolist2(String.Format("Failed: {0}", gameObj.Key));
-                        failed = true;
-                        localfail = true;
-                        break; //break inner loop
+                        var itm2 = GomLib.Models.PseudoGameObject.LoadFromProtoName(gameObj.Key, previousDom, gom.Key, (GomObjectData)gom.Value);
+                        if (itm2 != null)
+                        {
+                            if (itm.GetHashCode() == itm2.GetHashCode())
+                                okToOutput = false;
+                        }
+                    }
+
+                    if (okToOutput)
+                    {
+                        GomLib.Models.Tooltip t = new GomLib.Models.Tooltip(itm);
+                        /*if (itm.GetType() == typeof(GomLib.Models.Item)){
+                            OutputIcon(((GomLib.Models.Item)itm).Icon, "TORC");
+                        }*/
+                        //if(((GomLib.Models.Schematic)t.obj).NameId != 0)
+                        //WriteFile(t.Base62Id + ";" + ((GomLib.Models.Schematic)t.obj).Fqn + ";" + ((GomLib.Models.Schematic)t.obj).MissionFaction + ";" + ((GomLib.Models.Schematic)t.obj).Name + Environment.NewLine, "schematics.txt", true);
+                        iList.Add(t);
                     }
                     i++;
                 }
-                if (!localfail)
-                    addtolist2(String.Format("Passed: {0}", gameObj.Key));
-            }
-            completeString = "Passed.";
-            if (failed)
-                completeString = "Failed.";
-            addtolist(completeString);*/
 
+                CreatCompressedOutput(gameObj.Key, iList, "en-us");
+            }
+            OutputDiscIcons();
             EnableButtons();
         }
 
-        public void CreatCompressedOutput(string prefix, string xmlRoot, IEnumerable<GomLib.Models.Tooltip> itmList)
+        public void CreatCompressedOutput(string xmlRoot, IEnumerable<GomLib.Models.Tooltip> itmList, string language)
         {
-            WriteFile("", xmlRoot + "torctips.zip", false);
+            string file = String.Format("{0}tips({1}).zip", xmlRoot, language);
+            WriteFile("", file, false);
             HashSet<string> iconNames = new HashSet<string>();
             using (var compressStream = new MemoryStream())
             {
                 //create the zip in memory
                 using (var zipArchive = new ZipArchive(compressStream, ZipArchiveMode.Create, true))
                 {
+                    string compressedFolder = "tooltips/html/";
+                    switch (language)
+                    {
+                        case "fr-fr":
+                            compressedFolder = "tooltips/html/fr-fr/";
+                            GomLib.Models.Tooltip.language = "frMale";
+                            break;
+                        case "de-de":
+                            compressedFolder = "tooltips/html/de-de/";
+                            GomLib.Models.Tooltip.language = "deMale";
+                            break;
+                    }
                     foreach (var t in itmList)
                     {
-                        var torcEntry = zipArchive.CreateEntry(String.Format("tooltips/html/{0}.torctip", t.Base62Id), CompressionLevel.Fastest);
-                        using (StreamWriter writer = new StreamWriter(torcEntry.Open())) //old method. Race conditions led to Central Directory corruption.
+                        var torcEntry = zipArchive.CreateEntry(String.Format("{0}{1}.torctip", compressedFolder, t.Base62Id), CompressionLevel.Fastest);
+                        using (StreamWriter writer = new StreamWriter(torcEntry.Open(), Encoding.UTF8)) //old method. Race conditions led to Central Directory corruption.
                             writer.Write(t.HTML);
                         /*using (MemoryStream htmlStream = new MemoryStream(Encoding.UTF8.GetBytes(t.HTML ?? ""))) //see if this solves the Central Directory corruption.
                         {
                             using (var html = torcEntry.Open())
                                 htmlStream.WriteTo(html);
                         }*/
-
+                        if (language != "en-us") continue;
                         string icon = "";
-                        if (t.obj.GetType() == typeof(GomLib.Models.Item))
-                            icon = String.Format("icons/{0}", ((GomLib.Models.Item)t.obj).Icon);
-                        if (t.obj.GetType() == typeof(GomLib.Models.Ability))
-                            icon = String.Format("icons/{0}", ((GomLib.Models.Ability)t.obj).Icon);
-                        if (t.obj.GetType() == typeof(GomLib.Models.Quest))
-                            icon = String.Format("codex/{0}", ((GomLib.Models.Quest)t.obj).Icon);
+                        if (t.obj != null)
+                        {
+                            switch (t.obj.GetType().ToString())
+                            {
+                                case "GomLib.Models.Item":
+                                    icon = String.Format("icons/{0}", ((GomLib.Models.Item)t.obj).Icon);
+                                    break;
+                                case "GomLib.Models.Ability":
+                                    icon = String.Format("icons/{0}", ((GomLib.Models.Ability)t.obj).Icon);
+                                    break;
+                                case "GomLib.Models.Quest":
+                                    icon = String.Format("codex/{0}", ((GomLib.Models.Quest)t.obj).Icon);
+                                    break;
+                                case "GomLib.Models.Talent":
+                                    icon = String.Format("icons/{0}", ((GomLib.Models.Talent)t.obj).Icon);
+                                    break;
+                            }
+                        }
+                        if (t.pObj != null)
+                        {
+                            switch (t.pObj.GetType().ToString())
+                            {
+                                case "GomLib.Models.Discipline":
+                                    icon = String.Format("icons/{0}", ((GomLib.Models.Item)t.obj).Icon);
+                                    break;
+                            }
+                        }
                         if (!String.IsNullOrEmpty(icon))
                         {
                             if (iconNames.Contains(icon))
@@ -192,10 +261,9 @@ namespace tor_tools
                 }
 
                 compressStream.Position = 0;
-                WriteFile(compressStream, xmlRoot + "torctips.zip");
+                WriteFile(compressStream, file);
             }
-
-            
+            GomLib.Models.Tooltip.language = "enMale";
         }
 
         private MemoryStream GetIcon(string icon)
@@ -351,6 +419,82 @@ namespace tor_tools
                 }
             }
             return null;
+        }
+        public void OutputDiscIcons()
+        {
+            Dictionary<string, string[]> protoGameObjects = new Dictionary<string, string[]>
+            {
+                {"Discipline", new string[] {"ablPackagePrototype", "classDisciplinesTable"}},
+            };
+
+            for (int f = 0; f < protoGameObjects.Count; f++)
+            {
+                var gameObj = protoGameObjects.ElementAt(f);
+                Dictionary<object, object> currentDataProto = new Dictionary<object, object>();
+                GomObject currentDataObject = currentDom.GetObject(gameObj.Value[0]);
+                if (currentDataObject != null) //fix to ensure old game assets don't throw exceptions.
+                {
+                    currentDataProto = currentDataObject.Data.Get<Dictionary<object, object>>(gameObj.Value[1]);
+                    currentDataObject.Unload();
+                }
+
+                ClearProgress();
+                var count = currentDataProto.Count();
+                int i = 0;
+                addtolist2(String.Format("Checking {0}", gameObj.Key));
+                List<GomLib.Models.Discipline> iList = new List<GomLib.Models.Discipline>();
+
+                foreach (var gom in currentDataProto)
+                {
+                    progressUpdate(i, count);
+                    var discData = (List<GomObjectData>)((List<object>)gom.Value).ConvertAll(x => (GomObjectData)x);
+
+                    foreach (var disc in discData)
+                    {
+                        GomLib.Models.Discipline dis = new GomLib.Models.Discipline();
+                        currentDom.disciplineLoader.Load(dis, disc);
+                        iList.Add(dis);
+                    }
+                    
+                    i++;
+                }
+                WriteFile("", "disciplineIcons.zip", false);
+                HashSet<string> iconNames = new HashSet<string>();
+                using (var compressStream = new MemoryStream())
+                {
+                    //create the zip in memory
+                    using (var zipArchive = new ZipArchive(compressStream, ZipArchiveMode.Create, true))
+                    {
+                        foreach (var t in iList)
+                        {
+                            string icon = "icons/" + t.Icon;
+                            
+                            if (!String.IsNullOrEmpty(icon))
+                            {
+                                if (iconNames.Contains(icon))
+                                    continue;
+                                else
+                                    iconNames.Add(icon);
+                                using (MemoryStream iconStream = GetIcon(icon))
+                                {
+                                    if (iconStream != null)
+                                    {
+                                        var iconEntry = zipArchive.CreateEntry(String.Format("icons/{0}.jpg", GetIconFilename(icon)), CompressionLevel.Fastest);
+                                        using (var a = iconEntry.Open())
+                                            iconStream.WriteTo(a);
+                                        //using (Writer writer = new BinaryWriter(iconEntry.Open()))
+                                        //writer.(iconStream);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    compressStream.Position = 0;
+                    WriteFile(compressStream, "disciplineIcons.zip");
+                }
+                
+            }
         }
     }
 }

@@ -164,7 +164,7 @@ namespace GomLib.Models
                 classPkgs.Add(classPkg.ToXElement(verbose));
             }
             playerClass.Add(classPkgs,
-                new XElement("Utilties", UtilityPkg.ToXElement(verbose)));
+                new XElement("Utilities", UtilityPkg.ToXElement(verbose)));
             return playerClass;
         }
     }

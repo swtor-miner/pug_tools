@@ -30,6 +30,12 @@ namespace GomLib.Models
             Id = obj.Id;
             Fqn = obj.Fqn;
         }
+        public Tooltip(PseudoGameObject gObj)
+        {
+            pObj = gObj;
+            Id = obj.Id;
+            Fqn = obj.Fqn;
+        }
         [Newtonsoft.Json.JsonIgnore]
         internal GameObject _obj { get; set; }
         public GameObject obj
@@ -47,6 +53,8 @@ namespace GomLib.Models
                 _obj = value;
             }
         }
+        public PseudoGameObject pObj { get; set; }
+
         [Newtonsoft.Json.JsonIgnore]
         public string _type { get; set; }
         public string type
@@ -83,25 +91,38 @@ namespace GomLib.Models
 
         private string GetHTML()
         {
-            if (obj == null)
-                return null;
-            if (obj.GetType() == typeof(Item))
+            if (obj != null)
             {
-                return ((Item)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
+                if (obj.GetType() == typeof(Item))
+                {
+                    //string retu = ((Item)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
+
+                    return ((Item)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
+                    //return ((Item)obj).GetHTML().ToStringWithoutCharacterChecking();
+                }
+                if (obj.GetType() == typeof(Schematic))
+                {
+                    return ((Schematic)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
+                }
+                if (obj.GetType() == typeof(Ability))
+                {
+                    return ((Ability)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
+                }
+                if (obj.GetType() == typeof(Quest))
+                {
+                    return ((Quest)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
+                }
+                return "<div>Not implemented</div>";
             }
-            if (obj.GetType() == typeof(Schematic))
+            if (pObj == null)
             {
-                return ((Schematic)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
+                //if (obj.GetType() == typeof(Discipline))
+                //{
+                //    return ((Discipline)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
+                //}
+                return "<div>Not implemented</div>";
             }
-            if (obj.GetType() == typeof(Ability))
-            {
-                return ((Ability)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
-            }
-            if (obj.GetType() == typeof(Quest))
-            {
-                return ((Quest)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
-            }
-            return "<div>Not implemented</div>";
+            return null;
         }
     }
     public static class TooltipHelpers
@@ -124,7 +145,7 @@ namespace GomLib.Models
                 tooltip.Add(new XElement("div",
                     new XAttribute("class", String.Format("torctip_image torctip_image_{0}", stringQual)),
                     new XElement("img",
-                        new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.png", fileId.ph, fileId.sh)),
+                        new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", fileId.ph, fileId.sh)),
                         new XAttribute("alt", ""))),
                     new XElement("div",
                         new XAttribute("class", "torctip_name"),
@@ -593,27 +614,22 @@ namespace GomLib.Models
             }
             if (itm.RequiresAlignment)
             {
-                string alignment = "";
-                string reqAlignType = (itm.RequiredAlignmentInverted) ? " or below" : "or above";
-                string tier = "";
-                switch(Math.Sign(itm.RequiredAlignmentTier)){
-                    case -1:
-                        alignment = "Dark";
-                        tier = String.Format("{0} ", (-itm.RequiredAlignmentTier).ToRoman());
-                        break;
-                    case 1:
-                        alignment = "Light";
-                        tier = String.Format("{0} ", itm.RequiredAlignmentTier.ToRoman());
-                        break;
-                    default:
-                        alignment = "Neutral";
-                        break;
+                string alignment = GetLocalizedText(836131348283656 - Convert.ToInt32(itm.RequiredAlignmentInverted));
+                AlignmentTier tier = itm._dom.alignmentData.ToTier(itm.RequiredAlignmentTier);
+                if (tier != null)
+                {
+                    tooltip.Add(new XElement("div",
+                        XClass("torctip_main"),
+                        String.Format(alignment, tier.LocalizedName[Tooltip.language]) //"Requires {0} {1}{2}"
+                        ));
                 }
-                
-                tooltip.Add(new XElement("div",
-                    XClass("torctip_main"),
-                    String.Format("Requires {0} {1}{2}", alignment, tier, reqAlignType)
-                    ));
+                else
+                {
+                    tooltip.Add(new XElement("div",
+                        XClass("torctip_main"),
+                        String.Format(alignment, itm.RequiredAlignmentTier) //"Requires {0} {1}{2}"
+                        ));
+                }
             }
             if (itm.RequiresSocial)
             {
@@ -730,7 +746,9 @@ namespace GomLib.Models
                                 if (itm.UseAbility.Fqn.StartsWith("abl.player.") && String.IsNullOrEmpty(itm.UseAbility.LocalizedDescription[Tooltip.language])){
                                     string puasehere = "";
                                 }
-                            string ablDesc = itm.UseAbility.ParsedDescription ?? "";
+                            string ablDesc = "";
+                            if (itm.UseAbility.ParsedLocalizedDescription != null)
+                                ablDesc = itm.UseAbility.ParsedLocalizedDescription[Tooltip.language];
                             //if (ablDesc == "") break;
                             //ablDesc = System.Text.RegularExpressions.Regex.Replace(ablDesc, @"\r\n?|\n", "<br />");
                             //tooltip.Add(new XElement("div",
@@ -752,7 +770,7 @@ namespace GomLib.Models
             //Description
             if (itm.Description != "")
             {
-                string itmDesc = itm.Description;
+                string itmDesc = itm.LocalizedDescription[Tooltip.language];
                 itmDesc = System.Text.RegularExpressions.Regex.Replace(itmDesc, @"\r\n?|\n", "\n");
                 XElement desc = new XElement("div",
                     XClass("torctip_desc"));
@@ -912,7 +930,7 @@ namespace GomLib.Models
                 tooltip.Add(new XElement("div",
                     new XAttribute("class", String.Format("torctip_image torctip_image_{0}", stringQual)),
                     new XElement("img",
-                        new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.png", fileId.ph, fileId.sh)),
+                        new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", fileId.ph, fileId.sh)),
                         new XAttribute("alt", ""))),
                     new XElement("div",
                         new XAttribute("class", "torctip_name"),
@@ -970,7 +988,7 @@ namespace GomLib.Models
                                 new XElement("div",
                                     new XAttribute("class", String.Format("torctip_image torctip_image_{0} small_border", matstringQual)),
                                     new XElement("img",
-                                        new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.png", matfileId.ph, matfileId.sh)),
+                                        new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", matfileId.ph, matfileId.sh)),
                                         new XAttribute("alt", itm.Name),
                                         XClass("small_image"))),
                                 new XElement("div",
@@ -1050,7 +1068,7 @@ namespace GomLib.Models
                 tooltip.Add(new XElement("div",
                     new XAttribute("class", String.Format("torctip_image torctip_image_{0}", stringQual)),
                     new XElement("img",
-                        new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.png", fileId.ph, fileId.sh)),
+                        new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", fileId.ph, fileId.sh)),
                         new XAttribute("alt", ""))),
                     new XElement("div",
                         new XAttribute("class", "torctip_name"),
@@ -1322,7 +1340,7 @@ namespace GomLib.Models
                                 new XAttribute("data-torc", "norestyle"),
                                 new XAttribute("class", String.Format("torctip_image torctip_image_{0}", matstringQual)),
                                 new XElement("img",
-                                    new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.png", matfileId.ph, matfileId.sh)),
+                                    new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", matfileId.ph, matfileId.sh)),
                                     new XAttribute("alt", mat.Name),
                                     XClass("image")
                                 )
@@ -1453,6 +1471,30 @@ namespace GomLib.Models
         #endregion
 
         #region HelperMethods
+        /// <summary>
+        /// Returns the XML string of the <paramref name="xElement"/> WITHOUT CHARACTER CHECKING.
+        /// </summary>
+        /// <param name="xElement"></param>
+        /// <returns></returns>
+        public static string ToStringWithoutCharacterChecking(this XElement xElement)
+        {
+            using (System.IO.StringWriter stringWriter = new System.IO.StringWriter())
+            {
+                XmlWriterSettings s = new XmlWriterSettings();
+                s.CheckCharacters = false;
+                s.Indent = false;
+                s.Encoding = Encoding.Default;
+                s.OmitXmlDeclaration = true;
+
+                using (System.Xml.XmlWriter xmlTextWriter = XmlWriter.Create(stringWriter, s))
+                {
+                    xElement.WriteTo(xmlTextWriter);
+                }
+                string ret = stringWriter.ToString();
+                return ret;
+            }
+
+        }
         private static void AddStringWithBreaks(ref XElement element, string desc)
         {
             if (desc.Contains('\n'))

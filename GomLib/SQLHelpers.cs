@@ -96,12 +96,20 @@ namespace GomLib
             IsPrimaryKey = isPriKey;
             JsonSerialize = jSerialize;
         }
+        public SQLProperty(string name, string propName, string type, params SQLPropSetting[] settings)
+        {
+            SetValues(name, propName, type);
+            IsPrimaryKey = settings.Contains(SQLPropSetting.PrimaryKey);
+            JsonSerialize = settings.Contains(SQLPropSetting.JsonSerialize);
+            AddIndex = settings.Contains(SQLPropSetting.AddIndex);
+        }
 
         public string Name;
         public string PropertyName;
         public string Type;
         public bool IsPrimaryKey = false;
         public bool JsonSerialize = false;
+        public bool AddIndex = false;
 
         internal void SetValues(string name, string propName, string type)
         {
@@ -109,6 +117,12 @@ namespace GomLib
             PropertyName = propName;
             Type = type;
         }
+    }
+    public enum SQLPropSetting
+    {
+        PrimaryKey,
+        JsonSerialize,
+        AddIndex
     }
     #region Base62
     public static class EncodingExtensions

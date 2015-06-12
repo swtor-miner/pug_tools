@@ -26,91 +26,116 @@ namespace GomLib.Models
             }
         }
         public string Description { get; set; }
+        public Dictionary<string, string> LocalizedDescription { get; set; }
         public string ParsedDescription
         {
             get
             {
-                var retval = Description;
-
-                if (DescriptionTokens == null)
-                    return retval;
-
-                for (var i = 0; i < DescriptionTokens.Count; i++) {
-                    var id = DescriptionTokens.ElementAt(i).Key;
-                    var value = DescriptionTokens.ElementAt(i).Value["ablParsedDescriptionToken"].ToString();
-                    var type = DescriptionTokens.ElementAt(i).Value["ablDescriptionTokenType"].ToString().Replace("ablDescriptionTokenType", "");
-                    var start = retval.IndexOf("<<" + id);
-
-                    if (start == -1) {
-                        //console.log("didn't find: <<" + id);
-                        continue;
-                    }
-                    //console.log("id" + id + ":" + retval);
-                    //console.log("Start Index: " + start);
-
-                    var end = retval.Substring(start).IndexOf(">>") + 2;
-
-                    //console.log("Length: " +length);
-                    var fullToken = retval.Substring(start, end);
-                    //console.log("Full: " + fullToken);
-
-                    var durationText = "";
-                    if (end > 5) {
-                        try
-                        {
-                            string[] durationList = new string[] { "", "", "" };
-                            var partialToken = fullToken.Substring(4, fullToken.Length - 7);
-                            //console.log("Partial:" + partialToken);
-
-                            durationList = partialToken.Replace("%d", "").Split('/').ToArray();
-                            //console.log(durationList);
-
-                            int pValue;
-                            Int32.TryParse(value.ToString(), out pValue);
-
-                            durationText = "";
-                            if (pValue <= 0)
-                                durationText = durationList[0];
-                            else if (pValue > 1)
-                                durationText = durationList[2];
-                            else
-                                durationText = durationList[1];
-                            //console.log(pValue + durationText);
-                        }
-                        catch (Exception ex)
-                        {
-                            //this happens when the tokens are malformed
-                        }
-                    }
-                    //console.log(type);
-                    while (retval.IndexOf(fullToken) != -1) { //sometimes there's multiple instance of the same token.
-                        bool breakloop = false;
-                        switch (type) {
-                            /*case "Healing":
-                            case "Damage":
-                                retval = retval.Replace(fullToken, generateTokenString(value));
-                                break;*/
-                            case "Duration":
-                                retval = retval.Replace(fullToken, value + durationText);
-                                break;
-                            case "Talent":
-                                retval = retval.Replace(fullToken, value);
-                                //console.log("replaced '<<" + id + ">>' :" + retval);
-                                break;
-                            default:
-                                //console.log(type);
-                                //retval = retval.Replace(fullToken, "Unknown Token: " + type);
-                                breakloop = true;
-                                break;
-                        }
-                        if (breakloop) break;
-                    }
-        
-                }
-                return retval;
+                return ParseDescription(Description);
             }
         }
-        public Dictionary<string, string> LocalizedDescription { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        internal Dictionary<string, string> _ParsedLocalizedDescription { get; set; }
+        public Dictionary<string, string> ParsedLocalizedDescription
+        {
+            get
+            {
+                if (_ParsedLocalizedDescription == null && LocalizedDescription != null)
+                {
+                    _ParsedLocalizedDescription = new Dictionary<string, string>();
+                    foreach (var desc in LocalizedDescription)
+                    {
+                        _ParsedLocalizedDescription.Add(desc.Key, ParseDescription(desc.Value));
+                    }
+                }
+                return _ParsedLocalizedDescription;
+            }
+        }
+        private string ParseDescription(string desc)
+        {
+            if (DescriptionTokens == null)
+                return desc;
+
+            for (var i = 0; i < DescriptionTokens.Count; i++)
+            {
+                var id = DescriptionTokens.ElementAt(i).Key;
+                var value = DescriptionTokens.ElementAt(i).Value["ablParsedDescriptionToken"].ToString();
+                var type = DescriptionTokens.ElementAt(i).Value["ablDescriptionTokenType"].ToString().Replace("ablDescriptionTokenType", "");
+                var start = desc.IndexOf("<<" + id);
+
+                if (start == -1)
+                {
+                    //console.log("didn't find: <<" + id);
+                    continue;
+                }
+                //console.log("id" + id + ":" + retval);
+                //console.log("Start Index: " + start);
+
+                var end = desc.Substring(start).IndexOf(">>") + 2;
+
+                //console.log("Length: " +length);
+                var fullToken = desc.Substring(start, end);
+                //console.log("Full: " + fullToken);
+
+                var durationText = "";
+                if (end > 5)
+                {
+                    try
+                    {
+                        string[] durationList = new string[] { "", "", "" };
+                        var partialToken = fullToken.Substring(4, fullToken.Length - 7);
+                        //console.log("Partial:" + partialToken);
+
+                        durationList = partialToken.Replace("%d", "").Split('/').ToArray();
+                        //console.log(durationList);
+
+                        int pValue;
+                        Int32.TryParse(value.ToString(), out pValue);
+
+                        durationText = "";
+                        if (pValue <= 0)
+                            durationText = durationList[0];
+                        else if (pValue > 1)
+                            durationText = durationList[2];
+                        else
+                            durationText = durationList[1];
+                        //console.log(pValue + durationText);
+                    }
+                    catch (Exception ex)
+                    {
+                        //this happens when the tokens are malformed
+                    }
+                }
+                //console.log(type);
+                while (desc.IndexOf(fullToken) != -1)
+                { //sometimes there's multiple instance of the same token.
+                    bool breakloop = false;
+                    switch (type)
+                    {
+                        /*case "Healing":
+                        case "Damage":
+                            retval = retval.Replace(fullToken, generateTokenString(value));
+                            break;*/
+                        case "Duration":
+                            desc = desc.Replace(fullToken, value + durationText);
+                            break;
+                        case "Talent":
+                            desc = desc.Replace(fullToken, value);
+                            //console.log("replaced '<<" + id + ">>' :" + retval);
+                            break;
+                        default:
+                            //console.log(type);
+                            //retval = retval.Replace(fullToken, "Unknown Token: " + type);
+                            breakloop = true;
+                            break;
+                    }
+                    if (breakloop) break;
+                }
+
+            }
+            return desc;
+        }
+        
 
         public List<ulong> EffectIds { get; set; }
         public int Level { get; set; }
@@ -173,7 +198,6 @@ namespace GomLib.Models
         public ulong UnknownInt2 { get; set; }
         public Dictionary<int, ulong> CooldownTimerSpecs { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
         public string HashedIcon
         {
             get

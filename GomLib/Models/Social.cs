@@ -53,7 +53,7 @@ namespace GomLib.Models
                 outcast.Name = outcast.LocalizedName["enMale"];
                 outcast.AchieveMessageId = 836131348283660;
                 outcast.LocalizedAchieveMessage = table.GetLocalizedText(outcast.AchieveMessageId, "str.gui.tooltips");
-                outcast.AchieveMessage = outcast.LocalizedName["enMale"];
+                outcast.AchieveMessage = outcast.LocalizedAchieveMessage["enMale"];
                 chrSocialScoreTiers = null;
                 SocialTierLookup.Add(0, outcast);
             }

@@ -33,11 +33,12 @@ namespace tor_tools
 
             //getTooltips();
 
-            //getAuctionCats();
+            getAuctionCats();
 
             //getitemIds();
 
-            torheadscanner();
+            //torheadscanner();
+            groupFinder();
             
             EnableButtons();
         }
@@ -155,6 +156,38 @@ namespace tor_tools
             addtolist("Done scanning torhead!");
         }
 
+        public void groupFinder()
+        {
+            ClearProgress();
+            LoadData();
+               
+            currentDom.groupFinderContentData.Load(0); //dummy to load data
+            
+            var count = currentDom.groupFinderContentData.GroupFinderLookup.Count();
+            int i = 0;
+            WriteFile("", "gfDat.txt", false);
+            StringBuilder txter = new StringBuilder();
+            Dictionary<GomLib.Models.GroupFinderTime, string> opsList = new Dictionary<GomLib.Models.GroupFinderTime, string>();
+            foreach(var kvp in currentDom.groupFinderContentData.GroupFinderLookup)
+            {
+                progressUpdate(i, count);
+                if (kvp.Value.Times != null)
+                {
+                    foreach (var time in kvp.Value.Times)
+                    {
+                        opsList.Add(time, kvp.Value.Name);
+                    }
+                }
+                i++;
+            }
+            opsList = opsList.OrderBy(x => x.Key.StartTime.Date).ToDictionary(x=> x.Key, x=>x.Value);
+            foreach (var kvp in opsList)
+            {
+                txter.Append(String.Format("Start: {0}; End: {1}; Name: {2}{3}", kvp.Key.StartTime.ToString(), kvp.Key.EndTime.ToString(), kvp.Value, Environment.NewLine));
+            }
+            WriteFile(txter.ToString(), "gfDat.txt", false);
+
+        }
         #region Discipline Calculator
         public void getDisciplineCalcData()
         {

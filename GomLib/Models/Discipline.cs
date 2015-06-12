@@ -10,6 +10,19 @@ namespace GomLib.Models
     {
         public ulong NodeId { get; set; }
         public string Icon { get; set; }
+        public string HashedIcon
+        {
+            get
+            {
+                string icon = "none";
+                if (Icon != null)
+                {
+                    icon = Icon;
+                }
+                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", icon));
+                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+            }
+        }
         public long SortIdx { get; set; }
         public ulong ClassId { get; set; }
         public ulong PathApcId { get; set; }

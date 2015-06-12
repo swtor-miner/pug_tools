@@ -106,7 +106,7 @@ namespace GomLib.ModelLoader
             qst.Difficulty = QuestDifficultyExtensions.ToQuestDifficulty((ScriptEnum)obj.Data.ValueOrDefault<ScriptEnum>("qstDifficulty", null));
             qst.ReqPrivacy = obj.Data.ValueOrDefault<object>("qstReqPrivacy", (object)"").ToString().Replace("qstPrivacy", "");
             qst.CanAbandon = obj.Data.ValueOrDefault<bool>("qstAllowAbandonment", false);
-            qst.Icon = obj.Data.ValueOrDefault<string>("qstMissionIcon", "");
+            qst.Icon = obj.Data.ValueOrDefault<string>("qstMissionIcon", "").Replace(" ", "");
             qst.IsHidden = obj.Data.ValueOrDefault<bool>("qstIsHiddenQuest", false);
             qst.IsClassQuest = obj.Data.ValueOrDefault<bool>("qstIsClassQuest", false);
             qst.IsBonus = obj.Data.ValueOrDefault<bool>("qstIsBonusQuest", false);

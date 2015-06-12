@@ -155,6 +155,13 @@ namespace GomLib.Models
         }
         [Newtonsoft.Json.JsonIgnore]
         public virtual List<SQLProperty> SQLProperties { get; set; }
+        public string Tooltip
+        {
+            get
+            {
+                return new Tooltip(this).ToString();
+            }
+        }
     }
 
     public class PseudoGameObject : Dependencies
@@ -240,6 +247,10 @@ namespace GomLib.Models
                     GomLib.Models.SchematicVariation schemVariation = new GomLib.Models.SchematicVariation();
                     dom.schemVariationLoader.Load(schemVariation, (ulong)id, (Dictionary<object, object>)gomObjectData);
                     return schemVariation;
+                case "PlayerTitles":
+                    GomLib.Models.PlayerTitle playerTitle = new GomLib.Models.PlayerTitle();
+                    dom.playerTitleLoader.Load(playerTitle, (long)id, (GomObjectData)gomObjectData);
+                    return playerTitle;
                 default:
                     throw new IndexOutOfRangeException();
             }
@@ -261,6 +272,8 @@ namespace GomLib.Models
                     return Load("Conquests", dom, id, gomObjectData);
                 case "achCategoriesTable_Prototype":
                     return Load("AchCategories", dom, id, gomObjectData);
+                //case "ablPackagePrototype":
+                //    return 
                 default:
                     throw new IndexOutOfRangeException();
             }
