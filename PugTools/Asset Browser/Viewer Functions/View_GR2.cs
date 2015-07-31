@@ -9,32 +9,38 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
-using SlimDX;
-using SlimDX.Direct3D11;
-using SlimDX.D3DCompiler;
-using SlimDX.DXGI;
-using Buffer = SlimDX.Direct3D11.Buffer;
-using ShaderResourceView = SlimDX.Direct3D11.ShaderResourceView;
-using SlimDX_Framework;
-using SlimDX_Framework.Camera;
-using SlimDX_Framework.FX;
-using SlimDX_Framework.Vertex;
+//using SlimDX;
+//using SlimDX.Direct3D11;
+//using SlimDX.D3DCompiler;
+//using SlimDX.DXGI;
+//using Buffer = SlimDX.Direct3D11.Buffer;
+//using ShaderResourceView = SlimDX.Direct3D11.ShaderResourceView;
+using Buffer = SharpDX.Direct3D11.Buffer;
+using ShaderResourceView = SharpDX.Direct3D11.ShaderResourceView;
+//using SlimDX_Framework;
+//using SlimDX_Framework.Camera;
+//using SlimDX_Framework.FX;
+//using SlimDX_Framework.Vertex;
+using SharpDX;
+using SharpDX.DXGI;
+using SharpDX.Direct3D11;
 using FileFormats;
+using SharpDX.FX;
 
 namespace tor_tools
 {
-    class View_GR2 : D3DPanelApp
+    class View_GR2
     {
-        FileFormats.GR2 model;  
+        FileFormats.GR2 model;
 
-        private DirectionalLight[] _dirLights;       
+        private SharpDX.Toolkit.Graphics.DirectionalLight[] _dirLights;       
 
         private Matrix _texTransform;
         private Matrix _world;
         private Matrix _view;
         private Matrix _proj;                
         
-        private Point _lastMousePos;
+        private SharpDX.Point _lastMousePos;
 
         public bool _disposed;
         private GR2_Effect _fx;        
@@ -77,9 +83,9 @@ namespace tor_tools
 
             _dirLights = new[] {                
                 new DirectionalLight {
-                Ambient = Color.White,
-                Diffuse = Color.White,
-                Specular = new Color4(0.5f, 0.5f, 0.5f),
+                Ambient = SharpDX.Color.White,
+                Diffuse = SharpDX.Color.White,
+                Specular = new SharpDX.Color4(0.5f, 0.5f, 0.5f),
                 Direction = new Vector3(0.57735f, -0.57735f, 0.57735f)
                 },              
             };
@@ -293,8 +299,8 @@ namespace tor_tools
 
         public override void DrawScene()
         {
-            base.DrawScene();            
-            ImmediateContext.ClearRenderTargetView(RenderTargetView, Color.LightSteelBlue);
+            base.DrawScene();
+            ImmediateContext.ClearRenderTargetView(RenderTargetView, SharpDX.Color.LightSteelBlue);
             ImmediateContext.ClearDepthStencilView(DepthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
 
             ImmediateContext.InputAssembler.InputLayout = InputLayouts.PosNormalTexTan;
