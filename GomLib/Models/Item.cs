@@ -410,6 +410,11 @@ namespace GomLib.Models
                 }
                 return _LocalizedRepFactionName;
             }
+
+            set
+            {
+                _LocalizedRepFactionName = value;
+            }
         }
 
         [Newtonsoft.Json.JsonIgnore]
@@ -465,6 +470,7 @@ namespace GomLib.Models
         public List<string> MaterialForSchems { get; set; }
         public List<string> RewardFromQuests { get; set; }
         public List<string> RequiredClassesB62 { get; set; }
+        public List<string> SimilarAppearance { get; set; }
         public static List<long> ArmorSpecIds = new List<long> { -8622546409652942944, 589686270506543030, 5763611092890301551 };
         public static List<ArmorSpec> ArmorSpecs = new List<ArmorSpec> { };
 
@@ -707,6 +713,17 @@ namespace GomLib.Models
             itm.IsCurrency = flags.HasFlag(ItemTypeFlags.IsCurrency);
             itm.IsMtxItem = flags.HasFlag(ItemTypeFlags.IsMtxItem);
             itm.IsRepTrophy = flags.HasFlag(ItemTypeFlags.IsRepTrophy);
+
+            return itm;
+        }
+
+        public static Item SimpleTagDicts(Item itm)
+        {
+            itm.LocalizedName = itm.LocalizedName.SimpleTagLocalizedDict();
+            itm.LocalizedRepFactionName = itm.LocalizedRepFactionName.SimpleTagLocalizedDict();
+            itm.LocalizedName = itm.LocalizedName.SimpleTagLocalizedDict();
+            itm.LocalizedName = itm.LocalizedName.SimpleTagLocalizedDict();
+            itm.LocalizedName = itm.LocalizedName.SimpleTagLocalizedDict();
 
             return itm;
         }
@@ -1074,6 +1091,7 @@ namespace GomLib.Models
                 {
                     FillFlatData(this);
                     ProcessFlags(this);
+                    SimpleTagDicts(this);
                 }
                 return new List<SQLProperty>
                     {                //(SQL Column Name, C# Property Name, SQL Column type statement, IsUnique/PrimaryKey, Serialize value to json)
@@ -1098,7 +1116,7 @@ namespace GomLib.Models
                         new SQLProperty("CombinedRating", "CombinedRating", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("CombinedRequiredLevel", "CombinedRequiredLevel", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("CombinedStatModifiers", "CombinedStatModifiers", "text NOT NULL", SQLPropSetting.JsonSerialize),
-                        new SQLProperty("ConsumedOnUse", "ConsumedOnUse", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("ConsumedOnUse", "ConsumedOnUse", "tinyint(1) NOT NULL"),
                         new SQLProperty("ConversationFqn", "ConversationFqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("DamageType", "DamageType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Description", "_Description", "TEXT NOT NULL"),
@@ -1106,15 +1124,15 @@ namespace GomLib.Models
                         new SQLProperty("DisassembleCategory", "DisassembleCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Durability", "Durability", "int(11) NOT NULL"),
                         new SQLProperty("EnhancementCategory", "EnhancementCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("EnhancementSlots", "EnhancementSlots", "text NOT NULL", SQLPropSetting.JsonSerialize),
+                        //new SQLProperty("EnhancementSlots", "EnhancementSlots", "text NOT NULL", SQLPropSetting.JsonSerialize),
                         new SQLProperty("EnhancementSubCategory", "EnhancementSubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("EnhancementType", "EnhancementType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("EquipAbilityId", "EquipAbilityB62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
                         new SQLProperty("GiftRank", "GiftRankNum", "int(11) NOT NULL"),
                         new SQLProperty("GiftType", "GiftType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Icon", "HashedIcon", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("IsDecoration", "IsDecoration", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("BindsToSlot", "BindsToSlot", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("IsDecoration", "IsDecoration", "tinyint(1) NOT NULL"),
+                        new SQLProperty("BindsToSlot", "BindsToSlot", "tinyint(1) NOT NULL"),
                         new SQLProperty("MaxDurability", "MaxDurability", "int(11) NOT NULL"),
                         new SQLProperty("MaxStack", "MaxStack", "int(11) NOT NULL"),
                         new SQLProperty("Model", "Model", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
@@ -1122,7 +1140,7 @@ namespace GomLib.Models
                         new SQLProperty("MountSpec", "MountSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Quality", "Quality", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Rating", "Rating", "int(11) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("RequiredAlignmentInverted", "RequiredAlignmentInverted", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("RequiredAlignmentInverted", "RequiredAlignmentInverted", "tinyint(1) NOT NULL"),
                         new SQLProperty("RequiredClasses", "RequiredClasses", "text NOT NULL"),
                         new SQLProperty("RequiredGender", "RequiredGender", "varchar(10) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("RequiredLevel", "RequiredLevel", "int(11) NOT NULL", SQLPropSetting.AddIndex),
@@ -1130,8 +1148,8 @@ namespace GomLib.Models
                         new SQLProperty("RequiredProfessionLevel", "RequiredProfessionLevel", "int(11) NOT NULL"),
                         new SQLProperty("RequiredSocialTier", "RequiredSocialTier", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("RequiredValorRank", "RequiredValorRank", "int(11) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("RequiresAlignment", "RequiresAlignment", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("RequiresSocial", "RequiresSocial", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("RequiresAlignment", "RequiresAlignment", "tinyint(1) NOT NULL"),
+                        new SQLProperty("RequiresSocial", "RequiresSocial", "tinyint(1) NOT NULL"),
                         new SQLProperty("RequiredReputationId", "RequiredReputationId", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("RequiredReputationLevelId", "RequiredReputationLevelId", "int(11) NOT NULL"),
                         new SQLProperty("RequiredReputation", "RequiredReputationName", "varchar(1000) NOT NULL"),
@@ -1157,7 +1175,7 @@ namespace GomLib.Models
                         new SQLProperty("WeaponSpec", "WeaponSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("ChildBase62Id", "ChildBase62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
                         /* Flat Data */
-                        new SQLProperty("Tooltip", "Tooltip", "TEXT NOT NULL"),
+                        //new SQLProperty("Tooltip", "Tooltip", "TEXT NOT NULL"),
                         new SQLProperty("ArmoringBId", "ArmoringBId", "varchar(7) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("ModificationBId", "ModificationBId", "varchar(7) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("EnhancementBId", "EnhancementBId", "varchar(7) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.AddIndex),
@@ -1193,31 +1211,32 @@ namespace GomLib.Models
                         new SQLProperty("MaterialForSchems","MaterialForSchems", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
                         new SQLProperty("RewardFromQuests","RewardFromQuests", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
                         new SQLProperty("SourceNames","StrongholdSourceNameDict", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
+                        new SQLProperty("SimilarAppearance","SimilarAppearance", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
                         //typebitset
-                        new SQLProperty("IsArmor", "IsArmor", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex), 
-                        new SQLProperty("IsWeapon", "IsWeapon", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("HasGTNCategory", "HasGTNCategory", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("Unk8", "Unk8", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("HasConversation", "HasConversation", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("IsCrafted", "IsCrafted", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("CanBeDisassembled", "CanBeDisassembled", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("HasDurability", "HasDurability", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("IsModdable", "IsModdable", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("IsMod", "IsMod", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("CanHaveStats", "CanHaveStats", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("Unk800", "Unk800", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("IsGift", "IsGift", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("IsMissionItem", "IsMissionItem", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("Unk4000", "Unk4000", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("IsShipPart", "IsShipPart", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("Unk10000", "Unk10000", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("IsCmpCstmztn", "IsCmpCstmztn", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("HasUniqueLimit", "HasUniqueLimit", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("HasOnUse", "HasOnUse", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("IsEquipable", "IsEquipable", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("IsCurrency", "IsCurrency", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("IsMtxItem", "IsMtxItem", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("IsRepTrophy", "IsRepTrophy", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("IsArmor", "IsArmor", "tinyint(1) NOT NULL"), 
+                        new SQLProperty("IsWeapon", "IsWeapon", "tinyint(1) NOT NULL"),
+                        new SQLProperty("HasGTNCategory", "HasGTNCategory", "tinyint(1) NOT NULL"),
+                        new SQLProperty("Unk8", "Unk8", "tinyint(1) NOT NULL"),
+                        new SQLProperty("HasConversation", "HasConversation", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsCrafted", "IsCrafted", "tinyint(1) NOT NULL"),
+                        new SQLProperty("CanBeDisassembled", "CanBeDisassembled", "tinyint(1) NOT NULL"),
+                        new SQLProperty("HasDurability", "HasDurability", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsModdable", "IsModdable", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsMod", "IsMod", "tinyint(1) NOT NULL"),
+                        new SQLProperty("CanHaveStats", "CanHaveStats", "tinyint(1) NOT NULL"),
+                        new SQLProperty("Unk800", "Unk800", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsGift", "IsGift", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsMissionItem", "IsMissionItem", "tinyint(1) NOT NULL"),
+                        new SQLProperty("Unk4000", "Unk4000", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsShipPart", "IsShipPart", "tinyint(1) NOT NULL"),
+                        new SQLProperty("Unk10000", "Unk10000", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsCmpCstmztn", "IsCmpCstmztn", "tinyint(1) NOT NULL"),
+                        new SQLProperty("HasUniqueLimit", "HasUniqueLimit", "tinyint(1) NOT NULL"),
+                        new SQLProperty("HasOnUse", "HasOnUse", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsEquipable", "IsEquipable", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsCurrency", "IsCurrency", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsMtxItem", "IsMtxItem", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsRepTrophy", "IsRepTrophy", "tinyint(1) NOT NULL"),
                     };
             }
         }

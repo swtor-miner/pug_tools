@@ -284,7 +284,27 @@ namespace GomLib.Models
         public AppSlot IPP { get; set; }
         public long ColorScheme { get; set; } 
         public string VOSoundTypeOverride { get; set; } //only found on IPPs of type appSlotFace
-
+        [Newtonsoft.Json.JsonIgnore]
+        internal List<string> _SimilarAppearances { get; set; }
+        public List<string> SimilarAppearances
+        {
+            get
+            {
+                if (_dom.GetObject(Id).References != null)
+                {
+                    if (_SimilarAppearances == null)
+                    {
+                        _SimilarAppearances = new List<string>();
+                        if (_dom.GetObject(Id).References.ContainsKey("similarAppearance"))
+                        {
+                            _SimilarAppearances = _dom.GetObject(Id).References["similarAppearance"].Select(x => x.ToMaskedBase62()).ToList();
+                        }
+                    }
+                    return _SimilarAppearances;
+                }
+                return null;
+            }
+        }
         public override int GetHashCode()
         {
             int hash = Id.GetHashCode();
@@ -294,7 +314,6 @@ namespace GomLib.Models
 
             return hash;
         }
-
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
@@ -306,7 +325,6 @@ namespace GomLib.Models
 
             return Equals(ipp);
         }
-
         public bool Equals(ItemAppearance ipp)
         {
             if (ipp == null) return false;
@@ -328,6 +346,19 @@ namespace GomLib.Models
             return true;
         }
 
+        public override List<SQLProperty> SQLProperties
+        {
+            get
+            {
+                return new List<SQLProperty>
+                    {                //(SQL Column Name, C# Property Name, SQL Column type statement, SQLPropSetting[])
+                        new SQLProperty("NodeId", "Id", "bigint(20) unsigned NOT NULL"),
+                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.PrimaryKey),
+                        new SQLProperty("Fqn", "Fqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("SimilarAppearances","SimilarAppearances", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
+                    };
+            }
+        }
         public override XElement ToXElement(bool verbose)
         {
             XElement ItemAppearance = new XElement("ItemAppearance", new XAttribute("Id", IPP.ModelID));

@@ -92,7 +92,7 @@ namespace GomLib.Models
 
     public class EnhancementData
     {
-        private Dictionary<long, DetailedEnhancementType> SlotLookup { get; set; }
+        public Dictionary<long, DetailedEnhancementType> SlotLookup { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]
         DataObjectModel _dom;
@@ -117,7 +117,8 @@ namespace GomLib.Models
                 {
                     DetailedEnhancementType detEnhance = new DetailedEnhancementType();
                     detEnhance.IsArmorMod = ((GomLib.GomObjectData)enh.Value).ValueOrDefault<bool>("itmEnhancementTypeIsArmor", false);
-                    detEnhance.StringId = ((GomLib.GomObjectData)enh.Value).ValueOrDefault<long>("itmEnhancementTypeDisplayStringID", 0) + 1173453784743936;
+                    detEnhance.Id = ((GomLib.GomObjectData)enh.Value).ValueOrDefault<long>("itmEnhancementTypeDisplayStringID", 0);
+                    detEnhance.StringId =  detEnhance.Id + 1173453784743936;
                     detEnhance.DisplayName = table.GetText(detEnhance.StringId, "str.gui.stats");
                     detEnhance.LocalizedDisplayName = table.GetLocalizedText(detEnhance.StringId, "str.gui.stats");
                     detEnhance.Mount = ((GomLib.GomObjectData)enh.Value).ValueOrDefault<string>("itmEnhancementTypeMount", "");
@@ -148,6 +149,7 @@ namespace GomLib.Models
         public bool IsArmorMod { get; set; }
         public bool IsDestroyed { get; set; }
         public long StringId { get; set; }
+        public long Id { get; set; }
         public Dictionary<string, string> LocalizedDisplayName { get; set; }
 
         public override string ToString()

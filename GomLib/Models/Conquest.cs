@@ -377,6 +377,8 @@ namespace GomLib.Models
             }
             stronghold.Add(oneTObjectives);
 
+            stronghold.Add(new XElement("ParticipateGoal", ParticipateGoal));
+
             return stronghold;
         }
     }

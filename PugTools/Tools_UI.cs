@@ -147,7 +147,7 @@ namespace tor_tools
                         break;
                     case "Items": t = () => getObjects("itm.", "Items");
                         break;
-                    case "Item Appearances": t = new ThreadStart(getItemApps); //t = () => getObjects("ipp.", "ItemAppearances");
+                    case "Item Appearances": t = () => getObjects("ipp.", "ItemAppearances"); //t = new ThreadStart(getItemApps);
                         break;
                     case "Npcs": t = () => getObjects("npc.", "Npcs");
                         break;

@@ -21,6 +21,7 @@ namespace GomLib
             {
                 var x = obj.GetType().GetProperty(property.PropertyName);
                 if (x == null)
+                    
                     continue;
                 if (property.JsonSerialize)
                 {
@@ -56,6 +57,24 @@ namespace GomLib
         {
             if (str == null) return "";
             return MySql.Data.MySqlClient.MySqlHelper.EscapeString(str);
+        }
+        public static Dictionary<string, string> SimpleTagLocalizedDict(this Dictionary<string, string> dict)
+        {
+            if (dict == null) return new Dictionary<string, string>();
+            Dictionary<string, string> returnVal = new Dictionary<string,string>();
+            foreach (var val in dict)
+            {
+                switch (val.Key)
+                {
+                    case "enMale": returnVal.Add("1", val.Value); break;
+                    //case "enFemale": returnVal.Add("2", val.Value); break; //this is never used.
+                    case "frMale": returnVal.Add("3", val.Value); break;
+                    case "frFemale": returnVal.Add("4", val.Value); break;
+                    case "deMale": returnVal.Add("5", val.Value); break;
+                    case "deFemale": returnVal.Add("6", val.Value); break;
+                }
+            }
+            return returnVal;
         }
     }
 

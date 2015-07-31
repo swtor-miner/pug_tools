@@ -63,7 +63,8 @@ namespace tor_tools
                 {"Items", new SQLInitStore("item", new GomLib.Models.Item())},
                 {"Schematics", new SQLInitStore("schematic", new GomLib.Models.Schematic())},
                 {"Quests", new SQLInitStore("mission", new GomLib.Models.Quest())},
-                {"Tooltip", new SQLInitStore("tooltip", new GomLib.Models.Tooltip())}
+                {"Tooltip", new SQLInitStore("tooltip", new GomLib.Models.Tooltip())},
+                {"ItemAppearances", new SQLInitStore("itemappearance", new GomLib.Models.ItemAppearance())}
             };
 
             #endregion
@@ -332,14 +333,18 @@ INSERT INTO `{0}` (`current_version`, `previous_version`, `first_seen`, `{1}`, `
 	INSERT INTO `{0}_old_versions` (`version`, `{2}`, `Hash`)
 	VALUES (OLD.`current_version`, OLD.`{3}`, OLD.`Hash`)", Table, priunikey, columns, oldColumns);
 
+            string indexString = String.Join(Environment.NewLine, SqlData.SQLProperties.Where(x => x.AddIndex).Select(x => String.Format("ALTER TABLE `{0}` ADD INDEX `{1}` (`{1}`);", Table, x.Name)).ToList());
+
+
             /*
              * {0} = table name
              * {1} = column types minus version and hash
              * {2} = regular primary unique key statements
              * {3} = trigger if statement
              * {4} = old_versions primary unique key statements
+             * {5} = AddIndex statements
              */
-            string creationQuery = String.Format(defaultQuery, Table, columnTypes, priString, trigger, oldString);
+            string creationQuery = String.Format(defaultQuery, Table, columnTypes, priString, trigger, oldString, indexString);
 
             tor_tools.Tools.WriteFile(creationQuery, String.Format("SQL Creation Files\\{0}_create.sql", Table), false);
         }

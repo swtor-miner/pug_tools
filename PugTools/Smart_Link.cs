@@ -33,15 +33,13 @@ namespace tor_tools
             SmartLinkDecorations(dom);
             SmartLinkEncounters(dom);
             SmartLinkItems(dom);
+            SmartLinkItemAppearances(dom);
             SmartLinkNpcs(dom);
             SmartLinkPhases(dom);
             SmartLinkPlaceables(dom);
             SmartLinkQuests(dom);
             SmartLinkSchematics(dom);
             SmartLinkSpawners(dom);
-            SmartLinkAchievements(dom);
-            SmartLinkAchievements(dom);
-            SmartLinkAchievements(dom);
         }
 
         private void SmartLinkAbilities(DataObjectModel dom)
@@ -221,6 +219,53 @@ namespace tor_tools
                 dom.AddCrossLink(node.Data.ValueOrDefault<ulong>("itmAppearanceSpec", 0UL), "givenByItem", node.Id);//ipp node
                 dom.AddCrossLink(node.Data.ValueOrDefault<ulong>("itemTeachesRef", 0UL), "taughtByItem", node.Id);//any node
                 node.Unload();
+            }
+        }
+        private void SmartLinkItemAppearances(DataObjectModel dom)
+        {
+            List<GomObject> nodeList;
+            addtolist2("Smart-linking item apperances...");//Load items
+            nodeList = dom.GetObjectsStartingWith("ipp.");
+            Dictionary<long, List<ulong>> appList = new Dictionary<long, List<ulong>>();
+            foreach (GomObject node in nodeList)
+            {
+                long modelId = node.Data.ValueOrDefault<long>("appAppearanceSlotModelID", 0L);
+                if(!appList.ContainsKey(modelId))
+                {
+                    appList.Add(modelId, new List<ulong>());
+                }
+                appList[modelId].Add(node.Id);
+                node.Unload();
+            }
+            foreach (List<ulong> apps in appList.Values)
+            {
+                for (int i = 0; i < apps.Count; i++)
+                {
+                    HashSet<ulong> similarItemIds = new HashSet<ulong>();
+                    for (int e = 0; e < apps.Count; e++)
+                    {
+                        if (i == e) continue;
+                        dom.AddCrossLink(apps[e], "similarAppearance", apps[i]);
+                        
+                        GomObject ipp = dom.GetObject(apps[e]);
+                        if (ipp.References.ContainsKey("givenByItem"))
+                        {
+                            var similar = ipp.References["givenByItem"];
+                            similarItemIds.UnionWith(similar);
+                        }
+                    }
+                    List<ulong> similarList = similarItemIds.ToList();
+                    for (int g = 0; g < similarList.Count; g++)
+                    {
+                        for (int h = 0; h < similarList.Count; h++)
+                        {
+                            if (g == h) continue;
+                            dom.AddCrossLink(similarList[h], "similarAppearance", similarList[g]);
+                        }
+                    }
+                }
+                
+                
             }
         }
         private void SmartLinkNpcs(DataObjectModel dom)

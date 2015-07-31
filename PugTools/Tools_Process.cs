@@ -219,7 +219,7 @@ namespace tor_tools
                                 }
                             }
                             if (itmList.Key != "Full") itemElement.Add(new XAttribute("Status", itmList.Key));
-                            //itemElement.Add(ReferencesToXElement(itm.References));
+                            itemElement.Add(ReferencesToXElement(itm.References));
                             elements.Add(itemElement);
                             i++;
                         }
@@ -1555,7 +1555,7 @@ namespace tor_tools
                     joiner = "";
                 progressUpdate(i, count);
 
-                if (false) //e > 20000)
+                if (false) //e > 2000)
                 {
                     WriteFile(transQuery, String.Format(frs, filename, f), false);
                     string output = txtFile.ToString();

@@ -31,14 +31,15 @@ namespace tor_tools
 
             LoadData();
 
+            outputTables();
             //getTooltips();
 
-            getAuctionCats();
+            //getAuctionCats();
 
             //getitemIds();
 
             //torheadscanner();
-            groupFinder();
+            //groupFinder();
             
             EnableButtons();
         }
@@ -187,6 +188,37 @@ namespace tor_tools
             }
             WriteFile(txter.ToString(), "gfDat.txt", false);
 
+        }
+
+        public void outputTables()
+        {
+            ClearProgress();
+            LoadData();
+
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            settings.NullValueHandling = NullValueHandling.Ignore;
+            settings.Formatting = Newtonsoft.Json.Formatting.Indented;
+            string json = JsonConvert.SerializeObject(currentDom.data.armorPerLevel.TableData,settings);
+            WriteFile(json, "armorPerLevelTable.json", false);
+
+            json = JsonConvert.SerializeObject(currentDom.data.weaponPerLevel.TableData, settings);
+            WriteFile(json, "weaponPerLevelTable.json", false);
+
+            GomLib.Models.ArmorSpec.Load(currentDom);
+            json = JsonConvert.SerializeObject(GomLib.Models.ArmorSpec.ArmorSpecList, settings);
+            WriteFile(json, "armorSpecTable.json", false);
+
+            GomLib.Models.WeaponSpec.Load(currentDom);
+            json = JsonConvert.SerializeObject(GomLib.Models.WeaponSpec.WeaponSpecList, settings);
+            WriteFile(json, "weaponSpecTable.json", false);
+
+            currentDom.statData.ToStat("endurance"); //trick it into loading data
+            json = JsonConvert.SerializeObject(currentDom.statData.StatLookup, settings);
+            WriteFile(json, "statData.json", false);
+
+            currentDom.enhanceData.ToEnhancement(1); //trick it into loading data
+            json = JsonConvert.SerializeObject(currentDom.enhanceData.SlotLookup, settings);
+            WriteFile(json, "slotData.json", false);
         }
         #region Discipline Calculator
         public void getDisciplineCalcData()

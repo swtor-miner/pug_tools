@@ -88,7 +88,7 @@ namespace GomLib.ModelLoader
             itm.ShortId = gom.Id;
             itm.Fqn = gom.Name;
             itm._dom = _dom;
-            itm.References = obj.References;
+            itm.References = gom.References;
             itm.AppearanceColor = Models.AppearanceColorExtensions.ToAppearanceColor((string)gom.Data.ValueOrDefault<string>("itmEnhancementColor", null));
             if (itm.AppearanceColor != AppearanceColor.None)
             {
@@ -241,6 +241,8 @@ namespace GomLib.ModelLoader
                 itm.NameId = nameLookupData.Get<long>("strLocalizedTextRetrieverStringID");
                 itm.LocalizedName = _dom.stringTable.TryGetLocalizedStrings(itm.Fqn, nameLookupData);
                 itm.Name = _dom.stringTable.TryGetString(itm.Fqn, nameLookupData);
+                itm.Name = itm.Name.TrimStart(' ');
+
             }
 
             itm.ShortId = (ulong)(itm.NameId >> 32);
@@ -491,6 +493,10 @@ namespace GomLib.ModelLoader
                 if (gom.References.ContainsKey("rewardFrom"))
                 {
                     itm.RewardFromQuests = gom.References["rewardFrom"].Select(x => x.ToMaskedBase62()).ToList();
+                }
+                if (gom.References.ContainsKey("similarAppearance"))
+                {
+                    itm.SimilarAppearance = gom.References["similarAppearance"].Select(x => x.ToMaskedBase62()).ToList();
                 }
             }
             gom.Unload();

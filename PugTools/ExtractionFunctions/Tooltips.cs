@@ -39,9 +39,9 @@ namespace tor_tools
                 {"npc.", true},*/
                 //{"qst.", "Mission"},
                 //{"tal.", "Talent"},
-                //{"sche", "Schematics"},
+                {"sche", "Schematics"},
                 /*{"dec.", true},*/
-                {"itm.", "Item"}//,
+                //{"itm.", "Item"}//,
                 /*{"apt.", true},
                 {"apc.", true},
                 {"class.",true},
@@ -106,7 +106,7 @@ namespace tor_tools
                     i++;
                 }
                 //ObjectListAsSql(gameObj.Value, "Tooltip", iList);
-                //CreatCompressedOutput(gameObj.Value, iList, "en-us");
+                CreatCompressedOutput(gameObj.Value, iList, "en-us");
                 if (frLoaded)
                     CreatCompressedOutput(gameObj.Value, iList, "fr-fr");
                 if (deLoaded)

@@ -249,7 +249,7 @@ namespace GomLib.Models
 
     public class StatData
     {
-        private Dictionary<string, DetailedStat> StatLookup { get; set; }
+        public Dictionary<string, DetailedStat> StatLookup { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]
         DataObjectModel _dom;
@@ -279,7 +279,8 @@ namespace GomLib.Models
                     detStat.Maximum = ((GomLib.GomObjectData)stat.Value).ValueOrDefault<float>("modStatMaximum", 0f);
                     detStat.IsMeta = ((GomLib.GomObjectData)stat.Value).ValueOrDefault<bool>("modStatIsMetaStat", false);
                     detStat.NumFormat = ((GomLib.GomObjectData)stat.Value).ValueOrDefault<ScriptEnum>("modStatDisplayNumberFormat", new ScriptEnum()).ToString();
-                    detStat.StringId = ((GomLib.GomObjectData)stat.Value).ValueOrDefault<long>("modStatDisplayNameStringID", 0) + 972058473267200;
+                    detStat.Id = ((GomLib.GomObjectData)stat.Value).ValueOrDefault<long>("modStatDisplayNameStringID", 0);
+                    detStat.StringId = detStat.Id + 972058473267200;
                     detStat.LocalizedDisplayName = table.GetLocalizedText(detStat.StringId, "str.gui.stats");
                     StatLookup.Add(lookupName, detStat);
                 }
@@ -311,6 +312,7 @@ namespace GomLib.Models
         public bool IsMeta { get; set; }
         public string NumFormat { get; set; }
         public long StringId { get; set; }
+        public long Id { get; set; }
         public Dictionary<string, string> LocalizedDisplayName { get; set; }
 
         public override string ToString()
@@ -567,6 +569,7 @@ namespace GomLib.Models
                 case "_unused_stat_cbtdamagedealtmodifier": return Stat.UnusedCbtdamagedealtmodifier;
                 case "_unused_stat_cbt_cover_threat_generated_modifier_percentage": return Stat.UnusedCbtCoverThreatGeneratedModifierPercentage;
                 case "stat_chrmovebonus": return Stat.Chrmovebonus;
+                case "stat_att_mastery": return Stat.Aim; //temporary
                 default: throw new InvalidOperationException("Invalid Stat: " + str);
             }
         }

@@ -155,9 +155,81 @@ namespace GomLib.Models
                 }
             }
             #endregion
+            #region Conversation Rewards
+            [Newtonsoft.Json.JsonIgnore]
+            public QuestAffectionGainTable _ConversationGains { get; set; }
+            public QuestAffectionGainTable ConversationGains
+            {
+                get
+                {
+                    List<ulong> ConvosParsed = new List<ulong>();
+                    _ConversationGains = null;
+                    if (_ConversationGains == null)
+                    {
+                        _ConversationGains = new QuestAffectionGainTable();
+                        if(this.References != null)
+                        {
+                            if(this.References.ContainsKey("conversationEnds")){
+                                AddQuestAffectionGains("conversationEnds", ConvosParsed, this);
+                            }
+                            if (this.References.ContainsKey("conversationProgresses"))
+                            {
+                                AddQuestAffectionGains("conversationProgresses", ConvosParsed, this);
+                            }
+                            if (this.References.ContainsKey("conversationStarts"))
+                            {
+                                AddQuestAffectionGains("conversationStarts", ConvosParsed, this);
+                            }
+                        }
+                    }
+                    return _ConversationGains;
+                }
+            }
+
+            private static void AddQuestAffectionGains(string reference, List<ulong> ConvosParsed, Quest qst)
+            {
+                foreach (var convoKey in qst.References[reference])
+                {
+                    if (ConvosParsed.Contains(convoKey)) {continue;}
+                    var convo = qst._dom.conversationLoader.Load(convoKey);
+                    if (convo == null) { continue; }
+                    ConvosParsed.Add(convoKey);
+                    var dNodes = convo.DialogNodes.Where(x => x.IsPlayerNode).Where(x => x.AffectionRewardsIds.Count > 0);
+                    foreach (var dNode in dNodes)
+                    {
+                        var affects = dNode.AffectionRewards;
+                        string NodeLookupId = String.Format("{0}_{1}", convo.Base62Id, dNode.NodeId);
+                        qst._ConversationGains.NodeText.Add(NodeLookupId, dNode.LocalizedText);
+                        qst._ConversationGains.AffectionGainTable.Add(NodeLookupId, new List<QuestAffectionGain>());
+                        foreach (var kvp in affects)
+                        {
+                            if (kvp.Key == null) continue;
+                            if (!qst._ConversationGains.Companions.ContainsKey(kvp.Key.Base62Id))
+                            {
+                                var tempc = kvp.Key;
+                                if (tempc.LocalizedName["enMale"] == "Jaesa Willsaam")
+                                {
+                                    if (kvp.Key.Fqn == "npc.companion.sith_warrior.jaesa_dark")
+                                    {
+                                        tempc.LocalizedName["enMale"] = "Jaesa Willsaam (Dark)";
+                                    }
+                                    else
+                                    {
+                                        tempc.LocalizedName["enMale"] = "Jaesa Willsaam (Light)";
+                                    }
+                                }
+                                qst._ConversationGains.Companions.Add(kvp.Key.Base62Id, tempc);
+                            }
+                            QuestAffectionGain qag = new QuestAffectionGain(kvp.Key.Base62Id, (int)kvp.Value);
+                            qst._ConversationGains.AffectionGainTable[NodeLookupId].Add(qag);
+                        }
+                    }
+                }
+            }
+            #endregion
         #endregion
 
-        #region IEquatable<Quest>
+            #region IEquatable<Quest>
             public override int GetHashCode()
         {
             int hash = Name.GetHashCode();
@@ -297,12 +369,12 @@ namespace GomLib.Models
             {
                 return new List<SQLProperty>
                     {                //(SQL Column Name, C# Property Name, SQL Column type statement, isUnique/PrimaryKey, Serialize value to json)
-                        new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("CleanName", "CleanName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL", true),
+                        new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("CleanName", "CleanName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.PrimaryKey),
                         new SQLProperty("NameId", "NameId", "bigint(20) NOT NULL"),
                         new SQLProperty("Fqn", "Fqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("LocalizedName", "LocalizedName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", false, true),
+                        new SQLProperty("LocalizedName", "LocalizedName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.JsonSerialize),
                         new SQLProperty("Icon", "HashedIcon", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("IsRepeatable", "IsRepeatable", "tinyint(1) NOT NULL"),
                         new SQLProperty("RequiredLevel", "RequiredLevel", "int(11) NOT NULL"),
@@ -315,16 +387,17 @@ namespace GomLib.Models
                         new SQLProperty("IsBonus", "IsBonus", "tinyint(1) NOT NULL"),
                         new SQLProperty("BonusShareable", "BonusShareable", "tinyint(1) NOT NULL"),
                         new SQLProperty("CategoryId", "CategoryId", "bigint(20) NOT NULL"),
-                        new SQLProperty("Category", "Category", "varchar(255) COLLATE latin1_general_cs NOT NULL"),
+                        new SQLProperty("Category", "Category", "varchar(255) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("BranchCount", "BranchCount", "int(11) NOT NULL"),
-                        new SQLProperty("Branches", "Branches", "TEXT NOT NULL", false, true),
+                        new SQLProperty("Branches", "Branches", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
                         //new SQLProperty("Items", "Items", "TEXT NOT NULL", false, true),
-                        new SQLProperty("Classes", "ClassesB62", "varchar(255) COLLATE latin1_general_cs NOT NULL", false, true),
-                        new SQLProperty("RewardIds", "RewardIds", "varchar(255) COLLATE latin1_general_cs NOT NULL", false, true),
-                        new SQLProperty("Rewards", "Rewards", "TEXT NOT NULL", false, true),
+                        new SQLProperty("Classes", "ClassesB62", "varchar(255) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.JsonSerialize),
+                        new SQLProperty("RewardIds", "RewardIds", "varchar(255) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.JsonSerialize),
+                        new SQLProperty("Rewards", "Rewards", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
                         new SQLProperty("CreditsRewarded", "CreditsRewarded", "int(11) NOT NULL"),
                         new SQLProperty("ReqPrivacy", "ReqPrivacy", "varchar(255) COLLATE latin1_general_cs NOT NULL"),
-                        new SQLProperty("BonusMissionsIds", "BonusMissionsB62Ids", "TEXT NOT NULL", false, true),
+                        new SQLProperty("BonusMissionsIds", "BonusMissionsB62Ids", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
+                        new SQLProperty("ConversationGains","ConversationGains", "TEXT NOT NULL", SQLPropSetting.JsonSerialize)
                         //new SQLProperty("ItemMap", "ItemMap", "TEXT NOT NULL", false, true),
 
                     };
@@ -584,5 +657,47 @@ namespace GomLib.Models
             reward.Add(RewardItem.ToXElement(true));
             return reward;
         }
+    }
+    public class QuestAffectionGain
+    {
+        public QuestAffectionGain(string compId, int gain)
+        {
+            CompanionId = compId;
+            AffectionGainType = gain;
+        }
+        public string CompanionId { get; set; }
+        public int AffectionGainType { get; set; }
+    }
+    public class QuestAffectionGainTable
+    {
+        public QuestAffectionGainTable()
+        {
+            Companions = new Dictionary<string, Npc>();
+            NodeText = new Dictionary<string, Dictionary<string, string>>();
+            AffectionGainTable = new Dictionary<string, List<QuestAffectionGain>>();
+        }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public Dictionary<string, Npc> Companions { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        internal Dictionary<string, Dictionary<string, string>> _CompanionsParsed {get;set;}
+        public Dictionary<string, Dictionary<string, string>> CompanionsParsed
+        {
+            get
+            {
+                if (_CompanionsParsed == null)
+                {
+                    _CompanionsParsed = new Dictionary<string,Dictionary<string,string>>();
+                    if(Companions != null) {
+                        foreach(var comp in Companions){
+                            _CompanionsParsed.Add(comp.Key, comp.Value.LocalizedName);
+                        }
+                    }
+                }
+                return _CompanionsParsed;
+            }
+        }
+        public Dictionary<string, Dictionary<string, string>> NodeText { get; set; }
+        public Dictionary<string, List<QuestAffectionGain>> AffectionGainTable {get;set;}
     }
 }

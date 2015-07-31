@@ -31,7 +31,7 @@ namespace GomLib.Models
         {
             get
             {
-                return ParseDescription(Description);
+                return SQLHelpers.sqlSani(ParseDescription(Description));
             }
         }
         [Newtonsoft.Json.JsonIgnore]

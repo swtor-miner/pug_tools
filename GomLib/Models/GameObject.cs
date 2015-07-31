@@ -168,7 +168,9 @@ namespace GomLib.Models
     {
         public virtual long Id { get; set; }
         public virtual string Name { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
         public string Prototype { get; set; } //Which prototype this object is from.
+        [Newtonsoft.Json.JsonIgnore]
         public string ProtoDataTable { get; set; } //which prototype field contains the object
         [Newtonsoft.Json.JsonIgnore]
         public DataObjectModel _dom { get; set; }

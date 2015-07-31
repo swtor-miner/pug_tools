@@ -39,6 +39,7 @@ namespace GomLib.Models
         }
         public AlignmentTier ToNeutralTier(int id)
         {
+            if (AlignmentTierLookup == null) LoadData();
             if (id > 0) throw new NotImplementedException();
             if (!AlignmentTierLookup["Neutral"].ContainsKey(id)) { return null; }
             else { return AlignmentTierLookup["Neutral"][id]; }

@@ -17,6 +17,7 @@ namespace GomLib.Models
         }
 
         public Stat Stat { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
         public DetailedStat DetailedStat { get; set; }
         public int Modifier { get; set; }
 
