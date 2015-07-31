@@ -32,7 +32,7 @@ namespace GomLib.Tables
         {
             if (disposed)
                 return;
-            if (disposing)
+            if (disposing && item_modpkgprototype_data != null)
             {
                 foreach (var dict in item_modpkgprototype_data)
                 {
@@ -72,7 +72,8 @@ namespace GomLib.Tables
         private void LoadData()
         {
             GomObject table = _dom.GetObject(itmModifierPackageTablePrototypePath);
-            Dictionary<object, object> tableData = table.Data.Get<Dictionary<object, object>>("itmModifierPackagesList");
+            Dictionary<object, object> tableData = table.Data.ValueOrDefault<Dictionary<object, object>>("itmModifierPackagesList", null);
+            if (tableData == null) return;
             item_modpkgprototype_data = new Dictionary<long, Dictionary<string, object>>();
             foreach (var kvp in tableData)
             {
