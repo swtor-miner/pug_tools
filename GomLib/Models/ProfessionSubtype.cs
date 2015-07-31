@@ -143,8 +143,8 @@ namespace GomLib.Models
                 case "prfProfessionStrongholds": return ProfessionSubtype.Strongholds;
                 case "prfProfessionArmormechAdaptive": return ProfessionSubtype.ArmormechAdaptive;
                 case "prfProfessionSynthweavingAdaptive": return ProfessionSubtype.SynthweavingAdaptive;
-                
-                default: throw new InvalidOperationException("Unknown ProfessionSubtype: " + str);
+
+                default: return ProfessionSubtype.None;  //temporary throw new InvalidOperationException("Unknown ProfessionSubtype: " + str);
             }
         }
     }
