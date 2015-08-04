@@ -728,7 +728,7 @@ namespace tor_tools
                 {
                     ProcessEffectChanges();
                 }
-                ProcessGomFields();
+                //ProcessGomFields(); //this is providing no useful info currently, and takes a fuckton of time to run.
             }
 
             //addtolist("The GOM Item List has been generated there are " + i + " GOM Items");

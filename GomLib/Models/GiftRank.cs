@@ -12,7 +12,8 @@ namespace GomLib.Models
         Rank2 = 2,
         Rank3 = 3,
         Rank4 = 4,
-        Rank5 = 5
+        Rank5 = 5,
+        Rank6 = 6
     }
 
     public static class GiftRankExtensions
@@ -33,6 +34,7 @@ namespace GomLib.Models
                 case "chrCompanionAffection_Rank3": return GiftRank.Rank3;
                 case "chrCompanionAffection_Rank4": return GiftRank.Rank4;
                 case "chrCompanionAffection_Rank5": return GiftRank.Rank5;
+                case "chrCompanionAffection_Rank6": return GiftRank.Rank6; //need to load these dynamically instead of statically.
                 default: throw new InvalidOperationException("Invalid GiftRank: " + str);
             }
         }

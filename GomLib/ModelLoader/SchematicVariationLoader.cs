@@ -49,7 +49,7 @@ namespace GomLib.ModelLoader
             {
                 //Load the modifier list
                 GomObject modpackTable = _dom.GetObject("itmModifierPackageTablePrototype");
-                _modifierDict = modpackTable.Data.Get<Dictionary<object, object>>("itmModifierPackagesList");
+                _modifierDict = modpackTable.Data.ValueOrDefault<Dictionary<object, object>>("itmModifierPackagesList", new Dictionary<object,object>()); //I really should remove .Get()
                 modpackTable.Unload();
             }
 

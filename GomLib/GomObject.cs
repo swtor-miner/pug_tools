@@ -302,6 +302,7 @@ namespace GomLib
         public void Load()
         {
             if (IsLoaded) { return; }
+            if (this.Name == "chrPaidPermissionDefsTablePrototype") { return; } //bandaid, need to probe this failure.
             //if (IsUnloaded) { throw new InvalidOperationException("Cannot reload object once it's unloaded"); } //Fuck you yes I can reload it.
 
             if ((NumGlommed > 0) || (ObjectSizeInFile > 0))

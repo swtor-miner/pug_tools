@@ -61,9 +61,12 @@ namespace GomLib.Models
                 return false;
             if(this.Sources.Count != entry.Sources.Count)
                 return false;
-            if (!this.LocalizedNameStrings.SequenceEqual(entry.LocalizedNameStrings))
+            if (this.LocalizedNameStrings != null && entry.LocalizedNameStrings != null)
             {
-                return false;
+                if (!this.LocalizedNameStrings.SequenceEqual(entry.LocalizedNameStrings))
+                {
+                    return false;
+                }
             }
             if (!this.Sources.SequenceEqual(entry.Sources))
             {
