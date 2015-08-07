@@ -231,7 +231,14 @@ namespace TorLib
                         Archive = fileNum
                     };
 
-                    metadataLookup.Add(fileId.AsUInt64(), entry);
+                    try
+                    {
+                        metadataLookup.Add(fileId.AsUInt64(), entry);
+                    }
+                    catch(Exception ex)
+                    {
+                        //Console.WriteLine(String.Format("Duplicated MetaData Id:{0}", fileId.AsUInt64()));
+                    }
                 }
             }
         }
