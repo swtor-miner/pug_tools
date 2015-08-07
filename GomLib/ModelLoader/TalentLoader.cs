@@ -126,7 +126,7 @@ namespace GomLib.ModelLoader
             tal.NameId = nameLookupData.Get<long>("strLocalizedTextRetrieverStringID");
             tal.LocalizedName = _dom.stringTable.TryGetLocalizedStrings(tal.Fqn, nameLookupData);
             tal.Name = tal.LocalizedName["enMale"];
-            tal.Id = (ulong)(tal.NameId >> 32);
+            tal.Id = obj.Id;//(ulong)(tal.NameId >> 32);
             // Load Talent Description
             var descLookupData = (GomObjectData)textLookup[DescriptionLookupKey];
             tal.DescriptionId = descLookupData.Get<long>("strLocalizedTextRetrieverStringID");
