@@ -23,10 +23,13 @@ namespace GomLib.Models
                 hash ^= srcItm.GetHashCode();
             }
 
-            foreach(KeyValuePair<string, string> kvp in LocalizedNameStrings)
+            if (LocalizedNameStrings != null)
             {
-                hash ^= kvp.Key.GetHashCode();
-                hash ^= kvp.Value.GetHashCode();
+                foreach (KeyValuePair<string, string> kvp in LocalizedNameStrings)
+                {
+                    hash ^= kvp.Key.GetHashCode();
+                    hash ^= kvp.Value.GetHashCode();
+                }
             }
 
             foreach (KeyValuePair<long, Ability> kvp in BonusAbilityByNum)
