@@ -112,6 +112,10 @@ namespace GomLib.Models
                 {
                     return ((Quest)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
                 }
+                if (obj.GetType() == typeof(Talent))
+                {
+                    return ((Talent)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
+                }
                 return "<div>Not implemented</div>";
             }
             if (pObj == null)
@@ -1465,6 +1469,61 @@ namespace GomLib.Models
                 string sflsoljh = "";
                 tooltip.Descendants().Where(x => x.Value == null).Remove();
             }
+            return tooltip;
+        }
+
+        #endregion
+        #region talents
+        public static XElement GetHTML(this Talent itm)
+        {
+            if (Tooltip.TooltipNameMap.Count == 0)
+            {
+                LoadNameMap(itm._dom);
+            }
+            if (itm.Id == 0) return new XElement("div", "Not Found");
+            string icon = "none";
+            string stringQual = "talent";
+            icon = itm.Icon;
+
+            XElement tooltip = new XElement("div", new XAttribute("class", "torctip_wrapper"));
+            var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", icon));
+
+            if (itm != null)
+            {
+                tooltip.Add(new XElement("div",
+                    new XAttribute("class", String.Format("torctip_image torctip_image_{0}", stringQual)),
+                    new XElement("img",
+                        new XAttribute("src", String.Format("https://torcommunity.com/db/pts/icons/{0}_{1}.jpg", fileId.ph, fileId.sh)),
+                        new XAttribute("alt", ""))),
+                    new XElement("div",
+                        new XAttribute("class", "torctip_name"),
+                        new XElement("a",
+                            new XAttribute("href", String.Format("https://torcommunity.com/database/pts/talent/{0}/{1}/", itm.Base62Id, itm.Name.LinkString())),
+                            new XAttribute("data-torc", "norestyle"),
+                            itm.Name
+                            ))
+                );
+                XElement inner = new XElement("div",
+                    XClass("torctip_tooltip"),
+                    new XElement("span",
+                        XClass(String.Format("torctip_{0}", stringQual)),
+                        itm.Name),
+                        new XElement("span",
+                            XClass("torctip_white"),
+                            "Passive"
+                        ),
+                        new XElement("br"),
+                        new XElement("div",
+                            XClass("torctip_white"),
+                            itm.Description)
+                    );
+
+                
+                inner.Add(
+                    );
+                tooltip.Add(inner);
+            }
+
             return tooltip;
         }
 
