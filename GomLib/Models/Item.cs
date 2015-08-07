@@ -162,7 +162,6 @@ namespace GomLib.Models
             }
         }
         public ulong SchematicId { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         public string SchematicB62Id { get { return SchematicId.ToMaskedBase62(); } }
         //public string TreasurePackageSpec { get; set; } //unused
         public long TreasurePackageId { get; set; }
@@ -270,7 +269,6 @@ namespace GomLib.Models
         public string RepublicAppearanceTag { get; set; }
 
         public ulong TeachesRef { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         public string TeachesRefB62 { get { return TeachesRef.ToMaskedBase62(); } }
         public string TeachesType { get; set; }
         public bool IsUnknownBool { get; set; }
@@ -286,6 +284,7 @@ namespace GomLib.Models
         public long SetBonusId { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         internal SetBonusEntry _SetBonus { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
         public SetBonusEntry SetBonus
         {
             get
@@ -525,6 +524,7 @@ namespace GomLib.Models
                     case Stat.ForceHealingPower: itm.ForceHealingPower = stat.Modifier; break;
                     case Stat.SurgeRating: itm.SurgeRating = stat.Modifier; break;
                     case Stat.AlacrityRating: itm.AlacrityRating = stat.Modifier; break;
+                    //case Stat.Mastery:
                     default:
                         break;
                 }

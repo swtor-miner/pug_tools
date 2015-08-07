@@ -252,6 +252,7 @@ namespace GomLib.Models
             {
                 talent.Add(new XElement("Fqn", Fqn,
                             new XAttribute("NodeId", NodeId)),
+                    new XAttribute("Base62Id", Base62Id),
                     new XElement("Name", Name, new XAttribute("Id", NameId)),
                     new XAttribute("Id", Id),
                     new XElement("Ranks", Ranks),

@@ -444,7 +444,7 @@ namespace GomLib.Models
             var questNode = new XElement("Quest", new XElement("Name", Name),
                 //new XAttribute("Name", itm.Name),
                 new XElement("Fqn", Fqn,
-                    new XAttribute("NodeId", NodeId)),
+                    new XAttribute("Id", NodeId)),
                 new XAttribute("Id", Id),
                 new XElement("Category", Category,
                     new XAttribute("Id", CategoryId)),
@@ -481,7 +481,7 @@ namespace GomLib.Models
                 XElement questItems = new XElement("Items");
                 if (Items != null)
                 {
-                    questItems.Add(new XAttribute("id", Items.Count));
+                    questItems.Add(new XAttribute("Id", Items.Count));
                     foreach (var item in Items)
                     {
                         if (item.Value != null)
@@ -531,7 +531,7 @@ namespace GomLib.Models
             {
                 if (Items.Count != 0)
                 {
-                    itemsElement.Add(new XAttribute("id", Items.Count));
+                    itemsElement.Add(new XAttribute("Id", Items.Count));
                     for (var i = 0; i < Items.Count; i++)
                     {
                         var item = Items.ElementAt(i);

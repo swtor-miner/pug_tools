@@ -603,6 +603,7 @@ namespace GomLib.Models
                 if (Fqn == null) return ability;
                 ability.Add(new XElement("Fqn", Fqn),
                         new XAttribute("Id", Id),
+                        new XElement("Base62Id", Base62Id),
                         new XElement("Name", Name),
                         new XElement("Description", Description));
 
