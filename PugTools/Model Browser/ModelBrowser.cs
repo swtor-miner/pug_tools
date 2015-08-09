@@ -129,6 +129,22 @@ namespace tor_tools
                     parent = String.Join(".", temp.Take(temp.Length - 1));
                     display = display.Replace(parent, string.Empty).Replace(".", string.Empty);
 
+                    if(item.Name.StartsWith("itm."))
+                    {
+                        //Try and get the item name.
+                        if (item.Data.ContainsKey("locTextRetrieverMap"))
+                        {
+                            GomObjectData nameLookupData = (GomObjectData)(item.Data.Get<Dictionary<object, object>>("locTextRetrieverMap")[-2761358831308646330]);
+                            string itmName = currentDom.stringTable.TryGetString(item.Name, nameLookupData);
+                            if(itmName.Length > 0)
+                            {
+                                //Found the item name, put it in brackets.
+                                display = display + " (" + itmName + ")";
+                            }
+
+                        }
+                    }
+
                     nodeDirs.Add(parent);
                 }
 
@@ -155,6 +171,21 @@ namespace tor_tools
                     parent = String.Join(".", temp.Take(temp.Length - 1));
                     display = display.Replace(parent, string.Empty).Replace(".", string.Empty);
                     parent = "new." + parent;
+
+                    if (item.Name.StartsWith("itm."))
+                    {
+                        //Try and get the item name.
+                        if (item.Data.ContainsKey("locTextRetrieverMap"))
+                        {
+                            GomObjectData nameLookupData = (GomObjectData)(item.Data.Get<Dictionary<object, object>>("locTextRetrieverMap")[-2761358831308646330]);
+                            string itmName = currentDom.stringTable.TryGetString(item.Name, nameLookupData);
+                            if (itmName.Length > 0)
+                            {
+                                //Found the item name, put it in brackets.
+                                display = display + " (" + itmName + ")";
+                            }
+                        }
+                    }
 
                     nodeDirs.Add(parent);
                 }
