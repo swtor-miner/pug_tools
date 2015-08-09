@@ -15,7 +15,6 @@ namespace GomLib.Models
         public Dictionary<string, string> LocalizedName { get; set; }
         public float decPrevObjRotationX;
         public float decPrevObjRotationY;
-        public bool a;
         public bool UseItemName { get; set; }
         public ulong UnlockingItemId { get; set; }
 
@@ -67,7 +66,6 @@ namespace GomLib.Models
             if (SourceDict != null) foreach (var x in SourceDict) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
             hash ^= decPrevObjRotationX.GetHashCode();
             hash ^= decPrevObjRotationY.GetHashCode();
-            hash ^= a.GetHashCode();
             hash ^= UseItemName.GetHashCode();
             hash ^= UnlockingItemId.GetHashCode();
             hash ^= DecorationId.GetHashCode();

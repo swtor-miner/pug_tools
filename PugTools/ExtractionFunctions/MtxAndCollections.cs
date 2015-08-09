@@ -125,14 +125,15 @@ namespace tor_tools
             LoadData();
 
             var lib = currentAssets.libraries.Where(x => x.Name.Contains("main_gfx_assets")).Single();
-            string path = lib.Location;
             if (!lib.Loaded)
                 lib.Load();
 
             Dictionary<string, string> names = MtxIcons();
             HashDictionaryInstance hashData = HashDictionaryInstance.Instance;
+            bool previousLoad = true;
             if (!hashData.Loaded)
             {
+                previousLoad = false;
                 hashData.Load();
             }
             hashData.dictionary.CreateHelpers();
@@ -168,13 +169,23 @@ namespace tor_tools
                                             filename = names[filename];
                                     }
                                     addtolist2(filename);
-                                    WriteFile(outputStream, String.Format("/MtxImages/{0}.png", filename));
+                                    WriteFile(outputStream, String.Format("/MtxImages/unnamed/{0}.png", filename));
                                 }
                             }
                         }
                     }
                 }
             }
+
+            //Unload the hash data to prevent anything that runs after this from seeing the new gfx files as new.
+            hashData.Unload();
+            if (previousLoad)
+            {
+                //If the hash data was previously loaded before we ran then load it again.
+                hashData.Load();
+                hashData.dictionary.CreateHelpers();
+            }
+
             EnableButtons();
         }
 

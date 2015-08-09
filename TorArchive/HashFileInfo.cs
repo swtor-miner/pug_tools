@@ -48,7 +48,7 @@ namespace TorLib
                 return;
             FileInfo info = file.FileInfo;
             
-            nsHashDictionary.HashData data = HashDictionaryInstance.Instance.dictionary.SearchHashList(ph, sh);
+            nsHashDictionary.HashData data = HashDictionaryInstance.Instance.dictionary.SearchHashList(ph, sh, file.Archive.StrippedFileName);
             this._FileRef = new WeakReference<File>(file);
             this.Source = file.Archive.FileName.ToString().Split('\\').Last();
             if (data != null && data.filename.Length > 0)
@@ -63,7 +63,7 @@ namespace TorLib
                 if (info.CRC != data.crc)
                 {
                     this.FileState = HashFileInfo.State.Modified;
-                    HashDictionaryInstance.Instance.dictionary.UpdateCRC(info.ph, info.sh, info.CRC);
+                    HashDictionaryInstance.Instance.dictionary.UpdateCRC(info.ph, info.sh, info.CRC, file.Archive.StrippedFileName);
                 }
                 else if (info.CRC == data.crc)
                 {
@@ -82,12 +82,12 @@ namespace TorLib
                     this.FileState = HashFileInfo.State.New;
                     //this.FileName = info.Checksum + "_" + String.Format(info.FileId.ToString();
                     this.FileName = string.Format("{0:X8}", info.Checksum) + "_" + string.Format("{0:X16}", info.FileId);
-                    HashDictionaryInstance.Instance.dictionary.AddHash(info.ph, info.sh, "", info.CRC);
+                    HashDictionaryInstance.Instance.dictionary.AddHash(info.ph, info.sh, "", info.CRC, file.Archive.StrippedFileName);
                 }
                 else if (info.CRC != data.crc)
                 {
                     this.FileState = HashFileInfo.State.Modified;
-                    HashDictionaryInstance.Instance.dictionary.UpdateCRC(info.ph, info.sh, info.CRC);
+                    HashDictionaryInstance.Instance.dictionary.UpdateCRC(info.ph, info.sh, info.CRC, file.Archive.StrippedFileName);
                 }
                 else if (info.CRC == data.crc)
                 {

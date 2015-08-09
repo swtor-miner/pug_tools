@@ -197,6 +197,24 @@ namespace GomLib.Models
         public bool UnknownBool { get; set; }
         public ulong UnknownInt2 { get; set; }
         public Dictionary<int, ulong> CooldownTimerSpecs { get; set; }
+        internal List<Dictionary<string, float>> _AbsorbParams { get; set; }
+        public List<Dictionary<string, float>> AbsorbParams
+        {
+            get
+            {
+                if(_AbsorbParams == null)
+                {
+                    _AbsorbParams = new List<Dictionary<string, float>>();
+                }
+
+                return _AbsorbParams;
+            }
+            
+            set
+            {
+                _AbsorbParams = value;
+            }
+        }
 
         public string HashedIcon
         {
@@ -310,7 +328,18 @@ namespace GomLib.Models
             hash ^= UnknownBool.GetHashCode();
             hash ^= UnknownInt2.GetHashCode();
             if (CooldownTimerSpecs != null) foreach (var x in CooldownTimerSpecs) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
-            
+            if(AbsorbParams.Count > 0)
+            {
+                foreach(Dictionary<string, float> dict in AbsorbParams)
+                {
+                    foreach(KeyValuePair<string, float> kvp in dict)
+                    {
+                        hash ^= kvp.Key.GetHashCode();
+                        hash ^= kvp.Value.GetHashCode();
+                    }
+                }
+            }
+
             return hash;
         }
 
@@ -448,6 +477,16 @@ namespace GomLib.Models
                 return false;
             if (this.Version != abl.Version)
                 return false;
+            if (this.AbsorbParams.Count != abl.AbsorbParams.Count)
+                return false;
+
+            DictionaryComparer<string, float> absorbCompare = new DictionaryComparer<string, float>();
+            for (int i = 0; i < this.AbsorbParams.Count; i++ )
+            {
+                if (!absorbCompare.Equals(this.AbsorbParams[i], abl.AbsorbParams[i]))
+                    return false;
+            }
+            
             return true;
         }
 
@@ -712,6 +751,26 @@ namespace GomLib.Models
                             }
                             tokenRootElem.Add(tokenElem);
                         }
+                    }
+
+                    if(AbsorbParams.Count > 0)
+                    {
+                        XElement absorbCoEffRoot = new XElement("AbsorbCoEfficients");
+
+                        int i = 0;
+                        foreach(Dictionary<string, float> absStatByParam in AbsorbParams)
+                        {
+                            XElement absorbRoot = new XElement("AbsorbCoEfficient", new XAttribute("Id", i));
+                            i++;
+
+                            foreach(KeyValuePair<string, float> kvp in absStatByParam)
+                            {
+                                absorbRoot.Add(new XElement(kvp.Key, kvp.Value));
+                            }
+                            absorbCoEffRoot.Add(absorbRoot);
+                        }
+
+                        ability.Add(absorbCoEffRoot);
                     }
                 }
 

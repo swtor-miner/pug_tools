@@ -19,6 +19,7 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 using GomLib;
 using GomLib.Models;
+using TorLib;
 
 namespace tor_tools
 {
@@ -404,6 +405,31 @@ namespace tor_tools
                             XElement itemElement = itm.ToXElement();
                             if (itmList.Key != "Full") itemElement.Add(new XAttribute("Status", itmList.Key));
                             //itemElement.Add(ReferencesToXElement(itm.References));
+
+                            if(itmList.Key == "New")
+                            {
+                                if (xmlRoot == "Collections")
+                                {
+                                    //Named icon export.
+                                    //Bleh item specific code here.
+                                    Collection colItm = itm as Collection;
+                                    if (colItm != null)
+                                    {
+                                        ExportIconFromPath("/resources/gfx/mtxstore/" + colItm.Icon + "_400x400.dds", colItm.Name,
+                                            "/MtxImages/Named/Collections/{0}.png");
+                                    }
+                                }
+                                else if (xmlRoot == "MtxStoreFronts")
+                                {
+                                    MtxStorefrontEntry mtxItm = itm as MtxStorefrontEntry;
+                                    if (mtxItm != null)
+                                    {
+                                        ExportIconFromPath("/resources/gfx/mtxstore/" + mtxItm.Icon + "_400x400.dds", mtxItm.Name,
+                                            "/MtxImages/Named/MtxStore/{0}.png");
+                                    }
+                                }
+                            }
+
                             elements.Add(itemElement);
                             i++;
                         }
@@ -728,6 +754,50 @@ namespace tor_tools
                         return false;
                 default:
                     return false;
+            }
+        }
+
+        public void ExportIconFromPath(string path, string name, string exportPath)
+        {
+            Library lib = currentAssets.libraries.Where(x => x.Name.Contains("main_gfx_assets")).Single();
+            if (!lib.Loaded)
+                lib.Load();
+
+            TorLib.File iconFile = lib.FindFile(path);
+            if (iconFile != null)
+            {
+                HashDictionaryInstance hashData = HashDictionaryInstance.Instance;
+                if (!hashData.Loaded)
+                {
+                    hashData.Load();
+                }
+                hashData.dictionary.CreateHelpers();
+
+
+                HashFileInfo hashInfo = new HashFileInfo(iconFile.FileInfo.ph, iconFile.FileInfo.sh, iconFile);
+                string stateName = hashInfo.FileState.ToString();
+
+                DevIL.ImageImporter imp = new DevIL.ImageImporter();
+                DevIL.Image dds;
+                using (MemoryStream iconStream = (MemoryStream)iconFile.OpenCopyInMemory())
+                {
+                    dds = imp.LoadImageFromStream(DevIL.ImageType.Dds, iconStream);
+                }
+
+                using (MemoryStream outputStream = new MemoryStream())
+                {
+                    DevIL.ImageExporter exp = new DevIL.ImageExporter();
+                    exp.SaveImageToStream(dds, DevIL.ImageType.Png, outputStream); //save DDS to stream in PNG format
+
+                    name += "_" + stateName;
+                    foreach(char character in System.IO.Path.GetInvalidFileNameChars())
+                    {
+                        //Make sure the name doesn't contain invalid characters.
+                        name = name.Replace(character, '-');
+                    }
+
+                    WriteFile(outputStream, String.Format(exportPath, name));
+                }
             }
         }
         #endregion
@@ -1102,8 +1172,9 @@ namespace tor_tools
                         .Except(previousElement.Elements().Where(x => x.HasAttributes)
                             .Where(x => changedItemIds.Contains(x.Attribute("Id").Value)))
                         .Except(previousElement.Elements().Where(x => x.HasAttributes)
-                            .Where(x => removedItemIds.Contains(x.Attribute("Id").Value)))
-                        .Remove();
+                        .Where(x=> x.Attribute("Id") != null)
+                            .Where(x => removedItemIds.Contains(x.Attribute("Id").Value)));
+                        
                 }
                 else
                 {

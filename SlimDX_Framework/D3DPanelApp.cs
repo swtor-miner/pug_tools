@@ -105,7 +105,8 @@ namespace SlimDX_Framework {
         protected bool InitDirect3D() {
             var creationFlags = DeviceCreationFlags.None;
 #if DEBUG
-            creationFlags |= DeviceCreationFlags.Debug;
+            //This is broken on Windows 10.
+            //creationFlags |= DeviceCreationFlags.Debug;
 #endif
             try {
                 Device = new Device(DriverType, creationFlags);

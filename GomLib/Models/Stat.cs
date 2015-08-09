@@ -244,7 +244,8 @@ namespace GomLib.Models
         UnusedCbtdamagereceivedmodifier = 234,
         UnusedCbtdamagedealtmodifier = 235,
         UnusedCbtCoverThreatGeneratedModifierPercentage = 236,
-        Chrmovebonus = 237
+        Chrmovebonus = 237,
+        Mastery = 238,
     }
 
     public class StatData
@@ -569,7 +570,7 @@ namespace GomLib.Models
                 case "_unused_stat_cbtdamagedealtmodifier": return Stat.UnusedCbtdamagedealtmodifier;
                 case "_unused_stat_cbt_cover_threat_generated_modifier_percentage": return Stat.UnusedCbtCoverThreatGeneratedModifierPercentage;
                 case "stat_chrmovebonus": return Stat.Chrmovebonus;
-                case "stat_att_mastery": return Stat.Aim; //temporary
+                case "stat_att_mastery": return Stat.Mastery;
                 default: throw new InvalidOperationException("Invalid Stat: " + str);
             }
         }

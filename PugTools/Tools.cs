@@ -652,6 +652,10 @@ namespace tor_tools
                     {
                         DisableButtons();
                         getPrototypeObjects("Collections", "colCollectionItemsPrototype", "colCollectionItemsData");
+
+                        TorLib.HashDictionaryInstance.Instance.Unload();
+                        TorLib.HashDictionaryInstance.Instance.Load();
+                        TorLib.HashDictionaryInstance.Instance.dictionary.CreateHelpers();
                     }
                     if (extensions.Contains("CMP"))
                     {
@@ -662,6 +666,11 @@ namespace tor_tools
                     {
                         DisableButtons();
                         getPrototypeObjects("MtxStoreFronts", "mtxStorefrontInfoPrototype", "mtxStorefrontData");
+                        
+                        //Reload hash dict.
+                        TorLib.HashDictionaryInstance.Instance.Unload();
+                        TorLib.HashDictionaryInstance.Instance.Load();
+                        TorLib.HashDictionaryInstance.Instance.dictionary.CreateHelpers();
                     }
                     if (extensions.Contains("GSF"))
                     {
@@ -728,6 +737,7 @@ namespace tor_tools
                 {
                     ProcessEffectChanges();
                 }
+                //ProcessGomFields();
                 //ProcessGomFields(); //this is providing no useful info currently, and takes a fuckton of time to run.
             }
 
@@ -908,7 +918,6 @@ namespace tor_tools
                 currentDom = null;
                 previousAssets = null;
                 previousDom = null;
-                GC.Collect();
                 Clearlist2();
                 Clearlist();
                 addtolist("Unloading Data Object Model. - Done");

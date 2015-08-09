@@ -17,8 +17,40 @@ namespace TorLib
 
         internal Library Library { get; set; }
         public string FileName { get; set; }
+        internal string _StrippedFileName { get; set; }
         public bool Initialized { get; private set; }
         private bool disposed = false;
+
+        /// <summary>
+        /// Gets the archive name, minus the "swtor_" or "swtor_test_" and .tor part of the name.
+        /// </summary>
+        public string StrippedFileName {
+            get
+            {
+                if(_StrippedFileName == null && FileName != null)
+                {
+                    StrippedFileName = FileName;
+                }
+
+                return _StrippedFileName;
+            }
+
+            set
+            {
+                //Remove the directory.
+                string fileName = value.Split('/').Last();
+                fileName = fileName.Split('\\').Last();
+
+                //Remove swtor_test_
+                fileName = fileName.Replace("swtor_", string.Empty);
+                fileName = fileName.Replace("test_", string.Empty);
+
+                //Remove .tor
+                fileName = fileName.Replace(".tor", string.Empty);
+
+                _StrippedFileName = fileName;
+            }
+        }
 
         public void Dispose()
         {

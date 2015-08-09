@@ -267,6 +267,7 @@ namespace tor_tools
             treeViewFast1.Visible = true;            
             hideLoader();
             enableUI();
+            System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.Interactive;
         }
 
     #endregion

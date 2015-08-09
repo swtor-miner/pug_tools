@@ -129,10 +129,11 @@ namespace tor_tools
                 return;
             }
 
-            //Make sure the DOM is loaded.
+            System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.LowLatency;
+
             Assets assets = AssetHandler.Instance.getCurrentAssets(assetLocation, usePTS);
             DomHandler.Instance.getCurrentDOM(assets);
-            
+
             //this.currentAssets = this.currentAssets.getCurrentAssets((string)args[0], (bool)args[1]);            
         }
 
@@ -317,6 +318,9 @@ namespace tor_tools
             treeViewFast1.Visible = true;
             panelRender = new View_GR2(this.Handle, this, "renderPanel");
             panelRender.Init();
+
+            System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.Interactive;
+
             hideLoader();
             enableUI();
             if (treeViewFast1.Nodes.Count > 0) treeViewFast1.Nodes[0].Expand();
@@ -529,11 +533,11 @@ namespace tor_tools
                     , hexBox1.SelectionStart
                     , bitInfo.ToString()
                     );
+
+                this.toolStripStatusLabel3.Text = bitInfo.ToString();
             }
 
             this.toolStripStatusLabel2.Text = bitPresentation;
-
-            this.toolStripStatusLabel3.Text = bitInfo.ToString();
         }
 
        private void backgroundWorker2_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -1322,10 +1326,7 @@ namespace tor_tools
                 if (foundFiles.Count() > 0)
                 {   
                     txtRawView.Text = "Found Files\r\n\r\n";
-                    foreach (string file in foundFiles)
-                    {
-                        txtRawView.Text += file + "\r\n";
-                    }
+                    txtRawView.Text += String.Join("\r\n", foundFiles);
                     txtRawView.Visible = true;                    
                 }
                 dt.Rows.Add(new string[] { "Total Files Found", this.foundFiles.Count().ToString("n0") });
@@ -1339,6 +1340,7 @@ namespace tor_tools
 
         private void AssetBrowser_FormClosing(object sender, FormClosingEventArgs e)
         {
+            System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.LowLatency;
             _closing = true;
 
             if (hashData.dictionary.needsSave && (this.modNewCount > 2 || this.foundNewFileCount > 0))
@@ -1353,7 +1355,9 @@ namespace tor_tools
 
         public void AssetBrowser_FormClosed(object sender, FormClosedEventArgs e)
         {
+            //Reload hash list to ensure other code is unaffected.
             HashDictionaryInstance.Instance.Unload();
+            HashDictionaryInstance.Instance.Load();
 
             if (panelRender != null)
             {
@@ -1398,6 +1402,8 @@ namespace tor_tools
                     catch (IOException wemExcep) { }
                 }
             }
+
+            System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.Interactive;
         }
 
         private void renderPanel_MouseHover(object sender, EventArgs e)
@@ -1492,21 +1498,34 @@ namespace tor_tools
 
         
 
-        private async void treeListView1_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private async void treeListView1_ItemSelectionChanged(object sender, EventArgs e)
         {
             this.audioState = false;
-            object testRow = treeListView1.SelectedItem.RowObject;
-            //Console.WriteLine(testRow.GetType());
-            if (testRow.GetType() == typeof(WemListItem))
+            if(treeListView1.SelectedObjects != null && treeListView1.SelectedObjects.Count > 1)
             {
-                WemListItem row = (WemListItem)testRow;
+                //Don't preview audio if we selected multiple files.
+                this.audioState = false;
+                this.btnAudioStop.Enabled = false;
+                return;
+            }
+
+            BrightIdeasSoftware.OLVListItem selectedItem = treeListView1.SelectedItem;
+            if(selectedItem == null)
+            {
+                return;
+            }
+            object selectedRow = selectedItem.RowObject;
+
+            if (!this.audioState && selectedRow.GetType() == typeof(WemListItem))
+            {
+                WemListItem row = (WemListItem)selectedRow;
                 WEM_File wem = (WEM_File)row.obj;
                 if (wem.data.Count() > 0)
                 {
+                    await Task.Run(() => wem.convertWEM());
                     this.toolStripStatusLabel1.Text = "Playing Audio...";
                     this.toolStripProgressBar1.Visible = true;
                     this.treeListView1.Enabled = false;
-                    await Task.Run(() => wem.convertWEM());
                     this.btnAudioStop.Enabled = true;
                     await Task.Run(() => playOgg(wem));
                     this.btnAudioStop.Enabled = false;
@@ -1538,7 +1557,7 @@ namespace tor_tools
                     }
                     else
                     {
-                            SetStripProgressBarValue((int)wem.vorbis.CurrentTime.TotalMilliseconds);
+                        SetStripProgressBarValue((int)wem.vorbis.CurrentTime.TotalMilliseconds);
                         Thread.Sleep(100);
                     }
                 }

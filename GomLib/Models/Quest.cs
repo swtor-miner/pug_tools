@@ -499,7 +499,10 @@ namespace GomLib.Models
                 {
                     foreach (var rewardEntry in Rewards.OrderBy(x => x.RewardItemId))
                     {
-                        questNode.Add(rewardEntry.ToXElement(verbose));
+                        if (rewardEntry.RewardItem != null)
+                        {
+                            questNode.Add(rewardEntry.ToXElement(verbose));
+                        }
                         //r++;
                     }
                 }

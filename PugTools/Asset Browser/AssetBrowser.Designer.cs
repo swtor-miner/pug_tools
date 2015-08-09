@@ -267,7 +267,8 @@
             this.treeListView1.View = System.Windows.Forms.View.Details;
             this.treeListView1.VirtualMode = true;
             this.treeListView1.Visible = false;
-            this.treeListView1.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.treeListView1_ItemSelectionChanged);
+            //this.treeListView1.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.treeListView1_ItemSelectionChanged);
+            this.treeListView1.SelectionChanged += new System.EventHandler(this.treeListView1_ItemSelectionChanged);
             // 
             // olvColumn1
             // 

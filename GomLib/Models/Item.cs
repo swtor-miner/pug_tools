@@ -440,6 +440,7 @@ namespace GomLib.Models
         public int Cunning { get; set; }
         public int Strength { get; set; }
         public int Willpower { get; set; }
+        public int Mastery { get; set; }
         //secondary
         public int AbsorptionRating { get; set; }
         public int CriticalRating { get; set; }
@@ -512,6 +513,7 @@ namespace GomLib.Models
                     case Stat.Endurance: itm.Endurance = stat.Modifier; break;
                     case Stat.Presence: itm.Presence = stat.Modifier; break;
                     case Stat.Willpower: itm.Willpower = stat.Modifier; break;
+                    case Stat.Mastery: itm.Mastery = stat.Modifier; break;
                     case Stat.ExpertiseRating: itm.ExpertiseRating = stat.Modifier; break;
                     case Stat.AbsorptionRating: itm.AbsorptionRating = stat.Modifier; break;
                     case Stat.AttackPowerRating: itm.Power = stat.Modifier; break;

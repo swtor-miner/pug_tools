@@ -25,6 +25,9 @@ namespace tor_tools
     {
         public TorLib.Assets currentAssets;
         private DataObjectModel currentDom;
+
+        public TorLib.Assets previousAssets;
+        private DataObjectModel previousDom;
                 
         private Dictionary<string, NodeAsset> assetDict = new Dictionary<string, NodeAsset>();
         private List<string> nodeKeys = new List<string>();
@@ -42,13 +45,17 @@ namespace tor_tools
         Dictionary<object, object> weaponAppearance = new Dictionary<object, object>();
         Dictionary<object, object> mntMountInfoTable = new Dictionary<object, object>();
 
-        public ModelBrowser(string assetLocation, bool usePTS)
+        public ModelBrowser(string assetLocation, bool usePTS,
+            string previousAssetLocation, bool previousUsePTS)
         {
             InitializeComponent();
 
             List<object> args = new List<object>();
             args.Add(assetLocation);
             args.Add(usePTS);
+            args.Add(previousAssetLocation);
+            args.Add(previousUsePTS);
+
             toolStripProgressBar1.Visible = true;
             toolStripStatusLabel1.Text = "Loading Assets";
             disableUI();
@@ -58,19 +65,40 @@ namespace tor_tools
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             List<object> args = e.Argument as List<object>;
+
+            //Load current assets.
             this.currentAssets = AssetHandler.Instance.getCurrentAssets((string)args[0], (bool)args[1]);            
             this.currentDom = DomHandler.Instance.getCurrentDOM(currentAssets);
-            //this.currentDom.ami.Load();
+
+            //Load previous assets.
+            this.previousAssets = AssetHandler.Instance.getPreviousAssets((string)args[2], (bool)args[3]);
+            this.previousDom = DomHandler.Instance.getPreviousDOM(previousAssets);
         }
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            //Get the relevant nodes from the new dom.
             List<GomObject> itmList = currentDom.GetObjectsStartingWith("npp.")
                     .Union(currentDom.GetObjectsStartingWith("ipp."))
                     .Union(currentDom.GetObjectsStartingWith("itm."))
                     .Union(currentDom.GetObjectsStartingWith("dyn.housing"))
                     .Union(currentDom.GetObjectsStartingWith("dyn.stronghold"))
                     .ToList();
+
+            //Determine which nodes are new.
+            List<int> newNodeIndexes = new List<int>();
+            for (int i = 0; i < itmList.Count; i++ )
+            {
+                GomObject newObj = itmList[i];
+
+                GomObject oldObj = previousDom.GetObject(newObj.Name);
+                if (oldObj == null)
+                {
+                    //Node is new.
+                    newNodeIndexes.Add(i);
+                }
+            }
+
             weaponAppearance = currentDom.GetObject("itmAppearanceDatatable").Data.Get<Dictionary<object, object>>("itmAppearances");
             Dictionary<object, object> tempAppear = new Dictionary<object, object>();
             foreach (var appear in weaponAppearance)
@@ -92,20 +120,48 @@ namespace tor_tools
                     string appearSpec = item.Data.ValueOrDefault<string>("cbtWeaponAppearanceSpec", null);
                     if (appearSpec == null)
                         continue;                    
-                }                
-                string parent = "";                
+                }
+                string parent = string.Empty;
                 string display = item.Name;
                 if (item.Name.Contains("."))
                 {
                     string[] temp = item.Name.Split('.');
                     parent = String.Join(".", temp.Take(temp.Length - 1));
-                    display = display.Replace(parent, "").Replace(".", "");
+                    display = display.Replace(parent, string.Empty).Replace(".", string.Empty);
+
                     nodeDirs.Add(parent);
                 }
-                else
-                    parent = "/nodes";
+
                 NodeAsset asset = new NodeAsset(item.Name.ToString(), parent, display, currentDom);
                 assetDict.Add(item.Name.ToString(), asset);
+                item.Unload(); //make sure these aren't hanging around
+            }
+
+            //Build the new list.
+            foreach(int i in newNodeIndexes)
+            {
+                GomObject item = itmList[i];
+                if (item.Name.StartsWith("itm."))
+                {
+                    string appearSpec = item.Data.ValueOrDefault<string>("cbtWeaponAppearanceSpec", null);
+                    if (appearSpec == null)
+                        continue;
+                }
+                string parent = string.Empty;
+                string display = item.Name;
+                if (item.Name.Contains("."))
+                {
+                    string[] temp = item.Name.Split('.');
+                    parent = String.Join(".", temp.Take(temp.Length - 1));
+                    display = display.Replace(parent, string.Empty).Replace(".", string.Empty);
+                    parent = "new." + parent;
+
+                    nodeDirs.Add(parent);
+                }
+                newNodeIndexes = null;
+
+                NodeAsset asset = new NodeAsset("new." + item.Name.ToString(), parent, display, item);
+                assetDict.Add("new." + item.Name.ToString(), asset);
                 item.Unload(); //make sure these aren't hanging around
             }
 
@@ -164,11 +220,23 @@ namespace tor_tools
             string prefixMod = "/assets/modified";
             string prefixUnn = "/assets/unnamed";
 
+
+            //Make sure the hash data is loaded.
+            HashDictionaryInstance hashInstance = HashDictionaryInstance.Instance;
+            if (!hashInstance.Loaded)
+            {
+                hashInstance.Load();
+            }
+            hashInstance.dictionary.CreateHelpers();
+
             foreach (var lib in currentAssets.libraries)
             {
                 string path = lib.Location;
                 if (!lib.Loaded)
+                {
                     lib.Load();
+                }
+
                 foreach (var arch in lib.archives)
                 {
                     foreach (var file in arch.Value.files)
@@ -277,6 +345,7 @@ namespace tor_tools
             treeViewFast1.Visible = true;
             panelRender = new View_NPC_GR2(this.Handle, this, "renderPanel");
             panelRender.Init();
+            System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.Interactive;
             if (treeViewFast1.Nodes.Count > 0) treeViewFast1.Nodes[0].Expand();
         }
 

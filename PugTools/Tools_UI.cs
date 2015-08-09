@@ -198,6 +198,10 @@ namespace tor_tools
                 {
                     EnableButtons();
                 }
+
+                TorLib.HashDictionaryInstance.Instance.Unload();
+                TorLib.HashDictionaryInstance.Instance.Load();
+                TorLib.HashDictionaryInstance.Instance.dictionary.CreateHelpers();
             }
             catch (Exception ex)
             {
@@ -337,12 +341,12 @@ namespace tor_tools
         public void onAssetBrowserClosed(object sender, FormClosedEventArgs e)
         {
             AssetBrowser = null;
-            GC.Collect();
         }
 
         private void btnNodeBrowser_Click(object sender, EventArgs e)
         {
             bool usePTS = this.usePTSAssets.Checked;
+            System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.SustainedLowLatency;
             Form NodeBrowser = new NodeBrowser(this.textBoxAssetsFolder.Text, usePTS, this.textBoxExtractFolder.Text);
             NodeBrowser.Show();
         }
@@ -350,7 +354,8 @@ namespace tor_tools
         private void btnModelBrowser_Click(object sender, EventArgs e)
         {
             bool usePTS = this.usePTSAssets.Checked;
-            Form ModelBrowser = new ModelBrowser(this.textBoxAssetsFolder.Text, usePTS);
+            System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.SustainedLowLatency;
+            Form ModelBrowser = new ModelBrowser(this.textBoxAssetsFolder.Text, usePTS, this.textBoxPrevAssetsFolder.Text, prevUsePTSAssets.Checked);
             ModelBrowser.Show();
         }
 
@@ -401,7 +406,6 @@ namespace tor_tools
                 await Task.Run(() => unloadCurrent());
                 addtolist("Current Assets & DOM - Cleared");
                 EnableButtons();
-                GC.Collect();
                 //Unload();
             }
         }

@@ -198,7 +198,7 @@ namespace GomLib.ModelLoader
             //abl.AbilityTokens =
             //LoadParamEffects(abilityEffectList); //Working on returning ability effects
 
-            // This section of code is to aid in exploring the unknown ability effect field names
+            // This section of code is to aid in exploring the unknown ability effect field names and export the absorb co-efficients.
             foreach (ulong effId in abilityEffectList)
             {
                 GomObject eff = _dom.GetObject(effId);
@@ -261,6 +261,28 @@ namespace GomLib.ModelLoader
                                     }
                                 }
                             }
+                            else if (subKey == "effActions")
+                            {
+                                //Get the absorb co-efficients. Can't do this with the others because absorb doesn't have a description token.
+                                var effActions = ((GomObjectData)blah).ValueOrDefault<List<object>>("effActions", null);
+                                foreach (GomObjectData effAction in effActions)
+                                {
+                                    if (effAction.ValueOrDefault<ScriptEnum>("effActionName", null).ToString() == "effAction_AbsorbDamage")
+                                    {
+                                        Dictionary<string, float> absorbDetails = new Dictionary<string, float>();
+                                        Dictionary<object, object> valueByParam = effAction.ValueOrDefault<Dictionary<object, object>>("effFloatParams",
+                                            new Dictionary<object, object>());
+                                        
+                                        foreach(KeyValuePair<object, object> kvp in valueByParam)
+                                        {
+                                            absorbDetails.Add(((ScriptEnum)kvp.Key).ToString(), (float)kvp.Value);
+                                        }
+
+                                        abl.AbsorbParams.Add(absorbDetails);
+                                    }
+                                }
+                            }
+
                             if (!effKeys.Contains("4611686039404270002: effSubEffects" + " - " + subKey))
                             {
                                 effKeys.Add("4611686039404270002: effSubEffects" + " - " + subKey);

@@ -47,6 +47,7 @@ namespace TorLib
         private Object lockObject = new Object();
 
         private Dictionary<ulong, MetadataEntry> metadataLookup = new Dictionary<ulong, MetadataEntry>();
+        private Dictionary<ulong, string> duplicateDict = new Dictionary<ulong, string>();
         public Dictionary<int, Archive> archives = new Dictionary<int, Archive>();        
 
         public string Name { get; private set; }
@@ -119,9 +120,18 @@ namespace TorLib
 
         public void Load()
         {
+            if (Loaded)
+            {
+                return;
+            }
+
             lock (lockObject)
             {
-                if (this.Loaded) { return; }
+                if (Loaded)
+                {
+                    //Check again just in case.
+                    return;
+                }
 
                 Archive archive = null;
                 bool hasFile;
@@ -231,13 +241,11 @@ namespace TorLib
                         Archive = fileNum
                     };
 
-                    try
+                    //Considerably faster than throwing exceptions.
+                    UInt64 fid = fileId.AsUInt64();
+                    if (!metadataLookup.ContainsKey(fid))
                     {
-                        metadataLookup.Add(fileId.AsUInt64(), entry);
-                    }
-                    catch(Exception ex)
-                    {
-                        //Console.WriteLine(String.Format("Duplicated MetaData Id:{0}", fileId.AsUInt64()));
+                        metadataLookup.Add(fid, entry);
                     }
                 }
             }
