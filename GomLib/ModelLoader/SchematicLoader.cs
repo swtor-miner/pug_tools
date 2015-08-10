@@ -11,6 +11,7 @@ namespace GomLib.ModelLoader
         const long strOffset = 0x35D0200000000;
 
         StringTable missionStrTable;
+        StringTable prfStrTable;
         Dictionary<ulong, Schematic> idMap;
         Dictionary<string, Schematic> nameMap;
         //static int maxMats = 0;
@@ -26,6 +27,7 @@ namespace GomLib.ModelLoader
         public void Flush()
         {
             missionStrTable = null;
+            prfStrTable = null;
             idMap = new Dictionary<ulong, Schematic>();
             nameMap = new Dictionary<string, Schematic>();
         }
@@ -80,6 +82,7 @@ namespace GomLib.ModelLoader
             if (missionStrTable == null)
             {
                 missionStrTable = _dom.stringTable.Find("str.prf.missions");
+                prfStrTable = _dom.stringTable.Find("str.prf.subtypes");
             }
             schem.Id = obj.Id;
             schem.Fqn = obj.Name;
@@ -136,6 +139,9 @@ namespace GomLib.ModelLoader
 
             schem.CrewSkillId = ProfessionExtensions.ToProfession((ScriptEnum)obj.Data.ValueOrDefault<ScriptEnum>("prfProfessionRequired", null));
             schem.Subtype = ProfessionSubtypeExtensions.ToProfessionSubtype((ScriptEnum)obj.Data.ValueOrDefault<ScriptEnum>("prfProfessionSubtype", null));
+
+            schem.SubTypeId = 966840088002561 + obj.Data.ValueOrDefault<ScriptEnum>("prfProfessionSubtype", new ScriptEnum()).Value;
+            schem.SubTypeName = prfStrTable.GetText(schem.SubTypeId, "str.prf.subtypes");
 
             schem.SkillGrey = (int)obj.Data.ValueOrDefault<long>("prfSchematicGrey", 0);
             schem.SkillGreen = (int)obj.Data.ValueOrDefault<long>("prfSchematicGreen", 0);
@@ -277,6 +283,12 @@ namespace GomLib.ModelLoader
                 {
                     schem.TrainerTaught = true;
                 }
+            }
+
+            long test = obj.Data.ValueOrDefault<long>("4611686304563444001", 0);
+            if (test != 0)
+            {
+                string soidfhnoln = ""; //debugging code
             }
             obj.Unload();
             return schem;

@@ -49,16 +49,18 @@ namespace GomLib.ModelLoader
             {
                 //Load the modifier list
                 GomObject modpackTable = _dom.GetObject("itmModifierPackageTablePrototype");
-                _modifierDict = modpackTable.Data.ValueOrDefault<Dictionary<object, object>>("itmModifierPackagesList", new Dictionary<object,object>()); //I really should remove .Get()
+                _modifierDict = modpackTable.Data.ValueOrDefault<Dictionary<object, object>>("itmModifierNewPackagesList", new Dictionary<object, object>()); //I really should remove .Get()
                 modpackTable.Unload();
             }
 
             GomLib.Models.Schematic baseSchem = _dom.schematicLoader.Load(id);
 
             string baseItemName;
+            long baseItemLevel = 0;
             if (baseSchem.ItemId != 0 && baseSchem.Item != null)
             {
                 baseItemName = baseSchem.Item.Name;
+                baseItemLevel = baseSchem.Item.CombinedRequiredLevel;
             } else {
                 baseItemName = string.Empty;
             }
@@ -74,20 +76,25 @@ namespace GomLib.ModelLoader
                 object modifier;
                 if (_modifierDict.TryGetValue(variationID, out modifier))
                 {
-                    GomObjectData modifierData = modifier as GomObjectData;
+                    List<object> modifierDataList = modifier as List<object>;
+                    for (int i = 0; i < modifierDataList.Count(); i++)
+                    {
+                        GomObjectData modifierData = modifierDataList[i] as GomObjectData;
+                        //Load the modfier name.
+                        long strID = modifierData.Get<long>("itmModPkgNameId");
+                        string variationName = strTable.GetText(strID, string.Empty);
+                        variationName = variationName.Replace("<<1>>", baseItemName);
 
-                    //Load the modfier name.
-                    long strID = modifierData.Get<long>("itmModPkgNameId");
-                    string variationName = strTable.GetText(strID, string.Empty);
-                    variationName = variationName.Replace("<<1>>", baseItemName);
+                        long min = modifierData.ValueOrDefault<long>("itmModPkgMinLevel", 0);
+                        long max = modifierData.ValueOrDefault<long>("itmModPkgMaxLevel", 0);
+                        Dictionary<object, object> statModDict = modifierData.ValueOrDefault<Dictionary<object, object>>("itmModPkgAttributePercentages", new Dictionary<object, object>());
 
-                    Dictionary<object, object> statModDict = modifierData.ValueOrDefault<Dictionary<object, object>>("itmModPkgAttributePercentages", new Dictionary<object, object>());
-
-                    //Key to stat enum, value is the percentage divided by 100.
-                    Dictionary<Models.Stat, float> statValuesByStat = statModDict.ToDictionary(x => Models.StatExtensions.ToStat((ScriptEnum)x.Key),
-                        x => ((long)x.Value / 100f));
-                    Models.ModPackage package = new Models.ModPackage(variationID, strID, variationName, statValuesByStat);
-                    variationList.Add(package);
+                        //Key to stat enum, value is the percentage divided by 100.
+                        Dictionary<Models.Stat, float> statValuesByStat = statModDict.ToDictionary(x => Models.StatExtensions.ToStat((ScriptEnum)x.Key),
+                            x => ((long)x.Value / 100f));
+                        Models.ModPackage package = new Models.ModPackage(variationID, strID, variationName, statValuesByStat, min, max);
+                        variationList.Add(package);
+                    }
                 }
             }
             variation.VariationPackages = variationList;

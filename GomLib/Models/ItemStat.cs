@@ -23,7 +23,7 @@ namespace GomLib.Models
 
         public override string ToString()
         {
-            return string.Format("+{0:#,##0.##} {1}", Modifier, Stat);
+            return string.Format("+{0:#,##0.##} {1}", Modifier, DetailedStat.LocalizedDisplayName["enMale"]);
         }
 
         public override int GetHashCode()

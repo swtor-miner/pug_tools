@@ -65,7 +65,7 @@ namespace GomLib.Models
 
         public Dictionary<ulong, int> Materials { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
+        //[Newtonsoft.Json.JsonIgnore]
         public Dictionary<string, int> MaterialsB62
         {
             get
@@ -85,6 +85,8 @@ namespace GomLib.Models
 
         public Workstation Workstation { get; set; }
         public ProfessionSubtype Subtype { get; set; }
+        public long SubTypeId { get; set; }
+        public string SubTypeName { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]
         public Item Research1 { get; set; }
@@ -500,7 +502,7 @@ namespace GomLib.Models
         public override XElement ToXElement()
         {
             XElement packageElem = new XElement("Package", new XAttribute("Id", Id));
-            packageElem.Add(new XElement("Name", Name));
+            packageElem.Add(new XElement("Name", Name), new XElement("MinLevel", MinLevel), new XElement("MaxLevel", MaxLevel));
             XElement statsElem = new XElement("Stats");
             foreach(KeyValuePair<Stat, float> kvp in AtrributePercentages)
             {
@@ -561,7 +563,19 @@ namespace GomLib.Models
             Name = n;
             AtrributePercentages = modStats;
         }
+
+        public ModPackage(long id, long nId, string n, Dictionary<Stat, float> modStats, long min, long max)
+        {
+            NameId = nId;
+            Id = id;
+            Name = n;
+            AtrributePercentages = modStats;
+            MinLevel = min;
+            MaxLevel = max;
+        }
         public long NameId { get; set; }
         public Dictionary<Stat, float> AtrributePercentages { get; set; }
+        public long MinLevel { get; set; }
+        public long MaxLevel { get; set; }
     }
 }

@@ -31,6 +31,7 @@ namespace tor_tools
 
             LoadData();
 
+            getCrewSkillData();
             outputTables();
             //getTooltips();
 
@@ -674,6 +675,367 @@ namespace tor_tools
             OutputIcon(icon, "DiscContent");
         }
 
+        #endregion
+        #region Crew Skills
+        public void getCrewSkillData()
+        {
+            Clearlist2();
+            ClearProgress();
+
+            LoadData();
+            SmartLinkSchematics(currentDom);
+            /*var prfBundlesTablePrototype = currentDom.GetObject("prfBundlesTablePrototype");
+            List<GomObjectData> prfBundlesTable = prfBundlesTablePrototype.Data.ValueOrDefault<List<object>>("prfBundlesTable")
+                .ConvertAll<GomObjectData>(x => (GomObjectData)x);
+
+            List<JObject> bundles = new List<JObject>();
+            foreach (var gom in prfBundlesTable)
+            {
+                string profession = gom.ValueOrDefault<ScriptEnum>("prfEnum").ToString();
+                long min = gom.ValueOrDefault<long>("prfBundleMinLevel");
+                long max = gom.ValueOrDefault<long>("prfBundleMaxLevel");
+
+                List<GomLib.Models.Schematic> items = new List<GomLib.Models.Schematic>();
+                List<ulong> idList = gom.ValueOrDefault<List<object>>("prfBundleSchemList").ConvertAll<ulong>(x => (ulong)x);
+                foreach (var id in idList)
+                {
+                    var schem = currentDom.schematicLoader.Load(id);
+                    items.Add(schem);
+                }
+                items = items.OrderBy(x => (x.Item ?? new GomLib.Models.Item()).Name).ToList();
+                JObject bundle = new JObject(
+                    new JProperty("Profession", profession),
+                    new JProperty("min", min),
+                    new JProperty("max", max),
+                    new JProperty("Schematics", new JArray(items.Select(x => (x.Item ?? new GomLib.Models.Item()).Name)))
+                    );
+                bundles.Add(bundle);
+            }
+                
+            JObject output = new JObject(new JProperty("Bundles", new JArray(bundles)));*/
+
+            var itmList = currentDom.GetObjectsStartingWith("schem.");
+
+            Dictionary<string, Dictionary<string, List<GomLib.Models.Schematic>>> professions = new Dictionary<string, Dictionary<string, List<GomLib.Models.Schematic>>>();
+            HashSet<ulong> materialIds = new HashSet<ulong>();
+            Dictionary<string, HashSet<ulong>> craftedIds = new Dictionary<string, HashSet<ulong>>();
+
+            foreach (var gom in itmList)
+            {
+                GomLib.Models.Schematic schem = new GomLib.Models.Schematic();
+                currentDom.schematicLoader.Load(schem, gom);
+                if (schem.Deprecated)
+                    continue;
+                string crewskill = schem.CrewSkillId.ToString();
+                string subtype = "";
+                if (!professions.ContainsKey(crewskill))
+                {
+                    professions.Add(crewskill, new Dictionary<string, List<GomLib.Models.Schematic>>());
+                    craftedIds.Add(crewskill, new HashSet<ulong>());
+                }
+                if (schem.MissionCost > 0)
+                    subtype = "Missions";
+                else
+                {
+                    subtype = schem.SubTypeName;
+                    craftedIds[crewskill].Add(schem.ItemId);
+                    materialIds.UnionWith((schem.Materials ?? new Dictionary<ulong, int>()).Keys);
+                }
+
+                if (!professions[crewskill].ContainsKey(subtype))
+                    professions[crewskill].Add(subtype, new List<GomLib.Models.Schematic>());
+                professions[crewskill][subtype].Add(schem);
+            }
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            settings.Formatting = Newtonsoft.Json.Formatting.Indented;
+
+            JObject output = new JObject(
+                new JProperty("Professions",
+                    new JArray(
+                        from c in professions
+                        orderby c.Key
+                        select new JObject(
+                            new JProperty("Name", Regex.Replace(c.Key, "([a-z]|[A-Z]{2,})([A-Z])", @"$1 $2")),
+                            new JProperty("JsonPath", c.Key),
+                            new JProperty("Subtypes",
+                                new JArray(
+                                    from s in c.Value
+                                    orderby s.Key
+                                    select new JObject(
+                                        new JProperty("Name", Regex.Replace(s.Key, "([a-z]|[A-Z]{2,})([A-Z])", @"$1 $2")),
+                                        new JProperty("Count", s.Value.Count)
+                                        )
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+
+            WriteFile(output.ToString(), "PrfContent\\Data\\crewskills.json", false);
+
+            foreach (var c in professions)
+            {
+                output = new JObject(from s in c.Value
+                                     select new JProperty(Regex.Replace(s.Key, "([a-z]|[A-Z]{2,})([A-Z])", @"$1 $2"), new JArray(
+                                         from schem in s.Value
+                                         select SchematicToMinifiedJSON(schem))));
+
+                WriteFile(output.ToString(), String.Format("PrfContent\\Data\\{0}.json", c.Key), false);
+            }
+
+            output = new JObject(from id in materialIds
+                                 select new JProperty(id.ToMaskedBase62(), ItemToMinifiedJSON(currentDom.itemLoader.Load(id))));
+            WriteFile(output.ToString(), "PrfContent\\Data\\prfMaterials.json", false);
+
+            foreach (var kvp in craftedIds)
+            {
+                if (kvp.Value.Count == 0)
+                    continue;
+                var jDict = kvp.Value.Select(x => new KeyValuePair<ulong, JObject>(x, ItemToMinifiedJSON(currentDom.itemLoader.Load(x))));
+                output = new JObject(kvp.Value.Select(x => new JProperty(x.ToMaskedBase62(), ItemToMinifiedJSON(currentDom.itemLoader.Load(x)))));
+                WriteFile(output.ToString(), String.Format("PrfContent\\Data\\{0}_Items.json", kvp.Key), false);
+            }
+        }
+
+        private JObject ItemToMinifiedJSON(GomLib.Models.Item item)
+        {
+            //OutputIcon(item.Icon, "PrfContent");
+            JObject jItm = new JObject(
+                        new JProperty("Name", new JValue(item.Name ?? "")),
+                        new JProperty("Description", new JValue((item.Description ?? "").Replace("\r\n", "<br />").Replace("\n", "<br />").Replace("\r", "<br />"))),
+                        new JProperty("Quality", new JValue(item.Quality.ToString())),
+                        new JProperty("Icon", new JValue(GetIconFilename(item.Icon ?? "").Replace("'", ""))),
+                        new JProperty("BaseLevel", new JValue(item.ItemLevel)),
+                        new JProperty("CombinedLevel", new JValue(item.CombinedRating))
+                        );
+            if (item.RequiredLevel != 0)
+                jItm.Add(new JProperty("MinLevel", new JValue(item.RequiredLevel)));
+            if (item.EquipAbilityId != 0)
+                jItm.Add(new JProperty("EquipAbility", new JValue(generateDescWithTokens(item.EquipAbility))));
+            if (item.UseAbilityId != 0)
+                jItm.Add(new JProperty("UseAbility", new JValue(generateDescWithTokens(item.UseAbility))));
+            if (item.StatModifiers.ToString() != "Empty List")
+            {
+                string list = item.StatModifiers.ToString();
+                list = list.Substring(0, list.Length - 1);
+                jItm.Add(new JProperty("Stats", new JArray(list.Split(','))));
+            }
+            if (item.DisassembleCategory != null)
+                jItm.Add(new JProperty("DissassembleCategory", new JValue(item.DisassembleCategory.ToString())));
+            var schemvar = item._dom.schemVariationLoader.Load(item.Id);
+            if (true)
+            {
+                JArray variants = new JArray(
+                    schemvar.VariationPackages
+                        .Select(x =>
+                            new JObject(
+                                new JProperty("Name", x.Name),
+                                new JProperty("Stats",
+                                    new JArray(x.AtrributePercentages.Select(y=> String.Format("+{1}% {0}", y.Key.ToString(), y.Value)).ToArray()))
+                            )
+                        ).ToArray()
+                    );
+                jItm.Add(new JProperty("Variations", variants));
+            }
+            return jItm;
+        }
+
+        private JObject SchematicToMinifiedJSON(GomLib.Models.Schematic schem)
+        {
+            JObject jSchem = JObject.Parse(schem.ToJSON());
+
+            if (schem.MissionCost > 0)
+            {
+                jSchem.Remove("CraftingTimeT1");
+                jSchem.Remove("CraftingTimeT2");
+                jSchem.Remove("CraftingTimeT3");
+                jSchem.Remove("Workstation");
+                jSchem.Remove("ItemId");
+                jSchem.Remove("ItemParentId");
+                jSchem.Remove("Materials");
+                jSchem.Remove("Subtype");
+                jSchem.Remove("ResearchQuantity1");
+                jSchem.Remove("ResearchChance1");
+                jSchem.Remove("ResearchQuantity2");
+                jSchem.Remove("ResearchChance2");
+                jSchem.Remove("ResearchQuantity3");
+                jSchem.Remove("ResearchChance3");
+                jSchem.Remove("TrainingCost");
+                jSchem.Remove("DisableDisassemble");
+                jSchem.Remove("DisableCritical");
+                jSchem.Remove("NameId");
+                jSchem.Remove("References");
+            }
+            else
+            {
+                jSchem.Property("ItemId").Value = jSchem.Property("ItemId").Value.ToString();
+                jSchem.Remove("NameId");
+                jSchem.Remove("References");
+                jSchem.Remove("MissionCost");
+                jSchem.Remove("MissionDescriptionId");
+                jSchem.Remove("MissionDescription");
+                jSchem.Remove("MissionUnlockable");
+                jSchem.Remove("MissionLight");
+                jSchem.Remove("MissionLightCrit");
+                jSchem.Remove("MissionDark");
+                jSchem.Remove("MissionDarkCrit");
+                jSchem.Remove("MissionFaction");
+                jSchem.Remove("MissionYieldDescriptionId");
+                jSchem.Remove("MissionYieldDescription");
+            }
+
+            return jSchem;
+        }
+
+        public string generateDescWithTokens(GomLib.Models.Ability skill)
+        {
+            var retval = skill.Description;
+
+            if (skill.DescriptionTokens == null)
+                return retval;
+
+            for (var i = 0; i < skill.DescriptionTokens.Count; i++)
+            {
+                var id = skill.DescriptionTokens.ElementAt(i).Key;
+                var value = skill.DescriptionTokens.ElementAt(i).Value["ablParsedDescriptionToken"].ToString();
+                var type = skill.DescriptionTokens.ElementAt(i).Value["ablDescriptionTokenType"].ToString().Replace("ablDescriptionTokenType", "");
+                var start = retval.IndexOf("<<" + id);
+
+                if (start == -1)
+                {
+                    //console.log("didn't find: <<" + id);
+                    continue;
+                }
+                //console.log("id" + id + ":" + retval);
+                //console.log("Start Index: " + start);
+
+                var end = retval.Substring(start).IndexOf(">>") + 2;
+
+                //console.log("Length: " +length);
+                var fullToken = retval.Substring(start, end);
+                //console.log("Full: " + fullToken);
+
+                var durationText = "";
+                if ((end - start) > 5)
+                {
+                    string[] durationList = new string[] { "", "", "" };
+                    var partialToken = fullToken.Substring(4, fullToken.Length - 7);
+                    //console.log("Partial:" + partialToken);
+
+                    durationList = partialToken.Replace("%d", "").Split('/').ToArray();
+                    //console.log(durationList);
+
+                    int pValue;
+                    Int32.TryParse(value.ToString(), out pValue);
+
+                    durationText = "";
+                    if (pValue <= 0)
+                        durationText = durationList[0];
+                    else if (pValue > 1)
+                        durationText = durationList[2];
+                    else
+                        durationText = durationList[1];
+                    //console.log(pValue + durationText);
+                }
+                //console.log(type);
+                while (retval.IndexOf(fullToken) != -1)
+                { //sometimes there's multiple instance of the same token.
+                    switch (type)
+                    {
+                        case "Healing":
+                        case "Damage":
+                            retval = retval.Replace(fullToken, generateTokenString(value));
+                            break;
+                        case "Duration":
+                            retval = retval.Replace(fullToken, value + durationText);
+                            break;
+                        case "Talent":
+                            retval = retval.Replace(fullToken, value);
+                            //console.log("replaced '<<" + id + ">>' :" + retval);
+                            break;
+                        default:
+                            //console.log(type);
+                            retval = retval.Replace(fullToken, "Unknown Token: " + type);
+                            break;
+                    }
+                }
+
+            }
+            return retval;
+        }
+
+        public string generateTokenString(string value)
+        {
+            var retval = "";
+
+            var splitTokens = value.Split(';');
+            /*if (splitTokens.length == 2)
+                retval = splitTokens[1] + " to " + splitTokens[0];
+            else*/
+            retval = splitTokens[0];
+
+            var tokArray = splitTokens[0].Split(',');
+
+            switch (tokArray[0])
+            {
+                case "damage":
+                    if (tokArray.Count() == 7)
+                    {
+                        var minp = float.Parse(tokArray[5]);
+                        var maxp = float.Parse(tokArray[6]);
+                        if (float.Parse(tokArray[4]) == 1)
+                            retval = Math.Round(float.Parse(tokArray[4]) * minp) + "-" + Math.Round(float.Parse(tokArray[4]) * maxp);
+                        else
+                            retval = Math.Round(float.Parse(tokArray[4]) * ((minp + maxp) / 2)).ToString();
+                    }
+                    else
+                    {
+                        switch (tokArray[4])
+                        {
+                            case "w":
+                                var min = (float.Parse(tokArray[11]) + 1.0) * 405 + float.Parse(tokArray[6]) * 1000 + float.Parse(tokArray[7]) * 3185; /*(AmountModifierPercent + 1) * 405 * 0.3 + */
+                                var max = (float.Parse(tokArray[11]) + 1.0) * 607 + float.Parse(tokArray[6]) * 1000 + float.Parse(tokArray[8]) * 3185; /*(AmountModifierPercent + 1) * 607 * 0.3 + */
+                                //console.log("(" + tokArray[11] + " + 1.0) * 405 + " + tokArray[6] + " * 1000 + " + tokArray[8]  + " * 3185");
+                                if (float.Parse(tokArray[5]) == 1)
+                                    retval = Math.Round(float.Parse(tokArray[5]) * min) + "-" + Math.Round(float.Parse(tokArray[5]) * max);
+                                else
+                                    retval = Math.Round(float.Parse(tokArray[5]) * ((min + max) / 2)).ToString();
+                                break;
+                            case "s":
+                                var mins = float.Parse(tokArray[6]) * 1000 + float.Parse(tokArray[7]) * 3185;
+                                var maxs = float.Parse(tokArray[6]) * 1000 + float.Parse(tokArray[8]) * 3185;
+                                if (float.Parse(tokArray[5]) == 1)
+                                    retval = Math.Round(float.Parse(tokArray[5]) * mins) + "-" + Math.Round(float.Parse(tokArray[5]) * maxs);
+                                else
+                                    retval = Math.Round(float.Parse(tokArray[5]) * ((mins + maxs) / 2)).ToString();
+                                break;
+                        }
+                    }
+                    break;
+                case "healing":
+                    if (tokArray.Count() == 5)
+                    {
+                        var minh = float.Parse(tokArray[2]) * 1000 + float.Parse(tokArray[3]) * 14520;
+                        var maxh = float.Parse(tokArray[2]) * 1000 + float.Parse(tokArray[4]) * 14520;
+                        if (float.Parse(tokArray[1]) == 1)
+                            retval = Math.Round(float.Parse(tokArray[1]) * minh) + "-" + Math.Round(float.Parse(tokArray[1]) * maxh);
+                        else
+                            retval = Math.Round(float.Parse(tokArray[1]) * ((minh + maxh) / 2)).ToString();
+                    }
+                    else
+                    {
+                        var mina = float.Parse(tokArray[2]);
+                        var maxa = float.Parse(tokArray[3]);
+                        if (float.Parse(tokArray[1]) == 1)
+                            retval = Math.Round(float.Parse(tokArray[1]) * mina) + "-" + Math.Round(float.Parse(tokArray[1]) * maxa);
+                        else
+                            retval = Math.Round(float.Parse(tokArray[1]) * ((mina + maxa) / 2)).ToString();
+                    }
+                    break;
+            }
+            return retval;
+        }
         #endregion
     }
 }

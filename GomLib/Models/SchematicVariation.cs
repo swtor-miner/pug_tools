@@ -11,6 +11,7 @@ namespace GomLib.Models
     {
         public ulong SchemId { get; set; }
         public List<ModPackage> VariationPackages { get; set; }
+        public long BaseItemLevel { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -57,6 +58,7 @@ namespace GomLib.Models
         {
             XElement baseVariationElem = new XElement("ItemVariations", new XAttribute("Id", SchemId));
             baseVariationElem.Add(new XElement("BaseName", Name),
+                new XElement("BaseItemLevel"),
                 new XElement("VariationCount", VariationPackages.Count));
 
             XElement variationsElem = new XElement("Variations");

@@ -8145,4 +8145,6 @@
   <gom_type Id="4611686301662634003" name="grpFindEndTime" desc="" />
   <!-- grpDailyQuestRewardsPrototype -->
   <gom_type Id="4611687174637480000" name="grpFindRewardQuests" desc="" />
+  <!-- -->
+  <gom_type Id="4611686354288897000" name="itmModifierNewPackagesList" desc="" />
 </gom_types>

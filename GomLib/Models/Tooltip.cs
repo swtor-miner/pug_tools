@@ -1334,6 +1334,7 @@ namespace GomLib.Models
                     foreach (var rew in itm.Rewards)
                     {
                         var mat = rew.RewardItem;
+                        if (mat == null) continue;
                         var matstringQual = ((mat.IsModdable && (mat.Quality == ItemQuality.Prototype)) ? "moddable" : mat.Quality.ToString().ToLower());
                         var matfileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", mat.Icon));
                         XElement matElement = new XElement("div",
