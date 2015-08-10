@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace tor_tools
@@ -13,6 +11,7 @@ namespace tor_tools
         [STAThread]
         static void Main()
         {
+            Console.WriteLine("Using Server GC: " + System.Runtime.GCSettings.IsServerGC);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Tools());

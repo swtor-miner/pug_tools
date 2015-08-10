@@ -198,10 +198,6 @@ namespace tor_tools
                 {
                     EnableButtons();
                 }
-
-                //TorLib.HashDictionaryInstance.Instance.Unload();
-                //TorLib.HashDictionaryInstance.Instance.Load();
-                //TorLib.HashDictionaryInstance.Instance.dictionary.CreateHelpers();
             }
             catch (Exception ex)
             {

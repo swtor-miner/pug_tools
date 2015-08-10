@@ -495,13 +495,8 @@ namespace tor_tools
             if (result == System.Windows.Forms.DialogResult.OK)
             {
                 //try
-                //{
-                    System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-                    sw.Start();
-                    
+                //{ 
                     LoadData();
-                    sw.Stop();
-                    addtolist("Took " + sw.ElapsedMilliseconds + "ms to load data.");
 
                     DisableButtons();
                     List<string> extensions = new List<string>();
@@ -520,87 +515,57 @@ namespace tor_tools
                     }
                     if (extensions.Contains("TORC"))
                     {
-                        sw.Restart();
                         DisableButtons();
                         getTorc();
-                        sw.Stop();
-                        addtolist("Took " + sw.ElapsedMilliseconds + "ms to handle TORC.");
                     }
                     if (extensions.Contains("MISC"))
                     {
-                        sw.Restart();
                         DisableButtons();
                         FindNewMtxImages();
-                        sw.Stop();
-                        addtolist("Took " + sw.ElapsedMilliseconds + "ms to get MTX images.");
                     }
                     if (extensions.Contains("STB"))
                     {
-                        sw.Restart();
                         DisableButtons();
                         addtolist("Getting String Tables.");
                         getStrings();
-                        sw.Stop();
-                        addtolist("Took " + sw.ElapsedMilliseconds + "ms to get string tables.");
                     }
                     if (extensions.Contains("GOM"))
                     {
-                        sw.Restart();
                         DisableButtons();
                         addtolist("Getting Raw GOM.");
                         ExportGOM = extensions.Contains("EXP");
                         getRaw();
-                        sw.Stop();
-                        addtolist("Took " + sw.ElapsedMilliseconds + "ms to get GOM.");
                     }
                     if (extensions.Contains("AC"))
                     {
-                        sw.Restart();
                         DisableButtons();
                         getObjects("class.pc.advanced", "AdvancedClasses");
-                        sw.Stop();
-                        addtolist("Took " + sw.ElapsedMilliseconds + "ms to get Advanced Classes");
                     }
                     if (extensions.Contains("CNQ"))
                     {
-                        sw.Restart();
                         DisableButtons();
                         getPrototypeObjects("Conquests", "wevConquestInfosPrototype", "wevConquestTable");
-                        sw.Stop();
-                        addtolist("Took " + sw.ElapsedMilliseconds + "ms to get Conquests.");
                     }
                     if (extensions.Contains("ABL"))
                     {
-                        sw.Restart();
                         DisableButtons();
                         getObjects("abl.", "Abilities");
-                        sw.Stop();
-                        addtolist("Took " + sw.ElapsedMilliseconds + "ms to get Abilities..");
                     }
                     if (extensions.Contains("ACH"))
                     {
-                        sw.Restart();
                         DisableButtons();
                         getObjects("ach.", "Achievements");
-                        sw.Stop();
-                        addtolist("Took " + sw.ElapsedMilliseconds + "ms to get Achievements.");
                     }
                     if (extensions.Contains("APT"))
                     {
-                        sw.Restart();
                         DisableButtons();
                         getObjects("apt.", "Strongholds");
-                        sw.Stop();
-                        addtolist("Took " + sw.ElapsedMilliseconds + "ms to get Strongholds.");
                     }
                     if (extensions.Contains("AREA"))
                     {
-                        sw.Restart();
                         DisableButtons();
                         addtolist("Getting Areas.");
                         getPrototypeObjects("Areas", "mapAreasDataProto", "mapAreasDataObjectList"); // getAreas();
-                        sw.Stop();
-                        addtolist("Took " + sw.ElapsedMilliseconds + "ms to get Areas.");
                     }
                     if (extensions.Contains("CDX"))
                     {
