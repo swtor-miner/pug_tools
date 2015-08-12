@@ -285,14 +285,10 @@ namespace GomLib.ModelLoader
                     }*/
                 }
 
-                long numberOfItem = rewardLookup.Get<long>("qstRewardItemQty");
-                reward.NumberOfItem = numberOfItem;
-
-                long minLevel = rewardLookup.Get<long>("qstRewardMinLevel");
-                reward.MinLevel = minLevel;
-
-                long maxLevel = rewardLookup.Get<long>("qstRewardMaxLevel");
-                reward.MaxLevel = maxLevel;
+                //Default to -1 if the data isn't properly set but set quantity to 0.
+                reward.NumberOfItem = rewardLookup.ValueOrDefault<long>("qstRewardItemQty", 0);
+                reward.MinLevel = rewardLookup.ValueOrDefault<long>("qstRewardMinLevel", -1);
+                reward.MaxLevel = rewardLookup.ValueOrDefault<long>("qstRewardMaxLevel", -1);
 
                 reward.Id = Convert.ToUInt64(reward.IsAlwaysProvided) + reward.RewardItemId + Convert.ToUInt64(reward.NumberOfItem);
                 qst.Rewards.Add(reward);

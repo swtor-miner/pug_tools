@@ -21,7 +21,9 @@ namespace GomLib.Models
         Artwork = 11,
         Kitsch = 12,
         Pet = 13,
-        Secret = 14
+        Secret = 14,
+        Delicacies = 15,
+        Maintenance = 16,
     }
 
     public static class GiftTypeExtensions
@@ -53,6 +55,8 @@ namespace GomLib.Models
                 case "itmGiftKitsch": return GiftType.Kitsch;
                 case "itmGiftPet": return GiftType.Pet;
                 case "itmGiftSecret": return GiftType.Secret;
+                case "itmGiftDelicacies": return GiftType.Delicacies;
+                case "itmGiftMaintenance": return GiftType.Maintenance;
                 default: throw new InvalidOperationException("Invalid GiftType: " + str);
             }
         }
