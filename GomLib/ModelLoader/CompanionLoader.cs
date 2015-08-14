@@ -13,6 +13,8 @@ namespace GomLib.ModelLoader
         Dictionary<object, object> crewData;
         Dictionary<object, object> factionLookup;
         Dictionary<object, object> npcNodeIdLookup;
+        Dictionary<ulong, List<ulong>> CompanionAcquireMap;
+        Dictionary<ulong, ulong> NpcToNcoMap;
 
         private DataObjectModel _dom;
 
@@ -29,6 +31,8 @@ namespace GomLib.ModelLoader
             crewData = new Dictionary<object, object>();
             factionLookup = new Dictionary<object, object>();
             npcNodeIdLookup = new Dictionary<object, object>();
+            CompanionAcquireMap = new Dictionary<ulong, List<ulong>>();
+            NpcToNcoMap = new Dictionary<ulong, ulong>();
         }
 
         public string ClassName
@@ -49,9 +53,30 @@ namespace GomLib.ModelLoader
                     crewPositionLookup = crewProto.Data.ValueOrDefault<Dictionary<object, object>>("scFFCrewPositionData", crewPositionLookup);
                     crewData = crewProto.Data.Get<Dictionary<object, object>>("scFFShipsCrewAndPatternData");
                     factionLookup = crewProto.Data.Get<Dictionary<object, object>>("scFFCrewFactionData");
-                    npcNodeIdLookup = crewProto.Data.Get<Dictionary<object, object>>("scFFCrewNpcNodeData");
+                    npcNodeIdLookup = crewProto.Data.Get<Dictionary<object, object>>("scFFCrewNpcNodeData"); 
                 }
                 crewProto = null;
+
+                var chrCompanionInfo_Prototype = _dom.GetObject("chrCompanionInfo_Prototype");
+                var chrCompanionPermittedLookup = chrCompanionInfo_Prototype.Data.ValueOrDefault<Dictionary<object, object>>("chrCompanionPermittedLookup", new Dictionary<object, object>());
+
+                foreach (var kvp in chrCompanionPermittedLookup)
+                {
+                    foreach (var cmpid in (List<object>)kvp.Value) {
+                        if (!CompanionAcquireMap.ContainsKey((ulong)cmpid))
+                        {
+                            CompanionAcquireMap.Add((ulong)cmpid, new List<ulong>());
+                        }
+                        CompanionAcquireMap[(ulong)cmpid].Add((ulong)kvp.Key);
+                    }
+                }
+
+                var contactsPrototype = _dom.GetObject("contactsPrototype");
+                if (contactsPrototype != null)
+                {
+                    var contactsNpcToNcoMap = contactsPrototype.Data.ValueOrDefault<Dictionary<object, object>>("contactsNpcToNcoMap", new Dictionary<object, object>());
+                    NpcToNcoMap = contactsNpcToNcoMap.ToDictionary(x => (ulong)x.Key, x => (ulong)x.Value);
+                }
             }
 
             cmp._dom = _dom;
@@ -63,6 +88,9 @@ namespace GomLib.ModelLoader
             cmp.Name = cmp.Npc.Name;
             cmp.LocalizedName = cmp.Npc.LocalizedName;
             cmp.uId = cmp.Npc.Id;
+
+            List<ulong> classes;
+            CompanionAcquireMap.TryGetValue(npcId, out classes);
 
             object portrait;
             if(obj.Dictionary.TryGetValue("chrCompanionInfo_portrait", out portrait))
@@ -201,6 +229,51 @@ namespace GomLib.ModelLoader
                 }
             }
 
+            List<ulong> outList;
+            CompanionAcquireMap.TryGetValue(cmp.Npc.Id, out outList);
+            cmp.AllowedClasses = outList;
+
+            ulong ncoId;
+            NpcToNcoMap.TryGetValue(npcId, out ncoId);
+            if(ncoId != 0)
+            {
+                GomObject ncoObj = _dom.GetObject(ncoId);
+                if (ncoObj != null) {
+                    StringTable conCats = _dom.stringTable.Find("str.sys.contactcategories");
+
+                    var acquireConditionals = ncoObj.Data.ValueOrDefault("ncoAcquireConditionalList", new List<object>()); //loop through and load these
+                    var allianceAlerts = ncoObj.Data.ValueOrDefault("ncoAllianceAlertList", new List<object>()); //loop through and load these
+                    long ncoInfluenceCap = ncoObj.Data.ValueOrDefault<long>("ncoInfluenceCap", 0);
+                    long ncoCategoryId = ncoObj.Data.ValueOrDefault<long>("ncoCategory", 0);
+
+                    string ncoCategory = "";
+                    if (ncoCategoryId != 0)
+                        ncoCategory = conCats.GetText(ncoCategoryId, "str.sys.contactcategories");
+
+                    long ncoSubCategoryId = ncoObj.Data.ValueOrDefault<long>("ncoSubCategory", 0);
+                    string ncoSubCategory = "";
+                    if (ncoSubCategoryId != 0)
+                        ncoSubCategory = conCats.GetText(ncoSubCategoryId, "str.sys.contactcategories");
+
+                    long ncoAcquireMinLevel = ncoObj.Data.ValueOrDefault<long>("ncoAcquireMinLevel", 0);
+
+                    ulong ncoNpcId = ncoObj.Data.ValueOrDefault<ulong>("ncoNpcId", 0);
+
+                    string ncoPreviewIcon = ncoObj.Data.ValueOrDefault("ncoPreviewIcon", "");
+
+                    Dictionary<object, object> ncoInteractionList = ncoObj.Data.ValueOrDefault("ncoInteractionList", new Dictionary<object, object>());
+
+                    foreach(var kvp in ncoInteractionList)
+                    {
+                        var key = (ulong)kvp.Key;
+                        var val = (long)kvp.Value;
+                        
+
+
+                    }
+                }
+            }
+
             return cmp;
         }
 
@@ -219,6 +292,27 @@ namespace GomLib.ModelLoader
         public void LoadReferences(Models.GameObject obj, GomObject gom)
         {
             // No references to load
+        }
+
+        public static string ClassFromId(ulong id)
+        {
+            string comp;
+
+            switch (id)
+            {
+                case 0: comp = "All/Temporary?"; break;
+                case 16140902893827567561: comp = "Sith Warrior"; break;
+                case 16140912704077491401: comp = "Smuggler"; break;
+                case 16140943676484767978: comp = "Imperial Agent"; break;
+                case 16140973599688231714: comp = "Trooper"; break;
+                case 16141010271067846579: comp = "Sith Inquisitor"; break;
+                case 16141119516274073244: comp = "Jedi Knight"; break;
+                case 16141170711935532310: comp = "Bounty Hunter"; break;
+                case 16141179471541245792: comp = "Jedi Consular"; break;
+                default: comp = "Unknown"; break;
+            }
+
+            return comp;
         }
     }
 }

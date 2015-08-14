@@ -38,6 +38,7 @@ namespace GomLib.Models
         public ulong SpaceAbilityId { get; set; }
         public string SpaceIcon { get; set; }
         public ulong uId { get; set; }
+        public List<ulong> AllowedClasses { get; set; }
 
         public override int GetHashCode()
         {
@@ -174,6 +175,8 @@ namespace GomLib.Models
                         new XAttribute("Id", Npc.NodeId)),
                     new XElement("Potrait", Portrait));
 
+                    if (AllowedClasses != null)
+                        companion.Add(new XElement("AvailableFor", String.Join(", ", AllowedClasses.Select(x => GomLib.ModelLoader.CompanionLoader.ClassFromId(x)).ToList())));
                     int p = 1;
                     foreach (var prof in ProfessionModifiers)
                     {
