@@ -108,7 +108,7 @@ namespace tor_tools
             weaponAppearance = new Dictionary<object, object>(tempAppear);
             tempAppear.Clear();
 
-            mntMountInfoTable = currentDom.GetObject("mntMountInfoPrototype").Data.Get<Dictionary<object, object>>("4611686298607484000");          
+            mntMountInfoTable = currentDom.GetObject("mntMountInfoPrototype").Data.Get<Dictionary<object, object>>("mntMountInfoData");          
             
             HashSet<string> nodeDirs = new HashSet<string>();
             HashSet<string> allDirs = new HashSet<string>();

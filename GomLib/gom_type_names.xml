@@ -8164,4 +8164,64 @@
   <gom_type Id="4611686303956034000" name="contactsNcoToNpcMap" desc="" />
   <gom_type Id="4611686304732534010" name="contactsQstConditionalMap" desc="" />
   <gom_type Id="4611686353485807001" name="contactsNpcToNcoMap" desc="" />
+  
+  <!-- mntMountInfoPrototype -->
+  <gom_type Id="4611686298607484000" name="mntMountInfoData" desc="" />
+  <gom_type Id="4611686298532394003" name="mntDataShortId" desc="" />
+  <gom_type Id="4611686298607484001" name="mntDataIndexId" desc="" />
+  <gom_type Id="4611686298607484002" name="mntShortIdtoIndexIdMap" desc="" />
+  <gom_type Id="4611686303581454000" name="mntDataFlourishVFX" desc="" />
+  <gom_type Id="4611686299207604004" name="mntDataNpc" desc="" />
+  <gom_type Id="4611686302137434001" name="mntDataDecoration" desc="" />
+  
+  <!-- lgcUnlockPrototypeMap -->
+  <gom_type Id="4611686284007810010" name="lgcUnlockData" desc="" />
+  <gom_type Id="4611686333892320006" name="lgcUnlockIndexId" desc="" />
+  <gom_type Id="4611686334119970107" name="lgcUnlockIcon" desc="" />
+  <gom_type Id="4611687142041890000" name="lgcUnlockQuestIdList" desc="" />  
+  <gom_type Id="4611686334261800000" name="lgcUnlockRaceEnum" desc="" />
+  <gom_type Id="4611686334061210001" name="lgcUnlockShortId" desc="" />  
+  <gom_type Id="4611686284237490025" name="lgcUnlockQuestIdtoIndexIdMap" desc="" />
+  <gom_type Id="4611686333919460004" name="lgcUnlockShortIdtoIndexIdMap" desc="" />
+  <gom_type Id="4611686334223610000" name="lgcUnlockRaceEnumtoIndexIdMap" desc="" />
+  <gom_type Id="4611686284007810005" name="lgcUnlockUnlockCredits" desc="" />
+  <gom_type Id="4611686333919460000" name="lgcUnlockStringId" desc="/resources/en-us/str/lgc/unlocks.stb - Add 2819976742305792 to the Id" />
+  <gom_type Id="4611686333919460002" name="lgcUnlockDescStringId" desc="/resources/en-us/str/lgc/unlocks.stb - Add 2819976742305792 to the Id" />
+  <gom_type Id="4611686284007810004" name="lgcUnlockDisplayColumn" desc="" />
+  <gom_type Id="4611686334261180019" name="lgcUnlockUnknown1" desc="" />  
+  <gom_type Id="4611686284197510005" name="lgcUnlockUnknown2" desc="" />  
+  <gom_type Id="4611686334119970108" name="lgcUnlockDisplayPage" desc="" />  
+  <gom_type Id="4611686334119970109" name="lgcUnlockDisplaySection" desc="" />  
+  <gom_type Id="4611686334119970110" name="lgcUnlockDisplayRow" desc="" />  
+  
+  <!-- lgcPerkPrototypeMap -->   
+  <gom_type Id="4611687146302020023" name="lgcPerkData" desc="" />
+  <gom_type Id="4611686284867950077" name="lgcPerkDataQuestIdList" desc="" />
+  <gom_type Id="4611687146302020013" name="lgcPerkDataIcon" desc="" />
+  <gom_type Id="4611687146302020019" name="lgcPerkDataIndexId" desc="" />
+  <gom_type Id="4611687171127580000" name="lgcPerkDataUnknown3" desc="" />  
+  <gom_type Id="4611687146302020021" name="lgcPerkDataShortId" desc="" />  
+  <gom_type Id="4611687146302020010" name="lgcPerkDataUnlockCredits" desc="" />   
+  <gom_type Id="4611686334859990000" name="lgcPerkQuestIdtoIndexIdMap" desc="" />
+  <gom_type Id="4611687146302020022" name="lgcPerkShortIdtoIndexId" desc="" />
+  <gom_type Id="4611687146302020011" name="lgcPerkStringId" desc="/resources/en-us/str/lgc/unlocks.stb - Add 2819976742305792 to the Id" />
+  <gom_type Id="4611687146302020012" name="lgcPerkDescStringId" desc="/resources/en-us/str/lgc/unlocks.stb - Add 2819976742305792 to the Id" />     
+  <gom_type Id="4611687146302020015" name="lgcPerkDisplaySection" desc="" />
+  <gom_type Id="4611687146302020016" name="lgcPerkDisplayRow" desc="" />
+  <gom_type Id="4611687146302020017" name="lgcPerkDisplayColumn" desc="" />
+  <gom_type Id="4611686296690420001" name="lgcPerkMtxStorefrontId" desc="Id in  mtxStorefrontInfoPrototype" />  
+  <gom_type Id="4611687146302020007" name="lgcPerkPrerequisiteUnlock" desc="" />
+  <gom_type Id="4611687146302020008" name="lgcPerkCharacterLevelRequirement" desc="" />
+  <gom_type Id="4611687146302020009" name="lgcPerkLegacyLevelRequirement" desc="" />  
+  <gom_type Id="4611686297923994000" name="lgcPerkUnknown1" desc="" /> 
+  <gom_type Id="4611687146302020014" name="lgcPerkUnknown2" desc="" /> 
+  
+  <!-- lgcLegacyTitlesTablePrototype -->
+  <gom_type Id="4611686347671207005" name="lgcLegacyTitleFactionEnum" desc="" />
+  
+  <!-- lgcAchievementEventsPrototype -->  
+  <gom_type Id="4611686294747500000" name="lgcAchEvtData" desc="" />
+  <gom_type Id="4611686344285660008" name="lgcAchEvtShortIdtoAchIndexIdMap" desc="" />
+  <gom_type Id="4611686344285660009" name="lgcAchEvtAchIndexIdtoShortIdMap" desc="" />
+  
 </gom_types>
