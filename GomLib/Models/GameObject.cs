@@ -112,6 +112,7 @@ namespace GomLib.Models
                 case "class.": return gomItm._dom.classSpecLoader.Load(gomItm);
                 case "ipp.": return gomItm._dom.appearanceLoader.Load(gomItm);
                 case "npp.": return gomItm._dom.appearanceLoader.Load(gomItm);
+                case "nco.": return gomItm._dom.newCompanionLoader.Load(gomItm);
                 default:
                     return null;
             }

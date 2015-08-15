@@ -72,6 +72,7 @@ namespace GomLib
         public CodexLoader codexLoader;
         public CollectionLoader collectionLoader;
         public CompanionLoader companionLoader;
+        public NewCompanionLoader newCompanionLoader;
         public ConquestLoader conquestLoader;
         public ConversationLoader conversationLoader;
         public DecorationLoader decorationLoader;
@@ -130,6 +131,7 @@ namespace GomLib
             mtxStorefrontEntryLoader = new MtxStorefrontEntryLoader(this);
             collectionLoader = new CollectionLoader(this);
             companionLoader = new CompanionLoader(this);
+            newCompanionLoader = new NewCompanionLoader(this);
             conquestLoader = new ConquestLoader(this);
             conversationLoader = new ConversationLoader(this);
             decorationLoader = new DecorationLoader(this);
@@ -424,6 +426,7 @@ namespace GomLib
                 classSpecLoader.Flush();
                 codexLoader.Flush();
                 companionLoader.Flush();
+                newCompanionLoader.Flush();
                 decorationLoader.Flush();
                 disciplineLoader.Flush();
                 encounterLoader.Flush();

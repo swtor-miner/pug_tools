@@ -442,6 +442,9 @@ namespace tor_tools
                         // do something else here.
                         throw new NotImplementedException();
                     break;
+                case "nco.":
+                    obj = dom.newCompanionLoader.Load(gObject);
+                    break;
                 default:
                     throw new NotImplementedException();
             }
@@ -625,6 +628,7 @@ namespace tor_tools
                     if (extensions.Contains("CMP"))
                     {
                         DisableButtons();
+                        getObjects("nco.", "NewCompanions");
                         getPrototypeObjects("Companions", "chrCompanionInfo_Prototype", "chrCompanionInfoData");
                     }
                     if (extensions.Contains("MTX"))
