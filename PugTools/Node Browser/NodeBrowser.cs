@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Xml;
+using System.Xml.Linq;
+using System.Xml.Serialization;
 using System.Windows.Forms.Integration;
 using GomLib;
 using TorLib;
@@ -75,7 +77,7 @@ namespace tor_tools
             InitializeComponent();
 
             Config.Load();
-            txtExtractPath.Text = Config.ExtractAssetsPath;
+            txtExtractPath.Text = Config.ExtractPath;
             this.extractPath = txtExtractPath.Text;
             
             List<object> args = new List<object>();
@@ -399,7 +401,7 @@ namespace tor_tools
             this.currentTreeNode = asset.Id.ToString();
             dataGridView1.DataSource = dt;
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-
+            
             return;
 
             /*
@@ -476,8 +478,9 @@ namespace tor_tools
         private void enableUI()
         {
             this.dataGridView1.Enabled = true;
-            //this.txtExtractPath.Enabled = true;            
-            //this.btnExtract.Enabled = true;            
+            this.txtExtractPath.Enabled = true;
+            this.btnChooseExtract.Enabled = true;
+            this.btnExtract.Enabled = true;            
             this.txtSearch.Enabled = true;
             this.btnSearch.Enabled = true;
             this.txtFilter.Enabled = true;
@@ -492,34 +495,28 @@ namespace tor_tools
 
         private async void btnExtract_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Function disabled for now");
-            return;
-
-            this.extractPath = txtExtractPath.Text;
-
             TreeNode node = treeViewFast1.SelectedNode;
-            TreeListItem asset = (TreeListItem)node.Tag;
-
-            if (asset.hashInfo.file != null)
+            NodeAsset asset = (NodeAsset)node.Tag;                      
+            WriteFile(new XDocument(new XElement(asset.obj.Print())), asset.obj.Name + ".xml", false, false);
+            MessageBox.Show("Extracted " + asset.obj.Name + " to " + this.extractPath);
+        } 
+        
+        public void WriteFile(XDocument content, string filename, bool append, bool trimEmpty)
+        {
+            if (trimEmpty)
             {
-                showLoader();
-                //extractAsset(asset.file);
-                hideLoader();
+                content.Descendants()
+                    .Where(e => e.IsEmpty || String.IsNullOrWhiteSpace(e.Value))
+                    .Remove();
             }
-            else
+            if (content.Root.IsEmpty) return;                       
+            filename = filename.Replace('/', '.');
+            if (!System.IO.Directory.Exists(this.extractPath)) { System.IO.Directory.CreateDirectory(this.extractPath); }
+            using (System.IO.StreamWriter file2 = new System.IO.StreamWriter(this.extractPath + filename, append))
             {
-                if (node.Nodes.Count > 0)
-                {
-                    if (MessageBox.Show("Extract all objects from " + node.Name + "?", "Extract Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                    {
-                        showLoader();
-                        await Task.Run(() => extractByNode(node.Nodes));
-                        hideLoader();
-                        MessageBox.Show("Extraction Completed");
-                    }
-                }
-            }
-        }           
+                content.Save(file2, SaveOptions.None);
+            } 
+        }
         
         private async void btnSearch_Click(object sender, EventArgs e)
         {            
@@ -582,6 +579,7 @@ namespace tor_tools
             fbd.SelectedPath = txtExtractPath.Text;
             DialogResult result = fbd.ShowDialog();
             txtExtractPath.Text = fbd.SelectedPath + "\\";
+            this.extractPath = txtExtractPath.Text;
         }
 
         private void btnToggleCollapse_Click(object sender, EventArgs e)
@@ -729,7 +727,7 @@ namespace tor_tools
                     {
                         foreach (var field in fields)
                         {
-                            if (item.name == field.field)
+                            if (item.displayName == field.field)
                             {
                                 switch (field.type)
                                 {
@@ -781,13 +779,18 @@ namespace tor_tools
                             return;
                         else
                         {
+                            if (item.displayName == "String Value")
+                                return;
                             string value = (string)item.value;
                             if (value.Contains("/") || value.Contains("\\"))
                             {
-                                if(value.Contains("</text>") || value.Contains("<locComment />"))
+                                if(value.Contains("</text>") || value.Contains("<locComment />") || value.Contains("/%") || value.Contains("/$"))
                                     return;
-                                NodeOutput output = new NodeOutput(this.currentNode, this.currentItem, this.currentParent, item.name.ToString(), value);
-                                outputList.Add(output);
+                                if (BuildCSV)
+                                {
+                                    NodeOutput output = new NodeOutput(this.currentNode, this.currentItem, this.currentParent, item.name.ToString(), value);
+                                    outputList.Add(output);
+                                }                                
                                 outputData.Add(value);
                             }
                         }

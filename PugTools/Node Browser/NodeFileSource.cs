@@ -83,10 +83,10 @@ namespace tor_tools
 
             strItems = new List<NodeFileSourceItem> { new NodeFileSourceItem("/", "fx") };            
             sources.Add("gun_", strItems);
-
-            strItems = new List<NodeFileSourceItem> { new NodeFileSourceItem("string", "string") };            
+            
+            strItems = new List<NodeFileSourceItem> { new NodeFileSourceItem("hydAction", "string") };            
             sources.Add("hyd.", strItems);
-
+            
             strItems = new List<NodeFileSourceItem> { new NodeFileSourceItem("hydAnimationAction", "anim") };            
             sources.Add("hydAnimationInfoPrototype", strItems);
 
