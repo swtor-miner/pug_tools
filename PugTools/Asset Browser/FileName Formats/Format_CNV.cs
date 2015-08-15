@@ -36,6 +36,12 @@ namespace tor_tools
                 fileNames.Add(stb);
                 fileNames.Add(acb);
                 fileNames.Add(fxe);
+
+                //Check for alien vo files.
+                if(obj.Name.StartsWith("cnv.alien_vo"))
+                {
+                    fileNames.Add("/resources/bnk2/" + under + ".acb");
+                }
             }
         }
 
