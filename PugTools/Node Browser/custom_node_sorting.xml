@@ -14,6 +14,7 @@
 		<node name="bom_" parent="GSF_Nodes" />
 		<node name="bomber_" parent="GSF_Nodes" />
 		<node name="capacitor_" parent="GSF_Nodes" />
+		<node name="chase." parent="GSF_Nodes" />
 		<node name="conSpec_scff_" parent="GSF_Nodes" />
 		<node name="death." parent="GSF_Nodes" />
 		<node name="drone_" parent="GSF_Nodes" />
@@ -22,6 +23,7 @@
 		<node name="FFDeath" parent="GSF_Nodes" />
 		<node name="FFSpace" parent="GSF_Nodes" />
 		<node name="FFSPACE" parent="GSF_Nodes" />
+		<node name="freelook." parent="GSF_Nodes" />
 		<node name="gun_" parent="GSF_Nodes" />
 		<node name="gunship_" parent="GSF_Nodes" />
 		<node name="HANGAR" parent="GSF_Nodes" />
@@ -30,11 +32,13 @@
 		<node name="infiltrator_" parent="GSF_Nodes" />
 		<node name="locked." parent="GSF_Nodes" />
 		<node name="magazine_" parent="GSF_Nodes" />
+		<node name="MasterComponentMap" parent="GSF_Nodes" />    
 		<node name="padlock." parent="GSF_Nodes" />
 		<node name="premium_" parent="GSF_Nodes" />
 		<node name="pweap_" parent="GSF_Nodes" />
 		<node name="reactor_" parent="GSF_Nodes" />
 		<node name="rep_" parent="GSF_Nodes" />
+		<node name="sc." parent="GSF_Nodes" />
 		<node name="SCFF" parent="GSF_Nodes" />
 		<node name="scFF" parent="GSF_Nodes" />
 		<node name="scff" parent="GSF_Nodes" />
@@ -51,6 +55,7 @@
 		<node name="sweap_" parent="GSF_Nodes" />
 		<node name="sys_" parent="GSF_Nodes" />
 		<node name="thruster_" parent="GSF_Nodes" />
+		<node name="tl." parent="GSF_Nodes" />
 		<!-- GSF Nodes End -->
 
 		<!-- GSH_Nodes Start -->
