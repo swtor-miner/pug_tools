@@ -8147,4 +8147,21 @@
   <gom_type Id="4611687174637480000" name="grpFindRewardQuests" desc="" />
   <!-- -->
   <gom_type Id="4611686354288897000" name="itmModifierNewPackagesList" desc="" />
+  <!-- -->
+  <gom_type Id="4611686303592534045" name="chrCompanionPermittedLookup" desc="" />
+  <!-- nco. -->
+  <gom_type Id="4611686304392734004" name="ncoAcquireConditionalList" desc="" />
+  <gom_type Id="4611686304586124003" name="ncoAllianceAlertList" desc="" />
+  <gom_type Id="4611686353485627000" name="ncoInfluenceCap" desc="" />
+  <gom_type Id="4611686353877427000" name="ncoCategory" desc="" />
+  <gom_type Id="4611686353877427001" name="ncoSubCategory" desc="" />
+  <gom_type Id="4611686354113987000" name="ncoAcquireMinLevel" desc="" />
+  <gom_type Id="4611686353485537003" name="ncoInteractionList" desc="" />
+  <gom_type Id="4611686353485537007" name="ncoNpcId" desc="" />
+  <gom_type Id="4611686353485537001" name="ncoPreviewIcon" desc="" />
+  
+  <!-- contactsPrototype -->
+  <gom_type Id="4611686303956034000" name="contactsNcoToNpcMap" desc="" />
+  <gom_type Id="4611686304732534010" name="contactsQstConditionalMap" desc="" />
+  <gom_type Id="4611686353485807001" name="contactsNpcToNcoMap" desc="" />
 </gom_types>

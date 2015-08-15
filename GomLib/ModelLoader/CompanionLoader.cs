@@ -13,6 +13,8 @@ namespace GomLib.ModelLoader
         Dictionary<object, object> crewData;
         Dictionary<object, object> factionLookup;
         Dictionary<object, object> npcNodeIdLookup;
+        Dictionary<ulong, List<ulong>> CompanionAcquireMap;
+        Dictionary<ulong, ulong> NpcToNcoMap;
 
         private DataObjectModel _dom;
 
@@ -29,11 +31,23 @@ namespace GomLib.ModelLoader
             crewData = new Dictionary<object, object>();
             factionLookup = new Dictionary<object, object>();
             npcNodeIdLookup = new Dictionary<object, object>();
+            CompanionAcquireMap = new Dictionary<ulong, List<ulong>>();
+            NpcToNcoMap = new Dictionary<ulong, ulong>();
         }
 
         public string ClassName
         {
             get { return "chrCompanionInfoRow"; }
+        }
+
+        public Companion Load(ulong npcId)
+        {
+            var gom = _dom.GetObject("chrCompanionInfo_Prototype");
+
+            var chrCompanionInfoData = gom.Data.ValueOrDefault<Dictionary<object, object>>("chrCompanionInfoData", new Dictionary<object, object>());
+            if (!chrCompanionInfoData.ContainsKey(npcId))
+                return null;
+            return Load(new Companion(), npcId, (GomObjectData)chrCompanionInfoData[npcId]);
         }
 
         public Models.Companion Load(Models.Companion cmp, ulong npcId, GomObjectData obj)
@@ -49,9 +63,30 @@ namespace GomLib.ModelLoader
                     crewPositionLookup = crewProto.Data.ValueOrDefault<Dictionary<object, object>>("scFFCrewPositionData", crewPositionLookup);
                     crewData = crewProto.Data.Get<Dictionary<object, object>>("scFFShipsCrewAndPatternData");
                     factionLookup = crewProto.Data.Get<Dictionary<object, object>>("scFFCrewFactionData");
-                    npcNodeIdLookup = crewProto.Data.Get<Dictionary<object, object>>("scFFCrewNpcNodeData");
+                    npcNodeIdLookup = crewProto.Data.Get<Dictionary<object, object>>("scFFCrewNpcNodeData"); 
                 }
                 crewProto = null;
+
+                var chrCompanionInfo_Prototype = _dom.GetObject("chrCompanionInfo_Prototype");
+                var chrCompanionPermittedLookup = chrCompanionInfo_Prototype.Data.ValueOrDefault<Dictionary<object, object>>("chrCompanionPermittedLookup", new Dictionary<object, object>());
+
+                foreach (var kvp in chrCompanionPermittedLookup)
+                {
+                    foreach (var cmpid in (List<object>)kvp.Value) {
+                        if (!CompanionAcquireMap.ContainsKey((ulong)cmpid))
+                        {
+                            CompanionAcquireMap.Add((ulong)cmpid, new List<ulong>());
+                        }
+                        CompanionAcquireMap[(ulong)cmpid].Add((ulong)kvp.Key);
+                    }
+                }
+
+                var contactsPrototype = _dom.GetObject("contactsPrototype");
+                if (contactsPrototype != null)
+                {
+                    var contactsNpcToNcoMap = contactsPrototype.Data.ValueOrDefault<Dictionary<object, object>>("contactsNpcToNcoMap", new Dictionary<object, object>());
+                    NpcToNcoMap = contactsNpcToNcoMap.ToDictionary(x => (ulong)x.Key, x => (ulong)x.Value);
+                }
             }
 
             cmp._dom = _dom;
@@ -63,6 +98,9 @@ namespace GomLib.ModelLoader
             cmp.Name = cmp.Npc.Name;
             cmp.LocalizedName = cmp.Npc.LocalizedName;
             cmp.uId = cmp.Npc.Id;
+
+            List<ulong> classes;
+            CompanionAcquireMap.TryGetValue(npcId, out classes);
 
             object portrait;
             if(obj.Dictionary.TryGetValue("chrCompanionInfo_portrait", out portrait))
@@ -201,6 +239,14 @@ namespace GomLib.ModelLoader
                 }
             }
 
+            List<ulong> outList;
+            CompanionAcquireMap.TryGetValue(npcId, out outList);
+            cmp.AllowedClasses = outList;
+
+            ulong ncoId;
+            NpcToNcoMap.TryGetValue(npcId, out ncoId);
+            cmp.NcoId = ncoId;
+
             return cmp;
         }
 
@@ -214,6 +260,176 @@ namespace GomLib.ModelLoader
             // Parse filename
             var filename = System.IO.Path.GetFileNameWithoutExtension(portrait);
             return filename;
+        }
+
+        public void LoadReferences(Models.GameObject obj, GomObject gom)
+        {
+            // No references to load
+        }
+
+        public static string ClassFromId(ulong id)
+        {
+            string comp;
+
+            switch (id)
+            {
+                case 0: comp = "All/Temporary?"; break;
+                case 16140902893827567561: comp = "Sith Warrior"; break;
+                case 16140912704077491401: comp = "Smuggler"; break;
+                case 16140943676484767978: comp = "Imperial Agent"; break;
+                case 16140973599688231714: comp = "Trooper"; break;
+                case 16141010271067846579: comp = "Sith Inquisitor"; break;
+                case 16141119516274073244: comp = "Jedi Knight"; break;
+                case 16141170711935532310: comp = "Bounty Hunter"; break;
+                case 16141179471541245792: comp = "Jedi Consular"; break;
+                default: comp = "Unknown"; break;
+            }
+
+            return comp;
+        }
+    }
+    public class NewCompanionLoader : IModelLoader
+    {
+        const long NameLookupKey = -2761358831308646330;
+        const long TitleLookupKey = 4860477835249092778;
+        const long UnknownLookupKey = 814171245593979527;
+
+        Dictionary<ulong, NewCompanion> idMap;
+        Dictionary<string, NewCompanion> nameMap;
+        Dictionary<string, NewCompanion> unknownMap;
+
+        private DataObjectModel _dom;
+        public NewCompanionLoader(DataObjectModel dom)
+        {
+            _dom = dom;
+            if (nameMap == null)
+            {
+                Flush();
+            }
+        }
+
+        public void Flush()
+        {
+            idMap = new Dictionary<ulong, NewCompanion>();
+            nameMap = new Dictionary<string, NewCompanion>();
+            unknownMap = new Dictionary<string, NewCompanion>();
+        }
+
+        public string ClassName
+        {
+            get { return "ncoNewCompanion"; }
+        }
+
+        public long SubCategoryId { get; private set; }
+
+        public Models.NewCompanion Load(ulong nodeId)
+        {
+            NewCompanion result;
+            if (idMap.TryGetValue(nodeId, out result))
+            {
+                return result;
+            }
+
+            GomObject obj = _dom.GetObject(nodeId);
+            Models.NewCompanion ach = new NewCompanion();
+            return Load(ach, obj);
+        }
+
+
+        public Models.NewCompanion Load(string fqn)
+        {
+            NewCompanion result;
+            if (nameMap.TryGetValue(fqn, out result))
+            {
+                return result;
+            }
+
+            GomObject obj = _dom.GetObject(fqn);
+            Models.NewCompanion ach = new NewCompanion();
+            return Load(ach, obj);
+        }
+
+        public Models.NewCompanion Load(GomObject obj)
+        {
+            Models.NewCompanion ach = new NewCompanion();
+            return Load(ach, obj);
+        }
+
+        public Models.GameObject CreateObject()
+        {
+            return new Models.NewCompanion();
+        }
+
+        public Models.NewCompanion Load(Models.GameObject obj, GomObject gom)
+        {
+            if (gom == null) { return (NewCompanion)obj; }
+            if (obj == null) { return null; }
+
+            var nco = obj as NewCompanion;
+
+            nco.Fqn = gom.Name;
+            nco.Id = gom.Id;
+            nco._dom = _dom;
+            nco.References = gom.References;
+
+            // New Companion Info
+
+            StringTable conCats = _dom.stringTable.Find("str.sys.contactcategories");
+
+                nco.AcquireConditionals = gom.Data.ValueOrDefault("ncoAcquireConditionalList", new List<object>()); //loop through and load these
+                nco.AllianceAlerts = gom.Data.ValueOrDefault("ncoAllianceAlertList", new List<object>()); //loop through and load these
+                nco.InfluenceCap = gom.Data.ValueOrDefault<long>("ncoInfluenceCap", 0);
+                nco.CategoryId = gom.Data.ValueOrDefault<long>("ncoCategory", 0);
+
+                nco.Category = "";
+                if (nco.CategoryId != 0)
+                    nco.Category = conCats.GetText(nco.CategoryId, "str.sys.contactcategories");
+
+                nco.SubCategoryId = gom.Data.ValueOrDefault<long>("ncoSubCategory", 0);
+                nco.SubCategory = "";
+                if (nco.SubCategoryId != 0)
+                    nco.SubCategory = conCats.GetText(nco.SubCategoryId, "str.sys.contactcategories");
+
+                nco.AcquireMinLevel = gom.Data.ValueOrDefault<long>("ncoAcquireMinLevel", 0);
+
+                nco.NpcId = gom.Data.ValueOrDefault<ulong>("ncoNpcId", 0);
+
+                nco.PreviewIcon = gom.Data.ValueOrDefault("ncoPreviewIcon", "");
+
+            Dictionary<object, object> ncoInteractionList = gom.Data.ValueOrDefault("ncoInteractionList", new Dictionary<object, object>());
+
+            foreach (var kvp in ncoInteractionList)
+            {
+                var key = (ulong)kvp.Key;
+                var val = (long)kvp.Value;
+
+
+
+            }
+
+            var textLookup = gom.Data.Get<Dictionary<object, object>>("locTextRetrieverMap");
+
+            // Load Achievement Name
+            var nameLookupData = (GomObjectData)textLookup[NameLookupKey];
+            nco.NameId = nameLookupData.Get<long>("strLocalizedTextRetrieverStringID");
+            nco.LocalizedName = _dom.stringTable.TryGetLocalizedStrings("str.nco", nameLookupData);
+            nco.Name = _dom.stringTable.TryGetString("str.nco", nameLookupData);
+
+            // Load Achievement Description
+            var titleLookupData = (GomObjectData)textLookup[TitleLookupKey];
+            nco.TitleId = titleLookupData.Get<long>("strLocalizedTextRetrieverStringID");
+            nco.LocalizedTitle = _dom.stringTable.TryGetLocalizedStrings("str.nco", titleLookupData);
+            nco.Title = _dom.stringTable.TryGetString("str.nco", titleLookupData);
+            
+
+            gom.Unload();
+            return nco;
+        }
+        
+        public void LoadObject(Models.GameObject loadMe, GomObject obj)
+        {
+            GomLib.Models.NewCompanion ach = (Models.NewCompanion)loadMe;
+            Load(ach, obj);
         }
 
         public void LoadReferences(Models.GameObject obj, GomObject gom)
