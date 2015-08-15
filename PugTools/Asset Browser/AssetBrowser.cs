@@ -1428,13 +1428,21 @@ namespace tor_tools
                     string[] lines = System.IO.File.ReadAllLines(file);
                     foreach (var line in lines)
                     {
-                        if (line.Contains("#"))
+                        if (line.Contains("#")) //old hash dict format
                         {
                             string[] temp = line.Split('#');
                             if (temp.Length < 3 || temp[2].Length == 0)
                                 continue;
                             else
                                 testLines.Add(temp[2].ToLower());
+                        }
+                        else if (line.Contains("?")) //new hash dict format
+                        {
+                            string[] temp = line.Split('?');
+                            if (temp.Length < 4 || temp[3].Length == 0)
+                                continue;
+                            else
+                                testLines.Add(temp[3].ToLower());
                         }
                         else
                         {
@@ -1445,15 +1453,18 @@ namespace tor_tools
                     foreach (string line in testLines)
                     {                        
                         hasher.Hash(line, 0xdeadbeef);
-                        UpdateResults results = this.hashData.dictionary.UpdateHash(hasher.ph, hasher.sh, line, 0);                    
-                        if (results == UpdateResults.UPTODATE)
-                        {                            
-                            continue;
-                        }
-                        
-                        if (results != UpdateResults.NOT_FOUND)
-                        {                            
-                            this.foundFiles.Add(line);
+                        List<UpdateResults> results = this.hashData.dictionary.UpdateHash(hasher.ph, hasher.sh, line, 0);
+                        foreach (UpdateResults result in results)
+                        {
+                            if (result == UpdateResults.UPTODATE)
+                            {
+                                continue;
+                            }
+
+                            if (result != UpdateResults.NOT_FOUND)
+                            {
+                                this.foundFiles.Add(line);
+                            }
                         }
                     }
                     testLines.Clear();
