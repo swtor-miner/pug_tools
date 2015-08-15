@@ -192,6 +192,8 @@ namespace GomLib.ModelLoader
             result.ChoiceDisabledForHolocom = data.ValueOrDefault<bool>("cnvIsVoteWinDisabledForHolocom", false);
             result.AbortsConversation = data.ValueOrDefault<bool>("cnvAbortConversation", false);
             result.IsPlayerNode = data.ValueOrDefault<bool>("cnvIsPcNode", false);
+            result.cnvAlienVOFQN = data.ValueOrDefault<string>("cnvAlienVOConvoFQN", string.Empty);
+            result.cnvAlienVONode = data.ValueOrDefault<long>("cnvAlienVONodeNumber", -1);
 
             result.ActionHook = QuestHookExtensions.ToQuestHook(data.ValueOrDefault<string>("cnvActionHook", null));
 
