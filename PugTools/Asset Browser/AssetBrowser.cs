@@ -189,7 +189,7 @@ namespace tor_tools
 
                         if (hashInfo.IsNamed)
                         {
-                            if (hashInfo.FileName == "metadata.bin" || hashInfo.FileName == "ft.sig")
+                            if (hashInfo.FileName == "metadata.bin" || hashInfo.FileName == "ft.sig" || hashInfo.FileName == "groupmanifest.bin")
                             {
                                 continue;
                             }
