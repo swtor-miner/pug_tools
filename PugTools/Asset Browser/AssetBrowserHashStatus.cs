@@ -44,11 +44,11 @@ namespace tor_tools
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             dt = new DataTable();
-            dt.Columns.Add("Archive");
-            dt.Columns.Add("Total Files");
-            dt.Columns.Add("Named Files");
-            dt.Columns.Add("Missing Files");
-            dt.Columns.Add("Completion");
+            dt.Columns.Add("Archive", typeof(string));
+            dt.Columns.Add("Total Files", typeof(int));
+            dt.Columns.Add("Named Files", typeof(int));
+            dt.Columns.Add("Missing Files", typeof(int));
+            dt.Columns.Add("Completion", typeof(double));            
 
             foreach (Library lib in currentAssets.libraries)
             {
@@ -72,7 +72,14 @@ namespace tor_tools
                     }
                     int intMissing = intTotal - intNamed;
                     double dblCompletion = (double)intNamed / (double)intTotal;
-                    dt.Rows.Add(new string[] { archName, String.Format("{0:n0}", intTotal), String.Format("{0:n0}", intNamed), String.Format("{0:n0}", intMissing), String.Format("{0:0.0%}", dblCompletion) });
+                    DataRow row = dt.NewRow();
+                    row[0] = archName;
+                    row[1] = intTotal;
+                    row[2] = intNamed;
+                    row[3] = intMissing;
+                    row[4] = dblCompletion;
+                    dt.Rows.Add(row);
+                    //dt.Rows.Add(new string[] { archName, String.Format("{0:n0}", intTotal), String.Format("{0:n0}", intNamed), String.Format("{0:n0}", intMissing), String.Format("{0:0.0%}", dblCompletion) });
                 }
             }
         }
@@ -82,6 +89,11 @@ namespace tor_tools
             dgvHashStatus.DataSource = dt;
             dgvHashStatus.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             dgvHashStatus.Enabled = true;
+            dgvHashStatus.Columns["Total Files"].DefaultCellStyle.Format = "0";
+            dgvHashStatus.Columns["Named Files"].DefaultCellStyle.Format = "0";
+            dgvHashStatus.Columns["Missing Files"].DefaultCellStyle.Format = "0";            
+            dgvHashStatus.Columns["Completion"].DefaultCellStyle.Format = "0.0%";
+
             intAllMissing = intAllTotal - intAllNamed;
             dblAllCompletion = (double)intAllNamed / (double)intAllTotal;
 
