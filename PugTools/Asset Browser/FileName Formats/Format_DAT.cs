@@ -309,6 +309,7 @@ namespace tor_tools
                     outputNames.WriteLine(file.Replace("\\", "/"));
                 }
                 outputNames.Close();
+                fileNames.Clear();
             }
 
             if (this.errors.Count > 0)
@@ -319,6 +320,7 @@ namespace tor_tools
                     outputErrors.WriteLine(error);
                 }
                 outputErrors.Close();
+                errors.Clear();
             }
         }
     }

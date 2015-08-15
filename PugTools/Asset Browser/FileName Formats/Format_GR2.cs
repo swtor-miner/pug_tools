@@ -157,6 +157,7 @@ namespace tor_tools
                     outputMeshNames.Write(output);
                 }
                 outputMeshNames.Close();
+                meshNames.Clear();
             }
 
             if (this.matNames.Count > 0)
@@ -167,6 +168,7 @@ namespace tor_tools
                     outputMatNames.Write("/resources/art/shaders/materials/" + file + ".mat" + "\r\n");
                 }
                 outputMatNames.Close();
+                matNames.Clear();
             }
 
             if (this.errors.Count > 0)
@@ -177,6 +179,7 @@ namespace tor_tools
                     outputErrors.Write(error + "\r\n");
                 }
                 outputErrors.Close();
+                errors.Clear();
             }
         }
     }

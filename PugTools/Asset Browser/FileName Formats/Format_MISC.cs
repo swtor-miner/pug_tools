@@ -47,6 +47,7 @@ namespace tor_tools
                 fileNames.Add("/resources/gfx/mtxstore/" + partial + "_260x400.dds");
                 fileNames.Add("/resources/gfx/mtxstore/" + partial + "_328x160.dds");
                 fileNames.Add("/resources/gfx/mtxstore/" + partial + "_400x400.dds");
+                obj.Unload();
             }
         }
 
@@ -56,6 +57,7 @@ namespace tor_tools
             {
                 string full = obj.Name.ToLower().ToString();
                 fileNames.Add("/resources/gfx/codex/" + full + ".dds");
+                obj.Unload();
             }
         }
 
@@ -88,9 +90,9 @@ namespace tor_tools
 
                     }
                 }
+                obj.Unload();
             }
             worldAreas.Clear();
-            GC.Collect();
                         
             foreach(var gomItm in worldAreasProto)
             {
@@ -125,10 +127,8 @@ namespace tor_tools
                     area.MapPages.Clear();
                 }                
                 area.Assets.Clear();
-                area = null;                
             }
             worldAreasProto.Clear();
-            GC.Collect();
         }       
 
         public void ParseMISC_NODE(Dictionary<string, DomType> nodeDict)
@@ -137,6 +137,7 @@ namespace tor_tools
             {
                 GomObject node = (GomObject)obj.Value;
                 fileNames.Add("/resources/systemgenerated/prototypes/" + node.Id.ToString() + ".node");
+                node.Unload();
             }
         }
 
@@ -154,8 +155,8 @@ namespace tor_tools
                     outputNames.Write(file.Replace("\\", "/") + "\r\n");
                 }
                 outputNames.Close();
+                fileNames.Clear();
             }
-            fileNames.Clear();
 
             this.found += this.worldFileNames.Count();
             if (this.worldFileNames.Count > 0)
@@ -176,8 +177,8 @@ namespace tor_tools
                     lineCount++;
                 }
                 outputNames.Close();
+                worldFileNames.Clear();
             }
-            worldFileNames.Clear();
     
             if(this.errors.Count > 0)
             {
@@ -187,9 +188,8 @@ namespace tor_tools
                     outputErrors.Write(error + "\r\n");
                 }
                 outputErrors.Close();
+                errors.Clear();
             }
-            errors.Clear();
-            GC.Collect();
         }
     }
 }

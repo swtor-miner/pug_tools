@@ -82,6 +82,7 @@ namespace tor_tools
                     outputFileNames.WriteLine(file);
                 }
                 outputFileNames.Close();
+                fileNames.Clear();
             }           
 
             if (this.errors.Count > 0)
@@ -92,6 +93,7 @@ namespace tor_tools
                     outputErrors.Write(error + "\r\n");
                 }
                 outputErrors.Close();
+                errors.Clear();
             }
         }
     }
