@@ -30,22 +30,32 @@ namespace tor_tools
                 fileTypes.Add("CNV");
             if (this.chkDAT.Checked)
                 fileTypes.Add("DAT");
+            if (this.chkDYN.Checked)
+                fileTypes.Add("DYN");
             if (this.chkEPP.Checked)
                 fileTypes.Add("EPP");
             if (this.chkFXSPEC.Checked)
                 fileTypes.Add("FXSPEC");
             if (this.chkGR2.Checked)
                 fileTypes.Add("GR2");
+            if (this.chkHYD.Checked)
+                fileTypes.Add("HYD");
+            if (this.chkICONS.Checked)
+                fileTypes.Add("ICONS");
             if (this.chkMAT.Checked)
                 fileTypes.Add("MAT");
             if (this.chkMISC.Checked)
                 fileTypes.Add("MISC");
             if (this.chkMISC_WORLD.Checked)
                 fileTypes.Add("MISC_WORLD");
+            if (this.chkPLC.Checked)
+                fileTypes.Add("PLC");
             if (this.chkPRT.Checked)
                 fileTypes.Add("PRT");
             if (this.chkSDEF.Checked)
                 fileTypes.Add("SDEF");
+            if (this.chkSTB.Checked)
+                fileTypes.Add("STB");
             if (this.chkXML.Checked)
                 fileTypes.Add("XML");
             return fileTypes;
@@ -57,15 +67,20 @@ namespace tor_tools
             this.chkAMX.Checked = value;
             this.chkBNK.Checked = value;
             this.chkCNV.Checked = value;                
-            this.chkDAT.Checked = value;                
+            this.chkDAT.Checked = value;
+            this.chkDYN.Checked = value;
             this.chkEPP.Checked = value;
             this.chkFXSPEC.Checked = value;                
-            this.chkGR2.Checked = value;                
+            this.chkGR2.Checked = value;
+            this.chkHYD.Checked = value;
+            this.chkICONS.Checked = value;
             this.chkMAT.Checked = value;
             this.chkMISC.Checked = value;
-            this.chkMISC_WORLD.Checked = value;               
+            this.chkMISC_WORLD.Checked = value;
+            this.chkPLC.Checked = value;
             this.chkPRT.Checked = value;
             this.chkSDEF.Checked = value;
+            this.chkSTB.Checked = value;
             this.chkXML.Checked = value;
         }
     }

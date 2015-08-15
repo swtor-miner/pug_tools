@@ -13,6 +13,7 @@ namespace tor_tools
     {
         public string dest = "";
         public HashSet<string> fileNames = new HashSet<string>();
+        public HashSet<string> animFileNames = new HashSet<string>();
         public List<string> errors = new List<string>();
         public string extension;
 
@@ -51,28 +52,28 @@ namespace tor_tools
                             var actionProvider = action.Attribute("actionProvider").Value + ".mph";
                             if (fullDirectory.Contains("/humanoid/humanoid/"))
                             {
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfanew/") + actionProvider);
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfanew/") + actionProvider + ".amx");
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfbnew/") + actionProvider);
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfbnew/") + actionProvider + ".amx");
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfnnew/") + actionProvider);
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfnnew/") + actionProvider + ".amx");
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfsnew/") + actionProvider);
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfsnew/") + actionProvider + ".amx");
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfanew/") + actionProvider);
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfanew/") + actionProvider + ".amx");
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfbnew/") + actionProvider);
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfbnew/") + actionProvider + ".amx");
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfnnew/") + actionProvider);
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfnnew/") + actionProvider + ".amx");
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfsnew/") + actionProvider);
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfsnew/") + actionProvider + ".amx");
 
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmanew/") + actionProvider);
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmanew/") + actionProvider + ".amx");
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmfnew/") + actionProvider);
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmfnew/") + actionProvider + ".amx");
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmnnew/") + actionProvider);
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmnnew/") + actionProvider + ".amx");
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmsnew/") + actionProvider);
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmsnew/") + actionProvider + ".amx");
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmanew/") + actionProvider);
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmanew/") + actionProvider + ".amx");
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmfnew/") + actionProvider);
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmfnew/") + actionProvider + ".amx");
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmnnew/") + actionProvider);
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmnnew/") + actionProvider + ".amx");
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmsnew/") + actionProvider);
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmsnew/") + actionProvider + ".amx");
                             }
                             else
                             {
-                                fileNames.Add(fullDirectory + actionProvider);
-                                fileNames.Add(fullDirectory + actionProvider + ".amx");
+                                animFileNames.Add(fullDirectory + actionProvider);
+                                animFileNames.Add(fullDirectory + actionProvider + ".amx");
                             }
                         }
                         if (action.Attribute("animName") != null)
@@ -83,37 +84,37 @@ namespace tor_tools
                                 animationName += ".jba";
                                 if (fullDirectory.Contains("/humanoid/humanoid/"))
                                 {
-                                    fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfanew/") + animationName);
-                                    fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfbnew/") + animationName);
-                                    fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfnnew/") + animationName);
-                                    fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfsnew/") + animationName);
+                                    animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfanew/") + animationName);
+                                    animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfbnew/") + animationName);
+                                    animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfnnew/") + animationName);
+                                    animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfsnew/") + animationName);
 
-                                    fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmanew/") + animationName);
-                                    fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmfnew/") + animationName);
-                                    fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmnnew/") + animationName);
-                                    fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmsnew/") + animationName);
+                                    animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmanew/") + animationName);
+                                    animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmfnew/") + animationName);
+                                    animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmnnew/") + animationName);
+                                    animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmsnew/") + animationName);
                                 }
                                 else
                                 {
-                                    fileNames.Add(fullDirectory + animationName);
+                                    animFileNames.Add(fullDirectory + animationName);
                                 }
                             }
                         }
                         actionName += ".jba";
                         if (fullDirectory.Contains("/humanoid/humanoid/"))
-                        {                            
-                            fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfanew/") + actionName);
-                            fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfbnew/") + actionName);
-                            fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfnnew/") + actionName);
-                            fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfsnew/") + actionName);
+                        {
+                            animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfanew/") + actionName);
+                            animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfbnew/") + actionName);
+                            animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfnnew/") + actionName);
+                            animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfsnew/") + actionName);
 
-                            fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmanew/") + actionName);
-                            fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmfnew/") + actionName);
-                            fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmnnew/") + actionName);
-                            fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmsnew/") + actionName);
+                            animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmanew/") + actionName);
+                            animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmfnew/") + actionName);
+                            animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmnnew/") + actionName);
+                            animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmsnew/") + actionName);
                         }
                         else
-                            fileNames.Add(fullDirectory + actionName);
+                            animFileNames.Add(fullDirectory + actionName);
                     }
                     XElement networkElem = aamElement.Element("networks");
                     if(networkElem == null)
@@ -128,28 +129,28 @@ namespace tor_tools
                         {
                             if (fullDirectory.Contains("/humanoid/humanoid/"))
                             {
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfanew/") + fqnName);
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfanew/") + fqnName + ".amx");
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfbnew/") + fqnName);
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfbnew/") + fqnName + ".amx");
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfnnew/") + fqnName);
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfnnew/") + fqnName + ".amx");
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfsnew/") + fqnName);
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfsnew/") + fqnName + ".amx");
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfanew/") + fqnName);
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfanew/") + fqnName + ".amx");
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfbnew/") + fqnName);
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfbnew/") + fqnName + ".amx");
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfnnew/") + fqnName);
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfnnew/") + fqnName + ".amx");
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfsnew/") + fqnName);
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bfsnew/") + fqnName + ".amx");
 
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmanew/") + fqnName);
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmanew/") + fqnName + ".amx");
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmfnew/") + fqnName);
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmfnew/") + fqnName + ".amx");
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmnnew/") + fqnName);
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmnnew/") + fqnName + ".amx");
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmsnew/") + fqnName);
-                                fileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmsnew/") + fqnName + ".amx");
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmanew/") + fqnName);
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmanew/") + fqnName + ".amx");
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmfnew/") + fqnName);
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmfnew/") + fqnName + ".amx");
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmnnew/") + fqnName);
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmnnew/") + fqnName + ".amx");
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmsnew/") + fqnName);
+                                animFileNames.Add(fullDirectory.Replace("/humanoid/humanoid/", "/humanoid/bmsnew/") + fqnName + ".amx");
                             }
                             else
                             {
-                                fileNames.Add(fullDirectory + fqnName);
-                                fileNames.Add(fullDirectory + fqnName + ".amx");
+                                animFileNames.Add(fullDirectory + fqnName);
+                                animFileNames.Add(fullDirectory + fqnName + ".amx");
                             }
                         }
                     }
@@ -249,8 +250,19 @@ namespace tor_tools
                 outputNames.Close();
                 fileNames.Clear();
             }
-    
-            if(this.errors.Count > 0)
+
+            if (this.animFileNames.Count > 0)
+            {
+                System.IO.StreamWriter outputAnimNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_anim_file_names.txt", false);
+                foreach (string file in animFileNames)
+                {
+                    outputAnimNames.Write(file.Replace("\\", "/") + "\r\n");
+                }
+                outputAnimNames.Close();
+                animFileNames.Clear();
+            }
+
+            if (this.errors.Count > 0)
             {
                 System.IO.StreamWriter outputErrors = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_error_list.txt", false);
                 foreach (string error in errors)

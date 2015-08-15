@@ -19,6 +19,7 @@ namespace tor_tools
         public List<string> errors = new List<string>();
         public string extension;
         public int found;
+        public int searched;
 
         public Format_MISC(string dest, string ext)
         {
@@ -30,6 +31,7 @@ namespace tor_tools
         {
             foreach (GomObject obj in ippNodes)
             {
+                searched++;
                 string full = obj.Name.ToLower().ToString();
                 string partial = obj.Name.ToLower().ToString().Replace("ipp.", "");
 
@@ -55,9 +57,25 @@ namespace tor_tools
         {
             foreach (GomObject obj in cdxNodes)
             {
+                searched++;
                 string full = obj.Name.ToLower().ToString();
                 fileNames.Add("/resources/gfx/codex/" + full + ".dds");
                 obj.Unload();
+            }
+        }
+
+        public void ParseMISC_ITEM(Dictionary<object, object> itemApperances)
+        {
+            foreach (KeyValuePair<object,object> kvp in itemApperances)
+            {
+                searched++;
+                var itemAppearance = (GomObjectData)kvp.Value;
+                string itmModel = itemAppearance.ValueOrDefault<string>("itmModel", null);
+                if (itmModel != null)               
+                    fileNames.Add(("/resources/" + (itmModel.Replace("\\", "/"))).Replace("//", "/"));
+                string itmFxSpec = itemAppearance.ValueOrDefault<string>("itmFxSpec", null);
+                if(itmFxSpec != null)
+                    fileNames.Add(("/resources/art/fx/fxspec/" + itmFxSpec + ".fxspec").Replace("//", "/").Replace(".fxspec.fxspec", ".fxspec"));
             }
         }
 
@@ -65,6 +83,7 @@ namespace tor_tools
         {
             foreach (GomObject obj in worldAreas)
             {
+                searched++;
                 UInt64 areaId = obj.Data.ValueOrDefault<ulong>("mapDataContainerAreaID", 0);
                 if (areaId > 0)
                 {
@@ -105,7 +124,7 @@ namespace tor_tools
                         continue;
                     }                 
                 }
-                
+                searched++;
                 if (area.MapPages != null)
                 {
                     int ii = 0;
@@ -135,6 +154,7 @@ namespace tor_tools
         {               
             foreach (var obj in nodeDict)
             {
+                searched++;
                 GomObject node = (GomObject)obj.Value;
                 fileNames.Add("/resources/systemgenerated/prototypes/" + node.Id.ToString() + ".node");
                 node.Unload();

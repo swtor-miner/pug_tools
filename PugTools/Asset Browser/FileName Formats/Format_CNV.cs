@@ -15,6 +15,7 @@ namespace tor_tools
         public string dest = "";
         public HashSet<string> fileNames = new HashSet<string>();
         public HashSet<string> animNames = new HashSet<string>();
+        public HashSet<string> fxSpecNames = new HashSet<string>();
         public List<string> errors = new List<string>();
         public string extension;
 
@@ -36,6 +37,45 @@ namespace tor_tools
                 fileNames.Add(stb);
                 fileNames.Add(acb);
                 fileNames.Add(fxe);
+
+                //Check for alien vo files.
+                if(obj.Name.StartsWith("cnv.alien_vo"))
+                {
+                    fileNames.Add("/resources/bnk2/" + under + ".acb");
+                }
+                if (obj.Data.Dictionary.ContainsKey("cnvActionList"))
+                {
+                    var actionData = obj.Data.Get<List<object>>("cnvActionList");
+                    if (actionData != null)
+                    {
+                        foreach (string action in actionData)
+                        {
+                            if (action.Contains("stg."))
+                                continue;
+                            animNames.Add(action.Split('.').Last().ToLower());
+                        }                                                
+                    }
+                }
+
+                if (obj.Data.Dictionary.ContainsKey("cnvActiveVFXList"))
+                {
+                    var vfxData = obj.Data.Get<Dictionary<object, object>>("cnvActiveVFXList");
+                    if (vfxData != null)
+                    {
+                        foreach (KeyValuePair<object, object> kvp in vfxData)
+                        {
+                            List<object> value = (List<object>)kvp.Value;
+                            if (value.Count > 0)
+                            {
+                                foreach (string vfx in value)
+                                {
+                                    fxSpecNames.Add(vfx.ToLower());
+                                }                                                                
+                            }
+                        }                                                
+                    }
+                }
+                obj.Unload();
             }
         }
 
@@ -52,6 +92,28 @@ namespace tor_tools
                 }
                 outputNames.Close();
                 fileNames.Clear(); 
+            }
+
+            if (this.animNames.Count > 0)
+            {
+                System.IO.StreamWriter outputAnimNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_anim_names.txt", false);
+                foreach (string file in animNames)
+                {
+                    outputAnimNames.Write(file.Replace("\\", "/") + "\r\n");
+                }
+                outputAnimNames.Close();
+                animNames.Clear();
+            }
+
+            if (this.fxSpecNames.Count > 0)
+            {
+                System.IO.StreamWriter outputfxSpecNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_fxspec_names.txt", false);
+                foreach (string file in fxSpecNames)
+                {
+                    outputfxSpecNames.Write(file.Replace("\\", "/") + "\r\n");
+                }
+                outputfxSpecNames.Close();
+                fxSpecNames.Clear();
             }
            
             if(this.errors.Count > 0)

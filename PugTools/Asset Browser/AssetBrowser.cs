@@ -598,7 +598,7 @@ namespace tor_tools
                     render.Join();
                     panelRender.Clear();
                 }  
-                await Task.Run(() => loadObject(asset.hashInfo.file));                
+                await Task.Run(() => loadObject(asset.hashInfo.file));
                 //DynamicFileByteProvider byteProvider = new DynamicFileByteProvider(this.inputStream);
                 //hexBox1.ByteProvider = byteProvider;
                 //this.inputStream.Position = 0;
@@ -1201,8 +1201,8 @@ namespace tor_tools
                         Stream assetStream = asset.hashInfo.file.OpenCopyInMemory();
                         xml_mat_reader.ParseXML(assetStream, asset.hashInfo.Directory + "/" + asset.hashInfo.FileName);                
                     }
-                    xml_mat_reader.WriteFile();
-                    this.namesFound = xml_mat_reader.fileNames.Count();
+                    this.namesFound = xml_mat_reader.fileNames.Count + xml_mat_reader.animFileNames.Count;
+                    xml_mat_reader.WriteFile();                    
                     break;
                 case "EPP":
                     Format_EPP epp_reader = new Format_EPP(this.extractPath, extension);
@@ -1214,8 +1214,8 @@ namespace tor_tools
                         epp_reader.ParseEPP(assetStream, asset.hashInfo.Directory + "/" + asset.hashInfo.FileName);                
                     }
                     epp_reader.ParseEPPNodes(eppNodes);
-                    epp_reader.WriteFile();
-                    this.namesFound = epp_reader.fileNames.Count();
+                    this.namesFound = epp_reader.fileNames.Count;
+                    epp_reader.WriteFile();                    
                     break;
                 case "PRT":
                     Format_PRT prt_reader = new Format_PRT(this.extractPath, extension);
@@ -1225,8 +1225,8 @@ namespace tor_tools
                         Stream assetStream = asset.hashInfo.file.OpenCopyInMemory();
                         prt_reader.parsePRT(assetStream, asset.hashInfo.Directory + "/" + asset.hashInfo.FileName);                
                     }
-                    prt_reader.WriteFile();
-                    this.namesFound = prt_reader.fileNames.Count();
+                    this.namesFound = prt_reader.fileNames.Count;
+                    prt_reader.WriteFile();                    
                     break;
                 case "GR2":
                     Format_GR2 gr2_reader = new Format_GR2(this.extractPath, extension);
@@ -1237,10 +1237,9 @@ namespace tor_tools
                         this.filesSearched++;
                         Stream assetStream = asset.hashInfo.file.OpenCopyInMemory();
                         gr2_reader.parseGR2(assetStream, asset.hashInfo.Directory + "/" + asset.hashInfo.FileName, asset.hashInfo.file.Archive);
-                    }
+                    }                    
+                    this.namesFound = gr2_reader.matNames.Count + gr2_reader.meshNames.Count;
                     gr2_reader.WriteFile(true);
-                    this.namesFound = gr2_reader.matNames.Count();
-                    this.namesFound += gr2_reader.meshNames.Count();
                     break;
                 case "BNK":
                     Format_BNK bnk_reader = new Format_BNK(this.extractPath, extension);
@@ -1250,8 +1249,8 @@ namespace tor_tools
                         Stream assetStream = asset.hashInfo.file.OpenCopyInMemory();
                         bnk_reader.parseBNK(assetStream, asset.hashInfo.Directory + "/" + asset.hashInfo.FileName);
                     }
-                    bnk_reader.WriteFile();
                     this.namesFound = bnk_reader.found;
+                    bnk_reader.WriteFile();                    
                     break;
                 case "DAT":
                     Format_DAT dat_reader = new Format_DAT(this.extractPath, extension);
@@ -1261,15 +1260,17 @@ namespace tor_tools
                         Stream assetStream = asset.hashInfo.file.OpenCopyInMemory();
                         dat_reader.parseDAT(assetStream, asset.hashInfo.Directory + "/" + asset.hashInfo.FileName);
                     }
-                    dat_reader.WriteFile();
-                    this.namesFound = dat_reader.fileNames.Count();
+                    this.namesFound = dat_reader.fileNames.Count;
+                    dat_reader.WriteFile();                    
                     break;
                 case "CNV":
                     List<GomObject> cnvNodes = dom.GetObjectsStartingWith("cnv.");
                     Format_CNV cnv_node_parser = new Format_CNV(this.extractPath, extension);
                     cnv_node_parser.ParseCNVNodes(cnvNodes);
+                    this.namesFound = cnv_node_parser.fileNames.Count + cnv_node_parser.animNames.Count + cnv_node_parser.fxSpecNames.Count;
+                    this.filesSearched += cnvNodes.Count();
                     cnv_node_parser.WriteFile();
-                    this.namesFound = cnv_node_parser.fileNames.Count();                                    
+                    cnvNodes.Clear();         
                     break;
                 case "MISC":
                     Format_MISC misc_parser = new Format_MISC(this.extractPath, extension);
@@ -1281,8 +1282,11 @@ namespace tor_tools
                     dom.nodeLookup.TryGetValue(typeof(GomObject), out nodeDict);                    
                     misc_parser.ParseMISC_NODE(nodeDict);
                     //nodeDict.Clear(); //this was destroying dom.nodeLookup causing an annoyingly hard to locate exception.
+                    Dictionary<object, object> itemApperances = dom.GetObject("itmAppearanceDatatable").Data.Get<Dictionary<object, object>>("itmAppearances");
+                    misc_parser.ParseMISC_ITEM(itemApperances);                    
                     misc_parser.WriteFile();
                     this.namesFound = misc_parser.found;
+                    this.filesSearched += misc_parser.searched;
                     break;
                 case "MISC_WORLD":
                     Format_MISC misc_world_parser = new Format_MISC(this.extractPath, extension);                    
@@ -1290,8 +1294,7 @@ namespace tor_tools
                     List<GomObject> areaList2 = dom.GetObjectsStartingWith("world.areas.");
                     misc_world_parser.ParseMISC_WORLD(areaList2, areaList, dom);
                     areaList.Clear();
-                    areaList2.Clear();
-                    //GC.Collect();
+                    areaList2.Clear();                    
                     misc_world_parser.WriteFile();
                     this.namesFound = misc_world_parser.found;
                     break;
@@ -1303,8 +1306,8 @@ namespace tor_tools
                         Stream assetStream = asset.hashInfo.file.OpenCopyInMemory();
                         fxspec_parser.ParseFXSPEC(assetStream, asset.hashInfo.Directory + "/" + asset.hashInfo.FileName);
                     }
-                    fxspec_parser.WriteFile();
                     this.namesFound = fxspec_parser.fileNames.Count();
+                    fxspec_parser.WriteFile();                    
                     break;
                 case "AMX":
                     Format_AMX amx_parser = new Format_AMX(this.extractPath, extension);
@@ -1314,8 +1317,8 @@ namespace tor_tools
                         Stream assetStream = asset.hashInfo.file.OpenCopyInMemory();
                         amx_parser.parseAMX(assetStream, asset.hashInfo.Directory + "/" + asset.hashInfo.FileName);
                     }
-                    amx_parser.WriteFile();
                     this.namesFound = amx_parser.fileNames.Count();
+                    amx_parser.WriteFile();                    
                     break;
                 case "SDEF":
                     Format_SDEF sdef_parser = new Format_SDEF(this.extractPath, extension);
@@ -1323,6 +1326,47 @@ namespace tor_tools
                     sdef_parser.parseSDEF(sdef.OpenCopyInMemory());
                     sdef_parser.WriteFile();
                     this.namesFound = sdef_parser.found;
+                    this.filesSearched = 1;                    
+                    break;
+                case "HYD":
+                    List<GomObject> hydNodes = dom.GetObjectsStartingWith("hyd.");
+                    Format_HYD hyd_parser = new Format_HYD(this.extractPath, extension);
+                    hyd_parser.parseHYD(hydNodes);
+                    this.namesFound = hyd_parser.animFileNames.Count + hyd_parser.vfxFileNames.Count;
+                    this.filesSearched += hydNodes.Count();
+                    hyd_parser.WriteFile();
+                    hydNodes.Clear();
+                    break;
+                case "DYN":
+                    List<GomObject> dynNodes = dom.GetObjectsStartingWith("dyn.");
+                    Format_DYN dyn_parser = new Format_DYN(this.extractPath, extension);
+                    dyn_parser.parseDYN(dynNodes);
+                    this.namesFound = dyn_parser.fileNames.Count + dyn_parser.unknownFileNames.Count;
+                    this.filesSearched += dynNodes.Count();
+                    dyn_parser.WriteFile();
+                    break;
+                case "ICONS":                    
+                    Format_ICONS icon_parser = new Format_ICONS(this.extractPath, extension);
+                    icon_parser.parseICONS(dom);
+                    this.namesFound = icon_parser.fileNames.Count;
+                    this.filesSearched += icon_parser.searched;
+                    icon_parser.WriteFile();
+                    break;
+                case "PLC":
+                    List<GomObject> plcNodes = dom.GetObjectsStartingWith("plc.");
+                    Format_PLC plc_parser = new Format_PLC(this.extractPath, extension);
+                    plc_parser.parsePLC(plcNodes);
+                    this.namesFound = plc_parser.fileNames.Count;
+                    this.filesSearched += plcNodes.Count();
+                    plc_parser.WriteFile();
+                    break;
+                case "STB":                    
+                    Format_STB stb_parser = new Format_STB(this.extractPath, extension);                    
+                    TorLib.File manifest = AssetHandler.Instance.getCurrentAssets().FindFile("/resources/gamedata/str/stb.manifest");
+                    stb_parser.parseSTBManifest(manifest.OpenCopyInMemory());
+                    this.namesFound = stb_parser.fileNames.Count;
+                    this.filesSearched += 1;
+                    stb_parser.WriteFile();
                     break;
                 default:
                     break;
