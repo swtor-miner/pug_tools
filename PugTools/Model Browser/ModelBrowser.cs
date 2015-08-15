@@ -1239,10 +1239,11 @@ namespace tor_tools
                     string model;
                     model = slotDict.Value[0].Model.Replace("[bt]", slotDict.Value[0].BodyType);
                     if (model.Contains(".gr2"))
-                    {   
-                        Stream modelStream = this.currentAssets.FindFile("/resources" + model).OpenCopyInMemory();
-                        if (modelStream != null)
+                    {
+                        var filemodel = this.currentAssets.FindFile("/resources" + model);
+                        if (filemodel != null)
                         {
+                            Stream modelStream = filemodel.OpenCopyInMemory();
                             BinaryReader br = new BinaryReader(modelStream);
                             string name = model.Split('/').Last();
                             FileFormats.GR2 gr2_model = new FileFormats.GR2(br, name);
@@ -1286,9 +1287,11 @@ namespace tor_tools
                                 foreach (var attach in slotDict.Value[0].AttachedModels)
                                 {
                                     string attachFileName = attach.Replace("[bt]", slotDict.Value[0].BodyType);
-                                    Stream attachModelStream = this.currentAssets.FindFile("/resources" + attachFileName).OpenCopyInMemory();
-                                    if (attachModelStream != null)
+                                    var file = this.currentAssets.FindFile("/resources" + attachFileName);
+                                    
+                                    if (file != null)
                                     {
+                                        Stream attachModelStream = file.OpenCopyInMemory();
                                         BinaryReader br2 = new BinaryReader(attachModelStream);
                                         string attachName = attachFileName.Split('/').Last();
                                         FileFormats.GR2 attachModel = new FileFormats.GR2(br2, attachName);
