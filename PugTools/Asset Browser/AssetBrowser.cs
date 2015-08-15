@@ -602,104 +602,114 @@ namespace tor_tools
                 //DynamicFileByteProvider byteProvider = new DynamicFileByteProvider(this.inputStream);
                 //hexBox1.ByteProvider = byteProvider;
                 //this.inputStream.Position = 0;
-                switch (asset.hashInfo.Extension.ToUpper())
+                if (asset.hashInfo.Directory == "/resources/systemgenerated/compilednative")
                 {
-                    case "DDS":                        
-                        await Task.Run(() => previewDDS());
-                        checkDDSPath(asset.hashInfo.Directory);
-                        pictureBox1.Visible = true;
-                        break;
-                    case "PNG":
-                        await Task.Run(() => previewPNG());                        
-                        pictureBox1.Visible = true;
-                        break;
-                    case "XML":
-                    case "MAT":
-                    case "TEX":
-                    case "EMT":
-                    case "EPP":
-                    case "FXSPEC":
-                    case "RUL":
-                    case "MANIFEST":
-                    case "SVY":
-                    case "TBL":
-                    case "LOD":
-                        await Task.Run(() => previewXML());
-                        webBrowser1.Visible = true;        
-                        break;
-                    case "NOT":                        
-                        await Task.Run(() => previewNOT());
-                        webBrowser1.Visible = true;                              
-                        break;
-                    case "DAT":
-                        rootList.Clear();
-                        await Task.Run(() => previewDAT());
-                        treeListView1.Roots = rootList;
-                        treeListView1.ExpandAll();                        
-                        hideLoader();
-                        //txtRawView.Visible = true;
-                        treeListView1.Visible = true;
-                        break;
-                    case "DYC":
-                    case "MAG":
-                    case "PRT":
-                        txtRawView.Visible = true;    
-                        await Task.Run(() => previewRAW());
-                        break;
-                    case "GR2":                       
-                        await Task.Run(() => previewGR2(asset.hashInfo.FileName));                        
-                        renderPanel.Visible = true;                                           
-                        break;
-                    case "STB":
-                        rootList.Clear();
-                        await Task.Run(() => previewSTB());
-                        treeListView1.Roots = rootList;
-                        treeListView1.ExpandAll();                        
-                        hideLoader();                        
-                        treeListView1.Visible = true;
-                        break;
-                    case "BNK":
-                        rootList.Clear();
-                        await Task.Run(() => previewBNK());
-                        treeListView1.Roots = rootList;
-                        treeListView1.ExpandAll();                        
-                        hideLoader();                        
-                        treeListView1.Visible = true;
-                        break;
-                    case "ACB":
-                        rootList.Clear();
-                        await Task.Run(() => previewACB());
-                        treeListView1.Roots = rootList;
-                        treeListView1.ExpandAll();                        
-                        hideLoader();                        
-                        treeListView1.Visible = true;
-                        break;
-                    case "WAV":
-                    case "WEM":
-                        this.treeViewFast1.Enabled = false;
-                        this.toolStripStatusLabel1.Text = "Playing Audio...";
-                        this.toolStripProgressBar1.Visible = true;                        
-                        this.audioState = false;
-                        await Task.Run(() => previewWEM(asset.hashInfo.FileName));                        
-                        this.toolStripStatusLabel1.Text = "Audio Stopped";
-                        this.toolStripProgressBar1.Visible = false;
-                        this.treeViewFast1.Enabled = true;
-                        break;
-                    case "DEP":
-                        this.toolStripStatusLabel1.Text = "Parsing DEP...";
-                        this.toolStripProgressBar1.Visible = true;                        
-                        await Task.Run(() => previewDEP());
-                        treeListView1.Roots = rootList;
-                        treeListView1.ExpandAll();                        
-                        hideLoader();                        
-                        treeListView1.Visible = true;
-                        this.toolStripProgressBar1.Visible = false;
-                        break;
-                    default:                        
-                        await Task.Run(() => previewHEX());                        
-                        txtRawView.Visible = true;
-                        break;                        
+                    await Task.Run(() => previewSCPT());
                 }
+                else
+                {
+	                switch (asset.hashInfo.Extension.ToUpper())
+	                {
+	                    case "DDS":
+	                        await Task.Run(() => previewDDS());
+	                        checkDDSPath(asset.hashInfo.Directory);
+	                        pictureBox1.Visible = true;
+	                        break;
+	                    case "PNG":
+	                        await Task.Run(() => previewPNG());
+	                        pictureBox1.Visible = true;
+	                        break;
+	                    case "XML":
+	                    case "MAT":
+	                    case "TEX":
+	                    case "EMT":
+	                    case "EPP":
+	                    case "FXSPEC":
+	                    case "RUL":
+	                    case "MANIFEST":
+	                    case "SVY":
+	                    case "TBL":
+	                    case "LOD":
+	                        await Task.Run(() => previewXML());
+	                        webBrowser1.Visible = true;
+	                        break;
+	                    case "NOT":
+	                        await Task.Run(() => previewNOT());
+	                        webBrowser1.Visible = true;
+	                        break;
+	                    case "DAT":
+	                        rootList.Clear();
+	                        await Task.Run(() => previewDAT());
+	                        treeListView1.Roots = rootList;
+	                        treeListView1.ExpandAll();
+	                        hideLoader();
+	                        //txtRawView.Visible = true;
+	                        treeListView1.Visible = true;
+	                        break;
+	                    case "DYC":
+	                    case "MAG":
+	                    case "PRT":
+	                        txtRawView.Visible = true;
+	                        await Task.Run(() => previewRAW());
+	                        break;
+	                    case "GR2":
+	                        await Task.Run(() => previewGR2(asset.hashInfo.FileName));
+	                        renderPanel.Visible = true;
+	                        break;
+	                    case "STB":
+	                        rootList.Clear();
+	                        await Task.Run(() => previewSTB());
+	                        treeListView1.Roots = rootList;
+	                        treeListView1.ExpandAll();
+	                        hideLoader();
+	                        treeListView1.Visible = true;
+	                        break;
+	                    case "BNK":
+	                        rootList.Clear();
+	                        await Task.Run(() => previewBNK());
+	                        treeListView1.Roots = rootList;
+	                        treeListView1.ExpandAll();
+	                        hideLoader();
+	                        treeListView1.Visible = true;
+	                        break;
+	                    case "ACB":
+	                        rootList.Clear();
+	                        await Task.Run(() => previewACB());
+	                        treeListView1.Roots = rootList;
+	                        treeListView1.ExpandAll();                        
+	                        hideLoader();                        
+	                        treeListView1.Visible = true;
+	                        break;
+	                    case "WAV":
+	                    case "WEM":
+	                        this.treeViewFast1.Enabled = false;
+	                        this.toolStripStatusLabel1.Text = "Playing Audio...";
+	                        this.toolStripProgressBar1.Visible = true;                        
+	                        this.audioState = false;
+	                        await Task.Run(() => previewWEM(asset.hashInfo.FileName));                        
+	                        this.toolStripStatusLabel1.Text = "Audio Stopped";
+	                        this.toolStripProgressBar1.Visible = false;
+	                        this.treeViewFast1.Enabled = true;
+	                        break;
+	                    case "DEP":
+	                        this.toolStripStatusLabel1.Text = "Parsing DEP...";
+	                        this.toolStripProgressBar1.Visible = true;                        
+	                        await Task.Run(() => previewDEP());
+	                        treeListView1.Roots = rootList;
+	                        treeListView1.ExpandAll();                        
+	                        hideLoader();                        
+	                        treeListView1.Visible = true;
+	                        this.toolStripProgressBar1.Visible = false;
+	                        break;
+                        case "SCPT":
+                            await Task.Run(() => previewSCPT()); 	                        
+	                        break;                              
+	                    default:                        
+	                        await Task.Run(() => previewHEX());                        
+	                        txtRawView.Visible = true;
+	                        break;                        
+	                }
+	            }
                 this.treeListView1.TopItemIndex = 0;
                 this.toolStripStatusLabel1.Text = "File Loaded";
                 this.toolStripStatusLabel2.Text = "";
@@ -836,6 +846,21 @@ namespace tor_tools
             }
         }
 
+        private async Task previewSCPT()
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => previewSCPT()));
+            }
+            else
+            {
+                BinaryReader br = new BinaryReader(this.inputStream);
+                MemoryStream ms = View_SCPT.decryptSCPT(br);
+                DynamicFileByteProvider byteProvider = new DynamicFileByteProvider(ms);
+                hexBox1.ByteProvider = byteProvider;
+                hexBox1.Visible = true;                
+            }
+        }
         static public string Beautify(XmlDocument doc)
         {
             StringBuilder sb = new StringBuilder();
