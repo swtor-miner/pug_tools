@@ -703,7 +703,10 @@ namespace tor_tools
 	                        break;
                         case "SCPT":
                             await Task.Run(() => previewSCPT()); 	                        
-	                        break;                              
+	                        break; 
+                        case "GFX":
+                            await Task.Run(() => previewGFX());
+                            break;
 	                    default:                        
 	                        await Task.Run(() => previewHEX());                        
 	                        txtRawView.Visible = true;
@@ -861,6 +864,23 @@ namespace tor_tools
                 hexBox1.Visible = true;                
             }
         }
+
+        private async Task previewGFX()
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => previewGFX()));
+            }
+            else
+            {
+                BinaryReader br = new BinaryReader(this.inputStream);
+                MemoryStream ms = View_GFX.decompressGFX(br);
+                DynamicFileByteProvider byteProvider = new DynamicFileByteProvider(ms);
+                hexBox1.ByteProvider = byteProvider;
+                hexBox1.Visible = true;
+            }
+        }
+
         static public string Beautify(XmlDocument doc)
         {
             StringBuilder sb = new StringBuilder();

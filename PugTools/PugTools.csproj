@@ -205,6 +205,7 @@
     <Compile Include="Asset Browser\Viewer Functions\View_ACB.cs" />
     <Compile Include="Asset Browser\Viewer Functions\View_BNK.cs" />
     <Compile Include="Asset Browser\Viewer Functions\View_DAT.cs" />
+    <Compile Include="Asset Browser\Viewer Functions\View_GFX.cs" />
     <Compile Include="Asset Browser\Viewer Functions\View_SCPT.cs" />
     <Compile Include="Asset Browser\Viewer Functions\View_DEP.cs" />
     <Compile Include="Asset Browser\Viewer Functions\View_GR2.cs" />
