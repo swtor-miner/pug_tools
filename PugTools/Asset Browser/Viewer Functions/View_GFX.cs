@@ -14,9 +14,9 @@ namespace tor_tools
         {
             byte[] data;
 
-            byte[] header = br.ReadBytes(3);         
+            byte[] header = br.ReadBytes(3);
 
-            if (header[0] == 67 && header[1] == 70 && header[2] == 88)
+            if ((header[0] == 67 && header[1] == 70 && header[2] == 88) || (header[0] == 67 && header[1] == 87 && header[2] == 83))
             {
                 //SmallVersion
                 byte version = br.ReadByte();
