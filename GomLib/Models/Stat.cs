@@ -318,7 +318,10 @@ namespace GomLib.Models
 
         public override string ToString()
         {
-            return DisplayName;
+            if (LocalizedDisplayName != null)
+                return LocalizedDisplayName["enMale"];
+            else
+                return DisplayName;
         }
     }
 

@@ -90,7 +90,7 @@ namespace GomLib.ModelLoader
                         Dictionary<object, object> statModDict = modifierData.ValueOrDefault<Dictionary<object, object>>("itmModPkgAttributePercentages", new Dictionary<object, object>());
 
                         //Key to stat enum, value is the percentage divided by 100.
-                        Dictionary<Models.Stat, float> statValuesByStat = statModDict.ToDictionary(x => Models.StatExtensions.ToStat((ScriptEnum)x.Key),
+                        Dictionary<Models.DetailedStat, float> statValuesByStat = statModDict.ToDictionary(x => _dom.statData.ToStat((ScriptEnum)x.Key),
                             x => ((long)x.Value / 100f));
                         Models.ModPackage package = new Models.ModPackage(variationID, strID, variationName, statValuesByStat, min, max);
                         variationList.Add(package);

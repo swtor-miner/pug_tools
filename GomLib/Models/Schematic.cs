@@ -504,7 +504,7 @@ namespace GomLib.Models
             XElement packageElem = new XElement("Package", new XAttribute("Id", Id));
             packageElem.Add(new XElement("Name", Name), new XElement("MinLevel", MinLevel), new XElement("MaxLevel", MaxLevel));
             XElement statsElem = new XElement("Stats");
-            foreach(KeyValuePair<Stat, float> kvp in AtrributePercentages)
+            foreach(KeyValuePair<DetailedStat, float> kvp in AtrributePercentages)
             {
                 statsElem.Add(new XElement("Stat", new XAttribute("Id", kvp.Key), kvp.Value));
             }
@@ -518,7 +518,7 @@ namespace GomLib.Models
             int hash = NameId.GetHashCode();
             hash ^= Name.GetHashCode();
             hash ^= Id.GetHashCode();
-            foreach(KeyValuePair<Stat, float> kvp in AtrributePercentages)
+            foreach(KeyValuePair<DetailedStat, float> kvp in AtrributePercentages)
             {
                 hash ^= kvp.Key.GetHashCode();
                 hash ^= kvp.Value.GetHashCode();
@@ -556,7 +556,7 @@ namespace GomLib.Models
             return true;
         }
 
-        public ModPackage(long id, long nId, string n, Dictionary<Stat, float> modStats)
+        public ModPackage(long id, long nId, string n, Dictionary<DetailedStat, float> modStats)
         {
             NameId = nId;
             Id = id;
@@ -564,7 +564,7 @@ namespace GomLib.Models
             AtrributePercentages = modStats;
         }
 
-        public ModPackage(long id, long nId, string n, Dictionary<Stat, float> modStats, long min, long max)
+        public ModPackage(long id, long nId, string n, Dictionary<DetailedStat, float> modStats, long min, long max)
         {
             NameId = nId;
             Id = id;
@@ -574,7 +574,7 @@ namespace GomLib.Models
             MaxLevel = max;
         }
         public long NameId { get; set; }
-        public Dictionary<Stat, float> AtrributePercentages { get; set; }
+        public Dictionary<DetailedStat, float> AtrributePercentages { get; set; }
         public long MinLevel { get; set; }
         public long MaxLevel { get; set; }
     }
