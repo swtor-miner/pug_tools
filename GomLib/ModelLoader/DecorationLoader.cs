@@ -236,12 +236,15 @@ namespace GomLib.ModelLoader
                     }
                     else
                     {
-                        ulong baseId = (ulong)results.First().Key;
-                        if (baseId != dec.Id) //self-referencing decoration check!
+                        if (results.Count() > 0)
                         {
-                            var baseDecoration = _dom.decorationLoader.Load(baseId);
-                            dec.Name = String.Format("{0} - Holo", baseDecoration.Name);
-                            dec.SourceDict.Add(0, "Fallback");
+                            ulong baseId = (ulong)results.First().Key;
+                            if (baseId != dec.Id) //self-referencing decoration check!
+                            {
+                                var baseDecoration = _dom.decorationLoader.Load(baseId);
+                                dec.Name = String.Format("{0} - Holo", baseDecoration.Name);
+                                dec.SourceDict.Add(0, "Fallback");
+                            }
                         }
                     }
 

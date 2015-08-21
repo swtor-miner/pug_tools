@@ -14,7 +14,8 @@ namespace tor_tools
     {
         public string dest = "";
         public HashSet<string> fileNames = new HashSet<string>();
-        public HashSet<string> worldFileNames = new HashSet<string>();
+        public HashSet<string> worldFileNames = new HashSet<string>();        
+        public Dictionary<string, HashSet<string>> mapNames = new Dictionary<string, HashSet<string>>();
         public HashSet<string> animNames = new HashSet<string>();
         public List<string> errors = new List<string>();
         public string extension;
@@ -97,16 +98,11 @@ namespace tor_tools
                         foreach (GomLib.GomObjectData mapPage in mapPages)
                         {
                             string mapName = mapPage.ValueOrDefault<string>("mapName", null);
-                            worldFileNames.Add(String.Format("/resources/world/areas/{0}/{1}_r.dds", areaId.ToString(), mapName.ToString()));                            
-                            for (int m = 0; m <= 120; m++)
-                            {
-                                for (int mm = 0; mm <= 60; mm++)
-                                {
-                                    worldFileNames.Add(String.Format("/resources/world/areas/{0}/minimaps/{1}_{2:00}_{3:00}_r.dds", areaId.ToString(), mapName.ToString(), m, mm));                                    
-                                }
-                            }
+                            if (!mapNames.ContainsKey(areaId.ToString()))
+                                mapNames.Add(areaId.ToString(), new HashSet<string>());
+                            mapNames[areaId.ToString()].Add(mapName.ToString());                            
                         }
-
+                        mapPages.Clear();
                     }
                 }
                 obj.Unload();
@@ -133,14 +129,9 @@ namespace tor_tools
                         ii++;
                         if (map_page.HasImage == true)
                         {
-                            worldFileNames.Add(String.Format("/resources/world/areas/{0}/{1}_r.dds", area.AreaId, map_page.MapName));                            
-                            for (int m = 0; m <= 120; m++)
-                            {
-                                for (int mm = 0; mm <= 60; mm++)
-                                {
-                                    worldFileNames.Add(String.Format("/resources/world/areas/{0}/minimaps/{1}_{2:00}_{3:00}_r.dds", area.AreaId, map_page.MapName, m, mm));                                    
-                                }
-                            }
+                            if (!mapNames.ContainsKey(area.AreaId.ToString()))
+                                mapNames.Add(area.AreaId.ToString(), new HashSet<string>());
+                            mapNames[area.AreaId.ToString()].Add(map_page.MapName);                               
                         }
                     }
                     area.MapPages.Clear();
@@ -198,6 +189,40 @@ namespace tor_tools
                 }
                 outputNames.Close();
                 worldFileNames.Clear();
+            }
+
+            this.found += this.mapNames.Count();
+            if (this.mapNames.Count > 0)
+            {
+                System.IO.StreamWriter outputMapNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_world_map_file_names_1.txt", false);
+                int fileCount = 1;
+                int lineCount = 1;
+                foreach (KeyValuePair<string, HashSet<string>> kvp in mapNames)
+                {
+                    foreach (string line in kvp.Value)
+                    {
+                        if (lineCount >= 500000)
+                        {
+                            outputMapNames.Close();
+                            fileCount++;
+                            outputMapNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_world_map_file_names_" + fileCount + ".txt", false);
+                            lineCount = 0;
+                        }
+                        worldFileNames.Add(String.Format("/resources/world/areas/{0}/{1}_r.dds", kvp.Key, line).Replace("\\", "/").Replace("//", "/"));
+                        lineCount++;
+                        for (int m = 0; m <= 50; m++)
+                        {
+                            for (int mm = 0; mm <= 50; mm++)
+                            {
+                                outputMapNames.WriteLine(String.Format("/resources/world/areas/{0}/minimaps/{1}_{2:00}_{3:00}_r.dds", kvp.Key, line, m, mm).Replace("\\", "/").Replace("//", "/"));
+                                lineCount++;
+                            }
+                        }                        
+                    }
+                    kvp.Value.Clear();
+                }
+                outputMapNames.Close();
+                mapNames.Clear();
             }
     
             if(this.errors.Count > 0)

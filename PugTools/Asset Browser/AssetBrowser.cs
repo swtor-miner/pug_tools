@@ -705,6 +705,7 @@ namespace tor_tools
                             await Task.Run(() => previewSCPT()); 	                        
 	                        break; 
                         case "GFX":
+                        case "SWF":
                             await Task.Run(() => previewGFX());
                             break;
 	                    default:                        
@@ -1555,10 +1556,9 @@ namespace tor_tools
                                 this.foundFiles.Add(line);
                             }
                         }
+                        results.Clear();
                     }
                     testLines.Clear();
-                    lines = null;
-                    //GC.Collect();
                 }
             }
         }
