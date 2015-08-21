@@ -160,6 +160,8 @@ namespace GomLib.Models
                 return false;
             if (NcoId != cmp.NcoId)
                 return false;
+            if (this.AllowedClasses != cmp.AllowedClasses)
+                return false;
             return true;
         }
 
