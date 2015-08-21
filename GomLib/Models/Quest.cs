@@ -646,7 +646,7 @@ namespace GomLib.Models
             if (verbose)
             {
                 reward.Add(new XElement("IsAlwaysProvided", IsAlwaysProvided),
-                new XElement("UnknownNum", UnknownNum),
+                new XElement("NumberProvided", NumberOfItem),
                 new XElement("MinLevel", MinLevel),
                 new XElement("MaxLevel", MaxLevel));
 
