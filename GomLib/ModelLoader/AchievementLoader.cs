@@ -16,6 +16,8 @@ namespace GomLib.ModelLoader
         Dictionary<string, Achievement> nameMap;
         Dictionary<string, Achievement> unknownMap;
 
+        Dictionary<ulong, AchievementCatData> CategoryMap { get; set; }
+
         private DataObjectModel _dom;
         public AchievementLoader(DataObjectModel dom)
         {
@@ -31,6 +33,7 @@ namespace GomLib.ModelLoader
             idMap = new Dictionary<ulong, Achievement>();
             nameMap = new Dictionary<string, Achievement>();
             unknownMap = new Dictionary<string, Achievement>();
+            CategoryMap = new Dictionary<ulong, AchievementCatData>();
         }
 
         public string ClassName
@@ -102,6 +105,65 @@ namespace GomLib.ModelLoader
             if (obj == null) { return null; }
 
             var ach = obj as Achievement;
+
+            if(CategoryMap.Count == 0)
+            {
+                var rootCat = _dom.achievementCategoryLoader.Load(0);
+
+                if (rootCat != null)
+                {
+                    foreach (var mainCatId in rootCat.SubCategories) // things like location, events, etc
+                    {
+                        var mainCat = _dom.achievementCategoryLoader.Load(mainCatId);
+                        if (mainCat.Rows.Count > 0)
+                        {
+                            string soinon = ""; //main cats shouldn't have these
+                        }
+                        foreach (var subCatId in mainCat.SubCategories) //planets, areas, etc
+                        {
+                            var subCat = _dom.achievementCategoryLoader.Load(subCatId);
+                            if (subCat.Rows.Count > 0)
+                            {
+                                string soinon = ""; //sub cats shouldn't have these
+                            }
+                            foreach (var tertCatId in subCat.SubCategories)  //final category
+                            {
+                                var tertCat = _dom.achievementCategoryLoader.Load(tertCatId);
+                                if (tertCat.SubCategories.Count != 0)
+                                {
+                                    string nested = ""; //nested cats?
+                                }
+                                if (tertCat.Rows.Count != 0)
+                                {
+                                    for (int r = 0; r < tertCat.Rows.Count; r++)
+                                    {
+                                        for (int c = 0; c < tertCat.Rows[r].Count; c++)
+                                        {
+                                            AchievementCatData dat = new AchievementCatData(mainCat, subCat, tertCat, r, c);
+                                            if (!CategoryMap.ContainsKey(tertCat.Rows[r][c].Id))
+                                            {
+                                                CategoryMap.Add(tertCat.Rows[r][c].Id, dat);
+                                            }
+                                            else
+                                            {
+                                                string uhoh = ""; //red alert!
+                                            }
+                                        }
+
+                                    }
+                                }
+                                else
+                                {
+                                    string hmmm = ""; //empty final category?
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            AchievementCatData blah;
+            CategoryMap.TryGetValue(gom.Id, out blah);
+            ach.CategoryData = blah;
 
             ach.Fqn = gom.Name;
             ach.NodeId = gom.Id;
@@ -208,7 +270,7 @@ namespace GomLib.ModelLoader
             ach.LocalizedNonSpoilerDesc = _dom.stringTable.TryGetLocalizedStrings(ach.Fqn, nonSpoilerData);
             ach.NonSpoilerDesc = _dom.stringTable.TryGetString(ach.Fqn, nonSpoilerData);
 
-            ach.Id = (ulong)(ach.NameId >> 32);
+            ach.Id = gom.Id; // (ulong)(ach.NameId >> 32);
 
             //Conditions
             var conditionLookup = gom.Data.ValueOrDefault<List<object>>("achConditions", null);
@@ -269,7 +331,7 @@ namespace GomLib.ModelLoader
                     foreach (var curEvent in events)
                     {
                         var tmpEvent = new AchEvent();
-                        tmpEvent.NodeRef = (ulong)(long)curEvent.Key;
+                        tmpEvent.Id = (ulong)(long)curEvent.Key;
                         tmpEvent.checkNodeRef(_dom);
                         tmpEvent.Value = (long)curEvent.Value;
                         tmpTask.Events.Add(tmpEvent);
@@ -294,9 +356,10 @@ namespace GomLib.ModelLoader
                         tmpTask.Index = (long)task;
                         tmpTask.Index2 = (long)curSubtask.Value;
                         tmpTask.Count = 1L;
+                        tmpTask.Id = (ulong)(long)curSubtask.Key;
                         tmpTask.Events = new List<AchEvent>();
                         var tmpEvent = new AchEvent();
-                        tmpEvent.NodeRef = (ulong)(long)curSubtask.Key;
+                        tmpEvent.Id = (ulong)(long)curSubtask.Key;
                         tmpEvent.checkNodeRef(_dom);
                         foreach (var curEvent in events)
                         {
@@ -351,5 +414,23 @@ namespace GomLib.ModelLoader
         {
             // No references to load
         }
+    }
+
+    public class AchievementCatData
+    {
+        public AchievementCatData(AchievementCategory cat, AchievementCategory subcat, AchievementCategory tertcat, int r, int p)
+        {
+            Category = cat;
+            SubCategory = subcat;
+            TertiaryCategory = tertcat;
+            Row = r;
+            Position = p;
+        }
+        public AchievementCategory Category { get; set; }
+        public AchievementCategory SubCategory { get; set; }
+        public AchievementCategory TertiaryCategory { get; set; }
+        public int Row { get; set; }
+        public int Position { get; set; }
+        //public bool RequiresPrevious { get; set; }
     }
 }

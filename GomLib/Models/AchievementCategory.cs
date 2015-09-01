@@ -18,8 +18,10 @@ namespace GomLib.Models
         public ulong NameId { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
         public long Index { get; set; }
+        [JsonIgnore]
         public List<long> SubCategories { get; set; }
         public long ParentCategory { get; set; }
+        [JsonIgnore]
         public List<List<AchievementCategoryEntry>> Rows { get; set; }
 
         //[Newtonsoft.Json.JsonIgnore]

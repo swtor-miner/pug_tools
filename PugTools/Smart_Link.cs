@@ -85,7 +85,7 @@ namespace tor_tools
                         {
                             foreach (KeyValuePair<object, object> subTask in subTasks)
                             {
-                                dom.AddCrossLink((long)subTask.Key, "requiredForAch", node.Id);//any node
+                                dom.AddCrossLink((ulong)(long)subTask.Key, "requiredForAch", node.Id);//any node
                             }
                         }
                         Dictionary<object, object> events = ((GomObjectData)requirement.Value).ValueOrDefault<Dictionary<object, object>>("achTaskEvents", null);
@@ -93,7 +93,7 @@ namespace tor_tools
                         {
                             foreach (KeyValuePair<object, object> curEvent in events)
                             {
-                                dom.AddCrossLink((long)curEvent.Key, "requiredForAch", node.Id);//any node
+                                dom.AddCrossLink((ulong)(long)curEvent.Key, "requiredForAch", node.Id);//any node
                             }
                         }
                     }

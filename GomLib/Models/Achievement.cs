@@ -7,6 +7,7 @@ using System.Xml.XPath;
 using System.Text.RegularExpressions;
 using System.Xml;
 using Newtonsoft.Json;
+using GomLib.ModelLoader;
 
 namespace GomLib.Models
 {
@@ -24,12 +25,158 @@ namespace GomLib.Models
         public long nonSpoilerId { get; set; }
         public int Level { get; set; }
         public string Icon { get; set; }
+        public string HashedIcon
+        {
+            get
+            {
+                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", this.Icon));
+                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+            }
+        }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public AchievementVisibility Visibility { get; set; }
         public long AchId { get; set; }
         public long RewardsId { get; set; }
         public Rewards Rewards { get; set; }
         public List<AchTask> Tasks { get; set; }
         public List<AchCondition> Conditions { get; set; }
+        public AchievementCatData CategoryData { get; internal set; }
+
+        #region Category
+        [JsonIgnore]
+        public string Category
+        {
+            get
+            {
+                if (CategoryData == null) return null;
+                return CategoryData.Category.Name;
+            }
+        }
+        [JsonIgnore]
+        public string FRCategory
+        {
+            get
+            {
+                if (CategoryData == null) return null;
+                return CategoryData.Category.LocalizedName["frMale"];
+            }
+        }
+        [JsonIgnore]
+        public string DECategory
+        {
+            get
+            {
+                if (CategoryData == null) return null;
+                return CategoryData.Category.LocalizedName["deMale"];
+            }
+        }
+        [JsonIgnore]
+        public string SubCategory
+        {
+            get
+            {
+                if (CategoryData == null) return null;
+                return CategoryData.SubCategory.Name;
+            }
+        }
+        [JsonIgnore]
+        public string FRSubCategory
+        {
+            get
+            {
+                if (CategoryData == null) return null;
+                return CategoryData.SubCategory.LocalizedName["frMale"];
+            }
+        }
+        [JsonIgnore]
+        public string DESubCategory
+        {
+            get
+            {
+                if (CategoryData == null) return null;
+                return CategoryData.SubCategory.LocalizedName["deMale"];
+            }
+        }
+        [JsonIgnore]
+        public string TertiaryCategory
+        {
+            get
+            {
+                if (CategoryData == null) return null;
+                return CategoryData.TertiaryCategory.Name;
+            }
+        }
+        [JsonIgnore]
+        public string FRTertiaryCategory
+        {
+            get
+            {
+                if (CategoryData == null) return null;
+                if (CategoryData.TertiaryCategory.LocalizedName == null) return "";
+                return CategoryData.TertiaryCategory.LocalizedName["frMale"];
+            }
+        }
+        [JsonIgnore]
+        public string DETertiaryCategory
+        {
+            get
+            {
+                if (CategoryData == null) return null;
+                if (CategoryData.TertiaryCategory.LocalizedName == null) return "";
+                return CategoryData.TertiaryCategory.LocalizedName["deMale"];
+            }
+        }
+        #endregion
+        #region Reward Booleans
+        public bool ItemReward
+        {
+            get
+            {
+                if(Rewards != null)
+                {
+                    if (Rewards.ItemRewardList != null && Rewards.ItemRewardList.Count > 0)
+                        return true;
+                }
+                return false;
+            }
+        }
+        public bool MtxReward
+        {
+            get
+            {
+                if (Rewards != null)
+                {
+                    if (Rewards.CartelCoins > 0)
+                        return true;
+                }
+                return false;
+            }
+        }
+        public bool TitleReward
+        {
+            get
+            {
+                if (Rewards != null)
+                {
+                    if (!String.IsNullOrEmpty(Rewards.LegacyTitle))
+                        return true;
+                }
+                return false;
+            }
+        }
+        public bool GsfReward
+        {
+            get
+            {
+                if (Rewards != null)
+                {
+                    if (Rewards.Requisition > 0)
+                        return true;
+                }
+                return false;
+            }
+        }
+        #endregion 
 
         public Achievement()
         {
@@ -152,18 +299,31 @@ namespace GomLib.Models
             {
                 return new List<SQLProperty>
                     {                //(SQL Column Name, C# Property Name, SQL Column type statement, isUnique/PrimaryKey, Serialize value to json)
-                        new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("NodeId", "NodeId", "bigint(20) unsigned NOT NULL", true),
-                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("NameId", "NameId", "bigint(20) NOT NULL"),
-                        new SQLProperty("Description", "Description", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("DescriptionId", "DescriptionId", "bigint(20) NOT NULL"),
-                        new SQLProperty("AchId", "AchId", "bigint(20) NOT NULL"),
-                        new SQLProperty("Visibility", "Visibility", "varchar(15) NOT NULL"),
-                        new SQLProperty("Icon", "Icon", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("Tasks", "Tasks", "varchar(100) COLLATE utf8_unicode_ci NOT NULL", false, true),
-                        new SQLProperty("Conditions", "Conditions", "varchar(1000) COLLATE utf8_unicode_ci NOT NULL", false, true),
-                        new SQLProperty("Rewards", "Rewards", "varchar(1000) COLLATE utf8_unicode_ci NOT NULL", false, true)
+                        new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        //new SQLProperty("NodeId", "NodeId", "bigint(20) unsigned NOT NULL", true),
+                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.PrimaryKey),
+                        //new SQLProperty("NameId", "NameId", "bigint(20) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Description", "Description", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        //new SQLProperty("DescriptionId", "DescriptionId", "bigint(20) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("AchId", "AchId", "bigint(20) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Visibility", "Visibility", "varchar(15) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Icon", "HashedIcon", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        //new SQLProperty("Tasks", "Tasks", "varchar(100) COLLATE utf8_unicode_ci NOT NULL", false, true),
+                        //new SQLProperty("Conditions", "Conditions", "varchar(1000) COLLATE utf8_unicode_ci NOT NULL", false, true),
+                        //new SQLProperty("Rewards", "Rewards", "varchar(1000) COLLATE utf8_unicode_ci NOT NULL", false, true)
+                        new SQLProperty("Category","Category", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FRCategory","FRCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DECategory","DECategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("SubCategory","SubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FRSubCategory","FRSubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DESubCategory","DESubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("TertiaryCategory","TertiaryCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FFTertiaryCategory","FRTertiaryCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DETertiaryCategory","DETertiaryCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("ItemReward", "ItemReward", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("MtxReward", "MtxReward", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("TitleReward", "TitleReward", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("GsfReward", "GsfReward", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
                     };
             }
         }
@@ -292,7 +452,20 @@ namespace GomLib.Models
         public long CartelCoins { get; set; }
         public long AchievementPoints { get; set; }
         public long Requisition { get; set; }
+        [JsonIgnore]
         public Dictionary<ulong, long> ItemRewardList { get; set; }
+        internal Dictionary<string, long> _ItemRewardListB62 { get; set; }
+        public Dictionary<string, long> ItemRewardListB62
+        {
+            get
+            {
+                if(_ItemRewardListB62 == null && ItemRewardList != null)
+                {
+                    _ItemRewardListB62 = ItemRewardList.ToDictionary(x => x.Key.ToMaskedBase62(), x => x.Value);
+                }
+                return _ItemRewardListB62;
+            }
+        }
 
         public override int GetHashCode()
         {
@@ -417,12 +590,12 @@ namespace GomLib.Models
     //A list of events that each can complete an achievement task
     public class AchEvent : GameObject, IEquatable<AchEvent>
     {
-        public ulong NodeRef { get; set; }
+        //public ulong Id { get; set; }
         public string NodePrefix { get; set; }
         public long Value { get; set; }
 
         public void checkNodeRef(DataObjectModel _dom) {
-            var tmpNode = _dom.GetObject(NodeRef);
+            var tmpNode = _dom.GetObject(Id);
             if (tmpNode != null)
             {
                 NodePrefix = tmpNode.Name.Substring(0, tmpNode.Name.IndexOf("."));
@@ -432,14 +605,14 @@ namespace GomLib.Models
 
         public override int GetHashCode()
         {
-            int hash = NodeRef.GetHashCode();
+            int hash = Id.GetHashCode();
             hash ^= Value.GetHashCode();
             return hash;
         }
 
         public override string ToString()
         {
-            return string.Format("{0} ({1})", NodeRef, Value);
+            return string.Format("{0} ({1})", Id, Value);
         }
 
         public override bool Equals(object obj)
@@ -460,7 +633,7 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, rwd)) return true;
 
-            if (this.NodeRef != rwd.NodeRef)
+            if (this.Id != rwd.Id)
                 return false;
             if (this.Value != rwd.Value)
                 return false;
@@ -473,7 +646,9 @@ namespace GomLib.Models
     public class AchCondition : GameObject, IEquatable<AchCondition>
     {
         public bool UnknownBoolean { get; set; }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public AchConditionType Type { get; set; }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public AchConditionTarget Target { get; set; }
         
         public override int GetHashCode()
