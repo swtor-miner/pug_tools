@@ -104,7 +104,7 @@ namespace GomLib.Models
 
         public DetailedEnhancementType ToEnhancement(long id)
         {
-            if (id == 0) { return new DetailedEnhancementType("Undefined"); }
+            if (id == 0) { return null; } // new DetailedEnhancementType("Undefined"); }
 
             if (SlotLookup == null)
             {

@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using System.Xml;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
@@ -45,6 +46,7 @@ namespace GomLib.Models
         }
         public string Name { get; set; }
         //localized names
+        [JsonIgnore]
         public string FrName
         {
             get
@@ -56,6 +58,7 @@ namespace GomLib.Models
                 return "";
             }
         }
+        [JsonIgnore]
         public string DeName
         {
             get
@@ -69,7 +72,7 @@ namespace GomLib.Models
         }
         public Dictionary<string, string> LocalizedName { get; set; }
         public long DescriptionId { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public string _Description
         {
             get
@@ -87,9 +90,9 @@ namespace GomLib.Models
         public WeaponSpec WeaponSpec { get; set; }
         public ArmorSpec ArmorSpec { get; set; }
         public ArmorSpec ShieldSpec { get; set; }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ItemBindingRule Binding { get; set; }
         public string Icon { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         public string HashedIcon
         {
             get
@@ -98,12 +101,14 @@ namespace GomLib.Models
                 return String.Format("{0}_{1}", fileId.ph, fileId.sh); 
             }
         }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ItemQuality Quality { get; set; }
         public int ItemLevel { get; set; }
         public int Rating { get; set; }
         public int CombinedRating { get; set; }
         public int RequiredLevel { get; set; }
         public int CombinedRequiredLevel { get; set; }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ItemDamageType DamageType { get; set; }
         public int VendorStackSize { get; set; }
         public bool RequiresAlignment { get; set; }
@@ -111,45 +116,86 @@ namespace GomLib.Models
         public bool RequiredAlignmentInverted { get; set; }
         public bool RequiresSocial { get; set; }
         public int RequiredSocialTier { get; set; }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public Profession RequiredProfession { get; set; }
         public int RequiredProfessionLevel { get; set; }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProfessionSubtype DisassembleCategory { get; set; }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public EnhancementCategory EnhancementCategory { get; set; }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public EnhancementSubCategory EnhancementSubCategory { get; set; }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public EnhancementType EnhancementType { get; set; }
         public DetailedEnhancementType DetEnhancementType { get; set; }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GiftType GiftType { get; set; }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public GiftRank GiftRank { get; set; }
         public int GiftRankNum { get; set; }
         public int AuctionCategoryId { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public AuctionCategory AuctionCategory { get; set; }
+        public string AuctionCat
+        {
+            get
+            {
+                if (AuctionCategory == null) return null;
+                return AuctionCategory.Name;
+            }
+        }
+        public Dictionary<string, string> LocalizedAuctionCategory
+        {
+            get
+            {
+                if (AuctionCategory != null)
+                    return AuctionCategory.LocalizedName;
+                return null;
+            }
+        }
         public int AuctionSubCategoryId { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public AuctionSubCategory AuctionSubCategory { get; set; }
+        public string AuctionSubCat
+        {
+            get
+            {
+                if (AuctionSubCategory == null) return null;
+                return AuctionSubCategory.Name;
+            }
+        }
+        public Dictionary<string, string> LocalizedAuctionSubCategory
+        {
+            get
+            {
+                if (AuctionSubCategory!= null)
+                    return AuctionSubCategory.LocalizedName;
+                return null;
+            }
+        }
         public AppearanceColor AppearanceColor { get; set; }
         public int DyeId { get; set; }
         public DetailedAppearanceColor DyeColor { get; set; }
         public ulong EquipAbilityId { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public string EquipAbilityB62Id { get { return EquipAbilityId.ToMaskedBase62(); } }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Ability EquipAbility { get; set; }
 
         public ulong UseAbilityId { get; set; }
         public string UseAbilityB62Id { get { return UseAbilityId.ToMaskedBase62(); } }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Ability UseAbility { get; set; }
         
         public string ConversationFqn { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Conversation Conversation { get; set; }
 
         public long ModifierSpec { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Schematic _Schematic { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Schematic Schematic
         {
             get
@@ -169,9 +215,9 @@ namespace GomLib.Models
         public Gender RequiredGender { get; set; }
         public int RequiredValorRank { get; set; }
         public int RequiredReputationId { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public ReputationGroup _RequiredReputation { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public ReputationGroup RequiredReputation
         {
             get
@@ -199,7 +245,7 @@ namespace GomLib.Models
         }
         public int RequiredReputationLevelId { get; set; }
         public ReputationRank _RequiredReputationLevel { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public ReputationRank RequiredReputationLevel
         {
             get
@@ -237,18 +283,50 @@ namespace GomLib.Models
 
         public long itmCraftedCategory { get; set; }
 
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ItemCategory Category { get; set; }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ItemSubCategory SubCategory { get; set; }
 
+        [JsonIgnore]
         public ItemStatList StatModifiers { get; set; }
+        internal Dictionary<string, int> _SimpleStatModifiers { get; set; }
+        public Dictionary<string, int> SimpleStatModifiers
+        {
+            get
+            {
+                if(_SimpleStatModifiers == null && StatModifiers != null)
+                {
+                    _SimpleStatModifiers = StatModifiers.ToDictionary(x => x.DetailedStat.LocalizedDisplayName["enMale"], x => x.Modifier);
+                }
+                return _SimpleStatModifiers;
+            }
+        }
+        [JsonIgnore]
         public ItemStatList CombinedStatModifiers { get; set; }
+        internal Dictionary<string, int> _SimpleCombinedStatModifiers { get; set; }
+        public Dictionary<string, int> SimpleCombinedStatModifiers
+        {
+            get
+            {
+                if (_SimpleCombinedStatModifiers == null && CombinedStatModifiers != null)
+                {
+                    _SimpleCombinedStatModifiers = CombinedStatModifiers.ToDictionary(x => x.DetailedStat.LocalizedDisplayName["enMale"], x => x.Modifier);
+                }
+                return _SimpleCombinedStatModifiers;
+            }
+        }
+
         public ItemEnhancementList EnhancementSlots { get; set; }
+        [JsonIgnore]
         public ClassSpecList RequiredClasses { get; set; }
+        [JsonProperty(ItemConverterType = typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public SlotTypeList Slots { get; set; }
         public string SoundType { get; set; }
         public long StackCount { get; set; }
         public long MaxDurability { get; set; }
         public string WeaponAppSpec { get; set; }
+        [JsonIgnore]
         internal WeaponAppearance _WeaponApp;
         public WeaponAppearance WeaponApp
         {
@@ -276,15 +354,17 @@ namespace GomLib.Models
         public Dictionary<long, string> StrongholdSourceNameDict { get; set; }
         public Dictionary<long, Dictionary<string, string>> LocalizedStrongholdSourceNameDict { get; set; }
 
-        public List<ulong> rewardedForQuests { get; set; }
+        //public List<ulong> rewardedForQuests { get; set; }
+        [JsonIgnore]
         public Dictionary<ulong, ulong> ippRefs { get; set; }
+        [JsonIgnore]
         public Dictionary<string, string> classAppearance { get; set; }
         public string AppearanceImperial { get; set; }
         public string AppearanceRepublic { get; set; }
         public long SetBonusId { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal SetBonusEntry _SetBonus { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public SetBonusEntry SetBonus
         {
             get
@@ -312,7 +392,7 @@ namespace GomLib.Models
                     return "";
             }
         }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal string mtxRarity { get; set; }
         public string MTXRarity
         {
@@ -336,9 +416,9 @@ namespace GomLib.Models
                 return (TeachesType == "Decoration");
             }
         }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Decoration _Decoration { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Decoration Decoration
         {
             get
@@ -353,9 +433,9 @@ namespace GomLib.Models
 
         public bool BindsToSlot { get; set; }
         public int RepFactionId { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal ReputationGroup faction { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal string _RepFactionName { get; set; }
         public string RepFactionName
         {
@@ -375,7 +455,7 @@ namespace GomLib.Models
                 return _RepFactionName;
             }
         }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal Dictionary<string, Dictionary<string, string>> _LocalizedRepFactionDictionary { get; set; }
         public Dictionary<string, Dictionary<string, string>> LocalizedRepFactionDictionary
         {
@@ -390,6 +470,8 @@ namespace GomLib.Models
                         _LocalizedRepFactionDictionary.Add("Imperial", faction.LocalizedGroupEmpireTitle);
                         _LocalizedRepFactionDictionary.Add("Republic", faction.LocalizedGroupRepublicTitle);
                     }
+                    else
+                        return null;
                 }
                 return _LocalizedRepFactionDictionary;
             }
@@ -416,7 +498,7 @@ namespace GomLib.Models
             }
         }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public string Tooltip
         {
             get
@@ -467,38 +549,87 @@ namespace GomLib.Models
         public float AbsorbChance { get; set; }
         public float ShieldChance { get; set; }
 
-        public List<string> MaterialForSchems { get; set; }
-        public List<string> RewardFromQuests { get; set; }
-        public List<string> RequiredClassesB62 { get; set; }
-        public List<string> SimilarAppearance { get; set; }
+        //public List<string> MaterialForSchems { get; set; }
+        //public List<string> RewardFromQuests { get; set; }
+        internal List<string> _RequiredClassesB62 { get; set; }
+        public List<string> RequiredClassesB62
+        {
+            get
+            {
+                if (_RequiredClassesB62 == null && RequiredClasses != null)
+                {
+                    _RequiredClassesB62 = RequiredClasses.Select(x => x.Base62Id).ToList();
+                }
+                return _RequiredClassesB62;
+            }
+        }
+        //public List<string> SimilarAppearance { get; set; } 
         public static List<long> ArmorSpecIds = new List<long> { -8622546409652942944, 589686270506543030, 5763611092890301551 };
         public static List<ArmorSpec> ArmorSpecs = new List<ArmorSpec> { };
 
         //typebitflags
-        public bool IsArmor { get; set; }
-        public bool IsWeapon { get; set; }
-        public bool HasGTNCategory { get; set; }
-        public bool Unk8 { get; set; }
-        public bool HasConversation { get; set; }
-        public bool IsCrafted { get; set; }
-        public bool CanBeDisassembled { get; set; }
-        public bool HasDurability { get; set; }
-        public bool IsModdable { get; set; }
-        public bool IsMod { get; set; }
-        public bool CanHaveStats { get; set; }
-        public bool Unk800 { get; set; }
-        public bool IsGift { get; set; }
-        public bool IsMissionItem { get; set; }
-        public bool Unk4000 { get; set; }
-        public bool IsShipPart { get; set; }
-        public bool Unk10000 { get; set; }
-        public bool IsCmpCstmztn { get; set; }
-        public bool HasUniqueLimit { get; set; }
-        public bool HasOnUse { get; set; }
-        public bool IsEquipable { get; set; }
-        public bool IsCurrency { get; set; }
-        public bool IsMtxItem { get; set; }
-        public bool IsRepTrophy { get; set; }
+        internal TypeBitFlags _TypeBitFlags { get; set; }
+        public TypeBitFlags TypeBitFlags {
+            get
+            {
+                if (_TypeBitFlags == null) {
+                    var flags = ((ItemTypeFlags)TypeBitSet);
+                    _TypeBitFlags = new TypeBitFlags(flags.HasFlag(ItemTypeFlags.IsArmor), flags.HasFlag(ItemTypeFlags.IsWeapon), flags.HasFlag(ItemTypeFlags.HasGTNCategory), flags.HasFlag(ItemTypeFlags.Unk8), flags.HasFlag(ItemTypeFlags.HasConversation), flags.HasFlag(ItemTypeFlags.IsCrafted), flags.HasFlag(ItemTypeFlags.CanBeDisassembled), flags.HasFlag(ItemTypeFlags.HasDurability), flags.HasFlag(ItemTypeFlags.IsModdable), flags.HasFlag(ItemTypeFlags.IsMod), flags.HasFlag(ItemTypeFlags.CanHaveStats), flags.HasFlag(ItemTypeFlags.Unk800), flags.HasFlag(ItemTypeFlags.IsGift), flags.HasFlag(ItemTypeFlags.IsMissionItem), flags.HasFlag(ItemTypeFlags.Unk4000), flags.HasFlag(ItemTypeFlags.IsShipPart), flags.HasFlag(ItemTypeFlags.Unk10000), flags.HasFlag(ItemTypeFlags.IsCmpCstmztn), flags.HasFlag(ItemTypeFlags.HasUniqueLimit), flags.HasFlag(ItemTypeFlags.HasOnUse), flags.HasFlag(ItemTypeFlags.IsEquipable), flags.HasFlag(ItemTypeFlags.IsCurrency), flags.HasFlag(ItemTypeFlags.IsMtxItem), flags.HasFlag(ItemTypeFlags.IsRepTrophy));
+                }
+                return _TypeBitFlags;
+            }
+        }
+        #region sqlflaglegacy
+        [JsonIgnore]
+        public bool IsArmor { get { return TypeBitFlags.IsArmor; } }
+        [JsonIgnore]
+        public bool IsWeapon { get { return TypeBitFlags.IsWeapon; } }
+        [JsonIgnore]
+        public bool HasGTNCategory { get { return TypeBitFlags.HasGTNCategory; } }
+        [JsonIgnore]
+        public bool Unk8 { get { return TypeBitFlags.Unk8; } }
+        [JsonIgnore]
+        public bool HasConversation { get { return TypeBitFlags.HasConversation; } }
+        [JsonIgnore]
+        public bool IsCrafted { get { return TypeBitFlags.IsCrafted; } }
+        [JsonIgnore]
+        public bool CanBeDisassembled { get { return TypeBitFlags.CanBeDisassembled; } }
+        [JsonIgnore]
+        public bool HasDurability { get { return TypeBitFlags.HasDurability; } }
+        [JsonIgnore]
+        public bool IsModdable { get { return TypeBitFlags.IsModdable; } }
+        [JsonIgnore]
+        public bool IsMod { get { return TypeBitFlags.IsMod; } }
+        [JsonIgnore]
+        public bool CanHaveStats { get { return TypeBitFlags.CanHaveStats; } }
+        [JsonIgnore]
+        public bool Unk800 { get { return TypeBitFlags.Unk800; } }
+        [JsonIgnore]
+        public bool IsGift { get { return TypeBitFlags.IsGift; } }
+        [JsonIgnore]
+        public bool IsMissionItem { get { return TypeBitFlags.IsMissionItem; } }
+        [JsonIgnore]
+        public bool Unk4000 { get { return TypeBitFlags.Unk4000; } }
+        [JsonIgnore]
+        public bool IsShipPart { get { return TypeBitFlags.IsShipPart; } }
+        [JsonIgnore]
+        public bool Unk10000 { get { return TypeBitFlags.Unk10000; } }
+        [JsonIgnore]
+        public bool IsCmpCstmztn { get { return TypeBitFlags.IsCmpCstmztn; } }
+        [JsonIgnore]
+        public bool HasUniqueLimit { get { return TypeBitFlags.HasUniqueLimit; } }
+        [JsonIgnore]
+        public bool HasOnUse { get { return TypeBitFlags.HasOnUse; } }
+        [JsonIgnore]
+        public bool IsEquipable { get { return TypeBitFlags.IsEquipable; } }
+        [JsonIgnore]
+        public bool IsCurrency { get { return TypeBitFlags.IsCurrency; } }
+        [JsonIgnore]
+        public bool IsMtxItem { get { return TypeBitFlags.IsMtxItem; } }
+        [JsonIgnore]
+        public bool IsRepTrophy { get { return TypeBitFlags.IsRepTrophy; } }
+        #endregion
+
 
         public static Item FillFlatData(Item itm)
         {
@@ -678,43 +809,6 @@ namespace GomLib.Models
                     }
                 }
             }
-            if (itm.RequiredClasses.Count > 0)
-            {
-                itm.RequiredClassesB62 = itm.RequiredClasses.Select(x => x.Base62Id).ToList();
-            }
-
-            ProcessFlags(itm);
-
-
-            return itm;
-        }
-        public static Item ProcessFlags(Item itm)
-        {
-            var flags = ((ItemTypeFlags)itm.TypeBitSet);
-            itm.IsArmor = flags.HasFlag(ItemTypeFlags.IsArmor);
-            itm.IsWeapon = flags.HasFlag(ItemTypeFlags.IsWeapon);
-            itm.HasGTNCategory = flags.HasFlag(ItemTypeFlags.HasGTNCategory);
-            itm.Unk8 = flags.HasFlag(ItemTypeFlags.Unk8);
-            itm.HasConversation = flags.HasFlag(ItemTypeFlags.HasConversation);
-            itm.IsCrafted = flags.HasFlag(ItemTypeFlags.IsCrafted);
-            itm.CanBeDisassembled = flags.HasFlag(ItemTypeFlags.CanBeDisassembled);
-            itm.HasDurability = flags.HasFlag(ItemTypeFlags.HasDurability);
-            itm.IsModdable = flags.HasFlag(ItemTypeFlags.IsModdable);
-            itm.IsMod = flags.HasFlag(ItemTypeFlags.IsMod);
-            itm.CanHaveStats = flags.HasFlag(ItemTypeFlags.CanHaveStats);
-            itm.Unk800 = flags.HasFlag(ItemTypeFlags.Unk800);
-            itm.IsGift = flags.HasFlag(ItemTypeFlags.IsGift);
-            itm.IsMissionItem = flags.HasFlag(ItemTypeFlags.IsMissionItem);
-            itm.Unk4000 = flags.HasFlag(ItemTypeFlags.Unk4000);
-            itm.IsShipPart = flags.HasFlag(ItemTypeFlags.IsShipPart);
-            itm.Unk10000 = flags.HasFlag(ItemTypeFlags.Unk10000);
-            itm.IsCmpCstmztn = flags.HasFlag(ItemTypeFlags.IsCmpCstmztn);
-            itm.HasUniqueLimit = flags.HasFlag(ItemTypeFlags.HasUniqueLimit);
-            itm.HasOnUse = flags.HasFlag(ItemTypeFlags.HasOnUse);
-            itm.IsEquipable = flags.HasFlag(ItemTypeFlags.IsEquipable);
-            itm.IsCurrency = flags.HasFlag(ItemTypeFlags.IsCurrency);
-            itm.IsMtxItem = flags.HasFlag(ItemTypeFlags.IsMtxItem);
-            itm.IsRepTrophy = flags.HasFlag(ItemTypeFlags.IsRepTrophy);
 
             return itm;
         }
@@ -729,7 +823,26 @@ namespace GomLib.Models
 
             return itm;
         }
-        
+
+        public static Item NullEmptyLists(Item itm)
+        {
+            if (itm.StatModifiers.Count == 0)
+                itm.StatModifiers = null;
+            if (itm.CombinedStatModifiers.Count == 0)
+                itm.CombinedStatModifiers = null;
+            if (itm.EnhancementSlots.Count == 0)
+                itm.EnhancementSlots = null;
+            if (itm.RequiredClasses.Count == 0)
+                itm.RequiredClasses = null;
+            if (itm.StrongholdSourceList.Count == 0)
+                itm.StrongholdSourceList = null;
+            if (itm.StrongholdSourceNameDict.Count == 0)
+                itm.StrongholdSourceNameDict = null;
+            if (itm.LocalizedStrongholdSourceNameDict.Count == 0)
+                itm.LocalizedStrongholdSourceNameDict = null;
+            return itm;
+        }
+
         #endregion
 
         public void AddStat(ItemStat stat)
@@ -792,7 +905,6 @@ namespace GomLib.Models
             hash ^= AuctionSubCategoryId.GetHashCode();
             hash ^= GiftType.GetHashCode();
             hash ^= Icon.GetHashCode();
-            hash ^= IsModdable.GetHashCode();
             hash ^= ItemLevel.GetHashCode();
             hash ^= MaxStack.GetHashCode();
             hash ^= ModifierSpec.GetHashCode();
@@ -913,8 +1025,6 @@ namespace GomLib.Models
             if (this.ImperialAppearanceTag != itm.ImperialAppearanceTag)
                 return false;
             if (this.VOModulationImperial != itm.VOModulationImperial)
-                return false;
-            if (this.IsModdable != itm.IsModdable)
                 return false;
             if (this.IsUnknownBool != itm.IsUnknownBool)
                 return false;
@@ -1092,7 +1202,6 @@ namespace GomLib.Models
                 if (Id != 0)
                 {
                     FillFlatData(this);
-                    ProcessFlags(this);
                     SimpleTagDicts(this);
                 }
                 return new List<SQLProperty>
@@ -1106,10 +1215,10 @@ namespace GomLib.Models
                         new SQLProperty("NameId", "NameId", "bigint(20) NOT NULL"),
                         new SQLProperty("Fqn", "Fqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("ItemLevel", "ItemLevel", "int(11) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("AppearanceColor", "AppearanceColor", "TEXT NOT NULL"),
+                        //new SQLProperty("AppearanceColor", "AppearanceColor", "TEXT NOT NULL"),
                         new SQLProperty("AppearanceImperial", "AppearanceImperial", "varchar(7) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("AppearanceRepublic", "AppearanceRepublic", "varchar(7) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("ArmorSpec", "ArmorSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        //new SQLProperty("ArmorSpec", "ArmorSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("AuctionCategoryId", "AuctionCategoryId", "int(11) NOT NULL"),
                         new SQLProperty("AuctionCategory", "AuctionCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("AuctionSubCategoryId", "AuctionSubCategoryId", "int(11) NOT NULL"),
@@ -1117,12 +1226,12 @@ namespace GomLib.Models
                         new SQLProperty("Binding", "Binding", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("CombinedRating", "CombinedRating", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("CombinedRequiredLevel", "CombinedRequiredLevel", "int(11) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("CombinedStatModifiers", "CombinedStatModifiers", "text NOT NULL", SQLPropSetting.JsonSerialize),
+                        //new SQLProperty("CombinedStatModifiers", "CombinedStatModifiers", "text NOT NULL", SQLPropSetting.JsonSerialize),
                         new SQLProperty("ConsumedOnUse", "ConsumedOnUse", "tinyint(1) NOT NULL"),
-                        new SQLProperty("ConversationFqn", "ConversationFqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("DamageType", "DamageType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("Description", "_Description", "TEXT NOT NULL"),
-                        new SQLProperty("DescriptionId", "DescriptionId", "bigint(20) NOT NULL"),
+                        //new SQLProperty("ConversationFqn", "ConversationFqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        //new SQLProperty("DamageType", "DamageType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        //new SQLProperty("Description", "_Description", "TEXT NOT NULL"),
+                        //new SQLProperty("DescriptionId", "DescriptionId", "bigint(20) NOT NULL"),
                         new SQLProperty("DisassembleCategory", "DisassembleCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Durability", "Durability", "int(11) NOT NULL"),
                         new SQLProperty("EnhancementCategory", "EnhancementCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
@@ -1137,8 +1246,8 @@ namespace GomLib.Models
                         new SQLProperty("BindsToSlot", "BindsToSlot", "tinyint(1) NOT NULL"),
                         new SQLProperty("MaxDurability", "MaxDurability", "int(11) NOT NULL"),
                         new SQLProperty("MaxStack", "MaxStack", "int(11) NOT NULL"),
-                        new SQLProperty("Model", "Model", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("ModifierSpec", "ModifierSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        //new SQLProperty("Model", "Model", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        //new SQLProperty("ModifierSpec", "ModifierSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("MountSpec", "MountSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Quality", "Quality", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Rating", "Rating", "int(11) NOT NULL", SQLPropSetting.AddIndex),
@@ -1160,8 +1269,8 @@ namespace GomLib.Models
                         new SQLProperty("ShieldSpec", "ShieldSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Slots", "Slots", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("StackCount", "StackCount", "int(11) NOT NULL"),
-                        new SQLProperty("StatModifiers", "StatModifiers", "TEXT NOT NULL"),
-                        new SQLProperty("SubCategory", "SubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        //new SQLProperty("StatModifiers", "StatModifiers", "TEXT NOT NULL"),
+                        //new SQLProperty("SubCategory", "SubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("TeachesRef", "TeachesRefB62", "varchar(7) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("TeachesType", "TeachesType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("TreasurePackageId", "TreasurePackageId", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
@@ -1204,16 +1313,16 @@ namespace GomLib.Models
                         new SQLProperty("TechHealingPower","TechHealingPower", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("ForceHealingPower","ForceHealingPower", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Armor", "Armor", "int(11) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("AdaptiveArmor", "AdaptiveArmor", "varchar(25) COLLATE utf8_unicode_ci NOT NULL"),
+                        //new SQLProperty("AdaptiveArmor", "AdaptiveArmor", "varchar(25) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("WeaponMinDamage", "WeaponMinDamage", "float(10,1) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("WeaponMaxDamage", "WeaponMaxDamage", "float(10,1) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("AbsorbChance", "AbsorbChance", "float(10,1) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("ShieldChance", "ShieldChance", "float(10,1) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("ModLevel", "ModLevel", "int(11) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("MaterialForSchems","MaterialForSchems", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
-                        new SQLProperty("RewardFromQuests","RewardFromQuests", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
-                        new SQLProperty("SourceNames","StrongholdSourceNameDict", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
-                        new SQLProperty("SimilarAppearance","SimilarAppearance", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
+                        //new SQLProperty("MaterialForSchems","MaterialForSchems", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
+                        //new SQLProperty("RewardFromQuests","RewardFromQuests", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
+                        //new SQLProperty("SourceNames","StrongholdSourceNameDict", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
+                        //new SQLProperty("SimilarAppearance","SimilarAppearance", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
                         //typebitset
                         new SQLProperty("IsArmor", "IsArmor", "tinyint(1) NOT NULL"), 
                         new SQLProperty("IsWeapon", "IsWeapon", "tinyint(1) NOT NULL"),
@@ -1250,7 +1359,7 @@ namespace GomLib.Models
                 //new XAttribute("Hash", GetHashCode()),
                 new XElement("Name", Name),
                 new XElement("Description", Description));
-
+            item.Add(new XElement("Base62Id", Base62Id));
             if (UseAbilityId == 0) { item.Add(new XElement("UseAbility")); }
             else { item.Add(new XElement("UseAbility", UseAbility.ToXElement(verbose))); }
             if (EquipAbilityId == 0) { item.Add(new XElement("EquipAbility")); }
@@ -1317,7 +1426,7 @@ namespace GomLib.Models
                     new XElement("EnhancementType", EnhancementType),
                     new XElement("GiftType", GiftType,
                         new XAttribute("GiftRank", GiftRank)),
-                    new XElement("IsModdable", IsModdable),
+                    new XElement("IsModdable", TypeBitFlags.IsModdable),
                     new XElement("MaxStack", MaxStack),
                     new XElement("ModifierSpec", ModifierSpec),
                     new XElement("MountSpec", MountSpec),
@@ -1388,6 +1497,15 @@ namespace GomLib.Models
                 OutputSchematicIcon(Icon);
             }*/
             return item;
+        }
+        
+        public override string ToJSON()
+        {
+            //SimpleTagDicts(this);
+            NullEmptyLists(this);
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            settings.NullValueHandling = NullValueHandling.Ignore;
+            return ToJSON(settings);
         }
         #endregion
     }

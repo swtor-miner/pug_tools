@@ -31,7 +31,7 @@ namespace tor_tools
             LoadData();
             Dictionary<string, string> gameObjects = new Dictionary<string, string>
             {
-                //{"ach.", true},
+                {"ach.", "Achievement"},
                 //{"abl.", "Ability"},
                 /*{"apn.", true},
                 {"cdx.", true},
@@ -39,7 +39,7 @@ namespace tor_tools
                 {"npc.", true},*/
                 //{"qst.", "Mission"},
                 //{"tal.", "Talent"},
-                {"sche", "Schematics"},
+                //{"sche", "Schematics"},
                 /*{"dec.", true},*/
                 //{"itm.", "Item"}//,
                 /*{"apt.", true},
@@ -107,9 +107,9 @@ namespace tor_tools
                 }
                 //ObjectListAsSql(gameObj.Value, "Tooltip", iList);
                 CreatCompressedOutput(gameObj.Value, iList, "en-us");
-                if (frLoaded)
+                if (false) //frLoaded)
                     CreatCompressedOutput(gameObj.Value, iList, "fr-fr");
-                if (deLoaded)
+                if (false) //deLoaded)
                     CreatCompressedOutput(gameObj.Value, iList, "de-de");
             }
 
@@ -227,6 +227,9 @@ namespace tor_tools
                                     break;
                                 case "GomLib.Models.Talent":
                                     icon = String.Format("icons/{0}", ((GomLib.Models.Talent)t.obj).Icon);
+                                    break;
+                                case "GomLib.Models.Achievement":
+                                    icon = String.Format("icons/{0}", ((GomLib.Models.Achievement)t.obj).Icon);
                                     break;
                             }
                         }
@@ -401,7 +404,12 @@ namespace tor_tools
             using (var file = currentDom._assets.FindFile(String.Format("/resources/gfx/{0}.dds", icon)))
             {
                 if (file == null)
-                    return "";
+                    using (var file2 = currentDom._assets.FindFile(String.Format("/resources/gfx/icons/{0}.dds", icon)))
+                    {
+                        if (file2 == null)
+                            return "";
+                        return String.Join("_", file2.FileInfo.ph, file2.FileInfo.sh);
+                    }
                 return String.Join("_", file.FileInfo.ph, file.FileInfo.sh);
             }
         }

@@ -81,9 +81,9 @@ namespace GomLib.ModelLoader
             }
             var itm = (Models.Item)obj;
 
-            HashSet<ulong> qRList;
-            if (questRewardRefs.TryGetValue(gom.Id, out qRList))
-                itm.rewardedForQuests = qRList.ToList();
+            //HashSet<ulong> qRList;
+            //if (questRewardRefs.TryGetValue(gom.Id, out qRList))
+            //    itm.rewardedForQuests = qRList.ToList();
 
             itm.ShortId = gom.Id;
             itm.Fqn = gom.Name;
@@ -427,7 +427,7 @@ namespace GomLib.ModelLoader
                     { itm.DamageType = ItemDamageType.None; break; }
             }*/
 
-            itm.IsModdable = (itm.Quality == ItemQuality.Moddable);
+            itm.TypeBitFlags.IsModdable = (itm.Quality == ItemQuality.Moddable);
 
             ItemSubCategoryExtensions.SetCategory(itm);
 
@@ -484,7 +484,7 @@ namespace GomLib.ModelLoader
 
             itm.RepFactionId = (int)gom.Data.ValueOrDefault<long>("reputationFactionIndex", 0); //on trophies
 
-            if (gom.References != null)
+            /*if (gom.References != null)
             {
                 if (gom.References.ContainsKey("materialFor"))
                 {
@@ -498,7 +498,7 @@ namespace GomLib.ModelLoader
                 {
                     itm.SimilarAppearance = gom.References["similarAppearance"].Select(x => x.ToMaskedBase62()).ToList();
                 }
-            }
+            }*/
             gom.Unload();
             return itm;
         }

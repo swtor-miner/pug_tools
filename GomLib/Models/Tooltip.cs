@@ -116,6 +116,10 @@ namespace GomLib.Models
                 {
                     return ((Talent)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
                 }
+                if (obj.GetType() == typeof(Achievement))
+                {
+                    return ((Achievement)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
+                }
                 return "<div>Not implemented</div>";
             }
             if (pObj == null)
@@ -145,7 +149,7 @@ namespace GomLib.Models
 
             if (itm != null)
             {
-                string stringQual = ((itm.IsModdable && (itm.Quality == ItemQuality.Prototype)) ? "moddable" : itm.Quality.ToString().ToLower());
+                string stringQual = ((itm.TypeBitFlags.IsModdable && (itm.Quality == ItemQuality.Prototype)) ? "moddable" : itm.Quality.ToString().ToLower());
                 tooltip.Add(new XElement("div",
                     new XAttribute("class", String.Format("torctip_image torctip_image_{0}", stringQual)),
                     new XElement("img",
@@ -167,7 +171,6 @@ namespace GomLib.Models
         }
         public static XElement ItemInnerHTML(this Item itm)
         {
-            Item.ProcessFlags(itm);
             string stringQual = itm.Quality.ToString().ToLower();
             string localizedRating = GetLocalizedText(836131348283473).Replace("{0}", "{1}");
             XElement tooltip = new XElement("div",
@@ -177,7 +180,7 @@ namespace GomLib.Models
                     itm.LocalizedName[Tooltip.language])
                 );
             //MTX
-            if (itm.IsMtxItem)
+            if (itm.TypeBitFlags.IsMtxItem)
             {
                 tooltip.Add(new XElement("div",
                     XClass("torctip_val"),
@@ -185,7 +188,7 @@ namespace GomLib.Models
                     ));
             }
             //Reputation item
-            if (itm.IsRepTrophy)
+            if (itm.TypeBitFlags.IsRepTrophy)
             {
                 string repName = "";
                 if (itm.LocalizedRepFactionDictionary["Imperial"][Tooltip.language] != itm.LocalizedRepFactionDictionary["Republic"][Tooltip.language])
@@ -206,7 +209,7 @@ namespace GomLib.Models
                 );
             }
             //gift
-            if (itm.IsGift)
+            if (itm.TypeBitFlags.IsGift)
             {
                 if (itm.GiftType != GiftType.None)
                 {
@@ -253,14 +256,14 @@ namespace GomLib.Models
                 }
             }
             //unique
-            if (itm.HasUniqueLimit)
+            if (itm.TypeBitFlags.HasUniqueLimit)
             {
                 tooltip.Add(new XElement("div",
                     XClass("torctip_main"),
                     GetLocalizedText(836131348283436) //"Unique"
                     ));
             }
-            if (itm.IsMod && itm.DyeId != 0)
+            if (itm.TypeBitFlags.IsMod && itm.DyeId != 0)
             {
                 string name = "";
                 if(itm.DyeColor.LocalizedColorName != null){
@@ -574,12 +577,12 @@ namespace GomLib.Models
                     }
                 }
                 string repString = GetLocalizedText(836131348283476); //"{0}: Open"
-                enhance.Add(new XElement("div",
+                /*enhance.Add(new XElement("div",
                     XClass("torctip_mod"),
                     new XElement("div",
                         XClass("torctip_mslot"),
                         String.Format(repString, GetLocalizedText(1173453784743948))) // "Augment: Open"
-                    ));
+                    ));*/
                 tooltip.Add(enhance);
             }
 
@@ -881,29 +884,30 @@ namespace GomLib.Models
         }
         private static XElement ToHTML(this SetBonusEntry itm)
         {
+            string name = "Unnamed Set Bonus";
             if (!String.IsNullOrEmpty(itm.Name))
             {
-                XElement enhancement = new XElement("div",
-                    XClass("torctip_set_wrapper"),
-                    new XElement("div",
-                        XClass("torctip_set_name"),
-                        new XElement("span", String.Format("{0} (", itm.Name)),
-                        new XElement("span", new XAttribute("id", "set_count"), 1),
-                        new XElement("span", String.Format("/{0})", itm.MaxItemCount))
-                    ));
-
-                //add item list here eventually
-                foreach(var kvp in itm.BonusAbilityByNum)
-                {
-                    enhancement.Add(new XElement("div",
-                        XClass("torctip_set_bonus"),
-                        String.Format("({0}) {1}", kvp.Key, kvp.Value.ParsedDescription)
-                        ));
-                }
-                return enhancement;
+                name = itm.Name;
             }
-            else
-                return null;
+            XElement enhancement = new XElement("div",
+                XClass("torctip_set_wrapper"),
+                new XElement("div",
+                    XClass("torctip_set_name"),
+                    new XElement("span", String.Format("{0} (", itm.Name)),
+                    new XElement("span", new XAttribute("id", "set_count"), 1),
+                    new XElement("span", String.Format("/{0})", itm.MaxItemCount))
+                ));
+
+            //add item list here eventually
+            foreach (var kvp in itm.BonusAbilityByNum)
+            {
+                enhancement.Add(new XElement("div",
+                    XClass("torctip_set_bonus"),
+                    String.Format("({0}) {1}", kvp.Key, kvp.Value.ParsedDescription.Replace("\'", "'"))
+                    ));
+            }
+            return enhancement;
+
         }
         #endregion
         #region schematic
@@ -918,7 +922,7 @@ namespace GomLib.Models
             string stringQual = "none";
             if (itm.Item != null)
             {
-                stringQual = ((itm.Item.IsModdable && (itm.Item.Quality == ItemQuality.Prototype)) ? "moddable" : itm.Item.Quality.ToString().ToLower());
+                stringQual = ((itm.Item.TypeBitFlags.IsModdable && (itm.Item.Quality == ItemQuality.Prototype)) ? "moddable" : itm.Item.Quality.ToString().ToLower());
                 icon = itm.Item.Icon;
                 if (String.IsNullOrEmpty(itm.Name))
                 {
@@ -984,7 +988,7 @@ namespace GomLib.Models
                         foreach (var kvp in itm.Materials)
                         {
                             var mat = (Item)new GameObject().Load(kvp.Key, itm._dom);
-                            var matstringQual = ((mat.IsModdable && (mat.Quality == ItemQuality.Prototype)) ? "moddable" : mat.Quality.ToString().ToLower());
+                            var matstringQual = ((mat.TypeBitFlags.IsModdable && (mat.Quality == ItemQuality.Prototype)) ? "moddable" : mat.Quality.ToString().ToLower());
                             var matfileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", mat.Icon));
                             components.Add(new XElement("div",
                                 XClass("torctip_mat"),
@@ -1335,7 +1339,7 @@ namespace GomLib.Models
                     {
                         var mat = rew.RewardItem;
                         if (mat == null) continue;
-                        var matstringQual = ((mat.IsModdable && (mat.Quality == ItemQuality.Prototype)) ? "moddable" : mat.Quality.ToString().ToLower());
+                        var matstringQual = ((mat.TypeBitFlags.IsModdable && (mat.Quality == ItemQuality.Prototype)) ? "moddable" : mat.Quality.ToString().ToLower());
                         var matfileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", mat.Icon));
                         XElement matElement = new XElement("div",
                             XClass("torctip_rwd"),
@@ -1522,6 +1526,221 @@ namespace GomLib.Models
                 
                 inner.Add(
                     );
+                tooltip.Add(inner);
+            }
+
+            return tooltip;
+        }
+
+        #endregion
+        #region mission
+        public static XElement GetHTML(this Achievement itm)
+        {
+            if (Tooltip.TooltipNameMap.Count == 0)
+            {
+                LoadNameMap(itm._dom);
+            }
+            if (itm.Id == 0) return new XElement("div", "Not Found");
+            string icon = "none";
+            string stringQual = "achievement";
+            icon = itm.Icon;
+
+            XElement tooltip = new XElement("div", new XAttribute("class", "torctip_wrapper"));
+            var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", icon));
+
+            if (itm != null)
+            {
+                tooltip.Add(new XElement("div",
+                    new XAttribute("class", String.Format("torctip_image torctip_image_{0}", stringQual)),
+                    new XElement("img",
+                        new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", fileId.ph, fileId.sh)),
+                        new XAttribute("alt", "")),
+                    new XElement("div",
+                        XClass("torctip_icon_points"),
+                        new XElement("span",
+                            XClass("torctip_ach_star")
+                        ),
+                        itm.Rewards.AchievementPoints
+                    )
+
+                ));
+                XElement inner = new XElement("div",
+                    XClass("torctip_tooltip"),
+                    new XElement("span",
+                        XClass(String.Format("torctip_{0}", stringQual)),
+                        itm.Name
+                    )
+                );
+                bool addRewards = false;
+                if(itm.Rewards != null)
+                {
+                    inner.Add(new XElement("span",
+                        XClass("torctip_ach_points"),
+                        " [ ",
+                        new XElement("span",
+                            XClass("torctip_ach_star")
+                        ),
+                        String.Format(" {0} ]", itm.Rewards.AchievementPoints)
+                    ));
+                }
+
+                XElement desc = new XElement("div",
+                    XClass("torctip_blue"),
+                    itm.Description
+                );
+                inner.Add(desc);
+                XElement taskText = new XElement("span",
+                    XClass("torctip_ach_tsks")
+                );
+                foreach(var tsk in itm.Tasks)
+                {
+                    string tskName = tsk.Name;
+                    if (tsk.LocalizedNames.Count != 0)
+                        tskName = tsk.LocalizedNames[Tooltip.language];
+                    if(tskName == "")
+                    {
+                        var tskSub = itm._dom.GetObject(tsk.Id);
+                        if(tskSub != null)
+                        {
+                            GameObject obj = new GomLib.Models.GameObject().Load(tskSub);
+                            switch (tskSub.Name.Substring(0, 4))
+                            {
+                                case "ach.":
+                                    tskName = ((Achievement)obj).LocalizedName[Tooltip.language];
+                                    break;
+                                case "abl.":
+                                    tskName = ((Ability)obj).LocalizedName[Tooltip.language];
+                                    break;
+                                case "cdx.":
+                                    tskName = ((Codex)obj).LocalizedName[Tooltip.language];
+                                    break;
+                                case "npc.":
+                                    tskName = ((Npc)obj).LocalizedName[Tooltip.language];
+                                    break;
+                                case "qst.":
+                                    tskName = ((Quest)obj).LocalizedName[Tooltip.language];
+                                    break;
+                                case "tal.":
+                                    tskName = ((Talent)obj).LocalizedName[Tooltip.language];
+                                    break;
+                                case "sche":
+                                    tskName = ((Schematic)obj).LocalizedName[Tooltip.language];
+                                    break;
+                                case "dec.":
+                                    tskName = ((Decoration)obj).LocalizedName[Tooltip.language];
+                                    break;
+                                case "itm.":
+                                    tskName = ((Item)obj).LocalizedName[Tooltip.language];
+                                    break;
+                                default:
+                                    return null;
+                            }
+                        }
+                    }
+                    taskText.Add(new XElement("div",
+                        XClass("torctip_white"),
+                        String.Format("0/{0} {1}", tsk.Count, tskName)
+                    ));
+                }
+                inner.Add(taskText);
+                XElement rewards = new XElement("div",
+                    XClass("torctip_rewards"),
+                    new XElement("span",
+                        "Rewards")
+                );
+                XElement rewardContainer = new XElement("div",
+                    XClass("torctip_rwd_inner"));
+                if (itm.Rewards != null)
+                {
+                    if(itm.Rewards.CartelCoins > 0)
+                    {
+                        addRewards = true;
+                        rewardContainer.Add(new XElement("div",
+                            XClass("torctip_ach_items"),
+                            new XElement("div",
+                                XClass("torctip_blue"),
+                                "Cartel Coins:"
+                            ),
+                            new XElement("div",
+                                XClass("torctip_mtx_coins"),
+                                itm.Rewards.CartelCoins
+                            )
+                        ));
+                    }
+                    if (itm.Rewards.Requisition > 0)
+                    {
+                        addRewards = true;
+                        rewardContainer.Add(new XElement("div",
+                            XClass("torctip_ach_items"),
+                            new XElement("div",
+                                XClass("torctip_blue"),
+                                "Fleet Requisition:"
+                            ),
+                            new XElement("div",
+                                XClass("torctip_gsf_cur"),
+                                itm.Rewards.Requisition
+                            )
+                        ));
+                    }
+                    if (itm.Rewards.LegacyTitle != null)
+                    {
+                        addRewards = true;
+                        rewardContainer.Add(new XElement("div",
+                            XClass("torctip_ach_items"),
+                            new XElement("div",
+                                XClass("torctip_blue"),
+                                "Legacy Title:"
+                            ),
+                            new XElement("div",
+                                XClass("torctip_lgy_tit"),
+                                itm.Rewards.LocalizedLegacyTitle[Tooltip.language]  
+                            )
+                        ));
+                    }
+                    if (itm.Rewards.ItemRewardList != null)
+                    {
+                        XElement providedRewards = new XElement("div",
+                            XClass("torctip_ach_items"),
+                            new XElement("div",
+                                XClass("torctip_blue"),
+                                "Item Rewards:"));
+                        foreach (var rew in itm.Rewards.ItemRewardList)
+                        {
+                            addRewards = true;
+                            var mat = itm._dom.itemLoader.Load(rew.Key);
+                            if (mat == null) continue;
+                            var matstringQual = ((mat.TypeBitFlags.IsModdable && (mat.Quality == ItemQuality.Prototype)) ? "moddable" : mat.Quality.ToString().ToLower());
+                            var matfileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", mat.Icon));
+                            XElement matElement = new XElement("div",
+                                XClass("torctip_rwd"),
+                                new XAttribute("style", "display:inline;"),
+                                new XElement("a",
+                                    new XAttribute("href", String.Format("https://torcommunity.com/database/item/{0}/{1}/", mat.Base62Id, LinkString(mat.Name))),
+                                    new XAttribute("data-torc", "norestyle"),
+                                    new XAttribute("class", String.Format("torctip_image torctip_image_{0}", matstringQual)),
+                                    new XElement("img",
+                                        new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", matfileId.ph, matfileId.sh)),
+                                        new XAttribute("alt", mat.Name),
+                                        XClass("image")
+                                    ),
+                                    new XElement("span",
+                                        XClass("torctip_rwd_overlay"),
+                                        rew.Value
+                                    )
+                                )
+                            );
+                            providedRewards.Add(matElement);
+                        }
+                        if (providedRewards.Elements().Count() > 1)
+                            rewardContainer.Add(providedRewards);
+                    }
+                }
+                if (addRewards)
+                {
+                    rewards.Add(rewardContainer);
+                    inner.Add(rewards);
+                }
+
                 tooltip.Add(inner);
             }
 
