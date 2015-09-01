@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
@@ -24,7 +25,24 @@ namespace GomLib.Models
         public string CategoryName { get; set; }
         public long CategoryId { get; set; }
         public Faction Faction { get; set; }
+
+        [JsonIgnore]
         public List<ClassSpec> Classes { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        internal List<string> _ClassesB62 { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        public List<string> ClassesB62
+        {
+            get
+            {
+                if (_ClassesB62 == null)
+                {
+                    if (Classes == null) return new List<string>();
+                    _ClassesB62 = Classes.Select(x => x.Base62Id).ToList();
+                }
+                return _ClassesB62;
+            }
+        }
         public bool ClassRestricted { get; set; }
 
         public bool IsPlanet { get; set; }
@@ -34,6 +52,21 @@ namespace GomLib.Models
         [Newtonsoft.Json.JsonIgnore]
         public List<Codex> Planets { get; set; }
         public List<ulong> PlanetsIds { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        internal List<string> _PlanetsB62 { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        public List<string> PlanetsB62
+        {
+            get
+            {
+                if (_PlanetsB62 == null)
+                {
+                    if (Planets == null) return new List<string>();
+                    _PlanetsB62 = PlanetsIds.Select(x => x.ToMaskedBase62()).ToList();
+                }
+                return _PlanetsB62;
+            }
+        }
 
         public override int GetHashCode()
         {

@@ -73,7 +73,7 @@ namespace GomLib.Models
         public ulong AppearanceId { get; set; }
         public string AppearanceFqn { get; set; }
         internal NpcAppearance _Appearance;
-        //[Newtonsoft.Json.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         public NpcAppearance Appearance
         {
             get

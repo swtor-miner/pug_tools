@@ -6,6 +6,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using System.Text.RegularExpressions;
 using System.Xml;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
@@ -135,8 +136,24 @@ namespace GomLib.Models
             }
             return desc;
         }
-        
 
+        [JsonIgnore]
+        internal List<string> _Effects { get; set; }
+        public List<string> EffectsB62
+        {
+            get
+            {
+                if(_Effects == null && EffectIds != null)
+                {
+                    _Effects = new List<string>();
+                    foreach(var uId in EffectIds)
+                    {
+                        _Effects.Add(uId.ToMaskedBase62());
+                    }
+                }
+                return _Effects;
+            }
+        }
         public List<ulong> EffectIds { get; set; }
         public int Level { get; set; }
         public string Icon { get; set; }

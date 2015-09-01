@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
@@ -31,6 +32,8 @@ namespace GomLib.Models
         public string Category { get; set; }
         public List<QuestBranch> Branches { get; set; }
         public Dictionary<ulong, QuestItem> Items { get; set; }
+
+        [JsonIgnore]
         public ClassSpecList Classes { get; set; }
         public List<QuestReward> Rewards { get; set; }
         public string ReqPrivacy { get; set; }
@@ -51,6 +54,7 @@ namespace GomLib.Models
                 return _BonusMissions;
             }
         }
+        [JsonIgnore]
         public List<ulong> BonusMissionsIds { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         public List<object> ItemMap { get; set; }

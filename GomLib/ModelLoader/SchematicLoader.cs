@@ -253,7 +253,7 @@ namespace GomLib.ModelLoader
                     {
                         if (schem.Item.AuctionCategory != null) schem.Category = schem.Item.AuctionCategory.ToString();
                         if (schem.Item.AuctionSubCategory != null) schem.SubCategory = schem.Item.AuctionSubCategory.ToString();
-                        schem.Quality = ((schem.Item.IsModdable && (schem.Item.Quality == ItemQuality.Prototype)) ? "moddable" : schem.Item.Quality.ToString().ToLower());
+                        schem.Quality = ((schem.Item.TypeBitFlags.IsModdable && (schem.Item.Quality == ItemQuality.Prototype)) ? "moddable" : schem.Item.Quality.ToString().ToLower());
                     }
                     else
                     {

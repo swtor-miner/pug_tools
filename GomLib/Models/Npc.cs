@@ -4,14 +4,41 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using System.Xml;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
     public class Npc : GameObject, IEquatable<Npc>
     {
+        #region Properties
         public ulong parentSpecId { get; set; }
         public ulong NodeId { get; set; }
         public string Name { get; set; }
+        //localized names
+        [JsonIgnore]
+        public string FrName
+        {
+            get
+            {
+                if (LocalizedName != null && LocalizedName.ContainsKey("frMale"))
+                {
+                    return LocalizedName["frMale"];
+                }
+                return "";
+            }
+        }
+        [JsonIgnore]
+        public string DeName
+        {
+            get
+            {
+                if (LocalizedName != null && LocalizedName.ContainsKey("deMale"))
+                {
+                    return LocalizedName["deMale"];
+                }
+                return "";
+            }
+        }
         public long NameId { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
         public string Title { get; set; }
@@ -22,6 +49,7 @@ namespace GomLib.Models
         public int MinLevel { get; set; }
         public int MaxLevel { get; set; }
         public Faction Faction { get; set; }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public Toughness Toughness { get; set; }
         public int DifficultyFlags { get; set; }
 
@@ -69,7 +97,9 @@ namespace GomLib.Models
         }
 
         //public List<string> AbilityPackagesTrained { get; set; }
+        #endregion
 
+        #region IEquatable
         public override int GetHashCode()
         {
             int hash = Name.GetHashCode();
@@ -191,7 +221,9 @@ namespace GomLib.Models
                 return false;
             return true;
         }
+        #endregion
 
+        #region Output Related
         public override string ToString()
         {
             var txtFile = new StringBuilder();
@@ -272,7 +304,21 @@ namespace GomLib.Models
 
             return txtFile.ToString();
         }
-
+        public override List<SQLProperty> SQLProperties
+        {
+            get
+            {
+                return new List<SQLProperty>
+                    {                //(SQL Column Name, C# Property Name, SQL Column type statement, IsUnique/PrimaryKey, Serialize value to json)
+                        new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrName", "FrName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeName", "DeName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.PrimaryKey),
+                        new SQLProperty("MinLevel", "MinLevel", "int(11) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("MaxLevel", "MaxLevel", "int(11) NOT NULL", SQLPropSetting.AddIndex),
+                    };
+            }
+        }
         public override XElement ToXElement(bool verbose)
         {
             if (NodeId == 0) return null;
@@ -347,5 +393,6 @@ namespace GomLib.Models
 
             return npcNode;
         }
+        #endregion
     }
 }

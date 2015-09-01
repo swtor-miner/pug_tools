@@ -20,10 +20,26 @@ namespace GomLib.Models
         public string Fqn { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         public DataObjectModel _dom { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
         public Dictionary<string, List<ulong>> References { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        public Dictionary<string, List<string>> _B62References { get; set; }
+        public Dictionary<string, List<string>> B62References {
+            get
+            {
+                if (_B62References == null)
+                {
+                    if (References != null)
+                    {
+                        _B62References = References.ToDictionary(x => x.Key, x => x.Value.Select(y => y.ToMaskedBase62()).ToList());
+                    }
+                }
+                return _B62References;
+            }
+        }
         public Dictionary<ulong, string> FullReferences { get; set; }
 
-        public string ToJSON()
+        public virtual string ToJSON()
         {
             JsonSerializerSettings settings = new JsonSerializerSettings();
             settings.NullValueHandling = NullValueHandling.Ignore;
