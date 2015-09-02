@@ -298,7 +298,7 @@ namespace GomLib.ModelLoader
             {
                 qst.CreditsRewarded = fullCreditRewardsTable[qst.CreditRewardType][qst.XpLevel];
             }
-            if (qst.XpLevel != 0)
+            if (false) //qst.XpLevel != 0)
             {
                 // Subscriber XP: base xp * difficulty multiplier * (1.2853 - level * .0012)
                 // F2P XP: base xp * difficulty multiplier * (1.2573 - level * .0012)

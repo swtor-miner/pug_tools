@@ -12,7 +12,8 @@ namespace GomLib.Models
         Easy = 2,
         Normal = 3,
         Hard = 4,
-        VeryHard = 5
+        VeryHard = 5,
+        SeasonOne = 6
     }
 
     public static class QuestDifficultyExtensions
@@ -35,6 +36,7 @@ namespace GomLib.Models
                 case "hard": return QuestDifficulty.Hard;
                 case "qstdifficultyveryhard":
                 case "veryhard": return QuestDifficulty.VeryHard;
+                case "qstdifficultyseasonone":return QuestDifficulty.SeasonOne;
                 default: throw new InvalidOperationException("Unknown Quest Difficulty: " + str);
             }
         }

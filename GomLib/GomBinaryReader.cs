@@ -66,6 +66,20 @@ namespace GomLib
             {
                 return (ulong)this.ReadByte();
             }
+            else if(b0 == 0xEF) //this is likely a bug due to not having a GomTypeId.RawData reader
+            {
+                byte[] byteBuffer = new byte[4];//this is wrong, but it avoids the exception for now.
+                this.Read(byteBuffer, 0, byteBuffer.Length); // it's almost right, but the ctlCoverMovementDirection_c value isn't being read right, which throws the following values off.
+
+                for (int i = 0; i < byteBuffer.Length; i++)
+                {
+                    val <<= 8;
+                    val += byteBuffer[i];
+                }
+
+                //var bs = this.ReadByte();
+                return val;
+            }
             else
             {
                 throw new InvalidOperationException(String.Format("Unknown Number Prefix: 0x{0:X}", b0));
