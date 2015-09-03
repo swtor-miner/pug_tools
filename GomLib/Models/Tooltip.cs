@@ -511,10 +511,31 @@ namespace GomLib.Models
                     );
                 if (!isEquipable)
                 {
-                    stats.Add(new XElement("div",
-                       XClass("torctip_stat"),
-                       String.Format("{0} {1}", GetLocalizedText(836131348283465), itm.CombinedRating) //"Armor Rating {0}"
-                       ));
+                    if (itm.EnhancementType != null) {
+                        switch (itm.EnhancementType)
+                        {
+                            case EnhancementType.Harness:
+                                stats.Add(new XElement("div",
+                                   XClass("torctip_stat"),
+                                   String.Format("{0} {1}", GetLocalizedText(836131348283474), itm.CombinedRating) //"Armor Rating {0}"
+                                ));
+                                break;
+                            case EnhancementType.Barrel:
+                            case EnhancementType.Hilt:
+                            case EnhancementType.PowerCrystal:
+                                stats.Add(new XElement("div",
+                                   XClass("torctip_stat"),
+                                   String.Format("{0} {1}", GetLocalizedText(836131348283475), itm.CombinedRating) //"Weapon Damage/Power Rating {0}"
+                                ));
+                                break;
+                            default:
+                                stats.Add(new XElement("div",
+                                   XClass("torctip_stat"),
+                                   String.Format("{0} {1}", GetLocalizedText(836131348284091), itm.CombinedRating) //"Item Rating {0}"
+                                ));
+                                break;
+                        }
+                    }
                 }
                 for (var i = 0; i < itm.CombinedStatModifiers.Count; i++)
                 {
@@ -1533,7 +1554,7 @@ namespace GomLib.Models
         }
 
         #endregion
-        #region mission
+        #region achievements
         public static XElement GetHTML(this Achievement itm)
         {
             if (Tooltip.TooltipNameMap.Count == 0)
@@ -1558,7 +1579,8 @@ namespace GomLib.Models
                     new XElement("div",
                         XClass("torctip_icon_points"),
                         new XElement("span",
-                            XClass("torctip_ach_star")
+                            XClass("torctip_ach_star"),
+                            " "
                         ),
                         itm.Rewards.AchievementPoints
                     )
@@ -1578,7 +1600,8 @@ namespace GomLib.Models
                         XClass("torctip_ach_points"),
                         " [ ",
                         new XElement("span",
-                            XClass("torctip_ach_star")
+                            XClass("torctip_ach_star"),
+                            " "
                         ),
                         String.Format(" {0} ]", itm.Rewards.AchievementPoints)
                     ));
@@ -1592,33 +1615,88 @@ namespace GomLib.Models
                 XElement taskText = new XElement("span",
                     XClass("torctip_ach_tsks")
                 );
-                foreach(var tsk in itm.Tasks)
+                foreach (var tsk in itm.Tasks)
                 {
                     string tskName = tsk.Name;
                     if (tsk.LocalizedNames.Count != 0)
                         tskName = tsk.LocalizedNames[Tooltip.language];
-                    if(tskName == "")
+                    if (tskName == "")
                     {
                         var tskSub = itm._dom.GetObject(tsk.Id);
-                        if(tskSub != null)
+                        if (tskSub != null)
                         {
                             GameObject obj = new GomLib.Models.GameObject().Load(tskSub);
                             switch (tskSub.Name.Substring(0, 4))
                             {
                                 case "ach.":
-                                    tskName = ((Achievement)obj).LocalizedName[Tooltip.language];
+                                    taskText.Add(new XElement("div",
+                                        XClass("torctip_ach_tsk"),
+                                        new XElement("span",
+                                            String.Format("0/{0} ", tsk.Count)
+                                        ),
+                                        new XElement("a",
+                                            XClass(String.Format("torctip_{0}", "achievement")),
+                                            new XAttribute("href", String.Format("https://torcommunity.com/database/achievement/{0}/{1}/", obj.Base62Id, ((Achievement)obj).LocalizedName[Tooltip.language].LinkString())),
+                                            new XAttribute("data-torc", "norestyle"),
+                                            ((Achievement)obj).LocalizedName[Tooltip.language]
+                                        )
+                                    ));
                                     break;
                                 case "abl.":
-                                    tskName = ((Ability)obj).LocalizedName[Tooltip.language];
+                                    taskText.Add(new XElement("div",
+                                        XClass("torctip_ach_tsk"),
+                                        new XElement("span",
+                                            String.Format("0/{0} ", tsk.Count)
+                                        ),
+                                        new XElement("a",
+                                            XClass(String.Format("torctip_{0}", "ability")),
+                                            new XAttribute("href", String.Format("https://torcommunity.com/database/ability/{0}/{1}/", obj.Base62Id, ((Ability)obj).LocalizedName[Tooltip.language].LinkString())),
+                                            new XAttribute("data-torc", "norestyle"),
+                                            ((Ability)obj).LocalizedName[Tooltip.language]
+                                        )
+                                    ));
                                     break;
                                 case "cdx.":
-                                    tskName = ((Codex)obj).LocalizedName[Tooltip.language];
+                                    taskText.Add(new XElement("div",
+                                        XClass("torctip_ach_tsk"),
+                                        new XElement("span",
+                                            String.Format("0/{0} ", tsk.Count)
+                                        ),
+                                        new XElement("a",
+                                            XClass(String.Format("torctip_{0}", "codex")),
+                                            new XAttribute("href", String.Format("https://torcommunity.com/database/codex/{0}/{1}/", obj.Base62Id, ((Codex)obj).LocalizedName[Tooltip.language].LinkString())),
+                                            new XAttribute("data-torc", "norestyle"),
+                                            ((Codex)obj).LocalizedName[Tooltip.language]
+                                        )
+                                    ));
                                     break;
                                 case "npc.":
-                                    tskName = ((Npc)obj).LocalizedName[Tooltip.language];
+                                    taskText.Add(new XElement("div",
+                                        XClass("torctip_ach_tsk"),
+                                        new XElement("span",
+                                            String.Format("0/{0} ", tsk.Count)
+                                        ),
+                                        new XElement("a",
+                                            XClass(String.Format("torctip_{0}", "npc")),
+                                            new XAttribute("href", String.Format("https://torcommunity.com/database/npc/{0}/{1}/", obj.Base62Id, ((Npc)obj).LocalizedName[Tooltip.language].LinkString())),
+                                            new XAttribute("data-torc", "norestyle"),
+                                            ((Npc)obj).LocalizedName[Tooltip.language]
+                                        )
+                                    ));
                                     break;
                                 case "qst.":
-                                    tskName = ((Quest)obj).LocalizedName[Tooltip.language];
+                                    taskText.Add(new XElement("div",
+                                        XClass("torctip_ach_tsk"),
+                                        new XElement("span",
+                                            String.Format("0/{0} ", tsk.Count)
+                                        ),
+                                        new XElement("a",
+                                            XClass(String.Format("torctip_{0}", "mission")),
+                                            new XAttribute("href", String.Format("https://torcommunity.com/database/mission/{0}/{1}/", obj.Base62Id, ((Quest)obj).LocalizedName[Tooltip.language].LinkString())),
+                                            new XAttribute("data-torc", "norestyle"),
+                                            ((Quest)obj).LocalizedName[Tooltip.language]
+                                        )
+                                    ));
                                     break;
                                 case "tal.":
                                     tskName = ((Talent)obj).LocalizedName[Tooltip.language];
@@ -1630,17 +1708,31 @@ namespace GomLib.Models
                                     tskName = ((Decoration)obj).LocalizedName[Tooltip.language];
                                     break;
                                 case "itm.":
-                                    tskName = ((Item)obj).LocalizedName[Tooltip.language];
+                                    taskText.Add(new XElement("div",
+                                        XClass("torctip_ach_tsk"),
+                                        new XElement("span",
+                                            String.Format("0/{0} ", tsk.Count)
+                                        ),
+                                        new XElement("a",
+                                            XClass(String.Format("torctip_{0}", ((Item)obj).Quality.ToString())),
+                                            new XAttribute("href", String.Format("https://torcommunity.com/database/item/{0}/{1}/", obj.Base62Id, ((Item)obj).LocalizedName[Tooltip.language].LinkString())),
+                                            new XAttribute("data-torc", "norestyle"),
+                                            ((Item)obj).LocalizedName[Tooltip.language]
+                                        )
+                                    ));
                                     break;
                                 default:
                                     return null;
                             }
                         }
                     }
-                    taskText.Add(new XElement("div",
-                        XClass("torctip_white"),
-                        String.Format("0/{0} {1}", tsk.Count, tskName)
-                    ));
+                    else
+                    {
+                        taskText.Add(new XElement("div",
+                            XClass("torctip_white"),
+                            String.Format("0/{0} {1}", tsk.Count, tskName)
+                        ));
+                    }
                 }
                 inner.Add(taskText);
                 XElement rewards = new XElement("div",
@@ -1889,7 +1981,7 @@ namespace GomLib.Models
             if (ImpClasses.Contains(cls.Id)) return "Imperial";
             return "Republic";
         }
-        private static XAttribute XClass(string classname)
+        public static XAttribute XClass(string classname)
         {
             return new XAttribute("class", classname);
         }
