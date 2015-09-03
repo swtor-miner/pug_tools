@@ -638,13 +638,14 @@ namespace tor_tools
 	                        webBrowser1.Visible = true;
 	                        break;
 	                    case "DAT":
-	                        rootList.Clear();
-	                        await Task.Run(() => previewDAT());
-	                        treeListView1.Roots = rootList;
-	                        treeListView1.ExpandAll();
+	                        //rootList.Clear();
+	                        //await Task.Run(() => previewDAT());  //disabled as there is a new bianry format for dat files
+                            await Task.Run(() => previewHEX());
+	                        //treeListView1.Roots = rootList;
+	                        //treeListView1.ExpandAll();
 	                        hideLoader();
 	                        //txtRawView.Visible = true;
-	                        treeListView1.Visible = true;
+	                        //treeListView1.Visible = true;
 	                        break;
 	                    case "DYC":
 	                    case "MAG":

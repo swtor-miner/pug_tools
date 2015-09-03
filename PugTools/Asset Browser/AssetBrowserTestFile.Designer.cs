@@ -48,10 +48,10 @@
             this.chkMISC = new System.Windows.Forms.CheckBox();
             this.chkCNV = new System.Windows.Forms.CheckBox();
             this.grbNodes = new System.Windows.Forms.GroupBox();
+            this.chkSTB = new System.Windows.Forms.CheckBox();
             this.chkPLC = new System.Windows.Forms.CheckBox();
             this.chkICONS = new System.Windows.Forms.CheckBox();
             this.lblWarning = new System.Windows.Forms.Label();
-            this.chkSTB = new System.Windows.Forms.CheckBox();
             this.groupFileTypes.SuspendLayout();
             this.grbNodes.SuspendLayout();
             this.SuspendLayout();
@@ -198,8 +198,7 @@
             // chkDAT
             // 
             this.chkDAT.AutoSize = true;
-            this.chkDAT.Checked = true;
-            this.chkDAT.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkDAT.Enabled = false;
             this.chkDAT.Location = new System.Drawing.Point(6, 89);
             this.chkDAT.Name = "chkDAT";
             this.chkDAT.Size = new System.Drawing.Size(206, 17);
@@ -312,6 +311,18 @@
             this.grbNodes.TabStop = false;
             this.grbNodes.Text = "Nodes";
             // 
+            // chkSTB
+            // 
+            this.chkSTB.AutoSize = true;
+            this.chkSTB.Checked = true;
+            this.chkSTB.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkSTB.Location = new System.Drawing.Point(6, 205);
+            this.chkSTB.Name = "chkSTB";
+            this.chkSTB.Size = new System.Drawing.Size(120, 17);
+            this.chkSTB.TabIndex = 18;
+            this.chkSTB.Text = "STB - STB Manifest";
+            this.chkSTB.UseVisualStyleBackColor = true;
+            // 
             // chkPLC
             // 
             this.chkPLC.AutoSize = true;
@@ -344,18 +355,6 @@
             this.lblWarning.Size = new System.Drawing.Size(102, 13);
             this.lblWarning.TabIndex = 4;
             this.lblWarning.Text = "** - Time Consuming";
-            // 
-            // chkSTB
-            // 
-            this.chkSTB.AutoSize = true;
-            this.chkSTB.Checked = true;
-            this.chkSTB.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkSTB.Location = new System.Drawing.Point(6, 205);
-            this.chkSTB.Name = "chkSTB";
-            this.chkSTB.Size = new System.Drawing.Size(120, 17);
-            this.chkSTB.TabIndex = 18;
-            this.chkSTB.Text = "STB - STB Manifest";
-            this.chkSTB.UseVisualStyleBackColor = true;
             // 
             // AssetBrowserTestFile
             // 
