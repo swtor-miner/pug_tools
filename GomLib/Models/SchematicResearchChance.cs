@@ -13,7 +13,8 @@ namespace GomLib.Models
         Low = 2,
         Medium = 3,
         High = 4,
-        VeryHigh = 5
+        VeryHigh = 5,
+        Max = 6
     }
 
     public static class SchematicResearchChanceExtensions
@@ -30,6 +31,7 @@ namespace GomLib.Models
                 case "prfSchematicResearchChanceMedium": return SchematicResearchChance.Medium;
                 case "prfSchematicResearchChanceHigh": return SchematicResearchChance.High;
                 case "prfSchematicResearchChanceVeryHigh": return SchematicResearchChance.VeryHigh;
+                case "prfSchematicResearchChanceMax": return SchematicResearchChance.Max;
                 default: throw new InvalidOperationException("Invalid SchematicResearchChance:" + str);
             }
         }
