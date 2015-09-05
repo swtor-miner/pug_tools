@@ -18,6 +18,8 @@ namespace tor_tools
         private HashSet<string> checkKeys = new HashSet<string>(new string[] { ".NormalMap2", ".NormalMap1", ".SurfaceMap", ".RampMap", ".Falloff", ".IlluminationMap", ".FxSpecName", ".EnvironmentMap", ".Intensity", ".PortalTarget", ".Color", ".gfxMovieName", ".DiffuseColor", ".ProjectionTexture" });
         public HashSet<string> portalTargets = new HashSet<string>();
 
+        Dictionary<uint, DatTypeId> Properties = new Dictionary<uint, DatTypeId>();
+
         public Format_DAT(string dest, string ext)
         {
             this.dest = dest;
@@ -27,25 +29,341 @@ namespace tor_tools
         public void parseDAT(Stream fileStream, string fullFileName)
         {
             this.filename = fullFileName;
-            StreamReader reader = new StreamReader(fileStream);
-            string stream_line;
-            List<string> stream_lines = new List<string>();
-            while ((stream_line = reader.ReadLine()) != null)
+            bool oldFormat = true;
+            BinaryReader binReader = new BinaryReader(fileStream);
+            int header = binReader.ReadInt32();
+            if (header == 24)
             {
-                stream_lines.Add(stream_line.TrimStart());                
+                oldFormat = false;
+                //fileStream.Position = 4;
+                char c = binReader.ReadChar();
+                StringBuilder formatter = new StringBuilder();
+                while (c != '\0')
+                {
+                    formatter.Append(c);
+                    c = binReader.ReadChar();
+                }
+                string format = formatter.ToString();
+                switch (format)
+                {
+                    case "ROOM_DAT_BINARY_FORMAT_":
+                        parseRoomDAT(binReader);
+                        break;
+                    case "AREA_DAT_BINARY_FORMAT_":
+                        parseAreaDAT(binReader);
+                        break;
+                    default:
+                        break;
+                }
             }
-            reader.Close();
-            if (stream_lines.Any(x => x.Contains("! Area Specification")))
-                parseAreaDAT(stream_lines);
-            else if (stream_lines.Any(x => x.Contains("! Room Specification")))
-                parseRoomDAT(stream_lines);
-            else if (stream_lines.Any(x => x.Contains("! Character Specification")))
-                parseCharacterDAT(stream_lines);
-            else
-                //throw new Exception("Unknown DAT Specification" + stream_lines[1]);
-                Console.WriteLine("Unknown DAT Specification" + stream_lines[1]);
+
+            if (oldFormat)
+            {
+                if (fileStream.CanSeek)
+                    fileStream.Position = 0;
+                else
+                {
+                    string soin = ""; //dunno what to do here
+                }
+                StreamReader reader = new StreamReader(fileStream);
+                string stream_line;
+                List<string> stream_lines = new List<string>();
+                while ((stream_line = reader.ReadLine()) != null)
+                {
+                    stream_lines.Add(stream_line.TrimStart());
+                }
+                reader.Close();
+                if (stream_lines.Any(x => x.Contains("! Area Specification")))
+                    parseAreaDAT(stream_lines);
+                else if (stream_lines.Any(x => x.Contains("! Room Specification")))
+                    parseRoomDAT(stream_lines);
+                else if (stream_lines.Any(x => x.Contains("! Character Specification")))
+                    parseCharacterDAT(stream_lines);
+                else
+                    //throw new Exception("Unknown DAT Specification" + stream_lines[1]);
+                    Console.WriteLine("Unknown DAT Specification" + stream_lines[1]);
+            }
         }
 
+        #region New Format Readers
+        public void parseAreaDAT(BinaryReader br)
+        {
+            br.BaseStream.Position = 0x1C; //Skip room header
+
+            uint roomOffset = br.ReadUInt32();
+            uint assetsOffset = br.ReadUInt32();
+            uint pathsOffset = br.ReadUInt32();
+            uint schemesOffset = br.ReadUInt32();
+            uint terTexOffset = br.ReadUInt32();
+            uint DydTexOffset = br.ReadUInt32();
+            uint DydChanParamOffset = br.ReadUInt32();
+            uint settingsOffset = br.ReadUInt32();
+
+            uint guidOffset = br.ReadUInt32();
+
+            byte[] unknownBytes = br.ReadBytes(0x16); //Always (01 00) repeating
+
+            br.BaseStream.Position = guidOffset;
+            ulong areaGuid = br.ReadUInt64();
+
+            //Rooms
+            br.BaseStream.Position = roomOffset;
+            uint numRooms = br.ReadUInt32();
+            for (uint i = 0; i < numRooms; i++)
+            {
+                uint nameLength = br.ReadUInt32();
+                string room = ReadString(br, nameLength);
+                fileNames.Add(String.Format("/resources/world/areas/{0}/{1}.dat", areaGuid, room));
+            }
+
+            //Assets
+            br.BaseStream.Position = assetsOffset;
+            uint numAssets = br.ReadUInt32();
+            for (uint i = 0; i < numAssets; i++)
+            {
+                ulong assetId = br.ReadUInt64();
+                uint nameLength = br.ReadUInt32();
+                string assetName = ReadString(br, nameLength);
+                if (assetName.Contains(':') || assetName.Contains('#'))
+                    continue;
+                fileNames.Add("/resources" + assetName.ToLower().Replace("\\", "/"));
+            }
+
+            //Paths
+
+            //Schemes
+            br.BaseStream.Position = schemesOffset;
+            uint numSchemes = br.ReadUInt32();
+            for (uint i = 0; i < numSchemes; i++)
+            {
+                uint nameLength = br.ReadUInt32();
+                string schemeName = ReadString(br, nameLength);
+                uint schemeLength = br.ReadUInt32();
+                string scheme = ReadString(br, schemeLength);
+                if (scheme.Contains("/"))
+                {
+                    int idx = 0;
+                    while ((idx = scheme.IndexOf('/', idx)) != -1)
+                    {
+                        int end = scheme.IndexOf('|', idx);
+                        int len = end - idx;
+                        string final = scheme.Substring(idx, len).ToLower();
+                        fileNames.Add(String.Format("/resources{0}.tex", final));
+                        fileNames.Add(String.Format("/resources{0}.dds", final));
+                        fileNames.Add(String.Format("/resources{0}.tiny.dds", final));
+                        idx = end;
+                    }
+                }
+            }
+
+            //TERRAINTEXTURES
+            br.BaseStream.Position = terTexOffset;
+            uint numTerTex = br.ReadUInt32();
+            for (uint i = 0; i < numTerTex; i++)
+            {
+                ulong texId = br.ReadUInt64();
+                uint nameLength = br.ReadUInt32();
+                string terTexName = ReadString(br, nameLength);
+
+                fileNames.Add(String.Format("/resources/art/shaders/materials/{0}.mat", terTexName.ToLower()));
+                fileNames.Add(String.Format("/resources/art/shaders/environmentmaterials/{0}.emt", terTexName.ToLower()));
+            }
+
+            //TERRAINTEXTURES
+            br.BaseStream.Position = DydTexOffset;
+            uint numDydTex = br.ReadUInt32();
+            for (uint i = 0; i < numDydTex; i++)
+            {
+                uint texId = br.ReadUInt32();
+                uint nameLength = br.ReadUInt32();
+                string terTexName = ReadString(br, nameLength);
+
+                fileNames.Add(String.Format("/resources/art/shaders/materials/{0}.mat", terTexName.ToLower()));
+                fileNames.Add(String.Format("/resources/art/shaders/environmentmaterials/{0}.emt", terTexName.ToLower()));
+            }
+
+            //DYDCHANNELPARAMS
+
+            //SETTINGS
+        }
+
+        private static string ReadString(BinaryReader br, uint length)
+        {
+            long curpos = br.BaseStream.Position;
+            long endpos = curpos + length;
+            char c = br.ReadChar();
+            StringBuilder builder = new StringBuilder();
+            while (c != '\0' && br.BaseStream.Position < endpos)
+            {
+                builder.Append(c);
+                c = br.ReadChar();
+            }
+            return builder.ToString();
+        }
+
+        public void parseRoomDAT(BinaryReader br)
+        {
+            HashSet<string> fxspecs = new HashSet<string>();
+            HashSet<string> textures = new HashSet<string>();
+
+            br.BaseStream.Position = 0x1C; //Skip room header
+
+            uint instanceOffset = br.ReadUInt32();
+            uint visibleOffset = br.ReadUInt32();
+            uint settingsOffset = br.ReadUInt32();
+
+            ulong unknownUInt64 = br.ReadUInt64(); //Always 281479271743491 : (03 00 01 00 01 00 01 00)
+
+            //Instances
+            br.BaseStream.Position = instanceOffset;
+            uint numInstances = br.ReadUInt32();
+            for(uint i = 0; i < numInstances; i++)
+            {
+                uint instanceHeader = br.ReadUInt32();
+                if (instanceHeader != 0xABCD1234)  // 0x3412CDAB
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
+                else
+                {
+                    string sdifn = "";
+                }
+                byte nullByte = br.ReadByte();
+                ulong instanceId = br.ReadUInt64();
+                ulong assetId = br.ReadUInt64();
+                byte nullByte2 = br.ReadByte();
+                uint numProperties = br.ReadUInt32();
+                uint propteriesLength = br.ReadUInt32();
+
+                long startOffset = br.BaseStream.Position;
+                byte nullByte3 = br.ReadByte();
+                try
+                {
+                    for (uint p = 0; p < numProperties; p++)
+                    {
+                        DatTypeId type = (DatTypeId)br.ReadByte();
+                        uint propertyId = br.ReadUInt32();
+
+                        if (!Properties.ContainsKey(propertyId))
+                        {
+                            Properties.Add(propertyId, type);
+                        }
+                        else if (Properties[propertyId] != type)
+                        {
+                            //throw new IndexOutOfRangeException();
+                            DatTypeId oldtype = Properties[propertyId];
+                        }
+                        object o = null;
+                        switch (type)
+                        {
+                            case DatTypeId.Boolean:
+
+                                byte b = br.ReadByte();
+                                if (b > 1)
+                                    throw new IndexOutOfRangeException();
+                                bool boo = Convert.ToBoolean(b);
+                                o = boo;
+                                break;
+                            case DatTypeId.Unknown1:
+                                int ival = br.ReadInt32();
+                                if(ival > 1)
+                                    o = ival;
+                                break;
+                            //case DatTypeId.Unknown2:
+                            //    break;
+                            case DatTypeId.UInt32:
+                                uint val = br.ReadUInt32();
+                                o = val;
+                                break;
+                            case DatTypeId.Single:
+                                float flo = br.ReadSingle();
+                                o = flo;
+                                break;
+                            case DatTypeId.UInt64:
+                                ulong lval = br.ReadUInt64();
+                                o = lval;
+                                break;
+                            case DatTypeId.Vector3:
+                                List<float> vec3 = new List<float>();
+                                vec3.Add(br.ReadSingle());
+                                vec3.Add(br.ReadSingle());
+                                vec3.Add(br.ReadSingle());
+                                o = vec3;
+                                break;
+                            case DatTypeId.Unknown7:
+                                //byte[] bytes = br.ReadBytes(16);
+                                List<float> vec4 = new List<float>();
+                                vec4.Add(br.ReadSingle());
+                                vec4.Add(br.ReadSingle());
+                                vec4.Add(br.ReadSingle());
+                                vec4.Add(br.ReadSingle());
+                                o = vec4;
+                                break;
+                            case DatTypeId.String:
+                                uint strlen = br.ReadUInt32();
+                                StringBuilder str = new StringBuilder((int)strlen);
+                                char c1 = br.ReadChar();
+                                char c2 = br.ReadChar();
+                                uint charsRead = 1;
+                                while (c1 != '\0' && c1 != '\0' && charsRead < strlen)
+                                {
+                                    str.Append(c1);
+                                    if (c2 != '\0')
+                                        throw new IndexOutOfRangeException();
+                                    c1 = br.ReadChar();
+                                    c2 = br.ReadChar();
+                                    charsRead++;
+                                }
+                                o = str.ToString();
+
+                                if (!String.IsNullOrWhiteSpace((string)o))
+                                {
+                                    switch (propertyId)
+                                    {
+                                        case 3261558584: // FxSpecName
+                                            fxspecs.Add((string)o);
+                                            break;
+                                        default:
+                                            textures.Add((string)o);
+                                            break;
+                                    }
+                                }
+                                break;
+                            case DatTypeId.Data:
+                                uint datalen = br.ReadUInt32();
+                                br.BaseStream.Position += datalen;
+                                break;
+                            default:
+                                long curpos = br.BaseStream.Position; //this is for debugging new formats found
+                                byte[] bities = br.ReadBytes(32);
+                                br.BaseStream.Position = curpos;
+                                throw new IndexOutOfRangeException();
+                        }
+                        //break;
+
+                    }
+                    
+                }catch(Exception ex)
+                {
+                    br.BaseStream.Position = startOffset + propteriesLength;
+                }
+                
+            }
+
+            foreach (var fxs in fxspecs)
+            {
+                fileNames.Add(String.Format("/resources/art/fx/fxspec/{0}.fxspec", fxs.ToLower()).Replace("\\", "/").Replace("//", "/").Replace(".fxspec.fxspec", ".fxspec"));
+            }
+            foreach(var tex in textures)
+            {
+                string file = ("/resources/" + tex.ToLower()).Replace("\\", "/").Replace("//", "/").Replace(".dds", "");
+                fileNames.Add(String.Format("{0}.dds", file));
+                fileNames.Add(String.Format("{0}.tiny.dds", file));
+                fileNames.Add(String.Format("{0}.tex", file));
+            }
+        }
+        #endregion
+        #region Old Format Readers
         public void parseAreaDAT(List<string> lines)
         {   
             string areaID = "";
@@ -124,7 +442,6 @@ namespace tor_tools
                 }                
             }            
         }
-
         public void parseRoomDAT(List<string> lines)
         {   
             List<string> sectionNames = new List<string>(new string[] { "[INSTANCES]", "[VISIBLE]", "[SETTINGS]" });
@@ -210,7 +527,6 @@ namespace tor_tools
                 }
             }
         }
-
         public void parseCharacterDAT(List<string> lines)
         {
             List<string> sectionNames = new List<string>(new string[] { "[PARTS]" });
@@ -296,6 +612,7 @@ namespace tor_tools
             }
             ***/
         }
+        #endregion
 
         public void WriteFile()
         {
@@ -323,5 +640,19 @@ namespace tor_tools
                 errors.Clear();
             }
         }
+    }
+
+    public enum DatTypeId : byte
+    {
+        Boolean = 0x00,
+        Unknown1 = 0x01,
+        Unknown2 = 0x02,
+        UInt32 = 0x03, // may be Int32
+        Single = 0x04,
+        UInt64 = 0x05,
+        Vector3 = 0x06,
+        Unknown7 = 0x07,
+        String = 0x08,
+        Data = 0x09
     }
 }

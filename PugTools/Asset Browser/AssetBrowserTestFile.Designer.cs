@@ -198,7 +198,8 @@
             // chkDAT
             // 
             this.chkDAT.AutoSize = true;
-            this.chkDAT.Enabled = false;
+            this.chkDAT.Enabled = true;
+            this.chkDAT.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkDAT.Location = new System.Drawing.Point(6, 89);
             this.chkDAT.Name = "chkDAT";
             this.chkDAT.Size = new System.Drawing.Size(206, 17);
