@@ -1725,6 +1725,86 @@ namespace GomLib.Models
                                     return null;
                             }
                         }
+                        else
+                        {
+                            var area = itm._dom.areaLoader.Load(tsk.Id);
+                            if (area.Id != 0)
+                            {
+                                //area.SortMaps();
+                                if (area.FowGroupStringIds.Count > 0)
+                                {
+                                    bool splitfound = false;
+                                    List<KeyValuePair<string, string>> ReverseLookup = new List<KeyValuePair<string, string>>();
+                                    foreach (var kvp in area.FowGroupLocalizedStrings)
+                                    {
+                                        if (kvp.Value != null)
+                                        {
+                                            string fowName;
+                                            kvp.Value.TryGetValue(Tooltip.language, out fowName);
+                                            if (fowName.Contains("<br>"))
+                                            {
+                                                splitfound = true;
+                                                var index = fowName.IndexOf("<br>");
+                                                string start = fowName.Substring(0, index);
+                                                string end = fowName.Substring(index + 4);
+                                                ReverseLookup.Add(new KeyValuePair<string, string>(end, start));
+                                            }
+                                            else
+                                            {
+                                                taskText.Add(new XElement("div",
+                                                    XClass("torctip_white"),
+                                                    String.Format("0/1 {0}", fowName)
+                                                ));
+                                            }
+                                        }
+                                        else
+                                        {
+                                            string what = "";
+                                        }
+                                    }
+                                    if (splitfound)
+                                    {
+                                        var distinct = ReverseLookup.Select(x => x.Value).Distinct();
+                                        if (distinct.Count() == 1)
+                                        {
+                                            var ordered = ReverseLookup.Select(x => x.Key).OrderBy(x => x);
+                                            foreach(var key in ordered)
+                                            {
+                                                taskText.Add(new XElement("div",
+                                                    XClass("torctip_white"),
+                                                    String.Format("0/1 {0}", key)
+                                                ));
+                                            }
+                                        }
+                                        else
+                                        {
+                                            distinct = distinct.OrderBy(x => x).ToList();
+                                            foreach (var val in distinct)
+                                            {
+                                                var distinceSubs = ReverseLookup.Where(x => x.Value == val).OrderBy(x => x.Key).Select(x => x.Key);
+                                                taskText.Add(new XElement("div",
+                                                    XClass("torctip_white torctip_sub_parent"),
+                                                    new XElement("span",
+                                                        String.Format("0/{0} {1}", distinceSubs.Count(), val)
+                                                    ),
+                                                    new XElement("div",
+                                                        XClass("torctip_sub_tasks"),
+                                                        distinceSubs.Select(x => new XElement("div",
+                                                            XClass("torctip_white"),
+                                                            String.Format("0/1 {0}", x)
+                                                        ))
+                                                    )
+                                                ));
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    string insoon = "";
+                                }
+                            }
+                        }
                     }
                     else
                     {
