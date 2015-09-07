@@ -87,7 +87,7 @@ namespace GomLib.ModelLoader
             if (cdx == null) { return null; }
 
             cdx.Fqn = obj.Name;
-            cdx.NodeId = obj.Id;
+            cdx.Id = obj.Id;
             cdx._dom = _dom;
             cdx.References = obj.References;
             cdx.Image = obj.Data.ValueOrDefault<string>("cdxImage", null);
@@ -102,10 +102,11 @@ namespace GomLib.ModelLoader
             {
                 cdx.CategoryId = ((GomObjectData)categoryLookup).ValueOrDefault<long>("strLocalizedTextRetrieverStringID", 0);
                 cdx.CategoryName = _dom.stringTable.Find("str.sys.codexcategories").GetText(cdx.CategoryId, cdx.Fqn);
+                cdx.LocalizedCategoryName = _dom.stringTable.Find("str.sys.codexcategories").GetLocalizedText(cdx.CategoryId, cdx.Fqn);
             }
 
             var titleId = titleLookup.ValueOrDefault<long>("strLocalizedTextRetrieverStringID", 0);
-            cdx.Id = (ulong)(titleId >> 32);
+            //cdx.Id = (ulong)(titleId >> 32);
 
             cdx.LocalizedName = _dom.stringTable.TryGetLocalizedStrings(cdx.Fqn, titleLookup);
             cdx.Name = _dom.stringTable.TryGetString(cdx.Fqn, titleLookup);
@@ -146,7 +147,7 @@ namespace GomLib.ModelLoader
                 foreach (var planetId in cdxPlanets)
                 {
                     Codex planet = null;
-                    if ((ulong)planetId != cdx.NodeId) planet = _dom.codexLoader.Load((ulong)planetId);
+                    if ((ulong)planetId != cdx.Id) planet = _dom.codexLoader.Load((ulong)planetId);
                     if (planet != null) cdx.Planets.Add(planet);
                 }
             }
