@@ -9,7 +9,7 @@ namespace GomLib.Models
 {
     public class Codex : GameObject, IEquatable<Codex>
     {
-        public ulong NodeId { get; set; }
+        //public ulong NodeId { get; set; }
 
         public Dictionary<string, string> LocalizedName { get; set; }
         [Newtonsoft.Json.JsonIgnore]
@@ -22,15 +22,17 @@ namespace GomLib.Models
         public string Image { get; set; }
         public bool IsHidden { get; set; }
 
+        [Newtonsoft.Json.JsonIgnore]
         public string CategoryName { get; set; }
+        public Dictionary<string, string> LocalizedCategoryName { get; set; }
         public long CategoryId { get; set; }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public Faction Faction { get; set; }
 
         [JsonIgnore]
         public List<ClassSpec> Classes { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         internal List<string> _ClassesB62 { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         public List<string> ClassesB62
         {
             get
@@ -51,10 +53,10 @@ namespace GomLib.Models
 
         [Newtonsoft.Json.JsonIgnore]
         public List<Codex> Planets { get; set; }
+        [JsonIgnore]
         public List<ulong> PlanetsIds { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         internal List<string> _PlanetsB62 { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         public List<string> PlanetsB62
         {
             get
@@ -147,8 +149,6 @@ namespace GomLib.Models
             if (!ssComp.Equals(this.LocalizedName, cdx.LocalizedName))
                 return false;
 
-            if (this.NodeId != cdx.NodeId)
-                return false;
             if (this.Planets != null)
             {
                 if (!this.Planets.SequenceEqual(cdx.Planets))
@@ -176,7 +176,7 @@ namespace GomLib.Models
             XElement codex = new XElement("Codex");
 
             codex.Add(new XElement("Title", Name),
-                new XElement("NodeId", NodeId),
+                new XElement("NodeId", Id),
                 new XAttribute("Id", Id),
                 //new XAttribute("Hash", GetHashCode()),
                 new XElement("Category", new XAttribute("Id", CategoryId), CategoryName));
