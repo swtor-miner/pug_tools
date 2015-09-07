@@ -1521,7 +1521,7 @@ namespace tor_tools
             ClearProgress();
         }
 
-        private void PseudoGameObjectListAsJSON(string prefix, IEnumerable<GomLib.Models.PseudoGameObject> itmList)
+        private void PseudoGameObjectListAsJSON(string prefix, List<GomLib.Models.PseudoGameObject> itmList)
         {
             int i = 0;
             short e = 0;
@@ -1530,7 +1530,7 @@ namespace tor_tools
             string filename = String.Format("{0}{1}", prefix, ".json");
             WriteFile("", filename, false);
             var count = itmList.Count();
-            foreach (var itm in itmList)
+            for(int c = 0; c < count; c++)
             {
                 progressUpdate(i, count);
                 if (e % 1000 == 1)
@@ -1540,9 +1540,10 @@ namespace tor_tools
                     e = 0;
                 }
 
-                addtolist2(String.Format("{0}: {1}", prefix, itm.Name));
+                addtolist2(String.Format("{0}: {1}", prefix, itmList[c].Name));
 
-                string jsonString = itm.ToJSON();
+                string jsonString = itmList[c].ToJSON();
+                itmList[c] = null;
                 txtFile.Append(jsonString + Environment.NewLine); //Append it with a newline to the output.
                 i++;
                 e++;

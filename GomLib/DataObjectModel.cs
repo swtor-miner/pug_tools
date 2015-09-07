@@ -109,6 +109,8 @@ namespace GomLib
         public Models.AlignmentData alignmentData;
         public Models.GroupFinderContentData groupFinderContentData;
         public PlayerTitleLoader playerTitleLoader;
+        public FileLoaders.AreaDatLoader areaDatLoader;
+        public FileLoaders.RoomDatLoader roomDatLoader;
 
         private void initializeModelLoaders()
         {
@@ -163,6 +165,9 @@ namespace GomLib
             reputationRankLoader = new ReputationRankLoader(this);
             detailedAppearanceColorLoader = new DetailedAppearanceColorLoader(this);
             playerTitleLoader = new PlayerTitleLoader(this);
+
+            areaDatLoader = new FileLoaders.AreaDatLoader(this);
+            roomDatLoader = new FileLoaders.RoomDatLoader(this);
         }
 
         public void Dispose()

@@ -9,7 +9,7 @@ namespace GomLib.ModelLoader
     public class AreaLoader
     {
         const long NameLookupKey = -2761358831308646330;
-
+        Dictionary<object, object> mapAreasDataObjectList = new Dictionary<object, object>();
         StringTable strTable;
 
         private DataObjectModel _dom;
@@ -22,6 +22,7 @@ namespace GomLib.ModelLoader
         public void Flush()
         {
             strTable = null;
+            mapAreasDataObjectList = new Dictionary<object, object>();
         }
 
         public string ClassName
@@ -29,6 +30,18 @@ namespace GomLib.ModelLoader
             get { return "mapAreasDataObject"; }
         }
 
+        public Area Load(ulong id)
+        {
+            if (mapAreasDataObjectList.Count == 0)
+            {
+                var mapAreasDataProto = _dom.GetObject("mapAreasDataProto");
+                if (mapAreasDataProto != null)
+                    mapAreasDataObjectList = mapAreasDataProto.Data.ValueOrDefault<Dictionary<object, object>>("mapAreasDataObjectList", new Dictionary<object, object>());
+            }
+            object obj;
+            mapAreasDataObjectList.TryGetValue((object)id, out obj);
+            return Load(new Area(), obj as GomObjectData);
+        }
         public Models.Area Load(Models.Area area, GomObjectData obj)
         {
             if (obj == null) { return area; }
@@ -38,32 +51,46 @@ namespace GomLib.ModelLoader
             {
                 strTable = _dom.stringTable.Find("str.sys.worldmap");
             }
-
+            area._dom = _dom;
             IDictionary<string, object> objAsDict = obj.Dictionary;
             //if (objAsDict.ContainsKey("mapAreasDataDisplayNameId") && objAsDict.ContainsKey("mapAreasDataDefaultZoneName"))
             //{
-                area.DisplayNameId = obj.ValueOrDefault<long>("mapAreasDataDisplayNameId", 0);
-                //area.Id = (int)(area.DisplayNameId & 0x7FFFFFFF);
-                //area.CommentableId = Guid.NewGuid();
-                area.Name = strTable.GetText(area.DisplayNameId, "MapArea." + area.DisplayNameId);
-                area.AreaId = obj.ValueOrDefault<ulong>("mapAreasDataAreaId", 0);
-                area.Id = (long)(area.AreaId >> 32);
-                if (area.Id == 0)
-                    area.Id = (long)area.AreaId;
-                area.ZoneName = obj.ValueOrDefault<string>("mapAreasDataDefaultZoneName", null);
+            area.DisplayNameId = obj.ValueOrDefault<long>("mapAreasDataDisplayNameId", 0);
+            //area.Id = (int)(area.DisplayNameId & 0x7FFFFFFF);
+            //area.CommentableId = Guid.NewGuid();
+            area.Name = strTable.GetText(area.DisplayNameId, "MapArea." + area.DisplayNameId);
+            area.AreaId = obj.ValueOrDefault<ulong>("mapAreasDataAreaId", 0);
+            area.Id = (long)(area.AreaId >> 32);
+            if (area.Id == 0)
+                area.Id = (long)area.AreaId;
+            area.ZoneName = obj.ValueOrDefault<string>("mapAreasDataDefaultZoneName", null);
 
-                string mapDataPath = String.Format("world.areas.{0}.mapdata", area.AreaId);
-                var mapDataObj = _dom.GetObject(mapDataPath);
-                if (mapDataObj != null)
+            string mapDataPath = String.Format("world.areas.{0}.mapdata", area.AreaId);
+            var mapDataObj = _dom.GetObject(mapDataPath);
+            if (mapDataObj != null)
+            {
+                LoadMapdata(area, mapDataObj);
+            }
+            else
+            {
+                Console.WriteLine("No MapData for " + area.Name);
+                //area.Id = 0;
+            }
+
+            area.FowGroupStringIds = new Dictionary<ulong, long>();
+            var mapDataContainerFowGroupList = mapDataObj.Data.ValueOrDefault<Dictionary<object, object>>("mapDataContainerFowGroupList", null);
+            if(mapDataContainerFowGroupList != null)
+            {
+                foreach(var kvp in mapDataContainerFowGroupList)
                 {
-                    LoadMapdata(area, mapDataObj);
+                    ulong fowId = (ulong)(kvp.Key);
+                    long stringId = ((GomObjectData)kvp.Value).ValueOrDefault<long>("mapFowGroupGUID"); //"str.sys.worldmap"
+                    area.FowGroupStringIds.Add(fowId, stringId);
                 }
-                else
-                {
-                    Console.WriteLine("No MapData for " + area.Name);
-                    //area.Id = 0;
-                }
-                area.Assets = LoadAssets(area.AreaId);
+            }
+
+            area.Assets = LoadAssets(area.AreaId);
+            area.AreaDat = _dom.areaDatLoader.Load(area.AreaId);
             /*}
             else
             {
@@ -127,6 +154,10 @@ namespace GomLib.ModelLoader
                     _dom._assets.icons.AddMap(area.AreaId, page.MapName);
 
                     page.Name = strTable.GetText(page.Guid, "MapPage." + page.MapName);
+
+                    page.ExplorationId = mapPage.ValueOrDefault<long>("mapExplorationId", 0);
+                    page.mapFowRadius = mapPage.ValueOrDefault<float>("mapFowRadius", 0f);
+
                     pageLookup[page.SId] = page;
                     area.MapPages.Add(page);
                 }

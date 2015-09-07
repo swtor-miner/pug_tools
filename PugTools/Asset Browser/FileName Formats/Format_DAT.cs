@@ -214,6 +214,10 @@ namespace tor_tools
 
             ulong unknownUInt64 = br.ReadUInt64(); //Always 281479271743491 : (03 00 01 00 01 00 01 00)
 
+            uint fileNameLength = br.ReadUInt32();
+            string filename = ReadString(br, fileNameLength);
+            fileNames.Add(String.Format("/resources", filename));
+
             //Instances
             br.BaseStream.Position = instanceOffset;
             uint numInstances = br.ReadUInt32();

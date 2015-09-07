@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
-    public class Area: PseudoGameObject, IEquatable<Area>
+    public class Area : PseudoGameObject, IEquatable<Area>
     {
         //[Newtonsoft.Json.JsonIgnore]
         //public DataObjectModel _dom;
@@ -20,10 +21,29 @@ namespace GomLib.Models
 
         public List<MapPage> MapPages { get; set; }
 
+        public Dictionary<ulong, long> FowGroupStringIds { get; set; }
+
+        internal Dictionary<ulong, Dictionary<string, string>> _FowGroupLocalizedStrings { get; set; }
+        public Dictionary<ulong, Dictionary<string, string>> FowGroupLocalizedStrings { get
+            {
+                if (_FowGroupLocalizedStrings == null)
+                {
+                    var strTable = _dom.stringTable.Find("str.sys.worldmap");
+                    _FowGroupLocalizedStrings = new Dictionary<ulong, Dictionary<string, string>>();
+                    foreach (var kvp in FowGroupStringIds)
+                    {
+                        _FowGroupLocalizedStrings.Add(kvp.Key, strTable.GetLocalizedText(kvp.Value, "str.sys.worldmap"));
+                    }
+                }
+                return _FowGroupLocalizedStrings;
+            }
+        }
         private bool sortedByVolume = false;
 
-        public Dictionary<ulong, string> Assets { get; set; }
-        private void SortMaps()
+        public Dictionary<ulong, string> Assets { get; set; }//old
+        public AreaDat AreaDat { get; set; } //new
+
+        public void SortMaps()
         {
             if (this.MapPages == null) { return; }
             this.MapPages.Sort((x, y) => x.Volume.CompareTo(y.Volume)); // Sort MapPages by Volume (smallest to largest)

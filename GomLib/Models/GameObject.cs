@@ -184,6 +184,13 @@ namespace GomLib.Models
     public class PseudoGameObject : Dependencies
     {
         public virtual long Id { get; set; }
+        public string Base62Id
+        {
+            get
+            {
+                return Id.ToMaskedBase62();
+            }
+        }
         public virtual string Name { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         public string Prototype { get; set; } //Which prototype this object is from.

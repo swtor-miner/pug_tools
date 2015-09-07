@@ -42,6 +42,9 @@ namespace GomLib.Models
             }
         }
 
+        public long ExplorationId { get; set; }
+        public float mapFowRadius { get; internal set; }
+
         public void CalculateVolume()
         {
             float dx = MaxX - MinX;

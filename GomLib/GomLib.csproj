@@ -92,6 +92,8 @@
     <Compile Include="DomHandler.cs" />
     <Compile Include="DomType.cs" />
     <Compile Include="DomTypeLoaders\FileInstanceLoader.cs" />
+    <Compile Include="ModelLoader\AreaDatLoader.cs" />
+    <Compile Include="ModelLoader\RoomDatLoader.cs" />
     <Compile Include="Gom.cs" />
     <Compile Include="GomBinaryReader.cs" />
     <Compile Include="DataObjectModel.cs" />
@@ -162,6 +164,9 @@
     <Compile Include="ModelLoader\_EmptyLoader.cs" />
     <Compile Include="Models\AchievementCategory.cs" />
     <Compile Include="Models\Appearances.cs" />
+    <Compile Include="Models\AssetInstance.cs" />
+    <Compile Include="Models\RoomDat.cs" />
+    <Compile Include="Models\AreaDat.cs" />
     <Compile Include="Models\CodexCatByFaction.cs" />
     <Compile Include="Models\Conquest.cs" />
     <Compile Include="Models\LegacyTitle.cs" />
