@@ -26,18 +26,19 @@ namespace tor_tools
     {
         private void SmartLink(DataObjectModel dom)
         {
-            SmartLinkAbilities(dom);
-            SmartLinkAchievements(dom);
-            SmartLinkCodex(dom);
-            SmartLinkConversations(dom);
-            SmartLinkDecorations(dom);
-            SmartLinkEncounters(dom);
-            SmartLinkItems(dom);
-            SmartLinkItemAppearances(dom);
-            SmartLinkNpcs(dom);
-            SmartLinkPhases(dom);
-            SmartLinkPlaceables(dom);
+            //SmartLinkAbilities(dom);
+            //SmartLinkAchievements(dom);
+            //SmartLinkCodex(dom);
+            //SmartLinkConversations(dom);
+            //SmartLinkDecorations(dom);
+            //SmartLinkEncounters(dom);
+            //SmartLinkItems(dom);
+            //SmartLinkItemAppearances(dom);
+            //SmartLinkNpcs(dom);
+            //SmartLinkPhases(dom);
+            //SmartLinkPlaceables(dom);
             SmartLinkQuests(dom);
+            SmartLinkQuestRewards(dom);
             SmartLinkSchematics(dom);
             SmartLinkSpawners(dom);
         }
@@ -275,8 +276,15 @@ namespace tor_tools
             nodeList = dom.GetObjectsStartingWith("npc.");
             foreach (GomObject node in nodeList)
             {
+                ulong npcCodexSpec = node.Data.ValueOrDefault<ulong>("npcCodexSpec", 0UL);
+                if (npcCodexSpec != 0)
+                {
+                    dom.AddCrossLink(npcCodexSpec, "npcsGrantThisCodex", node.Id);//cdx node
+                    dom.AddCrossLink(node.Id, "cdxGrantedByThisNpc", npcCodexSpec);//npc node
+                }
                 dom.AddCrossLink(node.Data.ValueOrDefault<ulong>("npcClassPackage", 0UL), "npcsWithThisClass", node.Id);//class node
                 dom.AddCrossLink(node.Data.ValueOrDefault<ulong>("npcParentSpecId", 0UL), "npcsWithThisBlueprint", node.Id);//npc node
+
                 node.Unload();
             }
         }
@@ -315,7 +323,111 @@ namespace tor_tools
         private void SmartLinkQuests(DataObjectModel dom)
         {
             List<GomObject> nodeList;
-            addtolist2("Smart-linking quests...");//Load phases
+            addtolist2("Smart-linking quests...");//Load cnv
+            nodeList = dom.GetObjectsStartingWith("qst.");
+            foreach (GomObject node in nodeList)
+            {
+                List<object> qstBranches = node.Data.ValueOrDefault<List<object>>("qstBranches", null);
+                if (qstBranches != null)
+                {
+                    foreach (object branch in qstBranches)
+                    {
+                        List<object> qstSteps = ((GomObjectData)branch).ValueOrDefault<List<object>>("qstSteps", null);
+                        if (qstSteps != null)
+                        {
+                            foreach (object step in qstSteps)
+                            {
+                                GomObjectData qstHydraScriptOnSuccess = ((GomObjectData)step).ValueOrDefault<GomObjectData>("qstHydraScriptOnSuccess", null);
+                                if (qstHydraScriptOnSuccess != null)
+                                {
+                                    string hydraEvent = ((GomObjectData)qstHydraScriptOnSuccess).ValueOrDefault<string>("hydraEvent", null);
+                                    if (hydraEvent == "codexGrantEntry")
+                                    {
+                                        ulong hydId = ((GomObjectData)qstHydraScriptOnSuccess).ValueOrDefault<ulong>("hydraScriptNodeId", 0);
+                                        GomObject hydra = dom.GetObject(hydId);
+                                        if (hydra != null)
+                                        {
+                                            Dictionary<object, object> hydScriptMap = hydra.Data.ValueOrDefault<Dictionary<object, object>>("hydScriptMap", null);
+                                            if (hydScriptMap.ContainsKey("On Custom:codexGrantEntry"))
+                                            {
+                                                GomObjectData hydraScript = (GomObjectData)hydScriptMap["On Custom:codexGrantEntry"];
+                                                List<object> hydScriptBlocks = hydraScript.ValueOrDefault<List<object>>("hydScriptBlocks", null);
+                                                if (hydScriptBlocks != null)
+                                                {
+                                                    foreach (object block in hydScriptBlocks)
+                                                    {
+                                                        List<object> hydActionBlocks = ((GomObjectData)block).ValueOrDefault<List<object>>("hydActionBlocks", null);
+                                                        if (hydActionBlocks != null)
+                                                        {
+                                                            foreach (object actionBlock in hydActionBlocks)
+                                                            {
+                                                                List<object> hydActions = ((GomObjectData)actionBlock).ValueOrDefault<List<object>>("hydActions", null);
+                                                                if (hydActions != null)
+                                                                {
+                                                                    foreach (object action in hydActions)
+                                                                    {
+                                                                        string hydAction = ((GomObjectData)action).ValueOrDefault<string>("hydAction", null);
+                                                                        if (hydAction == "Grant Codex")
+                                                                        {
+                                                                            string hydValue = ((GomObjectData)action).ValueOrDefault<string>("hydValue", "");
+                                                                            if (hydValue != null)
+                                                                            {
+                                                                                GomObject cdxObj = dom.GetObject(hydValue);
+                                                                                if (cdxObj != null)
+                                                                                {
+                                                                                    dom.AddCrossLink(cdxObj.Id, "grantedByQst", node.Id);
+                                                                                    dom.AddCrossLink(node.Id, "grantsCdx", cdxObj.Id);
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                List<object> bonusMissions = ((GomObjectData)step).ValueOrDefault<List<object>>("qstBonusMissions", null);
+                                if (bonusMissions != null)
+                                {
+                                    foreach (object bonus in bonusMissions)
+                                    {
+                                        ulong qstTaskBonusMissionNodeId = ((GomObjectData)bonus).ValueOrDefault<ulong>("qstTaskBonusMissionNodeId", 0);
+                                        dom.AddCrossLink(qstTaskBonusMissionNodeId, "parentQuest", node.Id);
+                                        dom.AddCrossLink(node.Id, "bonusQsts", qstTaskBonusMissionNodeId);
+                                    }
+                                }
+                                List<object> qstTasks = ((GomObjectData)step).ValueOrDefault<List<object>>("qstTasks", null);
+                                if (qstSteps != null)
+                                {
+                                    foreach (object task in qstTasks)
+                                    {
+                                        bonusMissions = ((GomObjectData)task).ValueOrDefault<List<object>>("qstBonusMissions", null);
+                                        if (bonusMissions != null)
+                                        {
+                                            foreach (object bonus in bonusMissions)
+                                            {
+                                                ulong qstTaskBonusMissionNodeId = ((GomObjectData)bonus).ValueOrDefault<ulong>("qstTaskBonusMissionNodeId", 0);
+                                                dom.AddCrossLink(qstTaskBonusMissionNodeId, "parentQuest", node.Id);
+                                                dom.AddCrossLink(node.Id, "stagedBonusQsts", qstTaskBonusMissionNodeId);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                node.Unload();
+            }
+        }
+        private void SmartLinkQuestRewards(DataObjectModel dom)
+        {
+            List<GomObject> nodeList;
+            addtolist2("Smart-linking quest rewards...");//Load phases
             var proto = dom.GetObject("qstRewardsInfoPrototype");
             proto.Unload();
             if (proto != null)
