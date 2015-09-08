@@ -11,6 +11,11 @@ namespace GomLib.ModelLoader
         Dictionary<ulong, Conversation> idMap;
         Dictionary<string, Conversation> nameMap;
 
+        //Caching data for influence changes for faster access.
+        Dictionary<ulong, long> CompanionSimpleNameByFqnID = new Dictionary<ulong, long>();
+        Dictionary<long, ulong> CompanionFqnIDBySimpleName = new Dictionary<long, ulong>();
+        Dictionary<long, KeyValuePair<int, string>> reactionDataByID = new Dictionary<long, KeyValuePair<int, string>>();
+
         Dictionary<long, Npc> companionShortNameMap;
 
         private DataObjectModel _dom;
@@ -81,6 +86,73 @@ namespace GomLib.ModelLoader
             cnv.Id = obj.Id;
             cnv._dom = _dom;
             cnv.References = obj.References;
+
+            //Build a dictionary to get the simple name from the NPC FQN ID and reverse.
+            //To maintain backwards compatability with pre 4.0 code.
+            //This isn't technically correct as the same simple name can apply to different nodes.
+            if(CompanionSimpleNameByFqnID == null || CompanionSimpleNameByFqnID.Count == 0)
+            {
+                if(CompanionSimpleNameByFqnID == null)
+                {
+                    CompanionSimpleNameByFqnID = new Dictionary<ulong, long>();
+                    CompanionFqnIDBySimpleName = new Dictionary<long, ulong>(); 
+                }
+
+                GomObject compInfo = _dom.GetObject("chrCompanionInfo_Prototype");
+                Dictionary<object, object> simpleNameByFqnID = compInfo.Data.ValueOrDefault<Dictionary<object, object>>("chrCompanionSpecToSimpleNameIdentifier", null);
+
+                foreach(KeyValuePair<object, object> kvp in simpleNameByFqnID)
+                {
+                    //Build dictionary to keep the data.
+                    long simpleName = (long)kvp.Value;
+                    ulong npcFQNID = (ulong)kvp.Key;
+
+                    CompanionSimpleNameByFqnID.Add(npcFQNID, simpleName);
+                    CompanionFqnIDBySimpleName[simpleName] = npcFQNID;
+                }
+            }
+
+            if(reactionDataByID == null || reactionDataByID.Count == 0)
+            {
+                if(reactionDataByID == null)
+                {
+                    //Faster to check than to reassign regardless.
+                    reactionDataByID = new Dictionary<long, KeyValuePair<int, string>>();
+                }
+
+                //Not present pre 4.0 so have to check this exists. This could cause a slow down analayzing pre 4.0 clients.
+                GomObject reactionNode = _dom.GetObject("cnvReactionsDataPrototype");
+                if(reactionNode != null)
+                {
+                    Dictionary<object, object> reactionClassByID = reactionNode.Data.ValueOrDefault< Dictionary<object, object>>("cnvReactionsByID", null);
+                    foreach(KeyValuePair<object, object> kvp in reactionClassByID)
+                    {
+                        long id = (long)kvp.Key;
+
+                        GomObjectData reactionClass = kvp.Value as GomObjectData;
+                        long sid = reactionClass.ValueOrDefault<long>("cnvReactionString", 0);
+                        long influenceMod = reactionClass.ValueOrDefault<long>("cnvReactionInfluenceModifier", 0);
+
+                        //Get the string from the string tables.
+                        StringTable reactionStb = _dom.stringTable.Find("str.gui.conversationreactions");
+                        string reactionString = reactionStb.GetText(sid, "str.gui.conversationreactions");
+
+                        //Store the data for quick lookup. Don't need the influence modifier to be long.
+                        reactionDataByID.Add(id, new KeyValuePair<int, string>((int)influenceMod, reactionString));
+                    }
+                }
+            }
+
+            if(reactionDataByID.Count == 0)
+            {
+                //Pre 4.0. Fill this with our own data for backwards compatability sakes. Assumes level 60. English only.
+                reactionDataByID.Add(-5301803456931428419, new KeyValuePair<int, string>(-480, "<<1>> greatly disapproves."));//Large decrease
+                reactionDataByID.Add(-4783781478483316801, new KeyValuePair<int, string>(360, "<<1>> greatly approves."));//Large increase
+                reactionDataByID.Add(-4591313547948601546, new KeyValuePair<int, string>(-90, "<<1>> disapproves."));//Medium decrease
+                reactionDataByID.Add(-4560859075783160276, new KeyValuePair<int, string>(120, "<<1>> approves."));//Medium increase
+                reactionDataByID.Add(-1761015921176014301, new KeyValuePair<int, string>(45, "<<1>> slightly approves."));//Small increase
+                reactionDataByID.Add(-1279836118038687359, new KeyValuePair<int, string>(-3, "<<1>> slightly disapproves."));//Small decrease
+            }
 
             //Try to get the audio for each language.
             string cnvPath = cnv.Fqn.Replace('.', '_');
@@ -163,9 +235,7 @@ namespace GomLib.ModelLoader
         {
             if (companionShortNameMap.Count == 0)
             {
-                var cmpInfo = _dom.GetObject("chrCompanionInfo_Prototype");
-                var chrCompanionSimpleNameToSpec = cmpInfo.Data.Get<Dictionary<object, object>>("chrCompanionSimpleNameToSpec");
-                foreach (var kvp in chrCompanionSimpleNameToSpec)
+                foreach (var kvp in CompanionFqnIDBySimpleName)
                 {
                     var simpleNameId = (long)kvp.Key;
                     Npc npc = _dom.npcLoader.Load((ulong)kvp.Value);
@@ -205,16 +275,86 @@ namespace GomLib.ModelLoader
                 result.AlignmentGain = ConversationAlignmentExtensions.ToConversationAlignment(alignmentAmount, forceType);
             }
 
-            // Load Companion Affection Results
+            // Load Companion Affection Results pre 4.0 system.
             var affectionGains = data.ValueOrDefault<Dictionary<object, object>>("cnvRewardAffectionRewards", null);
-            result.AffectionRewardsIds = new Dictionary<long, ConversationAffection>();
+            result.AffectionRewardEvents = new Dictionary<long, KeyValuePair<int, string>>();
             if (affectionGains != null)
             {
                 foreach (var companionGain in affectionGains)
                 {
+                    //Get NPC object for companion.
                     long companionShortNameId = (long)companionGain.Key;
-                    ConversationAffection affectionGain = ConversationAffectionExtensions.ToConversationAffection((long)companionGain.Value);
-                    result.AffectionRewardsIds[companionShortNameId] = affectionGain;
+                    Npc companion = CompanionBySimpleNameId(companionShortNameId);
+                    if (companion != null)
+                    {
+                        //Build reaction string and make sure the reaction id is valid.
+                        KeyValuePair<int, string> reactionData;
+                        if (reactionDataByID.TryGetValue((long)companionGain.Value, out reactionData))
+                        {
+                            string reactionString = reactionData.Value.Replace("<<1>>", companion.Name);
+
+                            result.AffectionRewardEvents[companionShortNameId] = new KeyValuePair<int, string>(reactionData.Key, reactionString);
+                        }
+                    }
+                }
+            }
+
+            //Load Companion affection results post 4.0 system.
+            List<object> affectionGainList = data.ValueOrDefault<List<object>>("cnvRewardAffectionRewardsList", null);
+            if (affectionGainList != null)
+            {
+                foreach (object companionRewardObj in affectionGainList)
+                {
+                    //Get the data.
+                    GomObjectData companionRewardData = companionRewardObj as GomObjectData;
+                    ulong ncoFQN = companionRewardData.ValueOrDefault<ulong>("cnvRewardAffectionRewardNCOID", 0);
+                    long rewardID = companionRewardData.ValueOrDefault<long>("cnvRewardAffectionRewardID", 0);
+
+                    GomObject companionObj = _dom.GetObject(ncoFQN);
+                    if (companionObj != null)
+                    {
+                        if (companionObj.Name.StartsWith("nco."))
+                        {
+                            //Load the NCO data.
+                            NewCompanion nco = _dom.newCompanionLoader.Load(companionObj);
+
+                            //Make sure the reward id is valid.
+                            KeyValuePair<int, string> rewardData;
+                            if (reactionDataByID.TryGetValue(rewardID, out rewardData))
+                            {
+                                //Replace the token with companion name.
+                                string reactionString = rewardData.Value.Replace("<<1>>", nco.Name);
+
+                                //Use simple name to maintain pre 4.0 compatability.
+                                long simpleName;
+                                if (CompanionSimpleNameByFqnID.TryGetValue(nco.NpcId, out simpleName))
+                                {
+                                    result.AffectionRewardEvents[simpleName] = new KeyValuePair<int, string>(rewardData.Key, reactionString);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //NPC node.. wtf Bioware?
+                            //Load the NPC node.
+                            Npc npc = _dom.npcLoader.Load(companionObj);
+
+                            //Make sure the reward id is valid.
+                            KeyValuePair<int, string> rewardData;
+                            if (reactionDataByID.TryGetValue(rewardID, out rewardData))
+                            {
+                                //Replace the token with companion name.
+                                string reactionString = rewardData.Value.Replace("<<1>>", npc.Name);
+
+                                //Use simple name to maintain pre 4.0 compatability.
+                                long simpleName;
+                                if (CompanionSimpleNameByFqnID.TryGetValue(npc.Id, out simpleName))
+                                {
+                                    result.AffectionRewardEvents[simpleName] = new KeyValuePair<int, string>(rewardData.Key, reactionString);
+                                }
+                            }
+                        }
+                    }
                 }
             }
 

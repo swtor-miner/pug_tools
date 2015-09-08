@@ -45,15 +45,15 @@ namespace GomLib.Models
         public long cnvAlienVONode { get; set; }
         public string cnvAlienVOFQN { get; set; }
 
-        internal Dictionary<Npc, ConversationAffection> _AffectionRewards { get; set; }
-        public Dictionary<Npc, ConversationAffection> AffectionRewards
+        internal Dictionary<Npc, KeyValuePair<int, string>> _AffectionRewards { get; set; }
+        public Dictionary<Npc, KeyValuePair<int, string>> AffectionRewards
         {
             get
             {
                 if (_AffectionRewards == null)
                 {
-                    _AffectionRewards = new Dictionary<Npc, ConversationAffection>();
-                    foreach (var kvp in AffectionRewardsIds)
+                    _AffectionRewards = new Dictionary<Npc, KeyValuePair<int, string>>();
+                    foreach (var kvp in AffectionRewardEvents)
                     {
                         Npc companion = Conversation._dom.conversationLoader.CompanionBySimpleNameId(kvp.Key);
                         if (companion != null)
@@ -63,7 +63,7 @@ namespace GomLib.Models
                 return _AffectionRewards;
             }
         }
-        public Dictionary<long, ConversationAffection> AffectionRewardsIds { get; set; }
+        public Dictionary<long, KeyValuePair<int, string>> AffectionRewardEvents { get; set; }
 
         /// <summary>Doesn't trigger conversation mode - just speaks dialog and prints text to chat tab</summary>
         public bool IsAmbient { get; set; }
@@ -94,7 +94,7 @@ namespace GomLib.Models
             hash ^= SpeakerId.GetHashCode();
             if (Text != null) hash ^= Text.GetHashCode();
             if (LocalizedText != null) foreach (var x in LocalizedText) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
-            if (AffectionRewardsIds != null) foreach (var x in AffectionRewardsIds) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
+            if (AffectionRewardEvents != null) foreach (var x in AffectionRewardEvents) { hash ^= x.Key.GetHashCode(); hash ^= x.Value.GetHashCode(); }
             hash ^= IsAmbient.GetHashCode();
             if (ChildIds != null) foreach (var x in ChildIds) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
             return hash;
@@ -125,22 +125,22 @@ namespace GomLib.Models
             if (this.ActionQuest != dln.ActionQuest)
                 return false;
 
-            if (this.AffectionRewardsIds != null)
+            if (this.AffectionRewardEvents != null)
             {
-                if (dln.AffectionRewardsIds == null)
+                if (dln.AffectionRewardEvents == null)
                     return false;
-                if (this.AffectionRewardsIds.Count != dln.AffectionRewardsIds.Count || !this.AffectionRewardsIds.Keys.SequenceEqual(dln.AffectionRewardsIds.Keys))
+                if (this.AffectionRewardEvents.Count != dln.AffectionRewardEvents.Count || !this.AffectionRewardEvents.Keys.SequenceEqual(dln.AffectionRewardEvents.Keys))
                     return false;
-                foreach (var kvp in this.AffectionRewardsIds)
+                foreach (var kvp in this.AffectionRewardEvents)
                 {
-                    ConversationAffection prevAff;
-                    if (!dln.AffectionRewardsIds.TryGetValue(kvp.Key, out prevAff))
+                    KeyValuePair<int, string> prevAff;
+                    if (!dln.AffectionRewardEvents.TryGetValue(kvp.Key, out prevAff))
                         return false;
                     if (!kvp.Value.Equals(prevAff))
                         return false;
                 }
             }
-            else if (dln.AffectionRewardsIds != null)
+            else if (dln.AffectionRewardEvents != null)
                 return false;
 
             if (this.AlignmentGain != dln.AlignmentGain)
@@ -367,7 +367,10 @@ namespace GomLib.Models
                 }
                 for (int i = 0; i < AffectionRewards.Count; i++)
                 {
-                    dNode.Add(new XElement("AffectionGain", new XAttribute("Id", i), AffectionRewards.ElementAt(i).Key.Fqn + " - " + AffectionRewards.ElementAt(i).Value.ToString()));
+                    KeyValuePair<Npc, KeyValuePair<int, string>> influenceDetails = AffectionRewards.ElementAt(i);
+                    dNode.Add(new XElement("AffectionGain", new XAttribute("Id", i), new XElement("RewardReceiver",
+                        influenceDetails.Key.Name), new XElement("InfluenceChange", influenceDetails.Value.Key),
+                        new XElement("RewardReaction", influenceDetails.Value.Value)));
                 }
 
                 if (ChildIds != null)

@@ -989,10 +989,13 @@ namespace tor_tools
                 {
                     rootList.Add(new WemListItem(wem.name.ToString(), wem));
                 }
+
+                //Resize to content.
+                olvColumn1.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
             }
         }
 
-        private async Task previewBNK()
+        private void previewBNK()
         {
             if (InvokeRequired)
             {
@@ -1000,13 +1003,25 @@ namespace tor_tools
             }
             else
             {
-                BinaryReader br = new BinaryReader(this.inputStream);
-                View_BNK bnk = new View_BNK();
-                List<WEM_File> wems = bnk.parseBNK(br);
+                View_BNK bnk = new View_BNK(new BinaryReader(this.inputStream));
                 WemListItem.resetTreeListViewColumns(treeListView1);
-                foreach (WEM_File wem in wems)
+
+                if (bnk.soundBanks.Count > 0)
                 {
-                    rootList.Add(new WemListItem(wem.name.ToString(), wem));
+                    NodeListItem sndBnkRoot = new NodeListItem("Soundbanks", null);
+                    foreach (FileFormat_BNK_STID_SoundBank sndBnk in bnk.soundBanks)
+                    {
+                        sndBnkRoot.children.Add(new NodeListItem(sndBnk.name, null));
+                    }
+                    rootList.Add(sndBnkRoot);
+                }
+
+                if (bnk.wems.Count > 0)
+                {
+                    foreach (WEM_File wem in bnk.wems)
+                    {
+                        rootList.Add(new WemListItem(wem.name.ToString(), wem));
+                    }
                 }
             }
         }

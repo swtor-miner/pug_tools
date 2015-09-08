@@ -12,7 +12,7 @@ namespace tor_tools
     {   
         public string name;
         public WEM_File obj;
-        public int size;
+        public int value;
 
         public List<NodeListItem> children = new List<NodeListItem>();
 
@@ -20,7 +20,7 @@ namespace tor_tools
         {
             this.name = name;
             this.obj = (WEM_File)obj;
-            this.size = (obj.data.Count() / 1024);
+            this.value = (obj.data.Count() / 1024);
          }
 
         public static void resetTreeListViewColumns(BrightIdeasSoftware.TreeListView tlv)
@@ -31,15 +31,17 @@ namespace tor_tools
             olvColumn1.AspectName = "name";
             olvColumn1.CellPadding = null;
             olvColumn1.Text = "Name";
-            olvColumn1.Width = 167;
+            olvColumn1.MinimumWidth = 167;
+            olvColumn1.AutoResize(System.Windows.Forms.ColumnHeaderAutoResizeStyle.ColumnContent);
 
-            olvColumn2.AspectName = "size";
+            olvColumn2.AspectName = "value";
             olvColumn2.CellPadding = null;
             olvColumn2.Text = "Size (KB)";
             olvColumn2.Width = 230;
 
             tlv.Columns.Clear();
             tlv.Columns.Add(olvColumn1);
+            tlv.Columns[0].AutoResize(System.Windows.Forms.ColumnHeaderAutoResizeStyle.ColumnContent);
             tlv.Columns.Add(olvColumn2);
         }
     }

@@ -198,7 +198,7 @@ namespace GomLib.Models
                     var convo = qst._dom.conversationLoader.Load(convoKey);
                     if (convo == null) { continue; }
                     ConvosParsed.Add(convoKey);
-                    var dNodes = convo.DialogNodes.Where(x => x.IsPlayerNode).Where(x => x.AffectionRewardsIds.Count > 0);
+                    var dNodes = convo.DialogNodes.Where(x => x.IsPlayerNode).Where(x => x.AffectionRewardEvents.Count > 0);
                     foreach (var dNode in dNodes)
                     {
                         var affects = dNode.AffectionRewards;
@@ -224,7 +224,7 @@ namespace GomLib.Models
                                 }
                                 qst._ConversationGains.Companions.Add(kvp.Key.Base62Id, tempc);
                             }
-                            QuestAffectionGain qag = new QuestAffectionGain(kvp.Key.Base62Id, (int)kvp.Value);
+                            QuestAffectionGain qag = new QuestAffectionGain(kvp.Key.Base62Id, kvp.Value.Key);
                             qst._ConversationGains.AffectionGainTable[NodeLookupId].Add(qag);
                         }
                     }

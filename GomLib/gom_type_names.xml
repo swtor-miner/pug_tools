@@ -5669,6 +5669,9 @@
     <gom_type Id="4611686068023431251" name="cnvRewardForceAmount" desc="Amount of force to award" />
     <gom_type Id="4611686068023431252" name="qstRewardsPerLevelData" desc="Maps reward amounds ('low','high', etc.) and quest levels to the actual amount value" />
     <gom_type Id="4611686068023431253" name="cnvRewardAffectionRewards" desc="Maps companion names to affection awards" />
+	<gom_type Id="4611686303712724004" name="cnvRewardAffectionRewardsList" desc="List of classes containing compananion reactions data including New Companion Object FQN ID and reaction ID." />
+	<gom_type Id="4611686303712724001" name="cnvRewardAffectionRewardNCOID" desc="ID for the New Companion Object FQN" />
+	<gom_type Id="4611686303712724002" name="cnvRewardAffectionRewardID" desc="ID for the reaction reward." />
     <gom_type Id="4611686068023431254" name="chrCompanionTableNameList" desc="List of companion simple names for a player class" />
     <gom_type Id="4611686068023431255" name="qstRewardsAffectionPrototypeHandle" desc="Prototype for per level data on affection rewards" />
     <gom_type Id="4611686068023431256" name="cnvRewardCredits" desc="Amount of credits to award" />
@@ -8223,5 +8226,10 @@
   <gom_type Id="4611686294747500000" name="lgcAchEvtData" desc="" />
   <gom_type Id="4611686344285660008" name="lgcAchEvtShortIdtoAchIndexIdMap" desc="" />
   <gom_type Id="4611686344285660009" name="lgcAchEvtAchIndexIdtoShortIdMap" desc="" />
+  
+  <!-- cnvReactionsDataPrototype -->
+  <gom_type Id="4611686303790174005" name="cnvReactionsByID" desc="List of reaction classes by ID" />
+  <gom_type Id="4611686303790174001" name="cnvReactionString" desc="The string ID of the reaction text." />
+  <gom_type Id="4611686303790174002" name="cnvReactionInfluenceModifier" desc="The value for how much this reaction changes influence." />
   
 </gom_types>

@@ -219,7 +219,6 @@
     <Compile Include="Models\CompanionGiftInterest.cs" />
     <Compile Include="Models\CompanionProfessionModifier.cs" />
     <Compile Include="Models\Conversation.cs" />
-    <Compile Include="Models\ConversationAffection.cs" />
     <Compile Include="Models\ConversationAlignment.cs" />
     <Compile Include="Models\ItemDamageType.cs" />
     <Compile Include="Models\CrewSkill.cs" />
