@@ -66,27 +66,29 @@ namespace GomLib.ModelLoader
 
             setEntry.MaxItemCount = objData.ValueOrDefault<long>("itmSetBonusItemCount", 0);
 
-            Dictionary<long, Models.Ability> setAblsByNum = new Dictionary<long, Models.Ability>();
+            //Dictionary<long, Models.Ability> setAblsByNum = new Dictionary<long, Models.Ability>();
+            Dictionary<long, ulong> setAblsByNum = new Dictionary<long, ulong>();
             Dictionary<object, object> setAblData = objData.ValueOrDefault<Dictionary<object, object>>("itmSetBonusBonuses", new Dictionary<object, object>());
             foreach(KeyValuePair<object, object> kvp in setAblData)
             {
                 long setNum = (long)kvp.Key;
                 
                 ulong abilityNodeId = (ulong)kvp.Value;
-                Models.Ability abl = _dom.abilityLoader.Load(abilityNodeId);
+                //Models.Ability abl = _dom.abilityLoader.Load(abilityNodeId);
 
-                setAblsByNum.Add(setNum, abl);
+                setAblsByNum.Add(setNum, abilityNodeId);  //setNum, abl);
             }
-            setEntry.BonusAbilityByNum = setAblsByNum;
+            setEntry.BonusAbilityIdsByNum = setAblsByNum;
 
-            List<Models.Item> setSourceItmList = new List<Models.Item>();
+            //List<Models.Item> setSourceItmList = new List<Models.Item>();
+            List<ulong> setSourceItmList = new List<ulong>();
             Dictionary<object, object> setSources = objData.ValueOrDefault<Dictionary<object, object>>("itmSetBonusSetItems", new Dictionary<object, object>());
             foreach(KeyValuePair<object, object> kvp in setSources)
             {
                 ulong itmNodeId = (ulong)kvp.Key;
-                setSourceItmList.Add(_dom.itemLoader.Load(itmNodeId));
+                setSourceItmList.Add(itmNodeId); //_dom.itemLoader.Load(itmNodeId));
             }
-            setEntry.Sources = setSourceItmList;
+            setEntry.SourcesIds = setSourceItmList;
 
             return setEntry;
         }

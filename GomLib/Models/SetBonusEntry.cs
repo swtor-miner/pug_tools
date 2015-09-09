@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
@@ -10,8 +11,67 @@ namespace GomLib.Models
     {
         public Dictionary<string, string> LocalizedNameStrings { get; set; }
         public long MaxItemCount { get; set; }
-        public List<Item> Sources { get; set; }
-        public Dictionary<long, Ability> BonusAbilityByNum { get; set; }
+        #region Sources
+            [JsonIgnore]
+            public List<ulong> SourcesIds { get; set; }
+            internal List<string> _SourcesB62Ids { get; set; }
+            public List<string> SourcesB62Ids
+            {
+                get
+                {
+                    if (_SourcesB62Ids == null)
+                    {
+                        if (SourcesIds == null) return new List<string>();
+                        _SourcesB62Ids = SourcesIds.Select(x => x.ToMaskedBase62()).ToList();
+                    }
+                    return _SourcesB62Ids;
+                }
+            }
+            internal List<Item> _Sources { get; set; }
+            [JsonIgnore]
+            public List<Item> Sources
+            {
+                get
+                {
+                    if (_Sources == null)
+                    {
+                        if (SourcesIds == null) return new List<Item>();
+                        _Sources = SourcesIds.Select(x => _dom.itemLoader.Load(x)).ToList();
+                    }
+                    return _Sources;
+                }
+            }
+        #endregion
+        #region Bonus Abilities
+            [JsonIgnore]
+            public Dictionary<long, ulong> BonusAbilityIdsByNum { get; set; }
+            internal Dictionary<long, string> _BonusAbilityIdsB62Ids { get; set; }
+            public Dictionary<long, string> BonusAbilityIdsB62Ids
+            {
+                get
+                {
+                    if (_BonusAbilityIdsB62Ids == null)
+                    {
+                        if (BonusAbilityIdsByNum == null) return new Dictionary<long, string>();
+                        _BonusAbilityIdsB62Ids = BonusAbilityIdsByNum.ToDictionary(x=>x.Key, x => x.Value.ToMaskedBase62());                    }
+                    return _BonusAbilityIdsB62Ids;
+                }
+            }
+            internal Dictionary<long, Ability> _BonusAbilityByNum { get; set; }
+            [JsonIgnore]
+            public Dictionary<long, Ability> BonusAbilityByNum
+            {
+                get
+                {
+                    if (_BonusAbilityByNum == null)
+                    {
+                        if (BonusAbilityIdsByNum == null) return new Dictionary<long, Ability>();
+                        _BonusAbilityByNum = BonusAbilityIdsByNum.ToDictionary(x=> x.Key, x => _dom.abilityLoader.Load(x.Value));
+                    }
+                    return _BonusAbilityByNum;
+                }
+            }
+        #endregion
 
         public override int GetHashCode()
         {
