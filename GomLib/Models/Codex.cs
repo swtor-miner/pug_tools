@@ -19,7 +19,16 @@ namespace GomLib.Models
         public string Description { get; set; }
 
         public int Level { get; set; }
+        [JsonIgnore]
         public string Image { get; set; }
+        public string Icon
+        {
+            get
+            {
+                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/codex/{0}.dds", this.Image));
+                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+            }
+        }
         public bool IsHidden { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]
@@ -69,6 +78,71 @@ namespace GomLib.Models
                 return _PlanetsB62;
             }
         }
+
+        #region SQL Localization
+        [JsonIgnore]
+        public string FRName
+        {
+            get
+            {
+                if (LocalizedName == null) return null;
+                return LocalizedName["frMale"];
+            }
+        }
+        [JsonIgnore]
+        public string DEName
+        {
+            get
+            {
+                if (LocalizedName == null) return null;
+                return LocalizedName["deMale"];
+            }
+        }
+        [JsonIgnore]
+        public string FRDescription
+        {
+            get
+            {
+                if (LocalizedDescription == null) return null;
+                return LocalizedDescription["frMale"];
+            }
+        }
+        [JsonIgnore]
+        public string DEDescription
+        {
+            get
+            {
+                if (LocalizedDescription == null) return null;
+                return LocalizedDescription["deMale"];
+            }
+        }
+        [JsonIgnore]
+        public string Category
+        {
+            get
+            {
+                return CategoryName;
+            }
+        }
+        [JsonIgnore]
+        public string FRCategory
+        {
+            get
+            {
+                if (LocalizedCategoryName == null) return null;
+                return LocalizedCategoryName["frMale"];
+            }
+        }
+        [JsonIgnore]
+        public string DECategory
+        {
+            get
+            {
+                if (LocalizedCategoryName == null) return null;
+                return LocalizedCategoryName["deMale"];
+            }
+        }
+        #endregion
 
         public override int GetHashCode()
         {
@@ -171,6 +245,25 @@ namespace GomLib.Models
             return true;
         }
 
+        public override List<SQLProperty> SQLProperties
+        {
+            get
+            {
+                return new List<SQLProperty>
+                    {                //(SQL Column Name, C# Property Name, SQL Column type statement, isUnique/PrimaryKey, Serialize value to json)
+                        new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FRName","FRName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DEName","DEName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.PrimaryKey),
+                        new SQLProperty("Description", "Description", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FRDescription","FRDescription", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DEDescription","DEDescription", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Category","Category", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FRCategory","FRCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DECategory","DECategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                    };
+            }
+        }
         public override XElement ToXElement(bool verbose) //split to see if it was necessary to loop through linked codices. Didn't seem like it.
         {
             XElement codex = new XElement("Codex");

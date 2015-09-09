@@ -120,6 +120,10 @@ namespace GomLib.Models
                 {
                     return ((Achievement)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
                 }
+                if (obj.GetType() == typeof(Codex))
+                {
+                    return ((Codex)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
+                }
                 return "<div>Not implemented</div>";
             }
             if (pObj == null)
@@ -1009,27 +1013,30 @@ namespace GomLib.Models
                         foreach (var kvp in itm.Materials)
                         {
                             var mat = (Item)new GameObject().Load(kvp.Key, itm._dom);
-                            var matstringQual = ((mat.TypeBitFlags.IsModdable && (mat.Quality == ItemQuality.Prototype)) ? "moddable" : mat.Quality.ToString().ToLower());
-                            var matfileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", mat.Icon));
-                            components.Add(new XElement("div",
-                                XClass("torctip_mat"),
-                                new XElement("span", String.Format("{0}x ", kvp.Value)),
-                                new XElement("div",
-                                    new XAttribute("class", String.Format("torctip_image torctip_image_{0} small_border", matstringQual)),
-                                    new XElement("img",
-                                        new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", matfileId.ph, matfileId.sh)),
-                                        new XAttribute("alt", itm.Name),
-                                        XClass("small_image"))),
-                                new XElement("div",
-                                    new XAttribute("class", "torctip_mat_name"),
-                                    new XElement("a",
-                                        XClass(String.Format("torctip_{0}", matstringQual)),
-                                        new XAttribute("href", String.Format("https://torcommunity.com/database/item/{0}/{1}/", mat.Base62Id, LinkString(mat.Name))),
-                                        new XAttribute("data-torc", "norestyle"),
-                                        mat.Name)
+                            if (mat != null)
+                            {
+                                var matstringQual = ((mat.TypeBitFlags.IsModdable && (mat.Quality == ItemQuality.Prototype)) ? "moddable" : mat.Quality.ToString().ToLower());
+                                var matfileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", mat.Icon));
+                                components.Add(new XElement("div",
+                                    XClass("torctip_mat"),
+                                    new XElement("span", String.Format("{0}x ", kvp.Value)),
+                                    new XElement("div",
+                                        new XAttribute("class", String.Format("torctip_image torctip_image_{0} small_border", matstringQual)),
+                                        new XElement("img",
+                                            new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", matfileId.ph, matfileId.sh)),
+                                            new XAttribute("alt", itm.Name),
+                                            XClass("small_image"))),
+                                    new XElement("div",
+                                        new XAttribute("class", "torctip_mat_name"),
+                                        new XElement("a",
+                                            XClass(String.Format("torctip_{0}", matstringQual)),
+                                            new XAttribute("href", String.Format("https://torcommunity.com/database/item/{0}/{1}/", mat.Base62Id, LinkString(mat.Name))),
+                                            new XAttribute("data-torc", "norestyle"),
+                                            mat.Name)
+                                        )
                                     )
-                                )
-                            );
+                                );
+                            }
                         }
                     }
                     else
@@ -1913,6 +1920,53 @@ namespace GomLib.Models
                     inner.Add(rewards);
                 }
 
+                tooltip.Add(inner);
+            }
+
+            return tooltip;
+        }
+
+        #endregion
+        #region codex
+        public static XElement GetHTML(this Codex itm)
+        {
+            if (Tooltip.TooltipNameMap.Count == 0)
+            {
+                LoadNameMap(itm._dom);
+            }
+            if (itm.Id == 0) return new XElement("div", "Not Found");
+            string stringQual = "codex";
+
+            XElement tooltip = new XElement("div", new XAttribute("class", "torctip_wrapper"));
+
+            if (itm != null)
+            {
+                tooltip.Add(new XElement("div",
+                    XClass("torctip_image"),
+                    " "
+                ));
+                XElement inner = new XElement("div",
+                    XClass("torctip_tooltip"),
+                    new XElement("span",
+                        XClass(String.Format("torctip_{0}", stringQual)),
+                        itm.Name
+                    )
+                );
+
+                inner.Add(new XElement("div",
+                    XClass("torctip_cdx_image"),
+                    new XElement("img",
+                        new XAttribute("src", String.Format("https://torcommunity.com/db/codex/{0}_thumb.jpg", itm.Icon)),
+                        new XAttribute("alt", "")
+                    )
+                ));
+
+                XElement desc = new XElement("div",
+                    XClass("torctip_blue"),
+                    itm.Description
+                );
+                inner.Add(desc);
+                
                 tooltip.Add(inner);
             }
 

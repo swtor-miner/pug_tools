@@ -26,17 +26,17 @@ namespace tor_tools
     {
         private void SmartLink(DataObjectModel dom)
         {
-            //SmartLinkAbilities(dom);
-            //SmartLinkAchievements(dom);
-            //SmartLinkCodex(dom);
-            //SmartLinkConversations(dom);
-            //SmartLinkDecorations(dom);
-            //SmartLinkEncounters(dom);
-            //SmartLinkItems(dom);
-            //SmartLinkItemAppearances(dom);
-            //SmartLinkNpcs(dom);
-            //SmartLinkPhases(dom);
-            //SmartLinkPlaceables(dom);
+            SmartLinkAbilities(dom);
+            SmartLinkAchievements(dom);
+            SmartLinkCodex(dom);
+            SmartLinkConversations(dom);
+            SmartLinkDecorations(dom);
+            SmartLinkEncounters(dom);
+            SmartLinkItems(dom);
+            SmartLinkItemAppearances(dom);
+            SmartLinkNpcs(dom);
+            SmartLinkPhases(dom);
+            SmartLinkPlaceables(dom);
             SmartLinkQuests(dom);
             SmartLinkQuestRewards(dom);
             SmartLinkSchematics(dom);

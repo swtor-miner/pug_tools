@@ -116,6 +116,7 @@ namespace GomLib.ModelLoader
             StringTable Categories = _dom.stringTable.Find("str.gui.questcategories");
 
             qst.Category = Categories.GetText(qst.CategoryId, "str.gui.questcategories"); //QuestCategoryExtensions.ToQuestCategory(qst.CategoryId);
+            qst.LocalizedCategory = Categories.GetLocalizedText(qst.CategoryId, "str.gui.questcategories");
 
             qst.ItemMap = (List<object>)obj.Data.ValueOrDefault<List<object>>("qstItemVariableDefinition_ProtoVarList", null);
             qst.Items = LoadItems(qst.ItemMap);

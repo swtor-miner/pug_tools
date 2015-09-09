@@ -405,6 +405,7 @@ namespace GomLib.Models
                         new SQLProperty("MissionYieldDescriptionId", "MissionYieldDescriptionId", "int(11) NOT NULL"),
                         new SQLProperty("MissionYieldDescription", "MissionYieldDescription", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Deprecated", "Deprecated", "tinyint(1) NOT NULL"),
+                        new SQLProperty("SubTypeName", "SubTypeName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL")
                         /*new SQLProperty("Variations", "Variations*/
                     };
             }

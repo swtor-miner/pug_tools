@@ -60,6 +60,7 @@ namespace tor_tools
                 {"Abilities", new SQLInitStore("ability", new GomLib.Models.Ability())},
                 {"AchCategories", new SQLInitStore("achcategories", new GomLib.Models.AchievementCategory())},
                 {"Achievements", new SQLInitStore("achievement", new GomLib.Models.Achievement())},
+                {"CodexEntries", new SQLInitStore("codex", new GomLib.Models.Codex())},
                 {"Items", new SQLInitStore("item", new GomLib.Models.Item())},
                 {"Schematics", new SQLInitStore("schematic", new GomLib.Models.Schematic())},
                 {"Quests", new SQLInitStore("mission", new GomLib.Models.Quest())},

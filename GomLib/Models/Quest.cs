@@ -28,8 +28,11 @@ namespace GomLib.Models
         public bool IsClassQuest { get; set; }
         public bool IsBonus { get; set; }
         public bool BonusShareable { get; set; }
+        [JsonIgnore]
         public long CategoryId { get; set; }
+        [JsonIgnore]
         public string Category { get; set; }
+        public Dictionary<string, string> LocalizedCategory { get; set; }
         public List<QuestBranch> Branches { get; set; }
         public Dictionary<ulong, QuestItem> Items { get; set; }
 
@@ -145,7 +148,6 @@ namespace GomLib.Models
             #region Classes
             [Newtonsoft.Json.JsonIgnore]
             internal List<string> _ClassesB62 { get; set; }
-            [Newtonsoft.Json.JsonIgnore]
             public List<string> ClassesB62
             {
                 get
@@ -230,11 +232,99 @@ namespace GomLib.Models
                     }
                 }
             }
+        #endregion
+
+            #region Quest Links
+            internal List<ulong> _QuestsNext { get; set; }
+            internal List<ulong> QuestsNext
+            {
+                get
+                {
+                    if (_QuestsNext == null)
+                    {
+                        _QuestsNext = new List<ulong>();
+                        if (this.References != null)
+                        {
+                            if (this.References.ContainsKey("conversationEnds"))
+                            {
+                                foreach (var cnvId in References["conversationEnds"])
+                                {
+                                    var cnvObj = _dom.GetObject(cnvId);
+                                    if (cnvObj.References != null)
+                                    {
+                                        if (cnvObj.References.ContainsKey("startsQuest"))
+                                        {
+                                            _QuestsNext = cnvObj.References["startsQuest"];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return _QuestsNext;
+                }
+            }
+            internal List<string> _QuestsNextB62 { get; set; }
+            public List<string> QuestsNextB62
+            {
+                get
+                {
+                    if (_QuestsNextB62 == null)
+                    {
+                        if (Classes == null) return new List<string>();
+                        _QuestsNextB62 = QuestsNext.Select(x => x.ToMaskedBase62()).ToList();
+                    }
+                    return _QuestsNextB62;
+                }
+            }
+
+            internal List<ulong> _QuestsPrevious { get; set; }
+            internal List<ulong> QuestsPrevious
+            {
+                get
+                {
+                    if (_QuestsPrevious == null)
+                    {
+                        _QuestsPrevious = new List<ulong>();
+                        if (this.References != null)
+                        {
+                            if (this.References.ContainsKey("conversationStarts"))
+                            {
+                                foreach (var cnvId in References["conversationStarts"])
+                                {
+                                    var cnvObj = _dom.GetObject(cnvId);
+                                    if (cnvObj.References != null)
+                                    {
+                                        if (cnvObj.References.ContainsKey("endsQuest"))
+                                        {
+                                            _QuestsPrevious = cnvObj.References["endsQuest"];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return _QuestsPrevious;
+                }
+            }
+            internal List<string> _QuestsPreviousB62 { get; set; }
+            public List<string> QuestsPreviousB62
+            {
+                get
+                {
+                    if (_QuestsPreviousB62 == null)
+                    {
+                        if (Classes == null) return new List<string>();
+                        _QuestsPreviousB62 = QuestsPrevious.Select(x => x.ToMaskedBase62()).ToList();
+                    }
+                    return _QuestsPreviousB62;
+                }
+            }
             #endregion
         #endregion
 
-            #region IEquatable<Quest>
-            public override int GetHashCode()
+        #region IEquatable<Quest>
+        public override int GetHashCode()
         {
             int hash = Name.GetHashCode();
             if (Icon != null) { hash ^= Icon.GetHashCode(); }

@@ -9,6 +9,7 @@ namespace GomLib.Models
 {
     public class GameObject : Dependencies
     {
+        [JsonIgnore]
         public ulong Id { get; set; }
         public string Base62Id
         {
@@ -172,13 +173,6 @@ namespace GomLib.Models
         }
         [Newtonsoft.Json.JsonIgnore]
         public virtual List<SQLProperty> SQLProperties { get; set; }
-        public string Tooltip
-        {
-            get
-            {
-                return new Tooltip(this).ToString();
-            }
-        }
     }
 
     public class PseudoGameObject : Dependencies

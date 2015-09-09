@@ -15,6 +15,8 @@ namespace GomLib.ModelLoader
         Dictionary<ulong, Codex> idMap;
         Dictionary<string, Codex> nameMap;
 
+        List<string> DeprecatedCodices = new List<string>();
+
         private DataObjectModel _dom;
 
         public CodexLoader(DataObjectModel dom)
@@ -30,6 +32,7 @@ namespace GomLib.ModelLoader
         {
             idMap = new Dictionary<ulong, Codex>();
             nameMap = new Dictionary<string, Codex>();
+            DeprecatedCodices = new List<string>();
         }
 
         public string ClassName
@@ -86,6 +89,9 @@ namespace GomLib.ModelLoader
             if (obj == null) { return null; }
             if (cdx == null) { return null; }
 
+            if (obj.Name.StartsWith("cdx.blurb"))
+                return null; //this is to prevent these blurbs from showing up in the json output.
+
             cdx.Fqn = obj.Name;
             cdx.Id = obj.Id;
             cdx._dom = _dom;
@@ -113,6 +119,14 @@ namespace GomLib.ModelLoader
 
             cdx.LocalizedDescription = _dom.stringTable.TryGetLocalizedStrings(cdx.Fqn, descLookup);
             cdx.Description = _dom.stringTable.TryGetString(cdx.Fqn, descLookup);
+
+            if(String.IsNullOrWhiteSpace(cdx.Name) && String.IsNullOrWhiteSpace(cdx.Description))
+            {
+                DeprecatedCodices.Add(obj.Name);
+                cdx.Id = 0;
+                cdx = null; //really wacky permanance issue here.
+                return cdx;
+            }
 
             cdx.Level = (int)obj.Data.ValueOrDefault<long>("cdxLevel", 0);
             if (cdx.LocalizedName.Values.ToString() == "") { cdx.IsHidden = true; }

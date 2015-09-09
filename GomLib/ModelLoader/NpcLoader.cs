@@ -114,7 +114,7 @@ namespace GomLib.ModelLoader
                 npc.LocalizedTitle = _dom.stringTable.TryGetLocalizedStrings(npc.Fqn, titleLookupData);
             }
 
-            npc.Id = (ulong)(nameId >> 32);
+            npc.Id = obj.Id; // (ulong)(nameId >> 32);
 
             //if (objIdMap.ContainsKey(npc.Id))
             //{

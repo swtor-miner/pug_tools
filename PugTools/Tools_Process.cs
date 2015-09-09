@@ -145,7 +145,9 @@ namespace tor_tools
                 foreach (var curObject in curItmList)
                 {
                     progressUpdate(i, count);
-                    newItems.Add(LoadGameObject(curObject._dom, curObject));
+                    var obj = LoadGameObject(curObject._dom, curObject);
+                    if(obj.Id != 0) //apparently if the loader passes null back, sometimes data comes, too.....
+                        newItems.Add(obj);
                     i++;
                 }
                 ObjectLists.Add("Full", newItems);
