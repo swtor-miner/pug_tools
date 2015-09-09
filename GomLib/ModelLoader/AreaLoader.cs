@@ -73,8 +73,8 @@ namespace GomLib.ModelLoader
             }
             else
             {
-                Console.WriteLine("No MapData for " + area.Name);
-                //area.Id = 0;
+                Console.WriteLine("No MapData for " + area.Name + " [" + area.AreaId + "]");
+                return area;
             }
 
             area.FowGroupStringIds = new Dictionary<ulong, long>();

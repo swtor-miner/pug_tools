@@ -190,7 +190,7 @@ namespace GomLib.ModelLoader
                 GomObject rewardsTable = _dom.GetObject("achRewardsTable_Prototype");
                 var rewardsLookupList = rewardsTable.Data.Get<Dictionary<object, object>>("achRewardsData"); //fix this to be a reference to somehwere so we don't have to load it each time to read one value.
                 var rawRewards = (GomObjectData)rewardsLookupList[ach.RewardsId];
-                var achievementPoints = rawRewards.Get<long>("achRewardPoints");
+                var achievementPoints = rawRewards.ValueOrDefault<long>("achRewardPoints", 0);
                 ach.Rewards.AchievementPoints = achievementPoints;
                 var cartelCoins = rawRewards.ValueOrDefault<long>("achRewardCartelCoins", 0);
                 ach.Rewards.CartelCoins = cartelCoins;
