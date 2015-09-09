@@ -1949,7 +1949,7 @@ namespace GomLib.Models
                     XClass("torctip_tooltip"),
                     new XElement("span",
                         XClass(String.Format("torctip_{0}", stringQual)),
-                        itm.Name
+                        itm.LocalizedName[Tooltip.language]
                     )
                 );
 
@@ -1962,9 +1962,10 @@ namespace GomLib.Models
                 ));
 
                 XElement desc = new XElement("div",
-                    XClass("torctip_blue"),
-                    itm.Description
+                    XClass("torctip_codex_text")//,
+                    //itm.Description
                 );
+                AddStringWithBreaks(ref desc, itm.LocalizedDescription[Tooltip.language]);
                 inner.Add(desc);
                 
                 tooltip.Add(inner);
