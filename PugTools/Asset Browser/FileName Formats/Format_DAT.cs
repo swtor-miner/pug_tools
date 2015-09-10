@@ -12,6 +12,7 @@ namespace tor_tools
         
         public string dest = "";
         public HashSet<string> fileNames = new HashSet<string>();
+        public HashSet<string> animFileNames = new HashSet<string>();
         public List<string> errors = new List<string>();
         public string extension;
         public string filename;        
@@ -106,14 +107,25 @@ namespace tor_tools
             br.BaseStream.Position = guidOffset;
             ulong areaGuid = br.ReadUInt64();
 
+            string areaID = null;	//areaGuid not usually the correct ID in the file path
+
+            if (this.filename.Contains("/resources/world/areas"))
+            {
+                areaID = this.filename.Replace("/resources/world/areas/", "").Replace("/area.dat", "");
+                fileNames.Add("/resources/world/areas/" + areaID + "/mapnotes.not");
+            }
+
             //Rooms
             br.BaseStream.Position = roomOffset;
             uint numRooms = br.ReadUInt32();
             for (uint i = 0; i < numRooms; i++)
             {
                 uint nameLength = br.ReadUInt32();
-                string room = ReadString(br, nameLength);
-                fileNames.Add(String.Format("/resources/world/areas/{0}/{1}.dat", areaGuid, room));
+                string room = ReadString(br, nameLength).ToLower();
+                if(areaID != null)
+                    fileNames.Add(String.Format("/resources/world/areas/{0}/{1}.dat", areaID, room));
+                else
+                    fileNames.Add(String.Format("/resources/world/areas/{0}/{1}.dat", areaGuid, room));
             }
 
             //Assets
@@ -217,6 +229,10 @@ namespace tor_tools
             uint fileNameLength = br.ReadUInt32();
             string filename = ReadString(br, fileNameLength);
             fileNames.Add(String.Format("/resources{0}", filename));
+
+            string area = filename.Remove(filename.LastIndexOf('/') + 1);
+            fileNames.Add(String.Format("/resources{0}", area + "area.dat"));
+            fileNames.Add(String.Format("/resources{0}", area + "mapnotes.not"));
 
             //Instances
             br.BaseStream.Position = instanceOffset;
@@ -324,9 +340,69 @@ namespace tor_tools
                                 {
                                     switch (propertyId)
                                     {
-                                        case 3261558584: // FxSpecName
+                                        case 3261558584:    // FxSpecName
                                             fxspecs.Add((string)o);
                                             break;
+                                        case 2393024011:    // spnAnimation or spnNpcIdleAnimationName
+                                            animFileNames.Add(((string)o).ToLower());
+                                            break;                                                                     
+                                        case 964697786:     // Tag
+                                            fileNames.Add("/resources" + area + (string)o + ".dat");
+                                            textures.Add((area + (string)o));
+                                            break;
+                                        
+                                        //Skip Start
+                                        case 2957064701:    // PortalTarget
+                                        case 4255290973:    // rgnVolumeData
+                                        case 669968511:     // rgnCharacteristics
+                                        case 3166688232:    // ParentMapTag
+                                        case 1768825245:    // tesselation 
+                                        case 240466284:     // resolution
+                                        case 3106719576:    // StopEvent 
+                                        case 948461446:     // PlayEvent
+                                        case 466906898:     // rgnRespawnMedCenter
+                                        case 3160985587:    // Intensity
+                                        case 384379389:     // Range
+                                        case 3430452781:    // FxRespawnDelay
+                                        case 3629101973:    // TriggerParam
+                                        case 273365031:     // Speed
+                                        case 2335395941:    // Path
+                                        case 713588192:     // spnTagFromEncounter                                        
+                                        case 1467655203:    // wtrVertexData
+                                        case 113668568:     // DepthTexture
+                                        case 3060549674:    // spnPhaseInstanceName
+                                        case 773762347:     // name
+                                        case 3235228203:    // FxMaxSpawnDistance
+                                        case 446782081:     // DiffuseColor
+                                        case 2793072227:    // Color
+                                        case 3179516067:    // TriggerScript
+                                        case 3424594045:    // JointFlags
+                                        case 3084732969:    // Deformation_X
+                                        case 3084732970:    // Deformation_Y
+                                        case 4158591558:    // Divisions
+                                        case 3839584892:    // LightningWidth
+                                        case 2857627687:    // DeltaRotation3D                                        
+                                        case 3522231145:    // LeafTinting
+                                        case 4012120889:    // GlossColor
+                                        case 489737334:     // LODFactor
+                                        case 3402983087:    // BoneName
+                                        case 4268140818:    // some type of color
+                                        case 3069428699:    // regionEdgeData
+                                        case 2766070679:    // DeepColor
+                                        case 3671420588:    // FogColor1
+                                        case 3671420589:    // FogColor2
+                                        case 1620832956:    // FogColorSky
+                                            break;
+                                        //Skip End
+
+                                        case 999479220:     // Falloff
+                                        case 1820631501:    // IlluminationMap
+                                        case 1117554570:    // RampMap
+                                        case 1412492047:    // SurfaceMap 
+                                        case 2545768381:    // NormalMap2
+                                        case 2545768380:    // NormalMap1
+                                        case 2829380834:    // gfxMovieName
+                                        case 3003166540:    // ProjectionTexture                                            
                                         default:
                                             textures.Add((string)o);
                                             break;
@@ -631,6 +707,17 @@ namespace tor_tools
                 }
                 outputNames.Close();
                 fileNames.Clear();
+            }
+
+            if (this.animFileNames.Count > 0)
+            {
+                System.IO.StreamWriter outputAnimNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_anim_file_names.txt", false);
+                foreach (string file in animFileNames)
+                {
+                    outputAnimNames.WriteLine(file.Replace("\\", "/"));
+                }
+                outputAnimNames.Close();
+                animFileNames.Clear();
             }
 
             if (this.errors.Count > 0)
