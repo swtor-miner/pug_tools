@@ -105,5 +105,30 @@ namespace FileFormats
                    (value & 0x000000FF00000000UL) >> 8 | (value & 0x0000FF0000000000UL) >> 24 |
                    (value & 0x00FF000000000000UL) >> 40 | (value & 0xFF00000000000000UL) >> 56;
         }
+
+        public static uint getFNV1Hash(string name)
+        {
+            if (name == null || name == "")
+                return 0;
+            const uint Fnv1Prime = unchecked(16777619);
+            const uint Fnv1OffsetBasis = unchecked(2166136261);
+
+            uint hash = Fnv1OffsetBasis;
+            char[] arName = name.ToLower().ToArray();
+
+            for (var i = 0; i < arName.Count(); i++)
+            {
+                unchecked
+                {
+                    hash *= Fnv1Prime;
+                    hash ^= arName[i];
+                }
+            }
+
+            var mask = 1 << 31;
+            hash = (uint)((hash >> 32) ^ (hash & mask));
+
+            return hash;
+        }
     }
 }
