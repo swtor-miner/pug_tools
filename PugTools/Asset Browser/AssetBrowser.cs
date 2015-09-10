@@ -995,7 +995,7 @@ namespace tor_tools
             }
         }
 
-        private void previewBNK()
+        private async Task previewBNK()
         {
             if (InvokeRequired)
             {
@@ -1003,25 +1003,26 @@ namespace tor_tools
             }
             else
             {
-                View_BNK bnk = new View_BNK(new BinaryReader(this.inputStream));
+                BinaryReader br = new BinaryReader(this.inputStream);
+                FileFormat_BNK bnk = new FileFormat_BNK(br, true);
+                List<WEM_File> wems = new List<WEM_File>();
+                if (bnk.didx != null && bnk.didx.wems.Count() > 0)
+                    wems = bnk.didx.wems;
                 WemListItem.resetTreeListViewColumns(treeListView1);
-
-                if (bnk.soundBanks.Count > 0)
+                if (bnk.hirc != null)
                 {
-                    NodeListItem sndBnkRoot = new NodeListItem("Soundbanks", null);
-                    foreach (FileFormat_BNK_STID_SoundBank sndBnk in bnk.soundBanks)
-                    {
-                        sndBnkRoot.children.Add(new NodeListItem(sndBnk.name, null));
-                    }
-                    rootList.Add(sndBnkRoot);
+                    WemListItem hirc = new WemListItem("HIRC", bnk.hirc);
+                    rootList.Add(hirc);
                 }
-
-                if (bnk.wems.Count > 0)
+                if (bnk.didx != null)
                 {
-                    foreach (WEM_File wem in bnk.wems)
-                    {
-                        rootList.Add(new WemListItem(wem.name.ToString(), wem));
-                    }
+                    WemListItem didx = new WemListItem("DIDX", bnk.didx);
+                    rootList.Add(didx);
+                }
+                if(bnk.stid != null)
+                {
+                    WemListItem stid = new WemListItem("STID", bnk.stid);
+                    rootList.Add(stid);
                 }
             }
         }
@@ -1636,7 +1637,7 @@ namespace tor_tools
             {
                 WemListItem row = (WemListItem)selectedRow;
                 WEM_File wem = (WEM_File)row.obj;
-                if (wem.data.Count() > 0)
+                if (wem != null && wem.data.Count() > 0)
                 {
                     await Task.Run(() => wem.convertWEM());
                     this.toolStripStatusLabel1.Text = "Playing Audio...";

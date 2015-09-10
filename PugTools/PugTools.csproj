@@ -208,7 +208,6 @@
     <Compile Include="Asset Browser\Viewer Functions\GR2 Classes\GR2_Mesh_Vertex.cs" />
     <Compile Include="Asset Browser\Viewer Functions\GR2 Classes\GR2_Mesh_Vertex_Index.cs" />
     <Compile Include="Asset Browser\Viewer Functions\View_ACB.cs" />
-    <Compile Include="Asset Browser\Viewer Functions\View_BNK.cs" />
     <Compile Include="Asset Browser\Viewer Functions\View_DAT.cs" />
     <Compile Include="Asset Browser\Viewer Functions\View_GFX.cs" />
     <Compile Include="Asset Browser\Viewer Functions\View_SCPT.cs" />
