@@ -186,6 +186,8 @@ namespace tor_tools
                     case "Codex Category Totals": t = () => getPrototypeObjects("CodexCategoryTotals", "cdxCategoryTotalsPrototype", "cdxFactionToClassToPlanetToTotalLookupList");
                         break;
                     case "Schematic Variations": t = () => getPrototypeObjects("SchematicVariations", "prfSchematicVariationsPrototype", "prfSchematicVariationMasterList");
+						break;
+                    case "BuildBnkIdDict": t = new ThreadStart(BuildBnkIdDict);
                         break;
                         
                 }

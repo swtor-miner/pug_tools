@@ -82,7 +82,8 @@ namespace tor_tools
                 "Tooltips",
                 "Set Bonuses",
                 "Codex Category Totals",
-                "Schematic Variations"
+                "Schematic Variations",
+				"BuildBnkIdDict"
             });
             comboBoxExtractTypes.SelectedIndex = 0;
             cbxExtractFormat.SelectedIndex = 0;
