@@ -216,7 +216,7 @@ namespace tor_tools
 
             uint fileNameLength = br.ReadUInt32();
             string filename = ReadString(br, fileNameLength);
-            fileNames.Add(String.Format("/resources", filename));
+            fileNames.Add(String.Format("/resources{0}", filename));
 
             //Instances
             br.BaseStream.Position = instanceOffset;

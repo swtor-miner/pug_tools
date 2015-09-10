@@ -135,8 +135,9 @@ namespace tor_tools
                         }
                     }
                     area.MapPages.Clear();
-                }                
-                area.Assets.Clear();
+                }
+                if(area.Assets != null)
+                    area.Assets.Clear();
             }
             worldAreasProto.Clear();
         }       
