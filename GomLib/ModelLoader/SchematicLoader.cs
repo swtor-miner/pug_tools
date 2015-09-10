@@ -135,7 +135,11 @@ namespace GomLib.ModelLoader
             }
 
             schem.MissionDescriptionId = (int)obj.Data.ValueOrDefault<long>("prfMissionDescriptionId", 0);
-            if (schem.MissionDescriptionId > 0) schem.MissionDescription = missionStrTable.GetText(schem.MissionDescriptionId + strOffset, schem.Fqn);
+            if (schem.MissionDescriptionId > 0)
+            {
+                schem.MissionDescription = missionStrTable.GetText(schem.MissionDescriptionId + strOffset, schem.Fqn);
+                schem.LocalizedMissionDescription = missionStrTable.GetLocalizedText(schem.MissionDescriptionId + strOffset, schem.Fqn);
+            }
 
             schem.CrewSkillId = ProfessionExtensions.ToProfession((ScriptEnum)obj.Data.ValueOrDefault<ScriptEnum>("prfProfessionRequired", null));
             schem.Subtype = ProfessionSubtypeExtensions.ToProfessionSubtype((ScriptEnum)obj.Data.ValueOrDefault<ScriptEnum>("prfProfessionSubtype", null));

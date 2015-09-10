@@ -89,6 +89,7 @@ namespace GomLib.ModelLoader
             }
 
             step.JournalText = String.Join(Environment.NewLine + Environment.NewLine, strings.ToArray());
+            step.LocalizedJournalText = localizedStrings.ToDictionary(x => x.Key, x => String.Join(Environment.NewLine + Environment.NewLine, x.Value.ToArray()));
 
             var itemsGiven = (List<object>)obj.ValueOrDefault<List<object>>("qstItemsGivenOnCompletion", null);
             step.ItemsGiven = _dom.questLoader.LoadGivenOrTakenItems(step.Branch.Quest, itemsGiven);

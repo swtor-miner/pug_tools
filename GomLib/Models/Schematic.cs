@@ -104,6 +104,7 @@ namespace GomLib.Models
         public int MissionCost { get; set; }
         public int MissionDescriptionId { get; set; }
         public string MissionDescription { get; set; }
+        public Dictionary<string, string> LocalizedMissionDescription { get; set; }
         public bool MissionUnlockable { get; set; }
         public int MissionLight { get; set; }
         public int MissionLightCrit { get; set; }

@@ -16,6 +16,7 @@ namespace GomLib.Models
         public DataObjectModel _dom { get; set; }
         public bool IsShareable { get; set; }
         public string JournalText { get; set; }
+        public Dictionary<string, string> LocalizedJournalText { get; set; }
         public List<QuestTask> Tasks { get; set; }
         //public List<string> Strings { get; set; }
         [Newtonsoft.Json.JsonIgnore]
