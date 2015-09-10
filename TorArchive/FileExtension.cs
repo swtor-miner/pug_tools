@@ -106,6 +106,12 @@ namespace TorLib
             {
                 return "spt";
             }
+            if (((bytes[0] == 0x18) && (bytes[1] == 0x00)) && ((bytes[2] == 0x00) && (bytes[3] == 0x00)))
+            {
+                string strCheckDAT = Encoding.ASCII.GetString(bytes, 4, 22);
+                if(strCheckDAT == "AREA_DAT_BINARY_FORMAT" || strCheckDAT == "ROOM_DAT_BINARY_FORMAT")
+                    return "dat";
+            }
 
             string str = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
             string str2 = Encoding.ASCII.GetString(bytes, 0, 4);
