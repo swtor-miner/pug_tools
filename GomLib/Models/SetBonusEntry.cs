@@ -53,7 +53,8 @@ namespace GomLib.Models
                     if (_BonusAbilityIdsB62Ids == null)
                     {
                         if (BonusAbilityIdsByNum == null) return new Dictionary<long, string>();
-                        _BonusAbilityIdsB62Ids = BonusAbilityIdsByNum.ToDictionary(x=>x.Key, x => x.Value.ToMaskedBase62());                    }
+                        _BonusAbilityIdsB62Ids = BonusAbilityIdsByNum.ToDictionary(x=>x.Key, x => x.Value.ToMaskedBase62());
+                    }
                     return _BonusAbilityIdsB62Ids;
                 }
             }
@@ -69,6 +70,15 @@ namespace GomLib.Models
                         _BonusAbilityByNum = BonusAbilityIdsByNum.ToDictionary(x=> x.Key, x => _dom.abilityLoader.Load(x.Value));
                     }
                     return _BonusAbilityByNum;
+                }
+            }
+        #endregion
+        #region Parsed Descriptions
+            public Dictionary<long, Dictionary<string, string>> LocalizedBonusDescriptions
+            {
+                get
+                {
+                    return BonusAbilityIdsByNum.ToDictionary(x => x.Key, x => (_dom.abilityLoader.Load(x.Value) ?? new Ability()).ParsedLocalizedDescription);
                 }
             }
         #endregion

@@ -361,7 +361,9 @@ namespace GomLib.Models
         public Dictionary<string, string> classAppearance { get; set; }
         public string AppearanceImperial { get; set; }
         public string AppearanceRepublic { get; set; }
+        [JsonIgnore]
         public long SetBonusId { get; set; }
+        public string SetBonusB62Id { get { return SetBonusId.ToMaskedBase62(); } }
         [JsonIgnore]
         internal SetBonusEntry _SetBonus { get; set; }
         [JsonIgnore]
