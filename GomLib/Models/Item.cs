@@ -184,8 +184,27 @@ namespace GomLib.Models
 
         public ulong UseAbilityId { get; set; }
         public string UseAbilityB62Id { get { return UseAbilityId.ToMaskedBase62(); } }
+        internal Ability _UseAbility { get; set; }
         [JsonIgnore]
-        public Ability UseAbility { get; set; }
+        public Ability UseAbility
+        {
+            get
+            {
+                if (_UseAbility == null && UseAbilityId != 0)
+                {
+                    _UseAbility = _dom.abilityLoader.Load(UseAbilityId);
+                }
+                return _UseAbility;
+            }
+        }
+        public Dictionary<string, string> UseAbilityParsedDescription
+        {
+            get
+            {
+                if (UseAbility == null) return null;
+                return UseAbility.ParsedLocalizedDescription;
+            }
+        }
         
         public string ConversationFqn { get; set; }
 

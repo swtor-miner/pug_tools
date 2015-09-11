@@ -14,7 +14,7 @@ namespace GomLib.Models
         Artifact = 4,
         Legendary = 5,
         Legacy = 6,
-        Quest = 7,
+        Mission = 7,
         Currency = 8,
         Moddable = 9
     }
@@ -40,7 +40,7 @@ namespace GomLib.Models
                 case "itmQualityArtifact": return ItemQuality.Artifact;
                 case "itmQualityLegendary": return ItemQuality.Legendary;
                 case "itmQualityLegacy": return ItemQuality.Legacy;
-                case "itmQualityQuest": return ItemQuality.Quest;
+                case "itmQualityQuest": return ItemQuality.Mission;
                 case "itmQualityCurrency": return ItemQuality.Currency;
                 case "itmQualityModdable": return ItemQuality.Moddable;
                 default: throw new InvalidOperationException("Invalid Quality: " + str);
