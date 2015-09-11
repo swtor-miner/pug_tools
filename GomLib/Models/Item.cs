@@ -186,17 +186,7 @@ namespace GomLib.Models
         public string UseAbilityB62Id { get { return UseAbilityId.ToMaskedBase62(); } }
         internal Ability _UseAbility { get; set; }
         [JsonIgnore]
-        public Ability UseAbility
-        {
-            get
-            {
-                if (_UseAbility == null && UseAbilityId != 0)
-                {
-                    _UseAbility = _dom.abilityLoader.Load(UseAbilityId);
-                }
-                return _UseAbility;
-            }
-        }
+        public Ability UseAbility { get; set; }
         public Dictionary<string, string> UseAbilityParsedDescription
         {
             get

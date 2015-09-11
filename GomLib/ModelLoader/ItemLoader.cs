@@ -398,7 +398,7 @@ namespace GomLib.ModelLoader
             itm.UniqueLimit = (int)gom.Data.ValueOrDefault<long>("itmUniqueLimit", 0);
 
             itm.UseAbilityId = gom.Data.ValueOrDefault<ulong>("itmUsageAbility", 0);
-            //itm.UseAbility = _dom.abilityLoader.Load(itm.UseAbilityId);
+            itm.UseAbility = _dom.abilityLoader.Load(itm.UseAbilityId);
 
             itm.Value = (int)gom.Data.ValueOrDefault<long>("itmValue", 0);
             itm.VendorStackSize = (int)gom.Data.ValueOrDefault<long>("itmStackVendor", 0);
