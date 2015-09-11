@@ -937,7 +937,7 @@ namespace GomLib.Models
             hash ^= SubCategory.GetHashCode();
             hash ^= TypeBitSet.GetHashCode();
             hash ^= UniqueLimit.GetHashCode();
-            hash ^= UseAbility.GetHashCode();
+            if (UseAbility != null) hash ^= UseAbility.GetHashCode();
             hash ^= Value.GetHashCode();
             hash ^= VendorStackSize.GetHashCode();
             if (WeaponSpec != null) hash ^= WeaponSpec.GetHashCode();
@@ -1129,7 +1129,12 @@ namespace GomLib.Models
                 return false;
             if (this.UniqueLimit != itm.UniqueLimit)
                 return false;
-            if (!this.UseAbility.Equals(itm.UseAbility))
+            if (this.UseAbility != null)
+            {
+                if (!this.UseAbility.Equals(itm.UseAbility))
+                    return false;
+            }
+            else if (itm.UseAbility != null)
                 return false;
             if (this.UseAbilityId != itm.UseAbilityId)
                 return false;
