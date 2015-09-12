@@ -293,7 +293,7 @@ namespace GomLib.Models
                     new XElement("IsHidden", IsHidden),
                     new XElement("IsPlanet", IsPlanet),
                     new XElement("Level", Level),
-                    new XElement("Text", LocalizedDescription["enMale"]));
+                    new XElement("Text", (LocalizedDescription != null ? LocalizedDescription["enMale"] : "")));
                 XElement subCodices = new XElement("LinkedCodexEntries");
                 if (HasPlanets && Planets != null)
                 {

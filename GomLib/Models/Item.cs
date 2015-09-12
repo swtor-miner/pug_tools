@@ -1315,6 +1315,7 @@ namespace GomLib.Models
                         new SQLProperty("Cunning","Cunning", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Strength","Strength", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Willpower","Willpower", "int(11) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Mastery","Mastery", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("AbsorptionRating","AbsorptionRating", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("CriticalRating","CriticalRating", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("DefenseRating","DefenseRating", "int(11) NOT NULL", SQLPropSetting.AddIndex),
