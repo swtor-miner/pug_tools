@@ -158,13 +158,17 @@ namespace GomLib.Models
                 disciplines.Add(disc.ToXElement(verbose));
             }
             playerClass.Add(disciplines);
-            XElement classPkgs = new XElement("BaseClassPackages");
+            XElement classPkgs = new XElement("AdvancedClassBasePackages");
             foreach (var classPkg in AdvancedClassPkgs)
             {
                 classPkgs.Add(classPkg.ToXElement(verbose));
             }
             playerClass.Add(classPkgs,
                 new XElement("Utilities", UtilityPkg.ToXElement(verbose)));
+
+            playerClass.Add(new XElement("BaseClasePackages", ClassSpec.AbilityPackage.ToXElement(verbose)));
+
+
             return playerClass;
         }
     }

@@ -661,7 +661,8 @@ namespace GomLib.Models
                         new XAttribute("Id", Id),
                         new XElement("Base62Id", Base62Id),
                         new XElement("Name", Name),
-                        new XElement("Description", Description));
+                        new XElement("Description", Description),
+                        new XElement("DBURL", "https://torcommunity.com/database/ability/" + Base62Id + "/" + System.Web.HttpUtility.UrlEncode(Name.ToLower())));
 
                 if (verbose)
                 {
