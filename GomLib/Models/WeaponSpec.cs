@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
@@ -172,7 +173,15 @@ namespace GomLib.Models
         [Newtonsoft.Json.JsonIgnore]
         public DataObjectModel _dom { get; set; }
 
+        [JsonIgnore]
         public ulong Id { get; set; }
+        public string Base62Id
+        {
+            get
+            {
+                return Id.ToMaskedBase62();
+            }
+        }
         public string Name { get; set; } //str.gui.tooltips 836131348283392
         public long NameId { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
