@@ -1114,14 +1114,14 @@ namespace GomLib.Models
                     new XAttribute("class", String.Format("torctip_image torctip_image_{0}", stringQual)),
                     new XElement("img",
                         new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", fileId.ph, fileId.sh)),
-                        new XAttribute("alt", ""))),
-                    new XElement("div",
-                        new XAttribute("class", "torctip_name"),
-                        new XElement("a",
-                            new XAttribute("href", String.Format("https://torcommunity.com/database/ability/{0}/{1}/", itm.Base62Id, itm.LocalizedName[Tooltip.language].LinkString())),
-                            new XAttribute("data-torc", "norestyle"),
-                            itm.LocalizedName[Tooltip.language]
-                            ))
+                        new XAttribute("alt", "")))//,
+                    //new XElement("div",
+                    //    new XAttribute("class", "torctip_name"),
+                    //    new XElement("a",
+                    //        new XAttribute("href", String.Format("https://torcommunity.com/database/ability/{0}/{1}/", itm.Base62Id, itm.LocalizedName[Tooltip.language].LinkString())),
+                    //        new XAttribute("data-torc", "norestyle"),
+                    //        itm.LocalizedName[Tooltip.language]
+                    //        ))
                 );
                 XElement inner = new XElement("div",
                     XClass("torctip_tooltip"),
@@ -1231,7 +1231,7 @@ namespace GomLib.Models
                 inner.Add(new XElement("br"),
                     new XElement("div",
                         XClass("torctip_white"),
-                        itm.LocalizedDescription[Tooltip.language])
+                        Ability.ParseDescription(itm, itm.LocalizedDescription[Tooltip.language]))
                     );
                 tooltip.Add(inner);
             }
@@ -1600,29 +1600,29 @@ namespace GomLib.Models
                 tooltip.Add(new XElement("div",
                     new XAttribute("class", String.Format("torctip_image torctip_image_{0}", stringQual)),
                     new XElement("img",
-                        new XAttribute("src", String.Format("https://torcommunity.com/db/pts/icons/{0}_{1}.jpg", fileId.ph, fileId.sh)),
-                        new XAttribute("alt", ""))),
-                    new XElement("div",
-                        new XAttribute("class", "torctip_name"),
-                        new XElement("a",
-                            new XAttribute("href", String.Format("https://torcommunity.com/database/pts/talent/{0}/{1}/", itm.Base62Id, itm.LocalizedName[Tooltip.language].LinkString())),
-                            new XAttribute("data-torc", "norestyle"),
-                            itm.LocalizedName[Tooltip.language]
-                            ))
+                        new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", fileId.ph, fileId.sh)),
+                        new XAttribute("alt", "")))//,
+                    //new XElement("div",
+                    //    new XAttribute("class", "torctip_name"),
+                    //    new XElement("a",
+                    //        new XAttribute("href", String.Format("https://torcommunity.com/database/talent/{0}/{1}/", itm.Base62Id, itm.LocalizedName[Tooltip.language].LinkString())),
+                    //        new XAttribute("data-torc", "norestyle"),
+                    //        itm.LocalizedName[Tooltip.language]
+                    //        ))
                 );
                 XElement inner = new XElement("div",
                     XClass("torctip_tooltip"),
                     new XElement("span",
                         XClass(String.Format("torctip_{0}", stringQual)),
                         itm.Name),
-                        new XElement("span",
+                        new XElement("div",
                             XClass("torctip_white"),
                             GetLocalizedText(836131348283424) //"Passive"
                         ),
                         new XElement("br"),
                         new XElement("div",
                             XClass("torctip_white"),
-                            itm.LocalizedDescription[Tooltip.language])
+                            Talent.ParseDescription(itm, itm.LocalizedDescription[Tooltip.language]))
                     );
 
                 

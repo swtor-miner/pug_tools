@@ -44,6 +44,71 @@ namespace GomLib.Models
         [Newtonsoft.Json.JsonIgnore]
         public string DescriptionRank3 { get; set; }
 
+        public static string ParseDescription(Talent tal, string desc)
+        {
+            if (tal.TokenList == null)
+                return desc;
+
+            for (var i = 0; i < tal.TokenList.Count; i++)
+            {
+                var value = tal.TokenList.ElementAt(i).ToString();
+                var start = desc.IndexOf("<<" + i);
+
+                if (start == -1)
+                {
+                    //console.log("didn't find: <<" + id);
+                    continue;
+                }
+                //console.log("id" + id + ":" + retval);
+                //console.log("Start Index: " + start);
+
+                var end = desc.Substring(start).IndexOf(">>") + 2;
+
+                //console.log("Length: " +length);
+                var fullToken = desc.Substring(start, end);
+                //console.log("Full: " + fullToken);
+
+                var durationText = "";
+                if (end > 5)
+                {
+                    try
+                    {
+                        string[] durationList = new string[] { "", "", "" };
+                        var partialToken = fullToken.Substring(4, fullToken.Length - 7);
+                        //console.log("Partial:" + partialToken);
+
+                        durationList = partialToken.Replace("%d", "").Split('/').ToArray();
+                        //console.log(durationList);
+
+                        int pValue;
+                        Int32.TryParse(value.ToString(), out pValue);
+
+                        durationText = "";
+                        if (pValue <= 0)
+                            durationText = durationList[0];
+                        else if (pValue > 1)
+                            durationText = durationList[2];
+                        else
+                            durationText = durationList[1];
+                        //console.log(pValue + durationText);
+                    }
+                    catch (Exception ex)
+                    {
+                        //this happens when the tokens are malformed
+                    }
+                }
+                //console.log(type);
+                while (desc.IndexOf(fullToken) != -1)
+                { //sometimes there's multiple instance of the same token.
+                    bool breakloop = false;
+                    desc = desc.Replace(fullToken, value + durationText);
+                    if (breakloop) break;
+                }
+
+            }
+            return desc;
+        }
+
         public class RankStatData : IEquatable<RankStatData>
         {
             public List<StatData> OffensiveStats { get; set; }
@@ -159,8 +224,7 @@ namespace GomLib.Models
                 return hash;
             }
         }
-
-
+        
         public override int GetHashCode()
         {
             int hash = Name.GetHashCode();
@@ -238,6 +302,24 @@ namespace GomLib.Models
             return true;
         }
 
+        public override List<SQLProperty> SQLProperties
+        {
+            get
+            {
+                return new List<SQLProperty>
+                    {                //(SQL Column Name, C# Property Name, SQL Column type statement, isUnique/PrimaryKey, Serialize value to json)
+                        new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        //new SQLProperty("FRName","FRName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        //new SQLProperty("DEName","DEName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.PrimaryKey),
+                        new SQLProperty("Description", "Description", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        //new SQLProperty("FRDescription","FRDescription", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        //new SQLProperty("DEDescription","DEDescription", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Icon","HashedIcon", "varchar(25) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Ranks", "Ranks", "int(11) NOT NULL", SQLPropSetting.AddIndex),
+                    };
+            }
+        }
         public override XElement ToXElement(bool verbose)
         {
             XElement talent = new XElement("Talent");

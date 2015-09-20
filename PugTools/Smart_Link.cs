@@ -26,7 +26,7 @@ namespace tor_tools
     {
         private void SmartLink(DataObjectModel dom)
         {
-            SmartLinkAbilities(dom);
+            SmartLinkAbilityPackages(dom);
             SmartLinkAchievements(dom);
             SmartLinkCodex(dom);
             SmartLinkConversations(dom);
@@ -43,7 +43,7 @@ namespace tor_tools
             SmartLinkSpawners(dom);
         }
 
-        private void SmartLinkAbilities(DataObjectModel dom)
+        private void SmartLinkAbilityPackages(DataObjectModel dom)
         {
             List<GomObject> nodeList;
             addtolist2("Smart-linking ability packages (NPCs)...");//Load apns
@@ -65,7 +65,25 @@ namespace tor_tools
             nodeList = dom.GetObjectsStartingWith("class.");
             foreach (GomObject node in nodeList)
             {
-                dom.AddCrossLink(node.Data.ValueOrDefault<ulong>("chrAbilityPackage", 0UL), "usedByClass", node.Id);//apn node
+                ulong apcId = node.Data.ValueOrDefault<ulong>("chrAbilityPackage", 0UL);
+                dom.AddCrossLink(apcId, "usedByClass", node.Id);//apn node
+                if (node.Name.StartsWith("class.pc.") && apcId != 0)
+                {
+                    GomObject apc = dom.GetObject(apcId);
+                    if (apc != null)
+                    {
+                        Dictionary<object, object> abilities = apc.Data.ValueOrDefault<Dictionary<object, object>>("ablPackageAbilitiesList", null);
+                        if (abilities != null)
+                        {
+                            foreach (KeyValuePair<object, object> ability in abilities)
+                            {
+                                dom.AddCrossLink((ulong)ability.Key, "partOfApc", apc.Id);//abl node
+                                dom.AddCrossLink((ulong)ability.Key, "usedByPlayerClass", node.Id);//abl node
+                            }
+                        }
+                        apc.Unload();
+                    }
+                }
                 node.Unload();
             }
         }

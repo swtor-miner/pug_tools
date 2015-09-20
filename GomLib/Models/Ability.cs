@@ -52,16 +52,21 @@ namespace GomLib.Models
                 return _ParsedLocalizedDescription;
             }
         }
+
         private string ParseDescription(string desc)
         {
-            if (DescriptionTokens == null)
+            return ParseDescription(this, desc);
+        }
+        public static string ParseDescription(Ability abl, string desc)
+        {
+            if (abl.DescriptionTokens == null)
                 return desc;
 
-            for (var i = 0; i < DescriptionTokens.Count; i++)
+            for (var i = 0; i < abl.DescriptionTokens.Count; i++)
             {
-                var id = DescriptionTokens.ElementAt(i).Key;
-                var value = DescriptionTokens.ElementAt(i).Value["ablParsedDescriptionToken"].ToString();
-                var type = DescriptionTokens.ElementAt(i).Value["ablDescriptionTokenType"].ToString().Replace("ablDescriptionTokenType", "");
+                var id = abl.DescriptionTokens.ElementAt(i).Key;
+                var value = abl.DescriptionTokens.ElementAt(i).Value["ablParsedDescriptionToken"].ToString();
+                var type = abl.DescriptionTokens.ElementAt(i).Value["ablDescriptionTokenType"].ToString().Replace("ablDescriptionTokenType", "");
                 var start = desc.IndexOf("<<" + id);
 
                 if (start == -1)
