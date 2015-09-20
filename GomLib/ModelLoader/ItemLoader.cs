@@ -427,8 +427,10 @@ namespace GomLib.ModelLoader
                     { itm.DamageType = ItemDamageType.None; break; }
             }*/
 
-            itm.TypeBitFlags.IsModdable = (itm.Quality == ItemQuality.Moddable);
-
+            //if(itm.Quality == ItemQuality.Artifact && itm.EnhancementSlots.Count > 1)
+            //{
+            itm.TypeBitFlags.IsModdable = (itm.EnhancementSlots.Count > 1);
+            //}
             ItemSubCategoryExtensions.SetCategory(itm);
 
             if (itm.WeaponSpec != null)
