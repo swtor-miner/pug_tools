@@ -255,12 +255,17 @@ namespace GomLib.Models
                         new SQLProperty("FRName","FRName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("DEName","DEName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.PrimaryKey),
-                        new SQLProperty("Description", "Description", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("FRDescription","FRDescription", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("DEDescription","DEDescription", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        //new SQLProperty("Description", "Description", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        //new SQLProperty("FRDescription","FRDescription", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        //new SQLProperty("DEDescription","DEDescription", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Category","Category", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("FRCategory","FRCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("DECategory","DECategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Faction","Faction", "varchar(25) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("HasPlanets","HasPlanets", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("IsPlanet","IsPlanet", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("IsHidden","IsHidden", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Level", "Level", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                     };
             }
         }
