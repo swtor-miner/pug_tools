@@ -560,6 +560,90 @@ namespace GomLib.Models
         public float AbsorbChance { get; set; }
         public float ShieldChance { get; set; }
 
+        //Slots
+        [JsonIgnore]
+        public bool Any { get; set; }
+        [JsonIgnore]
+        public bool EquipHumanEar { get; set; }
+        [JsonIgnore]
+        public bool EquipHumanMainHand { get; set; }
+        [JsonIgnore]
+        public bool EquipHumanOffHand { get; set; }
+        [JsonIgnore]
+        public bool EquipHumanLeg { get; set; }
+        [JsonIgnore]
+        public bool EquipHumanRangedPrimary { get; set; }
+        [JsonIgnore]
+        public bool EquipHumanShield { get; set; }
+        [JsonIgnore]
+        public bool EquipHumanFoot { get; set; }
+        [JsonIgnore]
+        public bool EquipHumanImplant { get; set; }
+        [JsonIgnore]
+        public bool EquipHumanChest { get; set; }
+        [JsonIgnore]
+        public bool EquipHumanGlove { get; set; }
+        [JsonIgnore]
+        public bool EquipHumanCustomRanged { get; set; }
+        [JsonIgnore]
+        public bool EquipHumanFace { get; set; }
+        [JsonIgnore]
+        public bool EquipHumanBelt { get; set; }
+        [JsonIgnore]
+        public bool EquipHumanRangedSecondary { get; set; }
+        [JsonIgnore]
+        public bool EquipHumanWrist { get; set; }
+        [JsonIgnore]
+        public bool EquipHumanCustomMelee { get; set; }
+        [JsonIgnore]
+        public bool EquipHumanRelic { get; set; }
+        [JsonIgnore]
+        public bool EquipDroidSensor { get; set; }
+        [JsonIgnore]
+        public bool EquipHumanOutfit { get; set; }
+        [JsonIgnore]
+        public bool EquipDroidUpper { get; set; }
+        [JsonIgnore]
+        public bool EquipDroidUtility { get; set; }
+        [JsonIgnore]
+        public bool EquipDroidLower { get; set; }
+        [JsonIgnore]
+        public bool EquipSpaceShipArmor { get; set; }
+        [JsonIgnore]
+        public bool EquipSpaceShieldRegenerator { get; set; }
+        [JsonIgnore]
+        public bool EquipSpaceProtonTorpedoes { get; set; }
+        [JsonIgnore]
+        public bool EffectOther { get; set; }
+        [JsonIgnore]
+        public bool EquipSpaceBeamGenerator { get; set; }
+        [JsonIgnore]
+        public bool Upgrade { get; set; }
+        [JsonIgnore]
+        public bool EquipHumanHeirloom { get; set; }
+        [JsonIgnore]
+        public bool EquipSpaceBeamCharger { get; set; }
+        [JsonIgnore]
+        public bool EquipSpaceAbilityDefense { get; set; }
+        [JsonIgnore]
+        public bool EquipSpaceMissileMagazine { get; set; }
+        [JsonIgnore]
+        public bool EquipSpaceEnergyShield { get; set; }
+        [JsonIgnore]
+        public bool EquipSpaceAbilitySystems { get; set; }
+        [JsonIgnore]
+        public bool EquipDroidShield { get; set; }
+        [JsonIgnore]
+        public bool EquipDroidSpecial { get; set; }
+        [JsonIgnore]
+        public bool EquipDroidWeapon1 { get; set; }
+        [JsonIgnore]
+        public bool EquipDroidWeapon2 { get; set; }
+        [JsonIgnore]
+        public bool EquipSpaceAbilityOffense { get; set; }
+        [JsonIgnore]
+        public bool QuestTracker { get; set; }
+
         //public List<string> MaterialForSchems { get; set; }
         //public List<string> RewardFromQuests { get; set; }
         internal List<string> _RequiredClassesB62 { get; set; }
@@ -644,7 +728,7 @@ namespace GomLib.Models
 
         public static Item FillFlatData(Item itm)
         {
-            foreach (var stat in itm.StatModifiers)
+            foreach (var stat in itm.CombinedStatModifiers)
             {
                 switch (stat.Stat)
                 {
@@ -668,7 +752,56 @@ namespace GomLib.Models
                     case Stat.ForceHealingPower: itm.ForceHealingPower = stat.Modifier; break;
                     case Stat.SurgeRating: itm.SurgeRating = stat.Modifier; break;
                     case Stat.AlacrityRating: itm.AlacrityRating = stat.Modifier; break;
-                    //case Stat.Mastery:
+                    default:
+                        break;
+                }
+            }
+            foreach (var slot in itm.Slots)
+            {
+                switch (slot)
+                {
+                    case SlotType.Any: itm.Any = true; break;
+                    case SlotType.EquipHumanEar: itm.EquipHumanEar = true; break;
+                    case SlotType.EquipHumanMainHand: itm.EquipHumanMainHand = true; break;
+                    case SlotType.EquipHumanOffHand: itm.EquipHumanOffHand = true; break;
+                    case SlotType.EquipHumanLeg: itm.EquipHumanLeg = true; break;
+                    case SlotType.EquipHumanRangedPrimary: itm.EquipHumanRangedPrimary = true; break;
+                    case SlotType.EquipHumanShield: itm.EquipHumanShield = true; break;
+                    case SlotType.EquipHumanFoot: itm.EquipHumanFoot = true; break;
+                    case SlotType.EquipHumanImplant: itm.EquipHumanImplant = true; break;
+                    case SlotType.EquipHumanChest: itm.EquipHumanChest = true; break;
+                    case SlotType.EquipHumanGlove: itm.EquipHumanGlove = true; break;
+                    case SlotType.EquipHumanCustomRanged: itm.EquipHumanCustomRanged = true; break;
+                    case SlotType.EquipHumanFace: itm.EquipHumanFace = true; break;
+                    case SlotType.EquipHumanBelt: itm.EquipHumanBelt = true; break;
+                    case SlotType.EquipHumanRangedSecondary: itm.EquipHumanRangedSecondary = true; break;
+                    case SlotType.EquipHumanWrist: itm.EquipHumanWrist = true; break;
+                    case SlotType.EquipHumanCustomMelee: itm.EquipHumanCustomMelee = true; break;
+                    case SlotType.EquipHumanRelic: itm.EquipHumanRelic = true; break;
+                    case SlotType.EquipDroidSensor: itm.EquipDroidSensor = true; break;
+                    case SlotType.EquipHumanOutfit: itm.EquipHumanOutfit = true; break;
+                    case SlotType.EquipDroidUpper: itm.EquipDroidUpper = true; break;
+                    case SlotType.EquipDroidUtility: itm.EquipDroidUtility = true; break;
+                    case SlotType.EquipDroidLower: itm.EquipDroidLower = true; break;
+                    case SlotType.EquipSpaceShipArmor: itm.EquipSpaceShipArmor = true; break;
+                    case SlotType.EquipSpaceShieldRegenerator: itm.EquipSpaceShieldRegenerator = true; break;
+                    case SlotType.EquipSpaceProtonTorpedoes: itm.EquipSpaceProtonTorpedoes = true; break;
+                    case SlotType.EffectOther: itm.EffectOther = true; break;
+                    case SlotType.EquipSpaceBeamGenerator: itm.EquipSpaceBeamGenerator = true; break;
+                    case SlotType.Upgrade: itm.Upgrade = true; break;
+                    case SlotType.EquipHumanHeirloom: itm.EquipHumanHeirloom = true; break;
+                    case SlotType.EquipSpaceBeamCharger: itm.EquipSpaceBeamCharger = true; break;
+                    case SlotType.EquipSpaceAbilityDefense: itm.EquipSpaceAbilityDefense = true; break;
+                    case SlotType.EquipSpaceMissileMagazine: itm.EquipSpaceMissileMagazine = true; break;
+                    case SlotType.EquipSpaceEnergyShield: itm.EquipSpaceEnergyShield = true; break;
+                    case SlotType.EquipSpaceAbilitySystems: itm.EquipSpaceAbilitySystems = true; break;
+                    case SlotType.EquipDroidShield: itm.EquipDroidShield = true; break;
+                    case SlotType.EquipDroidSpecial: itm.EquipDroidSpecial = true; break;
+                    case SlotType.EquipDroidWeapon1: itm.EquipDroidWeapon1 = true; break;
+                    case SlotType.EquipDroidWeapon2: itm.EquipDroidWeapon2 = true; break;
+                    case SlotType.EquipSpaceAbilityOffense: itm.EquipSpaceAbilityOffense = true; break;
+                    case SlotType.QuestTracker: itm.QuestTracker = true; break;
+
                     default:
                         break;
                 }
@@ -1232,8 +1365,8 @@ namespace GomLib.Models
                         new SQLProperty("Fqn", "Fqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("ItemLevel", "ItemLevel", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         //new SQLProperty("AppearanceColor", "AppearanceColor", "TEXT NOT NULL"),
-                        new SQLProperty("AppearanceImperial", "AppearanceImperial", "varchar(7) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("AppearanceRepublic", "AppearanceRepublic", "varchar(7) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("AppearanceImperial", "AppearanceImperial", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
+                        new SQLProperty("AppearanceRepublic", "AppearanceRepublic", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
                         //new SQLProperty("ArmorSpec", "ArmorSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("AuctionCategoryId", "AuctionCategoryId", "int(11) NOT NULL"),
                         new SQLProperty("AuctionCategory", "AuctionCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
@@ -1242,7 +1375,6 @@ namespace GomLib.Models
                         new SQLProperty("Binding", "Binding", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("CombinedRating", "CombinedRating", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("CombinedRequiredLevel", "CombinedRequiredLevel", "int(11) NOT NULL", SQLPropSetting.AddIndex),
-                        //new SQLProperty("CombinedStatModifiers", "CombinedStatModifiers", "text NOT NULL", SQLPropSetting.JsonSerialize),
                         new SQLProperty("ConsumedOnUse", "ConsumedOnUse", "tinyint(1) NOT NULL"),
                         //new SQLProperty("ConversationFqn", "ConversationFqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         //new SQLProperty("DamageType", "DamageType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
@@ -1251,7 +1383,6 @@ namespace GomLib.Models
                         new SQLProperty("DisassembleCategory", "DisassembleCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Durability", "Durability", "int(11) NOT NULL"),
                         new SQLProperty("EnhancementCategory", "EnhancementCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        //new SQLProperty("EnhancementSlots", "EnhancementSlots", "text NOT NULL", SQLPropSetting.JsonSerialize),
                         new SQLProperty("EnhancementSubCategory", "EnhancementSubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("EnhancementType", "EnhancementType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("EquipAbilityId", "EquipAbilityB62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
@@ -1270,7 +1401,7 @@ namespace GomLib.Models
                         new SQLProperty("RequiredAlignmentInverted", "RequiredAlignmentInverted", "tinyint(1) NOT NULL"),
                         new SQLProperty("RequiredClasses", "RequiredClasses", "text NOT NULL"),
                         new SQLProperty("RequiredGender", "RequiredGender", "varchar(10) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("RequiredLevel", "RequiredLevel", "int(11) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("RequiredLevel", "RequiredLevel", "int(11) NOT NULL"),
                         new SQLProperty("RequiredProfession", "RequiredProfession", "varchar(35) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("RequiredProfessionLevel", "RequiredProfessionLevel", "int(11) NOT NULL"),
                         new SQLProperty("RequiredSocialTier", "RequiredSocialTier", "int(11) NOT NULL", SQLPropSetting.AddIndex),
@@ -1287,7 +1418,7 @@ namespace GomLib.Models
                         new SQLProperty("StackCount", "StackCount", "int(11) NOT NULL"),
                         //new SQLProperty("StatModifiers", "StatModifiers", "TEXT NOT NULL"),
                         //new SQLProperty("SubCategory", "SubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("TeachesRef", "TeachesRefB62", "varchar(7) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("TeachesRef", "TeachesRefB62", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
                         new SQLProperty("TeachesType", "TeachesType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("TreasurePackageId", "TreasurePackageId", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         //new SQLProperty("TreasurePackageSpec", "TreasurePackageSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
@@ -1311,10 +1442,10 @@ namespace GomLib.Models
                         new SQLProperty("HiltBId", "HiltBId", "varchar(7) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Endurance","Endurance", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Presence","Presence", "int(11) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("Aim","Aim", "int(11) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("Cunning","Cunning", "int(11) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("Strength","Strength", "int(11) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("Willpower","Willpower", "int(11) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Aim","Aim", "int(11) NOT NULL"),
+                        new SQLProperty("Cunning","Cunning", "int(11) NOT NULL"),
+                        new SQLProperty("Strength","Strength", "int(11) NOT NULL"),
+                        new SQLProperty("Willpower","Willpower", "int(11) NOT NULL"),
                         new SQLProperty("Mastery","Mastery", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("AbsorptionRating","AbsorptionRating", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("CriticalRating","CriticalRating", "int(11) NOT NULL", SQLPropSetting.AddIndex),
@@ -1323,35 +1454,31 @@ namespace GomLib.Models
                         new SQLProperty("AccuracyRating","AccuracyRating", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("AlacrityRating","AlacrityRating", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("ShieldRating","ShieldRating", "int(11) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("SurgeRating","SurgeRating", "int(11) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("SurgeRating","SurgeRating", "int(11) NOT NULL"),
                         new SQLProperty("ExpertiseRating","ExpertiseRating", "int(11) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("ForcePower","ForcePower", "int(11) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("TechPower","TechPower", "int(11) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("TechHealingPower","TechHealingPower", "int(11) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("ForceHealingPower","ForceHealingPower", "int(11) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("Armor", "Armor", "int(11) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("ForcePower","ForcePower", "int(11) NOT NULL"),
+                        new SQLProperty("TechPower","TechPower", "int(11) NOT NULL"),
+                        new SQLProperty("TechHealingPower","TechHealingPower", "int(11) NOT NULL"),
+                        new SQLProperty("ForceHealingPower","ForceHealingPower", "int(11) NOT NULL"),
+                        new SQLProperty("Armor", "Armor", "int(11) NOT NULL"),
                         //new SQLProperty("AdaptiveArmor", "AdaptiveArmor", "varchar(25) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("WeaponMinDamage", "WeaponMinDamage", "float(10,1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("WeaponMaxDamage", "WeaponMaxDamage", "float(10,1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("AbsorbChance", "AbsorbChance", "float(10,1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("ShieldChance", "ShieldChance", "float(10,1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("ModLevel", "ModLevel", "int(11) NOT NULL", SQLPropSetting.AddIndex),
-                        //new SQLProperty("MaterialForSchems","MaterialForSchems", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
-                        //new SQLProperty("RewardFromQuests","RewardFromQuests", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
-                        //new SQLProperty("SourceNames","StrongholdSourceNameDict", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
-                        //new SQLProperty("SimilarAppearance","SimilarAppearance", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
+                        new SQLProperty("WeaponMinDamage", "WeaponMinDamage", "float(10,1) NOT NULL"),
+                        new SQLProperty("WeaponMaxDamage", "WeaponMaxDamage", "float(10,1) NOT NULL"),
+                        new SQLProperty("AbsorbChance", "AbsorbChance", "float(10,1) NOT NULL"),
+                        new SQLProperty("ShieldChance", "ShieldChance", "float(10,1) NOT NULL"),
+                        new SQLProperty("ModLevel", "ModLevel", "int(11) NOT NULL"),
                         //typebitset
                         new SQLProperty("IsArmor", "IsArmor", "tinyint(1) NOT NULL"), 
                         new SQLProperty("IsWeapon", "IsWeapon", "tinyint(1) NOT NULL"),
-                        new SQLProperty("HasGTNCategory", "HasGTNCategory", "tinyint(1) NOT NULL"),
+                        new SQLProperty("HasGTNCategory", "HasGTNCategory", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Unk8", "Unk8", "tinyint(1) NOT NULL"),
                         new SQLProperty("HasConversation", "HasConversation", "tinyint(1) NOT NULL"),
-                        new SQLProperty("IsCrafted", "IsCrafted", "tinyint(1) NOT NULL"),
-                        new SQLProperty("CanBeDisassembled", "CanBeDisassembled", "tinyint(1) NOT NULL"),
-                        new SQLProperty("HasDurability", "HasDurability", "tinyint(1) NOT NULL"),
-                        new SQLProperty("IsModdable", "IsModdable", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsCrafted", "IsCrafted", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("CanBeDisassembled", "CanBeDisassembled", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("HasDurability", "HasDurability", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("IsModdable", "IsModdable", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("IsMod", "IsMod", "tinyint(1) NOT NULL"),
-                        new SQLProperty("CanHaveStats", "CanHaveStats", "tinyint(1) NOT NULL"),
+                        new SQLProperty("CanHaveStats", "CanHaveStats", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Unk800", "Unk800", "tinyint(1) NOT NULL"),
                         new SQLProperty("IsGift", "IsGift", "tinyint(1) NOT NULL"),
                         new SQLProperty("IsMissionItem", "IsMissionItem", "tinyint(1) NOT NULL"),
@@ -1359,13 +1486,56 @@ namespace GomLib.Models
                         new SQLProperty("IsShipPart", "IsShipPart", "tinyint(1) NOT NULL"),
                         new SQLProperty("Unk10000", "Unk10000", "tinyint(1) NOT NULL"),
                         new SQLProperty("IsCmpCstmztn", "IsCmpCstmztn", "tinyint(1) NOT NULL"),
-                        new SQLProperty("HasUniqueLimit", "HasUniqueLimit", "tinyint(1) NOT NULL"),
-                        new SQLProperty("HasOnUse", "HasOnUse", "tinyint(1) NOT NULL"),
-                        new SQLProperty("IsEquipable", "IsEquipable", "tinyint(1) NOT NULL"),
+                        new SQLProperty("HasUniqueLimit", "HasUniqueLimit", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("HasOnUse", "HasOnUse", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("IsEquipable", "IsEquipable", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("IsCurrency", "IsCurrency", "tinyint(1) NOT NULL"),
-                        new SQLProperty("IsMtxItem", "IsMtxItem", "tinyint(1) NOT NULL"),
-                        new SQLProperty("IsRepTrophy", "IsRepTrophy", "tinyint(1) NOT NULL"),
-                    };
+                        new SQLProperty("IsMtxItem", "IsMtxItem", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("IsRepTrophy", "IsRepTrophy", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        //Slots
+                        new SQLProperty("Any", "Any", "tinyint(1) NOT NULL"),
+                        new SQLProperty("EquipHumanEar", "EquipHumanEar", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("EquipHumanMainHand", "EquipHumanMainHand", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("EquipHumanOffHand", "EquipHumanOffHand", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("EquipHumanLeg", "EquipHumanLeg", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("EquipHumanRangedPrimary", "EquipHumanRangedPrimary", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("EquipHumanShield", "EquipHumanShield", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("EquipHumanFoot", "EquipHumanFoot", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("EquipHumanImplant", "EquipHumanImplant", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("EquipHumanChest", "EquipHumanChest", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("EquipHumanGlove", "EquipHumanGlove", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("EquipHumanCustomRanged", "EquipHumanCustomRanged", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("EquipHumanFace", "EquipHumanFace", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("EquipHumanBelt", "EquipHumanBelt", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("EquipHumanRangedSecondary", "EquipHumanRangedSecondary", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("EquipHumanWrist", "EquipHumanWrist", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("EquipHumanCustomMelee", "EquipHumanCustomMelee", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("EquipHumanRelic", "EquipHumanRelic", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("EquipDroidSensor", "EquipDroidSensor", "tinyint(1) NOT NULL"),
+                        new SQLProperty("EquipHumanOutfit", "EquipHumanOutfit", "tinyint(1) NOT NULL"),
+                        new SQLProperty("EquipDroidUpper", "EquipDroidUpper", "tinyint(1) NOT NULL"),
+                        new SQLProperty("EquipDroidUtility", "EquipDroidUtility", "tinyint(1) NOT NULL"),
+                        new SQLProperty("EquipDroidLower", "EquipDroidLower", "tinyint(1) NOT NULL"),
+                        new SQLProperty("EquipSpaceShipArmor", "EquipSpaceShipArmor", "tinyint(1) NOT NULL"),
+                        new SQLProperty("EquipSpaceShieldRegenerator", "EquipSpaceShieldRegenerator", "tinyint(1) NOT NULL"),
+                        new SQLProperty("EquipSpaceProtonTorpedoes", "EquipSpaceProtonTorpedoes", "tinyint(1) NOT NULL"),
+                        new SQLProperty("EffectOther", "EffectOther", "tinyint(1) NOT NULL"),
+                        new SQLProperty("EquipSpaceBeamGenerator", "EquipSpaceBeamGenerator", "tinyint(1) NOT NULL"),
+                        new SQLProperty("Upgrade", "Upgrade", "tinyint(1) NOT NULL"),
+                        new SQLProperty("EquipHumanHeirloom", "EquipHumanHeirloom", "tinyint(1) NOT NULL"),
+                        new SQLProperty("EquipSpaceBeamCharger", "EquipSpaceBeamCharger", "tinyint(1) NOT NULL"),
+                        new SQLProperty("EquipSpaceAbilityDefense", "EquipSpaceAbilityDefense", "tinyint(1) NOT NULL"),
+                        new SQLProperty("EquipSpaceMissileMagazine", "EquipSpaceMissileMagazine", "tinyint(1) NOT NULL"),
+                        new SQLProperty("EquipSpaceEnergyShield", "EquipSpaceEnergyShield", "tinyint(1) NOT NULL"),
+                        new SQLProperty("EquipSpaceAbilitySystems", "EquipSpaceAbilitySystems", "tinyint(1) NOT NULL"),
+                        new SQLProperty("EquipDroidShield", "EquipDroidShield", "tinyint(1) NOT NULL"),
+                        new SQLProperty("EquipDroidSpecial", "EquipDroidSpecial", "tinyint(1) NOT NULL"),
+                        new SQLProperty("EquipDroidWeapon1", "EquipDroidWeapon1", "tinyint(1) NOT NULL"),
+                        new SQLProperty("EquipDroidWeapon2", "EquipDroidWeapon2", "tinyint(1) NOT NULL"),
+                        new SQLProperty("EquipSpaceAbilityOffense", "EquipSpaceAbilityOffense", "tinyint(1) NOT NULL"),
+                        new SQLProperty("QuestTracker", "QuestTracker", "tinyint(1) NOT NULL"),
+
+            };
             }
         }
         public override XElement ToXElement(bool verbose)
