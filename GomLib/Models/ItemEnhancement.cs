@@ -11,7 +11,15 @@ namespace GomLib.Models
     {
         public EnhancementType Slot { get; set; }
         public DetailedEnhancementType DetailedSlot { get; set; }
+        [JsonIgnore]
         public ulong ModificationId { get; set; }
+        public string ModificationBase62Id
+        {
+            get
+            {
+                return ModificationId.ToMaskedBase62();
+            }
+        }
 
         [JsonIgnore]
         public Item Modification { get; set; }
