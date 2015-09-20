@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
@@ -120,7 +121,8 @@ namespace GomLib.Models
         public bool Deprecated { get; set; }
         public string Category { get; set; }
         public string SubCategory { get; set; }
-        public string Quality { get; set; }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ItemQuality Quality { get; set; }
         public Dictionary<long, ModPackage> Variations { get; set; }
         public List<ulong> LearnedIds { get; set; }
         [Newtonsoft.Json.JsonIgnore]

@@ -247,7 +247,7 @@ namespace GomLib.ModelLoader
             if (schem.MissionDescriptionId != 0)
             {
                 schem.Category = "Mission";
-                schem.Quality = "mission";
+                schem.Quality = ItemQuality.Mission;
             }
             else
             {
@@ -257,18 +257,18 @@ namespace GomLib.ModelLoader
                     {
                         if (schem.Item.AuctionCategory != null) schem.Category = schem.Item.AuctionCategory.ToString();
                         if (schem.Item.AuctionSubCategory != null) schem.SubCategory = schem.Item.AuctionSubCategory.ToString();
-                        schem.Quality = ((schem.Item.TypeBitFlags.IsModdable && (schem.Item.Quality == ItemQuality.Prototype)) ? "moddable" : schem.Item.Quality.ToString().ToLower());
+                        schem.Quality = ((schem.Item.TypeBitFlags.IsModdable && (schem.Item.Quality == ItemQuality.Prototype)) ? ItemQuality.Moddable : schem.Item.Quality);
                     }
                     else
                     {
                         schem.Category = "Unknown";
-                        schem.Quality = "cheap";
+                        schem.Quality = ItemQuality.Cheap;
                     }
                 }
                 else
                 {
                     schem.Category = "Unknown";
-                    schem.Quality = "mission";
+                    schem.Quality = ItemQuality.Mission;
                 }
             }
 
