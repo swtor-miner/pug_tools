@@ -90,7 +90,7 @@ namespace GomLib.ModelLoader
             if (cdx == null) { return null; }
 
             if (obj.Name.StartsWith("cdx.blurb"))
-                return null; //this is to prevent these blurbs from showing up in the json output.
+                return cdx; //this is to prevent these blurbs from showing up in the json output.
 
             cdx.Fqn = obj.Name;
             cdx.Id = obj.Id;
