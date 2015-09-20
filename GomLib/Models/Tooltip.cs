@@ -1459,19 +1459,24 @@ namespace GomLib.Models
                                 {
                                     if (clsIds.Count > 0 && !clsIds.Contains(cls.Id))
                                         continue;
-                                    if (!providedClassRewards.ContainsKey(cls.Name))
+                                    string restrictName = cls.Name;
+                                    if (rew.MinLevel != 1 || rew.MaxLevel != 65)
+                                        restrictName = String.Format("{0} {1}-{2}", restrictName, rew.MinLevel, rew.MaxLevel);
+                                    if (!providedClassRewards.ContainsKey(restrictName))
                                     {
-                                        providedClassRewards.Add(cls.Name,
+                                        providedClassRewards.Add(restrictName,
                                             new XElement("div",
                                                 XClass(String.Format("torctip_class_restrict torc_cls_{0}", cls.GetFaction())),
-                                                new XElement("span", cls.Name)
+                                                new XElement("span", restrictName),
+                                                new XAttribute("data-min-lvl", rew.MinLevel),
+                                                new XAttribute("data-max-lvl", rew.MaxLevel)
                                             )
                                         );
                                     }
-                                    providedClassRewards[cls.Name].Add(matElement);
+                                    providedClassRewards[restrictName].Add(matElement);
                                 }
                             }
-                            else if (rew.MinLevel != 1 || rew.MaxLevel != 60)
+                            else if (rew.MinLevel != 1 || rew.MaxLevel != 65)
                             {
                                 string levelRestrict = String.Format("Level {0}-{1}", rew.MinLevel, rew.MaxLevel);
                                 if (!providedClassRewards.ContainsKey(levelRestrict))
@@ -1479,7 +1484,9 @@ namespace GomLib.Models
                                     providedClassRewards.Add(levelRestrict,
                                         new XElement("div",
                                             XClass("torctip_class_restrict torc_cls_level"),
-                                            new XElement("span", levelRestrict)
+                                            new XElement("span", levelRestrict),
+                                            new XAttribute("data-min-lvl", rew.MinLevel),
+                                            new XAttribute("data-max-lvl", rew.MaxLevel)
                                         )
                                     );
                                 }
@@ -1490,10 +1497,10 @@ namespace GomLib.Models
                                 providedRewards.Add(matElement);
                             }
                         }
-                        else if (rew.MinLevel != 1 || rew.MaxLevel != 60)
-                        {
-                            string ruhroh = "";
-                        }
+                        //else if (rew.MinLevel != 1 || rew.MaxLevel != 65)
+                        //{
+                        //    string ruhroh = "";
+                        //}
                         else
                         {
                             if (rew.Classes.Count > 0 && itm.Classes.Count > 1)
@@ -1502,27 +1509,34 @@ namespace GomLib.Models
                                 {
                                     if (clsIds.Count > 0 && !clsIds.Contains(cls.Id))
                                         continue;
-                                    if (!selectOneClassRewards.ContainsKey(cls.Name))
+                                    string restrictName = cls.Name;
+                                    if (rew.MinLevel != 1 || rew.MaxLevel != 65)
+                                        restrictName = String.Format("{0} {1}-{2}", restrictName, rew.MinLevel, rew.MaxLevel);
+                                    if (!selectOneClassRewards.ContainsKey(restrictName))
                                     {
-                                        selectOneClassRewards.Add(cls.Name,
+                                        selectOneClassRewards.Add(restrictName,
                                             new XElement("div",
                                                 XClass(String.Format("torctip_class_restrict torc_cls_{0}", cls.GetFaction())),
-                                                new XElement("span", cls.Name)
+                                                new XElement("span", restrictName),
+                                                new XAttribute("data-min-lvl", rew.MinLevel),
+                                                new XAttribute("data-max-lvl", rew.MaxLevel)
                                             )
                                         );
                                     }
-                                    selectOneClassRewards[cls.Name].Add(matElement);
+                                    selectOneClassRewards[restrictName].Add(matElement);
                                 }
                             }
-                            else if (rew.MinLevel != 1 || rew.MaxLevel != 60)
+                            else if (rew.MinLevel != 1 || rew.MaxLevel != 65)
                             {
                                 string levelRestrict = String.Format("Level {0}-{1}", rew.MinLevel, rew.MaxLevel);
                                 if (!selectOneClassRewards.ContainsKey(levelRestrict))
                                 {
-                                    selectOneRewards.Add(levelRestrict,
+                                    selectOneClassRewards.Add(levelRestrict,
                                         new XElement("div",
                                             XClass("torctip_class_restrict torc_cls_level"),
-                                            new XElement("span", levelRestrict)
+                                            new XElement("span", levelRestrict),
+                                            new XAttribute("data-min-lvl", rew.MinLevel),
+                                            new XAttribute("data-max-lvl", rew.MaxLevel)
                                         )
                                     );
                                 }
@@ -2255,7 +2269,7 @@ namespace GomLib.Models
                 case SlotType.EquipHumanRangedSecondary: return GetLocalizedText(2073124879204375,language);
                 case SlotType.EquipHumanCustomRanged: return GetLocalizedText(2073124879204366,language);
                 case SlotType.EquipHumanCustomMelee: return GetLocalizedText(2073124879204367,language);
-                case SlotType.EquipHumanShield: return GetLocalizedText(2073124879204358,language);
+                case SlotType.EquipHumanShield: return GetLocalizedText(2073124879204368, language);
                 case SlotType.EquipHumanOutfit: return GetLocalizedText(2073124879204369,language);
                 case SlotType.EquipDroidLeg: return GetLocalizedText(2073124879204370,language);
                 case SlotType.EquipDroidFeet: return GetLocalizedText(2073124879204371,language);
