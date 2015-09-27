@@ -70,6 +70,7 @@ namespace tor_tools
 
         public void ProcessGameObjects(string gomPrefix, string xmlRoot)
         {
+            bool classOverride = (xmlRoot == "AdvancedClasses");
             if (!OutputCompatible(xmlRoot))
             {
                 ClearProgress();
@@ -98,14 +99,14 @@ namespace tor_tools
                 count = curItmList.Count() + removedNames.Count;
                 foreach (var curObject in curItmList)
                 {
-                    GomLib.Models.GameObject curItm = LoadGameObject(currentDom, curObject);
+                    GomLib.Models.GameObject curItm = LoadGameObject(currentDom, curObject, classOverride);
 
                     progressUpdate(i, count);
                     var prevObject = previousDom.GetObject(((GomObject)curObject).Name);
 
                     if (prevObject != null)
                     {
-                        GomLib.Models.GameObject prevItm = LoadGameObject(previousDom, prevObject);
+                        GomLib.Models.GameObject prevItm = LoadGameObject(previousDom, prevObject, classOverride);
 
                         if (!prevItm.Equals(curItm))
                         {
@@ -126,7 +127,7 @@ namespace tor_tools
                 {
                     progressUpdate(i, count);
                     addtolist2(String.Join("", "Removed: ", removedName));
-                    GomLib.Models.GameObject prevItm = LoadGameObject(previousDom, previousDom.GetObject(removedName));
+                    GomLib.Models.GameObject prevItm = LoadGameObject(previousDom, previousDom.GetObject(removedName), classOverride);
 
                     remItems.Add(prevItm);
                     i++;
@@ -145,7 +146,7 @@ namespace tor_tools
                 foreach (var curObject in curItmList)
                 {
                     progressUpdate(i, count);
-                    var obj = LoadGameObject(curObject._dom, curObject);
+                    var obj = LoadGameObject(curObject._dom, curObject, classOverride);
                     if(obj.Id != 0) //apparently if the loader passes null back, sometimes data comes, too.....
                         newItems.Add(obj);
                     i++;
@@ -466,6 +467,9 @@ namespace tor_tools
             {
                 case "abl.":
                     itmList = dom.GetObjectsStartingWith(gomPrefix).Where(x => !x.Name.Contains("/")); //Abilities with a / in the name are Effects.
+                    break;
+                case "apn.":
+                    itmList = dom.GetObjectsStartingWith(gomPrefix).Union(dom.GetObjectsStartingWith("apc.")); //Union APC/APN
                     break;
                 case "eff.":
                     itmList = dom.GetObjectsStartingWith("abl.").Where(x => x.Name.Contains("/"));
@@ -972,7 +976,7 @@ namespace tor_tools
             {
                 if (gomItm.Name.Contains("/"))
                     return null;
-                return ConvertToText(LoadGameObject(gomItm._dom, gomItm), overrideVerbose);
+                return ConvertToText(LoadGameObject(gomItm._dom, gomItm, false), overrideVerbose);
             }
             return null;
         }
@@ -1580,7 +1584,7 @@ namespace tor_tools
 
                 addtolist2(String.Format("{0}: {1}", prefix, itm.Name));
 
-                string jsonString = LoadGameObject(itm._dom, itm).ToJSON(); // ConvertToJson(itm); //added method in Tools.cs
+                string jsonString = LoadGameObject(itm._dom, itm, false).ToJSON(); // ConvertToJson(itm); //added method in Tools.cs
                 txtFile.Append(jsonString + Environment.NewLine); //Append it with a newline to the output.
                 i++;
                 e++;
@@ -1598,6 +1602,7 @@ namespace tor_tools
         private void ObjectListAsSql(string prefix, string xmlRoot, IEnumerable<object> itmList)
         {
             if (prefix == "Removed") return; //not supported as of yet.
+            if (itmList.Count() == 0) return;
             int i = 0;
             short e = 0;
             int f = 1;
