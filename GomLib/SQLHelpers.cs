@@ -80,6 +80,8 @@ namespace GomLib
                     if (pi == null)
                         return null;
                     object unknownCollection = pi.GetValue(obj, null);
+                    if (unknownCollection == null)
+                        return null;
                     //   try to process the collection as array
                     if (unknownCollection.GetType().IsArray)
                     {
