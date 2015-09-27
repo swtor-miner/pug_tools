@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
     public class AdvancedClass : GameObject, IEquatable<AdvancedClass>
     {
         public ClassSpec ClassSpec { get; set; }
+        [JsonIgnore]
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
+        [JsonIgnore]
         public long NameId { get; set; }
 
         public override int GetHashCode()
@@ -20,12 +23,14 @@ namespace GomLib.Models
             return hash;
         }
 
+        [JsonIgnore]
         public long DescriptionId { get; set; }
 
         public string Description { get; set; }
 
         public Dictionary<string, string> LocalizedDescription { get; set; }
 
+        //[JsonIgnore]
         public List<Discipline> Disciplines { get; set; }
 
         public override bool Equals(object obj)
@@ -91,10 +96,11 @@ namespace GomLib.Models
             return true;
         }
 
+        [JsonIgnore]
         public ulong UtiltyPkgId { get; set; }
+        public string UtiltyPkgB62Id { get { if (UtiltyPkgId != 0) return UtiltyPkgId.ToMaskedBase62(); else return ""; } }
         [Newtonsoft.Json.JsonIgnore]
         internal AbilityPackage _UtilityPkg;
-        //[Newtonsoft.Json.JsonIgnore]
         public AbilityPackage UtilityPkg
         {
             get
@@ -106,12 +112,13 @@ namespace GomLib.Models
         }
         public bool UtilPkgIsActive { get; set; }
 
+        [JsonIgnore]
         public ulong classSpecId { get; set; }
 
+        [JsonIgnore]
         public List<ulong> AdvancedClassPkgIds { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         internal List<AbilityPackage> _AdvancedClassPkgs;
-        //[Newtonsoft.Json.JsonIgnore]
         public List<AbilityPackage> AdvancedClassPkgs
         {
             get
@@ -126,10 +133,10 @@ namespace GomLib.Models
             }
         }
 
+        [JsonIgnore]
         public List<ulong> BaseClassPkgIds { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         internal List<AbilityPackage> _BaseClassPkgs;
-        //[Newtonsoft.Json.JsonIgnore]
         public List<AbilityPackage> BaseClassPkgs
         {
             get

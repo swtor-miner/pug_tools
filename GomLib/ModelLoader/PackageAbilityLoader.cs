@@ -30,6 +30,7 @@ namespace GomLib.ModelLoader
             }
 
             Models.PackageAbility result = new Models.PackageAbility();
+            result._dom = _dom;
             result.AbilityId = gomObj.ValueOrDefault<ulong>("ablAbilityDataSpec", 0);
             result.AutoAcquire = gomObj.ValueOrDefault<bool>("ablAbilityDataAutoAcquire", false);
             result.PackageId = gomObj.ValueOrDefault<ulong>("ablAbilityDataPackage", 0);
@@ -45,7 +46,7 @@ namespace GomLib.ModelLoader
             result.Scales = (result.Levels.Count == 61 - result.Level);
             result.Toughness = gomObj.ValueOrDefault<string>("apnCbtToughness", "");
 
-            result.Ability = _dom.abilityLoader.Load(result.AbilityId);
+            //result.Ability = _dom.abilityLoader.Load(result.AbilityId);
 
             var utilityTier = gomObj.ValueOrDefault<long>("ablUtilityTier");
             if (utilityTier != 0)
@@ -60,8 +61,9 @@ namespace GomLib.ModelLoader
         public Models.PackageTalent LoadTalent(GomObjectData gomObj)
         {
             Models.PackageTalent result = new Models.PackageTalent();
+            result._dom = _dom;
             result.PackageId = gomObj.ValueOrDefault<ulong>("talTalentDataSpec", 0);
-            result.Talent = _dom.talentLoader.Load(result.PackageId);
+            //result.Talent = _dom.talentLoader.Load(result.PackageId);
             result.Level = gomObj.ValueOrDefault<long>("talTalentLevel");
             result.UtilityTier = gomObj.ValueOrDefault<long>("talUtilityTier");
             result.UtilityPosition = gomObj.ValueOrDefault<long>("talUtilityPosition");

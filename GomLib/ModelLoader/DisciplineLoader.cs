@@ -31,7 +31,7 @@ namespace GomLib.ModelLoader
             model.SortIdx = gom.ValueOrDefault<long>("disSortIdx");
             model.ClassId = gom.ValueOrDefault<ulong>("disClassId");
             model.PathApcId = gom.ValueOrDefault<ulong>("disApcId");
-            model.Id = (int)model.PathApcId >> 32;
+            model.Id = (long)model.PathApcId;
             model.PathAbilities = _dom.abilityPackageLoader.Load(model.PathApcId);
             model.NameId = gom.ValueOrDefault<long>("disName") + 2031339142381568;
             model.ClassNameId = gom.ValueOrDefault<long>("className") + 2031339142381568;

@@ -14,9 +14,9 @@ namespace GomLib.ModelLoader
         Dictionary<string, Quest> nameMap;
 
         Dictionary<object, object> fullQuestRewardsTable;
-        Dictionary<long, Dictionary<long, float>> fullCreditRewardsTable;
-        Dictionary<long, long> experienceTable;
-        Dictionary<QuestDifficulty, float> experienceDifficultyMultiplierTable;
+        public Dictionary<long, Dictionary<long, float>> fullCreditRewardsTable;
+        public Dictionary<long, long> experienceTable;
+        public Dictionary<QuestDifficulty, float> experienceDifficultyMultiplierTable;
 
         DataObjectModel _dom;
 
@@ -218,6 +218,18 @@ namespace GomLib.ModelLoader
                     if (enabled)
                     {
                         qst.Classes.Add(spec);
+                        switch ((ulong)kvp.Key)
+                        {
+                            case 16140902893827567561: qst.AllowedWarrior = true; break;
+                            case 16140943676484767978: qst.AllowedAgent = true; break;
+                            case 16141010271067846579: qst.AllowedInquisitor = true; break;
+                            case 16141170711935532310: qst.AllowedBH = true; break;
+
+                            case 16141179471541245792: qst.AllowedConsular = true; break;
+                            case 16140912704077491401: qst.AllowedSmuggler = true; break;
+                            case 16140973599688231714: qst.AllowedTrooper = true; break;
+                            case 16141119516274073244: qst.AllowedKnight = true; break;
+                        }
                     }
                 }
             }

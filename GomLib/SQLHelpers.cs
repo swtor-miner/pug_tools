@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.IO;
+using System.Reflection;
 
 namespace GomLib
 {
@@ -19,17 +20,15 @@ namespace GomLib
 
             foreach (var property in properties)
             {
-                var x = obj.GetType().GetProperty(property.PropertyName, System.Reflection.BindingFlags.FlattenHierarchy | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.GetProperty);
-                if (x == null)
-                    
-                    continue;
+                object x = GetSubProperty(obj, property.PropertyName);
+                //var x = obj.GetType().GetProperty(property.PropertyName, System.Reflection.BindingFlags.FlattenHierarchy | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.GetProperty);
                 if (property.JsonSerialize)
                 {
-                    results.Add(sqlSani(JsonConvert.SerializeObject(x.GetValue(obj, null), settings)));
+                    results.Add(sqlSani(JsonConvert.SerializeObject(x, settings)));
                 }
                 else
                 {
-                    var val = x.GetValue(obj, null) ?? "";
+                    var val = x ?? "";
                     var valType = val.GetType().ToString();
                     switch (valType)
                     {
@@ -44,6 +43,81 @@ namespace GomLib
                 }
             }
             return results;
+        }
+
+        public static object GetSubProperty(object srcobj, string PropertyName)
+        {
+            if (srcobj == null)
+                return null;
+
+            string[] propertyNameParts = PropertyName.Split('.'); // this is to allow referencing of subproperties
+
+            object obj = srcobj;
+            foreach (string propertyNamePart in propertyNameParts)
+            {
+                if (obj == null) return null;
+                // propertyNamePart could contain reference to specific 
+                // element (by index) inside a collection
+                if (!propertyNamePart.Contains("["))
+                {
+                    PropertyInfo pi = obj.GetType().GetProperty(propertyNamePart, BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetProperty);
+                    if (pi == null)
+                        return null;
+                    obj = pi.GetValue(obj, null);
+                }
+                else
+                {   // propertyNamePart is a reference to specific element 
+                    // (by index) inside a collection
+                    // like AggregatedCollection[123]
+                    //   get collection name and element index
+                    int indexStart = propertyNamePart.IndexOf("[") + 1;
+                    string collectionPropertyName = propertyNamePart.Substring(0, indexStart - 1);
+                    string indexName = propertyNamePart.Substring(indexStart, propertyNamePart.Length - indexStart - 1);
+                    int collectionElementIndex;
+                    Int32.TryParse(indexName, out collectionElementIndex);
+                    //   get collection object
+                    PropertyInfo pi = obj.GetType().GetProperty(collectionPropertyName, BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetProperty);
+                    if (pi == null)
+                        return null;
+                    object unknownCollection = pi.GetValue(obj, null);
+                    //   try to process the collection as array
+                    if (unknownCollection.GetType().IsArray)
+                    {
+                        object[] collectionAsArray = unknownCollection as Array[];
+                        obj = collectionAsArray[collectionElementIndex];
+                    }
+                    else
+                    {
+                        //   try to process the collection as IList
+                        System.Collections.IList collectionAsList = unknownCollection as System.Collections.IList;
+                        if (collectionAsList != null)
+                        {
+                            obj = collectionAsList[collectionElementIndex];
+                        }
+                        else
+                        {
+                            System.Collections.IDictionary collectionAsDictionary = unknownCollection as System.Collections.IDictionary;
+                            if (collectionAsDictionary != null)
+                            {
+                                var t = collectionAsDictionary.GetType().GetGenericArguments()[0];
+                                if (t == typeof(string))
+                                {
+                                    obj = collectionAsDictionary[indexName];
+                                }
+                                else
+                                    return null;
+                            }
+                            else
+                            {
+                                return null;
+                            }
+                            // ??? Unsupported collection type
+                        }
+                    }
+                }
+
+            }
+            return obj;
         }
 
         public static string ToSQL(object obj, SQLData sql, string patchVersion)

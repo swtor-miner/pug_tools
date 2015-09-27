@@ -160,9 +160,25 @@ namespace GomLib.Models
                     return _ClassesB62;
                 }
             }
-            #endregion
-            #region Conversation Rewards
-            [Newtonsoft.Json.JsonIgnore]
+            [JsonIgnore]
+            public bool AllowedSmuggler{ get; set;}
+            [JsonIgnore]
+            public bool AllowedAgent { get; set; }
+            [JsonIgnore]
+            public bool AllowedWarrior { get; set; }
+            [JsonIgnore]
+            public bool AllowedBH { get; set; }
+            [JsonIgnore]
+            public bool AllowedInquisitor { get; set; }
+            [JsonIgnore]
+            public bool AllowedTrooper { get; set; }
+            [JsonIgnore]
+            public bool AllowedKnight { get; set; }
+            [JsonIgnore]
+            public bool AllowedConsular { get; set; }
+        #endregion
+        #region Conversation Rewards
+        [Newtonsoft.Json.JsonIgnore]
             public QuestAffectionGainTable _ConversationGains { get; set; }
             public QuestAffectionGainTable ConversationGains
             {
@@ -464,24 +480,25 @@ namespace GomLib.Models
                 return new List<SQLProperty>
                     {                //(SQL Column Name, C# Property Name, SQL Column type statement, isUnique/PrimaryKey, Serialize value to json)
                         new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrName", "LocalizedName[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeName", "LocalizedName[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("CleanName", "CleanName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.PrimaryKey),
-                        new SQLProperty("NameId", "NameId", "bigint(20) NOT NULL"),
                         new SQLProperty("Fqn", "Fqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("LocalizedName", "LocalizedName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.JsonSerialize),
                         new SQLProperty("Icon", "HashedIcon", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("IsRepeatable", "IsRepeatable", "tinyint(1) NOT NULL"),
-                        new SQLProperty("RequiredLevel", "RequiredLevel", "int(11) NOT NULL"),
-                        new SQLProperty("XpLevel", "XpLevel", "int(11) NOT NULL"),
+                        new SQLProperty("IsRepeatable", "IsRepeatable", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("RequiredLevel", "RequiredLevel", "int(11) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("XpLevel", "XpLevel", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("XP", "XP", "int(11) NOT NULL"),
-                        new SQLProperty("Difficulty", "Difficulty", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("CanAbandon", "CanAbandon", "tinyint(1) NOT NULL"),
-                        new SQLProperty("IsHidden", "IsHidden", "tinyint(1) NOT NULL"),
-                        new SQLProperty("IsClassQuest", "IsClassQuest", "tinyint(1) NOT NULL"),
-                        new SQLProperty("IsBonus", "IsBonus", "tinyint(1) NOT NULL"),
-                        new SQLProperty("BonusShareable", "BonusShareable", "tinyint(1) NOT NULL"),
-                        new SQLProperty("CategoryId", "CategoryId", "bigint(20) NOT NULL"),
+                        new SQLProperty("Difficulty", "Difficulty", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("CanAbandon", "CanAbandon", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("IsHidden", "IsHidden", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("IsClassQuest", "IsClassQuest", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("IsBonus", "IsBonus", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("BonusShareable", "BonusShareable", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Category", "Category", "varchar(255) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrCategory", "LocalizedCategory[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeCategory", "LocalizedCategory[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("BranchCount", "BranchCount", "int(11) NOT NULL"),
                         new SQLProperty("Branches", "Branches", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
                         //new SQLProperty("Items", "Items", "TEXT NOT NULL", false, true),
@@ -491,7 +508,15 @@ namespace GomLib.Models
                         new SQLProperty("CreditsRewarded", "CreditsRewarded", "int(11) NOT NULL"),
                         new SQLProperty("ReqPrivacy", "ReqPrivacy", "varchar(255) COLLATE latin1_general_cs NOT NULL"),
                         new SQLProperty("BonusMissionsIds", "BonusMissionsB62Ids", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
-                        new SQLProperty("ConversationGains","ConversationGains", "TEXT NOT NULL", SQLPropSetting.JsonSerialize)
+                        new SQLProperty("ConversationGains","ConversationGains", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
+                        new SQLProperty("AllowedSmuggler", "AllowedSmuggler", "tinint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("AllowedAgent", "AllowedAgent", "tinint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("AllowedWarrior", "AllowedWarrior", "tinint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("AllowedBH", "AllowedBH", "tinint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("AllowedInquisitor", "AllowedInquisitor", "tinint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("AllowedTrooper", "AllowedTrooper", "tinint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("AllowedKnight", "AllowedKnight", "tinint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("AllowedConsular", "AllowedConsular", "tinint(1) NOT NULL", SQLPropSetting.AddIndex),
                         //new SQLProperty("ItemMap", "ItemMap", "TEXT NOT NULL", false, true),
 
                     };

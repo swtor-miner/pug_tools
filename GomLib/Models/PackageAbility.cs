@@ -2,22 +2,53 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
     public class PackageAbility : IEquatable<PackageAbility>
     {
+        [JsonIgnore]
+        public DataObjectModel _dom;
         public PackageAbility()
         {
             Levels = new List<int>();
         }
-
+        [JsonIgnore]
         public ulong PackageId { get; set; }
+        public string PackageB62Id
+        {
+            get
+            {
+                if (PackageId == 0) return "";
+                return PackageId.ToMaskedBase62();
+            }
+        }
 
-        //[Newtonsoft.Json.JsonIgnore]
-        public Ability Ability { get; set; }
+        internal Ability _Ability { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        public Ability Ability
+        {
+            get
+            {
+                if (_Ability == null)
+                {
+                    _Ability = _dom.abilityLoader.Load(AbilityId);
+                }
+                return _Ability;
+            }
+        }
 
+        [JsonIgnore]
         public ulong AbilityId { get; set; }
+        public string AbilityB62Id
+        {
+            get
+            {
+                if (AbilityId == 0) return "";
+                return AbilityId.ToMaskedBase62();
+            }
+        }
         public List<int> Levels { get; set; }
         public bool Scales { get; set; }
         public int Level { get; set; }
@@ -81,12 +112,35 @@ namespace GomLib.Models
 
     public class PackageTalent : IEquatable<PackageTalent>
     {
+        [JsonIgnore]
+        public DataObjectModel _dom;
         public PackageTalent() { }
 
+        [JsonIgnore]
         public ulong PackageId { get; set; }
 
-        //[Newtonsoft.Json.JsonIgnore]
-        public Talent Talent { get; set; }
+        internal Talent _Talent { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        public Talent Talent
+        {
+            get
+            {
+                if (_Talent == null)
+                {
+                    _Talent = _dom.talentLoader.Load(PackageId);
+                }
+                return _Talent;
+            }
+        }
+        [JsonIgnore]
+        public string TalentB62Id
+        {
+            get
+            {
+                if (PackageId == 0) return "";
+                return PackageId.ToMaskedBase62();
+            }
+        }
 
         public long UtilityTier { get; set; }
         public long UtilityPosition { get; set; }

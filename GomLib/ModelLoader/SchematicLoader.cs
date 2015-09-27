@@ -11,6 +11,7 @@ namespace GomLib.ModelLoader
         const long strOffset = 0x35D0200000000;
 
         StringTable missionStrTable;
+        StringTable prfSubStrTable;
         StringTable prfStrTable;
         Dictionary<ulong, Schematic> idMap;
         Dictionary<string, Schematic> nameMap;
@@ -27,6 +28,7 @@ namespace GomLib.ModelLoader
         public void Flush()
         {
             missionStrTable = null;
+            prfSubStrTable = null;
             prfStrTable = null;
             idMap = new Dictionary<ulong, Schematic>();
             nameMap = new Dictionary<string, Schematic>();
@@ -82,7 +84,8 @@ namespace GomLib.ModelLoader
             if (missionStrTable == null)
             {
                 missionStrTable = _dom.stringTable.Find("str.prf.missions");
-                prfStrTable = _dom.stringTable.Find("str.prf.subtypes");
+                prfSubStrTable = _dom.stringTable.Find("str.prf.subtypes");
+                prfStrTable = _dom.stringTable.Find("str.prf.professions");
             }
             schem.Id = obj.Id;
             schem.Fqn = obj.Name;
@@ -125,6 +128,7 @@ namespace GomLib.ModelLoader
             if (String.IsNullOrEmpty(schem.Name) && (schem.Item != null))
             {
                 schem.Name = schem.Item.LocalizedName["enMale"];
+                schem.LocalizedName = schem.Item.LocalizedName;
             }
 
             schem.MissionYieldDescriptionId = (int)obj.Data.ValueOrDefault<long>("prfMissionYieldDescriptionId", 0);
@@ -140,12 +144,15 @@ namespace GomLib.ModelLoader
                 schem.MissionDescription = missionStrTable.GetText(schem.MissionDescriptionId + strOffset, schem.Fqn);
                 schem.LocalizedMissionDescription = missionStrTable.GetLocalizedText(schem.MissionDescriptionId + strOffset, schem.Fqn);
             }
-
-            schem.CrewSkillId = ProfessionExtensions.ToProfession((ScriptEnum)obj.Data.ValueOrDefault<ScriptEnum>("prfProfessionRequired", null));
-            schem.Subtype = ProfessionSubtypeExtensions.ToProfessionSubtype((ScriptEnum)obj.Data.ValueOrDefault<ScriptEnum>("prfProfessionSubtype", null));
+            schem.CrewSkillId = 836161413054464 + obj.Data.ValueOrDefault<ScriptEnum>("prfProfessionRequired", new ScriptEnum()).Value;
+            schem.CrewSkill = ProfessionExtensions.ToProfession((ScriptEnum)obj.Data.ValueOrDefault<ScriptEnum>("prfProfessionRequired", null));
+            schem.CrewSkillName = prfStrTable.GetText(schem.CrewSkillId, "str.prf.professions");
+            schem.LocalizedCrewSkillName = prfStrTable.GetLocalizedText(schem.CrewSkillId, "str.prf.professions");
 
             schem.SubTypeId = 966840088002561 + obj.Data.ValueOrDefault<ScriptEnum>("prfProfessionSubtype", new ScriptEnum()).Value;
-            schem.SubTypeName = prfStrTable.GetText(schem.SubTypeId, "str.prf.subtypes");
+            schem.Subtype = ProfessionSubtypeExtensions.ToProfessionSubtype((ScriptEnum)obj.Data.ValueOrDefault<ScriptEnum>("prfProfessionSubtype", null));
+            schem.SubTypeName = prfSubStrTable.GetText(schem.SubTypeId, "str.prf.subtypes");
+            schem.LocalizedSubTypeName = prfSubStrTable.GetLocalizedText(schem.SubTypeId, "str.prf.subtypes");
 
             schem.SkillGrey = (int)obj.Data.ValueOrDefault<long>("prfSchematicGrey", 0);
             schem.SkillGreen = (int)obj.Data.ValueOrDefault<long>("prfSchematicGreen", 0);
@@ -246,7 +253,9 @@ namespace GomLib.ModelLoader
             }
             if (schem.MissionDescriptionId != 0)
             {
-                schem.Category = "Mission";
+                StringTable statStrTable = _dom.stringTable.Find("str.gui.stats");
+                schem.LocalizedCategory = statStrTable.GetLocalizedText(972058473267360, "str.gui.stats");
+                schem.Category = schem.LocalizedCategory["enMale"];
                 schem.Quality = ItemQuality.Mission;
             }
             else
@@ -255,8 +264,16 @@ namespace GomLib.ModelLoader
                 {
                     if (schem.Item != null)
                     {
-                        if (schem.Item.AuctionCategory != null) schem.Category = schem.Item.AuctionCategory.ToString();
-                        if (schem.Item.AuctionSubCategory != null) schem.SubCategory = schem.Item.AuctionSubCategory.ToString();
+                        if (schem.Item.AuctionCategory != null)
+                        {
+                            schem.Category = schem.Item.AuctionCategory.ToString();
+                            schem.LocalizedCategory = schem.Item.AuctionCategory.LocalizedName;
+                        }
+                        if (schem.Item.AuctionSubCategory != null)
+                        {
+                            schem.SubCategory = schem.Item.AuctionSubCategory.ToString();
+                            schem.LocalizedSubCategory = schem.Item.AuctionSubCategory.LocalizedName;
+                        }
                         schem.Quality = ((schem.Item.TypeBitFlags.IsModdable && (schem.Item.Quality == ItemQuality.Prototype)) ? ItemQuality.Moddable : schem.Item.Quality);
                     }
                     else

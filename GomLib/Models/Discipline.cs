@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
     public class Discipline : PseudoGameObject, IEquatable<Discipline>
     {
-        public ulong NodeId { get; set; }
+        [JsonIgnore]
+        public ulong NodeId { get { return (ulong)Id; } }
         public string Icon { get; set; }
         public string HashedIcon
         {
@@ -24,23 +26,39 @@ namespace GomLib.Models
             }
         }
         public long SortIdx { get; set; }
+        [JsonIgnore]
         public ulong ClassId { get; set; }
+        [JsonIgnore]
         public ulong PathApcId { get; set; }
         //[Newtonsoft.Json.JsonIgnore]
         public AbilityPackage PathAbilities { get; set; }
+        [JsonIgnore]
         public long DescriptionId { get; set; }
+        [JsonIgnore]
         public long NameId { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
+        [JsonIgnore]
         public string Description { get; set; }
         public Dictionary<string, string> LocalizedDescription { get; set; }
+        [JsonIgnore]
         public long ClassNameId { get; set; }
         public Dictionary<string, string> LocalizedClassName { get; set; }
+        [JsonIgnore]
         public string ClassName { get; set; }
         public string Role { get; set; }
+        [JsonIgnore]
         public Dictionary<ulong, int> BaseAbilityIds { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        public Dictionary<string, int> BaseAbility62Ids
+        {
+            get
+            {
+                if (BaseAbilityIds == null) return new Dictionary<string, int>();
+                return BaseAbilityIds.ToDictionary(x => x.Key.ToMaskedBase62(), x => x.Value);
+            }
+        }
+        [JsonIgnore]
         internal List<Ability> _BaseAbilities;
-        //[Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public List<Ability> BaseAbilities
         {
             get

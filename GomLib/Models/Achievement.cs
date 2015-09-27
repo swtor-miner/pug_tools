@@ -13,15 +13,19 @@ namespace GomLib.Models
 {
     public class Achievement : GameObject, IEquatable<Achievement>
     {
+        [JsonIgnore]
         public ulong NodeId { get; set; }
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
+        [JsonIgnore]
         public long NameId { get; set; }
         public string Description { get; set; }
         public Dictionary<string, string> LocalizedDescription { get; set; }
+        [JsonIgnore]
         public long DescriptionId { get; set; }
         public string NonSpoilerDesc { get; set; }
         public Dictionary<string, string> LocalizedNonSpoilerDesc { get; set; }
+        [JsonIgnore]
         public long nonSpoilerId { get; set; }
         public int Level { get; set; }
         public string Icon { get; set; }
@@ -42,91 +46,6 @@ namespace GomLib.Models
         public List<AchCondition> Conditions { get; set; }
         public AchievementCatData CategoryData { get; internal set; }
 
-        #region Category
-        [JsonIgnore]
-        public string Category
-        {
-            get
-            {
-                if (CategoryData == null) return null;
-                return CategoryData.Category.Name;
-            }
-        }
-        [JsonIgnore]
-        public string FRCategory
-        {
-            get
-            {
-                if (CategoryData == null) return null;
-                return CategoryData.Category.LocalizedName["frMale"];
-            }
-        }
-        [JsonIgnore]
-        public string DECategory
-        {
-            get
-            {
-                if (CategoryData == null) return null;
-                return CategoryData.Category.LocalizedName["deMale"];
-            }
-        }
-        [JsonIgnore]
-        public string SubCategory
-        {
-            get
-            {
-                if (CategoryData == null) return null;
-                return CategoryData.SubCategory.Name;
-            }
-        }
-        [JsonIgnore]
-        public string FRSubCategory
-        {
-            get
-            {
-                if (CategoryData == null) return null;
-                return CategoryData.SubCategory.LocalizedName["frMale"];
-            }
-        }
-        [JsonIgnore]
-        public string DESubCategory
-        {
-            get
-            {
-                if (CategoryData == null) return null;
-                return CategoryData.SubCategory.LocalizedName["deMale"];
-            }
-        }
-        [JsonIgnore]
-        public string TertiaryCategory
-        {
-            get
-            {
-                if (CategoryData == null) return null;
-                return CategoryData.TertiaryCategory.Name;
-            }
-        }
-        [JsonIgnore]
-        public string FRTertiaryCategory
-        {
-            get
-            {
-                if (CategoryData == null) return null;
-                if (CategoryData.TertiaryCategory.LocalizedName == null) return "";
-                return CategoryData.TertiaryCategory.LocalizedName["frMale"];
-            }
-        }
-        [JsonIgnore]
-        public string DETertiaryCategory
-        {
-            get
-            {
-                if (CategoryData == null) return null;
-                if (CategoryData.TertiaryCategory.LocalizedName == null) return "";
-                return CategoryData.TertiaryCategory.LocalizedName["deMale"];
-            }
-        }
-        #endregion
         #region Reward Booleans
         public bool ItemReward
         {
@@ -300,26 +219,21 @@ namespace GomLib.Models
                 return new List<SQLProperty>
                     {                //(SQL Column Name, C# Property Name, SQL Column type statement, isUnique/PrimaryKey, Serialize value to json)
                         new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        //new SQLProperty("NodeId", "NodeId", "bigint(20) unsigned NOT NULL", true),
+                        new SQLProperty("FrName", "LocalizedName[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeName", "LocalizedName[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.PrimaryKey),
-                        //new SQLProperty("NameId", "NameId", "bigint(20) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("Description", "Description", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        //new SQLProperty("DescriptionId", "DescriptionId", "bigint(20) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("AchId", "AchId", "bigint(20) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Visibility", "Visibility", "varchar(15) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Icon", "HashedIcon", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        //new SQLProperty("Tasks", "Tasks", "varchar(100) COLLATE utf8_unicode_ci NOT NULL", false, true),
-                        //new SQLProperty("Conditions", "Conditions", "varchar(1000) COLLATE utf8_unicode_ci NOT NULL", false, true),
-                        //new SQLProperty("Rewards", "Rewards", "varchar(1000) COLLATE utf8_unicode_ci NOT NULL", false, true)
-                        new SQLProperty("Category","Category", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("FRCategory","FRCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("DECategory","DECategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("SubCategory","SubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("FRSubCategory","FRSubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("DESubCategory","DESubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("TertiaryCategory","TertiaryCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("FFTertiaryCategory","FRTertiaryCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("DETertiaryCategory","DETertiaryCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Category","CategoryData.Category.LocalizedName[enMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrCategory","CategoryData.Category.LocalizedName[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeCategory","CategoryData.Category.LocalizedName[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("SubCategory","CategoryData.SubCategory.LocalizedName[enMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrSubCategory","CategoryData.SubCategory.LocalizedName[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeSubCategory","CategoryData.SubCategory.LocalizedName[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("TertiaryCategory","CategoryData.TertiaryCategory.LocalizedName[enMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrTertiaryCategory","CategoryData.TertiaryCategory.LocalizedName[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeTertiaryCategory","CategoryData.TertiaryCategory.LocalizedName[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("ItemReward", "ItemReward", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("MtxReward", "MtxReward", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("TitleReward", "TitleReward", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),

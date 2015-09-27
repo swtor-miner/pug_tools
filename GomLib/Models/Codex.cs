@@ -79,71 +79,6 @@ namespace GomLib.Models
             }
         }
 
-        #region SQL Localization
-        [JsonIgnore]
-        public string FRName
-        {
-            get
-            {
-                if (LocalizedName == null) return null;
-                return LocalizedName["frMale"];
-            }
-        }
-        [JsonIgnore]
-        public string DEName
-        {
-            get
-            {
-                if (LocalizedName == null) return null;
-                return LocalizedName["deMale"];
-            }
-        }
-        [JsonIgnore]
-        public string FRDescription
-        {
-            get
-            {
-                if (LocalizedDescription == null) return null;
-                return LocalizedDescription["frMale"];
-            }
-        }
-        [JsonIgnore]
-        public string DEDescription
-        {
-            get
-            {
-                if (LocalizedDescription == null) return null;
-                return LocalizedDescription["deMale"];
-            }
-        }
-        [JsonIgnore]
-        public string Category
-        {
-            get
-            {
-                return CategoryName;
-            }
-        }
-        [JsonIgnore]
-        public string FRCategory
-        {
-            get
-            {
-                if (LocalizedCategoryName == null) return null;
-                return LocalizedCategoryName["frMale"];
-            }
-        }
-        [JsonIgnore]
-        public string DECategory
-        {
-            get
-            {
-                if (LocalizedCategoryName == null) return null;
-                return LocalizedCategoryName["deMale"];
-            }
-        }
-        #endregion
-
         public override int GetHashCode()
         {
             int hash = Level.GetHashCode();
@@ -252,15 +187,12 @@ namespace GomLib.Models
                 return new List<SQLProperty>
                     {                //(SQL Column Name, C# Property Name, SQL Column type statement, isUnique/PrimaryKey, Serialize value to json)
                         new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("FRName","FRName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("DEName","DEName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrName", "LocalizedName[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeName", "LocalizedName[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.PrimaryKey),
-                        //new SQLProperty("Description", "Description", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        //new SQLProperty("FRDescription","FRDescription", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        //new SQLProperty("DEDescription","DEDescription", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("Category","Category", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("FRCategory","FRCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("DECategory","DECategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Category","LocalizedCategoryName[enMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrCategory", "LocalizedCategoryName[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeCategory", "LocalizedCategoryName[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Faction","Faction", "varchar(25) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("HasPlanets","HasPlanets", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("IsPlanet","IsPlanet", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),

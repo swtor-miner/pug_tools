@@ -12,38 +12,34 @@ namespace GomLib.Models
     {
         #region Properties
         public ulong parentSpecId { get; set; }
+        [JsonIgnore]
         public ulong NodeId { get; set; }
         public string Name { get; set; }
-        //localized names
         [JsonIgnore]
-        public string FrName
-        {
-            get
-            {
-                if (LocalizedName != null && LocalizedName.ContainsKey("frMale"))
-                {
-                    return LocalizedName["frMale"];
-                }
-                return "";
-            }
-        }
-        [JsonIgnore]
-        public string DeName
-        {
-            get
-            {
-                if (LocalizedName != null && LocalizedName.ContainsKey("deMale"))
-                {
-                    return LocalizedName["deMale"];
-                }
-                return "";
-            }
-        }
         public long NameId { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
         public string Title { get; set; }
         public Dictionary<string, string> LocalizedTitle { get; set; }
+        [JsonIgnore]
         public ulong ClassId { get; set; }
+        [JsonIgnore]
+        public string ClassB62Id
+        {
+            get
+            {
+                if (ClassId == 0) return "";
+                return ClassId.ToMaskedBase62();
+            }
+        }
+        public string AbilityPackageB62Id
+        {
+            get {
+                if (ClassSpec != null) {
+                    return ClassSpec.AbilityPackageB62Id;
+                }
+                return "";
+            }
+        }
         [Newtonsoft.Json.JsonIgnore]
         public ClassSpec ClassSpec { get; set; }
         public int MinLevel { get; set; }
@@ -68,8 +64,17 @@ namespace GomLib.Models
                     return null;
             }
         }
-
+        [JsonIgnore]
         public ulong CodexId { get; set; }
+        [JsonIgnore]
+        public string CodexB62Id
+        {
+            get
+            {
+                if (CodexId == 0) return "";
+                return CodexId.ToMaskedBase62();
+            }
+        }
         public Profession ProfessionTrained { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         public Npc CompanionOverride {
@@ -311,8 +316,9 @@ namespace GomLib.Models
                 return new List<SQLProperty>
                     {                //(SQL Column Name, C# Property Name, SQL Column type statement, IsUnique/PrimaryKey, Serialize value to json)
                         new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("FrName", "FrName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("DeName", "DeName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrName", "LocalizedName[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeName", "LocalizedName[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Title", "Title", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.PrimaryKey),
                         new SQLProperty("MinLevel", "MinLevel", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("MaxLevel", "MaxLevel", "int(11) NOT NULL", SQLPropSetting.AddIndex),

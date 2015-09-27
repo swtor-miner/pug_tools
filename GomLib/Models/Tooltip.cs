@@ -743,7 +743,7 @@ namespace GomLib.Models
                                         XClass("torctip_item"),
                                         new XElement("div",
                                             XClass("torctip_main"),
-                                            String.Format(reqParanString, itm.Schematic.CrewSkillId.ConvertToString(), itm.Schematic.SkillOrange), //"Requires {0} ({1})"
+                                            String.Format(reqParanString, itm.Schematic.LocalizedCrewSkillName[Tooltip.language], itm.Schematic.SkillOrange), //"Requires {0} ({1})"
                                             ItemInnerHTML(itm.Schematic.Item))
                                         ));
                                 }
@@ -753,7 +753,7 @@ namespace GomLib.Models
                                         XClass("torctip_mission"),
                                         new XElement("div",
                                             XClass("torctip_main"),
-                                            String.Format(reqParanString, itm.Schematic.CrewSkillId.ConvertToString(), itm.Schematic.SkillOrange)), //"Requires {0} ({1})"
+                                            String.Format(reqParanString, itm.Schematic.LocalizedCrewSkillName[Tooltip.language], itm.Schematic.SkillOrange)), //"Requires {0} ({1})"
                                         new XElement("div",
                                             XClass("torctip_mission_name"),
                                             itm.Schematic.LocalizedName[Tooltip.language]),
@@ -1060,7 +1060,7 @@ namespace GomLib.Models
                         XClass("torctip_main"),
                         String.Format(
                             reqParanString, //"Requires {0} ({1})",
-                            itm.CrewSkillId.ConvertToString(), itm.SkillOrange))
+                            itm.LocalizedCrewSkillName[Tooltip.language], itm.SkillOrange))
                     );
                     tooltip.Add(inner);
                 }
@@ -1072,7 +1072,7 @@ namespace GomLib.Models
                             XClass("torctip_main"),
                             String.Format(
                                 reqParanString, //"Requires {0} ({1})",
-                                itm.CrewSkillId.ConvertToString(), itm.SkillOrange)),
+                                itm.LocalizedCrewSkillName[Tooltip.language], itm.SkillOrange)),
                         new XElement("div",
                             XClass("torctip_mission_name"),
                             ((itm.LocalizedName != null) ? itm.LocalizedName[Tooltip.language] : "")),

@@ -45,31 +45,6 @@ namespace GomLib.Models
             }
         }
         public string Name { get; set; }
-        //localized names
-        [JsonIgnore]
-        public string FrName
-        {
-            get
-            {
-                if (LocalizedName != null && LocalizedName.ContainsKey("frMale"))
-                {
-                    return LocalizedName["frMale"];
-                }
-                return "";
-            }
-        }
-        [JsonIgnore]
-        public string DeName
-        {
-            get
-            {
-                if (LocalizedName != null && LocalizedName.ContainsKey("deMale"))
-                {
-                    return LocalizedName["deMale"];
-                }
-                return "";
-            }
-        }
         public Dictionary<string, string> LocalizedName { get; set; }
         public long DescriptionId { get; set; }
         [JsonIgnore]
@@ -136,43 +111,9 @@ namespace GomLib.Models
         public int AuctionCategoryId { get; set; }
         [JsonIgnore]
         public AuctionCategory AuctionCategory { get; set; }
-        public string AuctionCat
-        {
-            get
-            {
-                if (AuctionCategory == null) return null;
-                return AuctionCategory.Name;
-            }
-        }
-        public Dictionary<string, string> LocalizedAuctionCategory
-        {
-            get
-            {
-                if (AuctionCategory != null)
-                    return AuctionCategory.LocalizedName;
-                return null;
-            }
-        }
         public int AuctionSubCategoryId { get; set; }
         [JsonIgnore]
         public AuctionSubCategory AuctionSubCategory { get; set; }
-        public string AuctionSubCat
-        {
-            get
-            {
-                if (AuctionSubCategory == null) return null;
-                return AuctionSubCategory.Name;
-            }
-        }
-        public Dictionary<string, string> LocalizedAuctionSubCategory
-        {
-            get
-            {
-                if (AuctionSubCategory!= null)
-                    return AuctionSubCategory.LocalizedName;
-                return null;
-            }
-        }
         public AppearanceColor AppearanceColor { get; set; }
         public int DyeId { get; set; }
         public DetailedAppearanceColor DyeColor { get; set; }
@@ -416,6 +357,13 @@ namespace GomLib.Models
                 if (value != "0x00")
                 {
                     mtxRarity = value.Replace("itmMTXRarity", "");
+                    switch (value)
+                    {
+                        case "itmMTXRaritySuperRare": mtxRarity = "Gold"; break;
+                        case "itmMTXRarityRare": mtxRarity = "Silver"; break;
+                        case "itmMTXRarityNormal": mtxRarity = "Bronze"; break;
+                        default: mtxRarity = "Unknown"; break;
+                    }
                 }
             }
         }
@@ -674,57 +622,6 @@ namespace GomLib.Models
                 return _TypeBitFlags;
             }
         }
-        #region sqlflaglegacy
-        [JsonIgnore]
-        public bool IsArmor { get { return TypeBitFlags.IsArmor; } }
-        [JsonIgnore]
-        public bool IsWeapon { get { return TypeBitFlags.IsWeapon; } }
-        [JsonIgnore]
-        public bool HasGTNCategory { get { return TypeBitFlags.HasGTNCategory; } }
-        [JsonIgnore]
-        public bool Unk8 { get { return TypeBitFlags.Unk8; } }
-        [JsonIgnore]
-        public bool HasConversation { get { return TypeBitFlags.HasConversation; } }
-        [JsonIgnore]
-        public bool IsCrafted { get { return TypeBitFlags.IsCrafted; } }
-        [JsonIgnore]
-        public bool CanBeDisassembled { get { return TypeBitFlags.CanBeDisassembled; } }
-        [JsonIgnore]
-        public bool HasDurability { get { return TypeBitFlags.HasDurability; } }
-        [JsonIgnore]
-        public bool IsModdable { get { return TypeBitFlags.IsModdable; } }
-        [JsonIgnore]
-        public bool IsMod { get { return TypeBitFlags.IsMod; } }
-        [JsonIgnore]
-        public bool CanHaveStats { get { return TypeBitFlags.CanHaveStats; } }
-        [JsonIgnore]
-        public bool Unk800 { get { return TypeBitFlags.Unk800; } }
-        [JsonIgnore]
-        public bool IsGift { get { return TypeBitFlags.IsGift; } }
-        [JsonIgnore]
-        public bool IsMissionItem { get { return TypeBitFlags.IsMissionItem; } }
-        [JsonIgnore]
-        public bool Unk4000 { get { return TypeBitFlags.Unk4000; } }
-        [JsonIgnore]
-        public bool IsShipPart { get { return TypeBitFlags.IsShipPart; } }
-        [JsonIgnore]
-        public bool Unk10000 { get { return TypeBitFlags.Unk10000; } }
-        [JsonIgnore]
-        public bool IsCmpCstmztn { get { return TypeBitFlags.IsCmpCstmztn; } }
-        [JsonIgnore]
-        public bool HasUniqueLimit { get { return TypeBitFlags.HasUniqueLimit; } }
-        [JsonIgnore]
-        public bool HasOnUse { get { return TypeBitFlags.HasOnUse; } }
-        [JsonIgnore]
-        public bool IsEquipable { get { return TypeBitFlags.IsEquipable; } }
-        [JsonIgnore]
-        public bool IsCurrency { get { return TypeBitFlags.IsCurrency; } }
-        [JsonIgnore]
-        public bool IsMtxItem { get { return TypeBitFlags.IsMtxItem; } }
-        [JsonIgnore]
-        public bool IsRepTrophy { get { return TypeBitFlags.IsRepTrophy; } }
-        #endregion
-
 
         public static Item FillFlatData(Item itm)
         {
@@ -1351,35 +1248,31 @@ namespace GomLib.Models
                 if (Id != 0)
                 {
                     FillFlatData(this);
-                    SimpleTagDicts(this);
+                    //SimpleTagDicts(this);
                 }
                 return new List<SQLProperty>
                     {                //(SQL Column Name, C# Property Name, SQL Column type statement, IsUnique/PrimaryKey, Serialize value to json)
                         new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("FrName", "FrName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("DeName", "DeName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrName", "LocalizedName[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeName", "LocalizedName[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("CleanName", "CleanName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("NodeId", "Id", "bigint(20) unsigned NOT NULL"),
                         new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.PrimaryKey),
-                        new SQLProperty("NameId", "NameId", "bigint(20) NOT NULL"),
                         new SQLProperty("Fqn", "Fqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("ItemLevel", "ItemLevel", "int(11) NOT NULL", SQLPropSetting.AddIndex),
-                        //new SQLProperty("AppearanceColor", "AppearanceColor", "TEXT NOT NULL"),
                         new SQLProperty("AppearanceImperial", "AppearanceImperial", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
                         new SQLProperty("AppearanceRepublic", "AppearanceRepublic", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
-                        //new SQLProperty("ArmorSpec", "ArmorSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("AuctionCategoryId", "AuctionCategoryId", "int(11) NOT NULL"),
-                        new SQLProperty("AuctionCategory", "AuctionCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("AuctionCategory", "AuctionCategory.LocalizedName[enMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrAuctionCategory", "AuctionCategory.LocalizedName[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeAuctionCategory", "AuctionCategory.LocalizedName[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("AuctionSubCategoryId", "AuctionSubCategoryId", "int(11) NOT NULL"),
-                        new SQLProperty("AuctionSubCategory", "AuctionSubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("AuctionSubCategory", "AuctionSubCategory.LocalizedName[enMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("FrAuctionSubCategory", "AuctionSubCategory.LocalizedName[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("DeAuctionSubCategory", "AuctionSubCategory.LocalizedName[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Binding", "Binding", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("CombinedRating", "CombinedRating", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("CombinedRequiredLevel", "CombinedRequiredLevel", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("ConsumedOnUse", "ConsumedOnUse", "tinyint(1) NOT NULL"),
-                        //new SQLProperty("ConversationFqn", "ConversationFqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        //new SQLProperty("DamageType", "DamageType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        //new SQLProperty("Description", "_Description", "TEXT NOT NULL"),
-                        //new SQLProperty("DescriptionId", "DescriptionId", "bigint(20) NOT NULL"),
                         new SQLProperty("DisassembleCategory", "DisassembleCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("Durability", "Durability", "int(11) NOT NULL"),
                         new SQLProperty("EnhancementCategory", "EnhancementCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
@@ -1393,9 +1286,8 @@ namespace GomLib.Models
                         new SQLProperty("BindsToSlot", "BindsToSlot", "tinyint(1) NOT NULL"),
                         new SQLProperty("MaxDurability", "MaxDurability", "int(11) NOT NULL"),
                         new SQLProperty("MaxStack", "MaxStack", "int(11) NOT NULL"),
-                        //new SQLProperty("Model", "Model", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        //new SQLProperty("ModifierSpec", "ModifierSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("MountSpec", "MountSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("MTXRarity","MTXRarity", "varchar(15) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Quality", "Quality", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Rating", "Rating", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("RequiredAlignmentInverted", "RequiredAlignmentInverted", "tinyint(1) NOT NULL"),
@@ -1414,14 +1306,10 @@ namespace GomLib.Models
                         new SQLProperty("RequiredReputationLevel", "RequiredReputationLevelName", "varchar(255) NOT NULL"),
                         new SQLProperty("SchematicId", "SchematicB62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("ShieldSpec", "ShieldSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("Slots", "Slots", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("StackCount", "StackCount", "int(11) NOT NULL"),
-                        //new SQLProperty("StatModifiers", "StatModifiers", "TEXT NOT NULL"),
-                        //new SQLProperty("SubCategory", "SubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("TeachesRef", "TeachesRefB62", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
                         new SQLProperty("TeachesType", "TeachesType", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("TreasurePackageId", "TreasurePackageId", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        //new SQLProperty("TreasurePackageSpec", "TreasurePackageSpec", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("TypeBitSet", "TypeBitSet", "int(11) NOT NULL"),
                         new SQLProperty("UniqueLimit", "UniqueLimit", "int(11) NOT NULL"),
                         new SQLProperty("UseAbilityId", "UseAbilityB62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
@@ -1468,30 +1356,30 @@ namespace GomLib.Models
                         new SQLProperty("ShieldChance", "ShieldChance", "float(10,1) NOT NULL"),
                         new SQLProperty("ModLevel", "ModLevel", "int(11) NOT NULL"),
                         //typebitset
-                        new SQLProperty("IsArmor", "IsArmor", "tinyint(1) NOT NULL"), 
-                        new SQLProperty("IsWeapon", "IsWeapon", "tinyint(1) NOT NULL"),
-                        new SQLProperty("HasGTNCategory", "HasGTNCategory", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("Unk8", "Unk8", "tinyint(1) NOT NULL"),
-                        new SQLProperty("HasConversation", "HasConversation", "tinyint(1) NOT NULL"),
-                        new SQLProperty("IsCrafted", "IsCrafted", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("CanBeDisassembled", "CanBeDisassembled", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("HasDurability", "HasDurability", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("IsModdable", "IsModdable", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("IsMod", "IsMod", "tinyint(1) NOT NULL"),
-                        new SQLProperty("CanHaveStats", "CanHaveStats", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("Unk800", "Unk800", "tinyint(1) NOT NULL"),
-                        new SQLProperty("IsGift", "IsGift", "tinyint(1) NOT NULL"),
-                        new SQLProperty("IsMissionItem", "IsMissionItem", "tinyint(1) NOT NULL"),
-                        new SQLProperty("Unk4000", "Unk4000", "tinyint(1) NOT NULL"),
-                        new SQLProperty("IsShipPart", "IsShipPart", "tinyint(1) NOT NULL"),
-                        new SQLProperty("Unk10000", "Unk10000", "tinyint(1) NOT NULL"),
-                        new SQLProperty("IsCmpCstmztn", "IsCmpCstmztn", "tinyint(1) NOT NULL"),
-                        new SQLProperty("HasUniqueLimit", "HasUniqueLimit", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("HasOnUse", "HasOnUse", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("IsEquipable", "IsEquipable", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("IsCurrency", "IsCurrency", "tinyint(1) NOT NULL"),
-                        new SQLProperty("IsMtxItem", "IsMtxItem", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("IsRepTrophy", "IsRepTrophy", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("IsArmor", "TypeBitflags.IsArmor", "tinyint(1)NOTNULL"),
+                        new SQLProperty("IsWeapon", "TypeBitflags.IsWeapon", "tinyint(1)NOTNULL"),
+                        new SQLProperty("HasGTNCategory", "TypeBitflags.HasGTNCategory", "tinyint(1)NOTNULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Unk8", "TypeBitflags.Unk8", "tinyint(1)NOTNULL"),
+                        new SQLProperty("HasConversation", "TypeBitflags.HasConversation", "tinyint(1)NOTNULL"),
+                        new SQLProperty("IsCrafted", "TypeBitflags.IsCrafted", "tinyint(1)NOTNULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("CanBeDisassembled", "TypeBitflags.CanBeDisassembled", "tinyint(1)NOTNULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("HasDurability", "TypeBitflags.HasDurability", "tinyint(1)NOTNULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("IsModdable", "TypeBitflags.IsModdable", "tinyint(1)NOTNULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("IsMod", "TypeBitflags.IsMod", "tinyint(1)NOTNULL"),
+                        new SQLProperty("CanHaveStats", "TypeBitflags.CanHaveStats", "tinyint(1)NOTNULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Unk800", "TypeBitflags.Unk800", "tinyint(1)NOTNULL"),
+                        new SQLProperty("IsGift", "TypeBitflags.IsGift", "tinyint(1)NOTNULL"),
+                        new SQLProperty("IsMissionItem", "TypeBitflags.IsMissionItem", "tinyint(1)NOTNULL"),
+                        new SQLProperty("Unk4000", "TypeBitflags.Unk4000", "tinyint(1)NOTNULL"),
+                        new SQLProperty("IsShipPart", "TypeBitflags.IsShipPart", "tinyint(1)NOTNULL"),
+                        new SQLProperty("Unk10000", "TypeBitflags.Unk10000", "tinyint(1)NOTNULL"),
+                        new SQLProperty("IsCmpCstmztn", "TypeBitflags.IsCmpCstmztn", "tinyint(1)NOTNULL"),
+                        new SQLProperty("HasUniqueLimit", "TypeBitflags.HasUniqueLimit", "tinyint(1)NOTNULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("HasOnUse", "TypeBitflags.HasOnUse", "tinyint(1)NOTNULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("IsEquipable", "TypeBitflags.IsEquipable", "tinyint(1)NOTNULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("IsCurrency", "TypeBitflags.IsCurrency", "tinyint(1)NOTNULL"),
+                        new SQLProperty("IsMtxItem", "TypeBitflags.IsMtxItem", "tinyint(1)NOTNULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("IsRepTrophy", "TypeBitflags.IsRepTrophy", "tinyint(1)NOTNULL", SQLPropSetting.AddIndex),
                         //Slots
                         new SQLProperty("Any", "Any", "tinyint(1) NOT NULL"),
                         new SQLProperty("EquipHumanEar", "EquipHumanEar", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),

@@ -15,31 +15,12 @@ namespace GomLib.Models
         public string Name { get { return _name ?? (_name = ""); } set { if (_name != value) { _name = value; } } }
         private string _name;
         public Dictionary<string, string> LocalizedName { get; set; }
-        public Profession CrewSkillId { get; set; }
-        public string CrewSkillName
-        {
-            get
-            {
-                switch (CrewSkillId)
-                {
-                    case Profession.Archaeology: return "Archaeology";
-                    case Profession.Bioanalysis: return "Bioanalysis";
-                    case Profession.Scavenging: return "Scavenging";
-                    case Profession.Artifice: return "Artifice";
-                    case Profession.Armormech: return "Armormech";
-                    case Profession.Armstech: return "Armstech";
-                    case Profession.Biochem: return "Biochem";
-                    case Profession.Cybertech: return "Cybertech";
-                    case Profession.Synthweaving: return "Synthweaving";
-                    case Profession.Slicing: return "Slicing";
-                    case Profession.Diplomacy: return "Diplomacy";
-                    case Profession.Investigation: return "Investigation";
-                    case Profession.TreasureHunting: return "Treasure Hunting";
-                    case Profession.UnderworldTrading: return "Underworld Trading";
-                    default: return "None";
-                }
-            }
-        }
+        public Profession CrewSkill { get; set; }
+        [JsonIgnore]
+        public long CrewSkillId { get; set; }
+        [JsonIgnore]
+        public string CrewSkillName { get; set; }
+        public Dictionary<string, string> LocalizedCrewSkillName { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         public Item Item
         {
@@ -86,8 +67,11 @@ namespace GomLib.Models
 
         public Workstation Workstation { get; set; }
         public ProfessionSubtype Subtype { get; set; }
+        [JsonIgnore]
         public long SubTypeId { get; set; }
+        [JsonIgnore]
         public string SubTypeName { get; set; }
+        public Dictionary<string, string> LocalizedSubTypeName { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]
         public Item Research1 { get; set; }
@@ -120,7 +104,9 @@ namespace GomLib.Models
         public Dictionary<string, string> LocalizedMissionYieldDescription { get; set; }
         public bool Deprecated { get; set; }
         public string Category { get; set; }
+        public Dictionary<string, string> LocalizedCategory { get; set; }
         public string SubCategory { get; set; }
+        public Dictionary<string, string> LocalizedSubCategory { get; set; }
         [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ItemQuality Quality { get; set; }
         public Dictionary<long, ModPackage> Variations { get; set; }
@@ -159,7 +145,7 @@ namespace GomLib.Models
             {
                 hash ^= Item.GetHashCode();
             }
-            hash ^= CrewSkillId.GetHashCode();
+            hash ^= CrewSkill.GetHashCode();
             hash ^= SkillOrange.GetHashCode();
             hash ^= SkillYellow.GetHashCode();
             hash ^= SkillGreen.GetHashCode();
@@ -234,7 +220,7 @@ namespace GomLib.Models
                 return false;
             if (this.CraftingTimeT3 != sch.CraftingTimeT3)
                 return false;
-            if (this.CrewSkillId != sch.CrewSkillId)
+            if (this.CrewSkill != sch.CrewSkill)
                 return false;
             if (this.Deprecated != sch.Deprecated)
                 return false;
@@ -359,44 +345,36 @@ namespace GomLib.Models
             {
                 return new List<SQLProperty>
                     {                //(SQL Column Name, C# Property Name, SQL Column type statement, isUnique/PrimaryKey, Serialize value to json)
-                        new SQLProperty("NodeId", "Id", "bigint(20) unsigned NOT NULL", true),
-                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL"),
-                        new SQLProperty("NameId", "NameId", "bigint(20) NOT NULL"),
-                        new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.PrimaryKey),
+                        new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrName", "LocalizedName[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeName", "LocalizedName[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Fqn", "Fqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("CrewSkillId", "CrewSkillId", "int(11) NOT NULL"),
-                        new SQLProperty("CrewSkillName", "CrewSkillName", "varchar(50) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("SkillOrange", "SkillOrange", "int(11) NOT NULL"),
+                        new SQLProperty("CrewSkillName", "CrewSkillName", "varchar(50) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrCrewSkillName", "LocalizedCrewSkillName[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeCrewSkillName", "LocalizedCrewSkillName[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("SkillOrange", "SkillOrange", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("SkillYellow", "SkillYellow", "int(11) NOT NULL"),
                         new SQLProperty("SkillGreen", "SkillGreen", "int(11) NOT NULL"),
                         new SQLProperty("SkillGrey", "SkillGrey", "int(11) NOT NULL"),
                         new SQLProperty("ItemBase62Id", "ItemBase62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("LearnedBase62Ids", "LearnedBase62Ids", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("Category", "Category", "varchar(65) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("SubCategory", "SubCategory", "varchar(65) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("Quality", "Quality", "varchar(15) COLLATE utf8_unicode_ci NOT NULL"),
+                        new SQLProperty("Category", "Category", "varchar(65) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrCategory", "LocalizedCategory[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeCategory", "LocalizedCategory[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("SubCategory", "SubCategory", "varchar(65) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrSubCategory", "LocalizedSubCategory[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeSubCategory", "LocalizedSubCategory[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Quality", "Quality", "varchar(15) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Icon", "HashedIcon", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("TrainerTaught","TrainerTaught", "tinyint(1) NOT NULL"),
+                        new SQLProperty("TrainerTaught","TrainerTaught", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("TrainingCost", "TrainingCost", "int(11) NOT NULL"),
-                        new SQLProperty("Materials", "MaterialsB62", "varchar(155) COLLATE latin1_general_cs NOT NULL", false, true),
+                        new SQLProperty("Materials", "MaterialsB62", "varchar(155) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.JsonSerialize),
                         new SQLProperty("CraftingTime", "CraftingTime", "int(11) NOT NULL"),
                         new SQLProperty("CraftingTimeT1", "CraftingTimeT1", "int(11) NOT NULL"),
                         new SQLProperty("CraftingTimeT2", "CraftingTimeT2", "int(11) NOT NULL"),
                         new SQLProperty("CraftingTimeT3", "CraftingTimeT3", "int(11) NOT NULL"),
-                        //new SQLProperty("Workstation", "Workstation",
-                        //new SQLProperty("Subtype", "Subtype",
-                        /*new SQLProperty("Research1", "Research1",
-                        new SQLProperty("ResearchQuantity1", "ResearchQuantity1",
-                        new SQLProperty("ResearchChance1", "ResearchChance1",
-                        new SQLProperty("Research2", "Research2",
-                        new SQLProperty("ResearchQuantity2", "ResearchQuantity2",
-                        new SQLProperty("ResearchChance2", "ResearchChance2",
-                        new SQLProperty("Research3", "Research3",
-                        new SQLProperty("ResearchQuantity3", "ResearchQuantity3",
-                        new SQLProperty("ResearchChance3", "ResearchChance3",*/
                         new SQLProperty("MissionCost", "MissionCost", "int(11) NOT NULL"),
-                        new SQLProperty("MissionDescriptionId", "MissionDescriptionId", "int(11) NOT NULL"),
-                        new SQLProperty("MissionDescription", "MissionDescription", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("MissionUnlockable", "MissionUnlockable", "tinyint(1) NOT NULL"),
                         new SQLProperty("MissionLight", "MissionLight", "int(11) NOT NULL"),
                         new SQLProperty("MissionLightCrit", "MissionLightCrit", "int(11) NOT NULL"),
@@ -405,11 +383,10 @@ namespace GomLib.Models
                         new SQLProperty("DisableDisassemble", "DisableDisassemble", "tinyint(1) NOT NULL"),
                         new SQLProperty("DisableCritical", "DisableCritical", "tinyint(1) NOT NULL"),
                         new SQLProperty("MissionFaction", "MissionFaction", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("MissionYieldDescriptionId", "MissionYieldDescriptionId", "int(11) NOT NULL"),
-                        new SQLProperty("MissionYieldDescription", "MissionYieldDescription", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("Deprecated", "Deprecated", "tinyint(1) NOT NULL"),
-                        new SQLProperty("SubTypeName", "SubTypeName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL")
-                        /*new SQLProperty("Variations", "Variations*/
+                        new SQLProperty("Deprecated", "Deprecated", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("SubTypeName", "SubTypeName", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrSubTypeName", "LocalizedSubTypeName[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeSubTypeName", "LocalizedSubTypeName[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex)
                     };
             }
         }
@@ -420,7 +397,7 @@ namespace GomLib.Models
 
             schem.Add(new XElement("Fqn", Fqn),
                 new XAttribute("Id", NodeId),
-                new XElement("CrewSkill", CrewSkillId));
+                new XElement("CrewSkill", CrewSkill));
 
             if (Name == "")
             {

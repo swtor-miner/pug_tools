@@ -12,11 +12,13 @@ namespace GomLib.Models
 {
     public class Ability : GameObject, IEquatable<Ability>
     {
+        [JsonIgnore]
         public ulong NodeId { get; set; }
-
+        [JsonIgnore]
         public long NameId { get; set; }
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
+        [JsonIgnore]
         public long DescriptionId { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         public string _Description
@@ -615,14 +617,12 @@ namespace GomLib.Models
             {
                 return new List<SQLProperty>
                     {                //(SQL Column Name, C# Property Name, SQL Column type statement, isUnique/PrimaryKey, Serialize value to json)
-                        new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("NodeId", "NodeId", "bigint(20) unsigned NOT NULL"),
-                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL", true),
-                        new SQLProperty("NameId", "NameId", "bigint(20) NOT NULL"),
-                        new SQLProperty("Description", "ParsedDescription", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("DescriptionId", "DescriptionId", "bigint(20) NOT NULL"),
+                        new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrName", "LocalizedName[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeName", "LocalizedName[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.PrimaryKey),
                         new SQLProperty("Fqn", "Fqn", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("Level", "Level", "int(11) NOT NULL"),
+                        new SQLProperty("Level", "Level", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Icon", "HashedIcon", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("IsHidden", "IsHidden", "tinyint(1) NOT NULL"),
                         new SQLProperty("IsPassive", "IsPassive", "tinyint(1) NOT NULL"),
@@ -632,13 +632,12 @@ namespace GomLib.Models
                         new SQLProperty("EnergyCost", "EnergyCost", "float NOT NULL"),
                         new SQLProperty("ApCost", "ApCost", "float NOT NULL"),
                         new SQLProperty("ApType", "ApType", "varchar(25) COLLATE utf8_unicode_ci NOT NULL"),
-                        new SQLProperty("MinRange", "MinRange", "float NOT NULL"),
-                        new SQLProperty("MaxRange", "MaxRange", "float NOT NULL"),
+                        new SQLProperty("MinRange", "MinRange", "float NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("MaxRange", "MaxRange", "float NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Gcd", "GCD", "int(11) NOT NULL"),
                         new SQLProperty("GcdOverride", "GcdOverride", "tinyint(1) NOT NULL"),
                         new SQLProperty("ModalGroup", "ModalGroup", "bigint(20) NOT NULL"),
                         new SQLProperty("SharedCooldown", "SharedCooldown", "bigint(20) unsigned NOT NULL"),
-                        new SQLProperty("DescriptionTokens", "modDescriptionTokens", "varchar(2000) COLLATE utf8_unicode_ci NOT NULL", false, true),
                         //new SQLProperty("AbilityTokens", "AbilityTokens", "varchar(255) COLLATE utf8_unicode_ci NOT NULL"),
                         new SQLProperty("TargetArc", "TargetArc", "float NOT NULL"),
                         new SQLProperty("TargetArcOffset", "TargetArcOffset", "float NOT NULL"),

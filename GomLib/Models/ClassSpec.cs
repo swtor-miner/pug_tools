@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
@@ -13,13 +14,18 @@ namespace GomLib.Models
         public int DataHash { get; set; }
         public bool IsPlayerClass { get; set; }
         public bool IsPlayerAdvancedClass { get; set; }
+        [JsonIgnore]
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
+        [JsonIgnore]
         public long NameId { get; set; }
         public string Icon { get; set; }
         public int AlignmentLight { get; set; }
         public int AlignmentDark { get; set; }
+        [JsonIgnore]
         public ulong AbilityPackageId { get; set; }
+        public string AbilityPackageB62Id { get; set; }
+        [JsonIgnore]
         public AbilityPackage AbilityPackage { get; set; }
 
         //public static List<string> ParseClassList(string str)
