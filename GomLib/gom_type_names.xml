@@ -8159,14 +8159,26 @@
   <gom_type Id="4611686353877427000" name="ncoCategory" desc="" />
   <gom_type Id="4611686353877427001" name="ncoSubCategory" desc="" />
   <gom_type Id="4611686354113987000" name="ncoAcquireMinLevel" desc="" />
-  <gom_type Id="4611686353485537003" name="ncoInteractionList" desc="" />
+  <gom_type Id="4611686353485537003" name="ncoInteractionList" desc="list of cnd. node ids with their stringtable id" />
   <gom_type Id="4611686353485537007" name="ncoNpcId" desc="" />
   <gom_type Id="4611686353485537001" name="ncoPreviewIcon" desc="" />
+  <!--<gom_type Id="4611686353485537005" name="ncoQstToInt2" desc="deprecated, only set on test ncos" />
+  <gom_type Id="4611686353485537002" name="ncoQstToInt1" desc="deprecated" /> -->
   
   <!-- contactsPrototype -->
   <gom_type Id="4611686303956034000" name="contactsNcoToNpcMap" desc="" />
   <gom_type Id="4611686304732534010" name="contactsQstConditionalMap" desc="" />
+  <gom_type Id="4611686305051984000" name="contactsLinkedCompanionMap" desc="Dictionary of ulong ulong to match split companions like Jaesa." />
+  <gom_type Id="4611686305098134000" name="contactstQuestConditionalMap" desc="Dictionary with the ulong of the quest and a list of GomObjectData for each conditional" />
   <gom_type Id="4611686353485807001" name="contactsNpcToNcoMap" desc="" />
+  <gom_type Id="4611686353851787000" name="contactsNcoBooleans" desc="" />
+  
+  <!-- contactsPrototype -> contactsAlertQuestMap -->
+  <gom_type Id="4611686304392734001" name="contactsQstCondUnkU64_1" desc="variable id?" />
+  <gom_type Id="4611686304392734002" name="contactsQstCondUnkU64_2" desc="variable id?" />
+  <gom_type Id="4611686304392734003" name="contactsQstCondCndId" desc="the ulong id of the required condition" />
+  <gom_type Id="4611686304586124004" name="contactsQstCondQstId" desc="" />
+  <gom_type Id="4611686304729574000" name="contactsQstCondNcoId" desc="" />
   
   <!-- mntMountInfoPrototype -->
   <gom_type Id="4611686298607484000" name="mntMountInfoData" desc="" />
@@ -8231,5 +8243,40 @@
   <gom_type Id="4611686303790174005" name="cnvReactionsByID" desc="List of reaction classes by ID" />
   <gom_type Id="4611686303790174001" name="cnvReactionString" desc="The string ID of the reaction text." />
   <gom_type Id="4611686303790174002" name="cnvReactionInfluenceModifier" desc="The value for how much this reaction changes influence." />
+  
+  <!-- cnd. -->
+  <gom_type Id="4611686304531944001" name="cndVariableList" desc="these are stb ids, but they are stored at ulong... and don't have stb entries." />
+  <gom_type Id="4611686304549514001" name="cndBoolOperator" desc="enum 'cndLogicEnum_Or' How the conditions should be connected, 1=And, 2=Or" />
+  <gom_type Id="4611686353517567006" name="cndConditionList" desc="" />
+  <gom_type Id="4611686353517567009" name="cndId1" desc="" />
+  <gom_type Id="4611686353517567010" name="cndId2" desc="" />
+  <gom_type Id="4611686353517567011" name="cndIcon" desc="" />
+  <gom_type Id="4611686354420747000" name="cndBitflag" desc="" />
+  
+  <!-- cnd. -> cndConditionList -->
+  <gom_type Id="4611686304538274000" name="cndIsNegated" desc="" />
+  <gom_type Id="4611686304563444004" name="cndFaction" desc="long faction id" />
+  <gom_type Id="4611686304563444008" name="cndClassRequiredMap" desc="ulong, bool" />
+  <gom_type Id="4611686304563444009" name="cndAblRequiredMap" desc="ulong, bool" />
+  <gom_type Id="4611686304563444010" name="cndUnkRequiredMap" desc="long, bool" />
+  <gom_type Id="4611686304861844000" name="cndItmRequiredCount" desc="ulong, long" />
+  <gom_type Id="4611686353517567008" name="cndType" desc="enum, The condition type: 2=Hidden, 3=Has Influence, 4=Qst Variable Set, 5=Has Item, 6=Is Summoned, 7=Summonable, 8=Has Valor Rank, 9=Is Class, 10=Is Faction, 11=Ability, 20=Meets Condition" />
+  <gom_type Id="4611686353637157005" name="cndInfluenceNcoId" desc="enum" />
+  <gom_type Id="4611686353637157006" name="cndInfluence" desc="long, How much influence is required for this condition" />
+  <gom_type Id="4611686353637157007" name="cndIntOperator" desc="enum, How to interpret the integer, 2 is less than, 3 is less than or equal, 5 is  greater than or equal, 6 is greater than" />
+  <gom_type Id="4611686353637157010" name="cndVariableIsNegated" desc="bool" />
+  <gom_type Id="4611686353637157012" name="cndVariableOperator" desc="enum" />
+  <gom_type Id="4611686353637157013" name="cndVariableId" desc="ulong, look like stb ids though." />
+  <!--<gom_type Id="4611686353680647002" name="cndRequiredItems" desc="List ulong, appears deprecated" /> -->
+  <gom_type Id="4611686354162907000" name="cndVariableRankValue" desc="long, used with ConditionType_ValorRank" />
+  <gom_type Id="4611686354162907001" name="cndContactCondional" desc="enum" />
+  <gom_type Id="4611686354162907002" name="cndCompanionCondional" desc="enum" />
+  <gom_type Id="4611686354162907003" name="cndNcoStatus" desc="List of enums, Status: 2=Hidden, 3=Can Unlock, 6=Summonable, 7=Has Companion, 8=Guest" />
+
+  <!--
+  <gom_type Id="4611686304738494000" name="cndCndNode" desc="" />
+  <gom_type Id="4611686304971424001" name="cndNcoNode4" desc="" />
+  -->
+  
   
 </gom_types>
