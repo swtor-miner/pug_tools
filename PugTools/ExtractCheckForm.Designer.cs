@@ -31,6 +31,8 @@
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.groupFileTypes = new System.Windows.Forms.GroupBox();
+            this.chkClass = new System.Windows.Forms.CheckBox();
+            this.chkDB = new System.Windows.Forms.CheckBox();
             this.chkSchemVaris = new System.Windows.Forms.CheckBox();
             this.chkCdxCat = new System.Windows.Forms.CheckBox();
             this.chkSetBonus = new System.Windows.Forms.CheckBox();
@@ -62,13 +64,14 @@
             this.chkCNV = new System.Windows.Forms.CheckBox();
             this.chkAPT = new System.Windows.Forms.CheckBox();
             this.chkABL = new System.Windows.Forms.CheckBox();
+            this.chkAPN = new System.Windows.Forms.CheckBox();
             this.groupFileTypes.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnOK
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(73, 378);
+            this.btnOK.Location = new System.Drawing.Point(70, 410);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 0;
@@ -78,7 +81,7 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(154, 378);
+            this.btnCancel.Location = new System.Drawing.Point(151, 410);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 1;
@@ -90,6 +93,9 @@
             this.groupFileTypes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupFileTypes.Controls.Add(this.chkAPN);
+            this.groupFileTypes.Controls.Add(this.chkClass);
+            this.groupFileTypes.Controls.Add(this.chkDB);
             this.groupFileTypes.Controls.Add(this.chkSchemVaris);
             this.groupFileTypes.Controls.Add(this.chkCdxCat);
             this.groupFileTypes.Controls.Add(this.chkSetBonus);
@@ -125,10 +131,31 @@
             this.groupFileTypes.Controls.Add(this.chkABL);
             this.groupFileTypes.Location = new System.Drawing.Point(12, 12);
             this.groupFileTypes.Name = "groupFileTypes";
-            this.groupFileTypes.Size = new System.Drawing.Size(304, 407);
+            this.groupFileTypes.Size = new System.Drawing.Size(304, 433);
             this.groupFileTypes.TabIndex = 2;
             this.groupFileTypes.TabStop = false;
             this.groupFileTypes.Text = "File Types";
+            // 
+            // chkClass
+            // 
+            this.chkClass.AutoSize = true;
+            this.chkClass.Location = new System.Drawing.Point(166, 342);
+            this.chkClass.Name = "chkClass";
+            this.chkClass.Size = new System.Drawing.Size(115, 17);
+            this.chkClass.TabIndex = 32;
+            this.chkClass.Text = "Class - ClassSpecs";
+            this.chkClass.UseVisualStyleBackColor = true;
+            // 
+            // chkDB
+            // 
+            this.chkDB.AutoSize = true;
+            this.chkDB.Location = new System.Drawing.Point(166, 365);
+            this.chkDB.Name = "chkDB";
+            this.chkDB.Size = new System.Drawing.Size(108, 17);
+            this.chkDB.TabIndex = 31;
+            this.chkDB.Text = "Check DB Export";
+            this.chkDB.UseVisualStyleBackColor = true;
+            this.chkDB.CheckedChanged += new System.EventHandler(this.chkDB_CheckedChanged);
             // 
             // chkSchemVaris
             // 
@@ -493,11 +520,21 @@
             this.chkABL.Text = "ABL - Abilities";
             this.chkABL.UseVisualStyleBackColor = true;
             // 
+            // chkAPN
+            // 
+            this.chkAPN.AutoSize = true;
+            this.chkAPN.Location = new System.Drawing.Point(7, 342);
+            this.chkAPN.Name = "chkAPN";
+            this.chkAPN.Size = new System.Drawing.Size(132, 17);
+            this.chkAPN.TabIndex = 33;
+            this.chkAPN.Text = "APN - AbilityPackages";
+            this.chkAPN.UseVisualStyleBackColor = true;
+            // 
             // ExtractCheckForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(328, 431);
+            this.ClientSize = new System.Drawing.Size(328, 457);
             this.Controls.Add(this.groupFileTypes);
             this.Name = "ExtractCheckForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -544,5 +581,8 @@
         private System.Windows.Forms.CheckBox chkSetBonus;
         private System.Windows.Forms.CheckBox chkCdxCat;
         private System.Windows.Forms.CheckBox chkSchemVaris;
+        private System.Windows.Forms.CheckBox chkClass;
+        private System.Windows.Forms.CheckBox chkDB;
+        private System.Windows.Forms.CheckBox chkAPN;
     }
 }

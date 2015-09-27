@@ -86,6 +86,10 @@ namespace tor_tools
                 fileTypes.Add("TORC");
             if (this.chkSchemVaris.Checked)
                 fileTypes.Add("SCHVARI");
+            if (this.chkClass.Checked)
+                fileTypes.Add("CLASS");
+            if (this.chkAPN.Checked)
+                fileTypes.Add("APN");
             return fileTypes;
         }
 
@@ -121,6 +125,42 @@ namespace tor_tools
             this.chkSetBonus.Checked = value;
             this.chkCdxCat.Checked = value;
             this.chkSchemVaris.Checked = value;
+        }
+
+        private void chkDB_CheckedChanged(object sender, EventArgs e)
+        {
+            this.chkABLEFF.Checked = false;
+            this.chkAC.Checked = false;
+            this.chkAPT.Checked = false;
+            this.chkAREA.Checked = false;
+            this.chkCMP.Checked = false;
+            this.chkCNQ.Checked = false;
+            this.chkCNV.Checked = false;
+            this.chkCOL.Checked = false;
+            this.chkDEC.Checked = false;
+            this.chkEXP.Checked = false;
+            this.chkGOM.Checked = false;
+            this.chkGSF.Checked = false;
+            this.chkIPP.Checked = false;
+            this.chkMISC.Checked = false;
+            this.chkMTX.Checked = false;
+            this.chkNPP.Checked = false;
+            this.chkSTB.Checked = false;
+            this.chkICONS.Checked = false;
+            this.chkCdxCat.Checked = false;
+            this.chkSchemVaris.Checked = false;
+
+            this.chkACH.Checked = true;
+            this.chkABL.Checked = true;
+            this.chkCDX.Checked = true;
+            this.chkITM.Checked = true;
+            this.chkNPC.Checked = true;
+            this.chkSCHEM.Checked = true;
+            this.chkQST.Checked = true;
+            this.chkClass.Checked = true;
+            this.chkTAL.Checked = true;
+            this.chkSetBonus.Checked = true;
+            this.chkAPN.Checked = true;
         }
     }
 }
