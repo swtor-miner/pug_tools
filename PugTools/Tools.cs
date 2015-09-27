@@ -191,6 +191,7 @@ namespace tor_tools
                     readstream.CopyTo(gzip);
                 }
             }
+            File.Delete(filepath);
             addtolist2("Done.");
         }
 
@@ -375,7 +376,7 @@ namespace tor_tools
 
         #region Misc Functions
 
-        private GomLib.Models.GameObject LoadGameObject(DataObjectModel dom, GomObject gObject)
+        private GomLib.Models.GameObject LoadGameObject(DataObjectModel dom, GomObject gObject, bool classOverride)
         {
             GomLib.Models.GameObject obj;
             string gomPrefix = gObject.Name.Substring(0, 4);
@@ -437,14 +438,18 @@ namespace tor_tools
                     obj = dom.abilityPackageLoader.Load(gObject);
                     break;
                 case "clas":
-                    if (gObject.Name.StartsWith("class.pc.advanced."))
+                    if (classOverride && gObject.Name.StartsWith("class.pc.advanced."))
                         obj = dom.advancedClassLoader.Load(gObject);
                     else
                         // do something else here.
-                        throw new NotImplementedException();
+                        obj = dom.classSpecLoader.Load(gObject);
+                        //throw new NotImplementedException();
                     break;
                 case "nco.":
                     obj = dom.newCompanionLoader.Load(gObject);
+                    break;
+                case "apn.":
+                    obj = dom.abilityPackageLoader.Load(gObject);
                     break;
                 default:
                     throw new NotImplementedException();
@@ -555,6 +560,11 @@ namespace tor_tools
                         DisableButtons();
                         getObjects("abl.", "Abilities");
                     }
+                    if (extensions.Contains("APN"))
+                    {
+                        DisableButtons();
+                        getObjects("apn.", "AbilityPackages");
+                    }
                     if (extensions.Contains("ACH"))
                     {
                         DisableButtons();
@@ -575,6 +585,11 @@ namespace tor_tools
                     {
                         DisableButtons();
                         getObjects("cdx.", "CodexEntries");
+                    }
+                    if (extensions.Contains("CLASS"))
+                    {
+                        DisableButtons();
+                        getObjects("class.", "Classes");
                     }
                     if (extensions.Contains("CNV"))
                     {
@@ -951,7 +966,7 @@ namespace tor_tools
                     if (chkBuildCompare.Checked)
                     {
                         addtolist("Crosslinking Previous Data Object Model.");
-                        SmartLink(previousDom);
+                        //SmartLink(previousDom);
                         ProcessGomFields();
                         Clearlist();
                         addtolist("Crosslinking Data Object Model. - Done");
