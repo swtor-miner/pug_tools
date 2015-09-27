@@ -19,17 +19,17 @@ namespace GomLib
 
             foreach (var property in properties)
             {
-                var x = obj.GetType().GetProperty(property.PropertyName);
+                var x = obj.GetType().GetProperty(property.PropertyName, System.Reflection.BindingFlags.FlattenHierarchy | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.GetProperty);
                 if (x == null)
                     
                     continue;
                 if (property.JsonSerialize)
                 {
-                    results.Add(sqlSani(JsonConvert.SerializeObject(x.GetValue(obj), settings)));
+                    results.Add(sqlSani(JsonConvert.SerializeObject(x.GetValue(obj, null), settings)));
                 }
                 else
                 {
-                    var val = x.GetValue(obj) ?? "";
+                    var val = x.GetValue(obj, null) ?? "";
                     var valType = val.GetType().ToString();
                     switch (valType)
                     {
@@ -168,10 +168,11 @@ namespace GomLib
         /// <returns>Base62 string</returns>
         public static string ToMaskedBase62(this long id)
         {
-            long maskedId = (long)(id & 0xFFFFFFFFFF);
-            List<byte> maskedBytes = BitConverter.GetBytes(maskedId).ToList();
-            maskedBytes.RemoveRange(5, 3);
-            return maskedBytes.ToArray().ToBase62();
+            //long maskedId = (long)(id & 0xFFFFFFFFFF);
+            //List<byte> maskedBytes = BitConverter.GetBytes(maskedId).ToList();
+            //maskedBytes.RemoveRange(5, 3);
+            //return maskedBytes.ToArray().ToBase62();
+            return ((ulong)id).ToMaskedBase62();
         }
 
         /// <summary>
