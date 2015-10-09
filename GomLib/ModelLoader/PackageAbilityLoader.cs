@@ -45,6 +45,7 @@ namespace GomLib.ModelLoader
             }
             result.Scales = (result.Levels.Count == 61 - result.Level);
             result.Toughness = gomObj.ValueOrDefault<string>("apnCbtToughness", "");
+            result.AiUsePriority = gomObj.ValueOrDefault<long>("AiUsagePriority", 0);
 
             //result.Ability = _dom.abilityLoader.Load(result.AbilityId);
 

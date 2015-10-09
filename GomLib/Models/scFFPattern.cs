@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
@@ -15,7 +16,9 @@ namespace GomLib.Models
         public bool IsAvailable { get; set; }
         public bool IsDeprecated { get; set; }
         //public string Name { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public long NameId { get; set; }            //scFFPatternName - 3285259139416370
+        [JsonConverter(typeof(LongConverter))]
         public long ShipId { get; set; }            //scFFPatternShipId - 3378619052355679612
         public long ShortId { get; set; }           /*scFFPattternShortId - examples 1794, 1808, 1790, 1816, 1813, 1793,
                                                      * Short Lookup Id in scFFPatternsDefinitionPrototype - scFFPatternsDefinitionShortIdData*/

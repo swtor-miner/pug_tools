@@ -10,7 +10,7 @@ namespace GomLib.Models
     public class GameObject : Dependencies
     {
         //[JsonConverter(typeof(Newtonsoft.Json.Converters.))]
-        [JsonIgnore]
+        [JsonConverter(typeof(ULongConverter))]
         public ulong Id { get; set; }
         public string Base62Id
         {
@@ -178,6 +178,7 @@ namespace GomLib.Models
 
     public class PseudoGameObject : Dependencies
     {
+        [JsonConverter(typeof(LongConverter))]
         public virtual long Id { get; set; }
         public string Base62Id
         {

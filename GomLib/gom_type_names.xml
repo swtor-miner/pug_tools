@@ -8243,6 +8243,7 @@
   <gom_type Id="4611686303790174005" name="cnvReactionsByID" desc="List of reaction classes by ID" />
   <gom_type Id="4611686303790174001" name="cnvReactionString" desc="The string ID of the reaction text." />
   <gom_type Id="4611686303790174002" name="cnvReactionInfluenceModifier" desc="The value for how much this reaction changes influence." />
+  <gom_type Id="4611686354776767000" name="cnvReactionInfluenceNegative" desc="Influence gain is negative if true." />
   
   <!-- cnd. -->
   <gom_type Id="4611686304531944001" name="cndVariableList" desc="these are stb ids, but they are stored at ulong... and don't have stb entries." />
@@ -8278,5 +8279,7 @@
   <gom_type Id="4611686304971424001" name="cndNcoNode4" desc="" />
   -->
   
+  <!-- apn.-->
+  <gom_type Id="4611686063284631217" name="AiUsagePriority" desc="The priority weight given to the package ability" />
   
 </gom_types>

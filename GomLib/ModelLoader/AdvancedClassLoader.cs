@@ -43,8 +43,8 @@ namespace GomLib.ModelLoader
             ac.DescriptionId = Convert.ToInt64(obj.Data.ValueOrDefault<string>("chrAdvancedClassDescription"));
             ac.Description = classDescriptions.GetText(ac.DescriptionId, obj.Name);
             ac.LocalizedDescription = classDescriptions.GetLocalizedText(ac.DescriptionId, obj.Description);
-            ac.classSpecId = obj.Data.ValueOrDefault<ulong>("chrAdvancedClassDataClassSpec", 0);
-            ac.ClassSpec = _dom.classSpecLoader.Load(ac.classSpecId);
+            ac.ClassSpecId = obj.Data.ValueOrDefault<ulong>("chrAdvancedClassDataClassSpec", 0);
+            ac.ClassSpec = _dom.classSpecLoader.Load(ac.ClassSpecId);
             ac.ClassBackground = obj.Data.ValueOrDefault<string>("chrAdvancedClassBackground");
 
 
@@ -89,7 +89,7 @@ namespace GomLib.ModelLoader
                     foreach (var entry in entries)
                         ac.AdvancedClassPkgIds.Add(entry.ValueOrDefault<ulong>("disApcId"));
 
-                    entries = (List<GomObjectData>)((List<object>)classBaseTable[ac.classSpecId]).ConvertAll(x => (GomObjectData)x);
+                    entries = (List<GomObjectData>)((List<object>)classBaseTable[ac.ClassSpecId]).ConvertAll(x => (GomObjectData)x);
 
                     ac.BaseClassPkgIds = new List<ulong>();
                     foreach (var entry in entries)

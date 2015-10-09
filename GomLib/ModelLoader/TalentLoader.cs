@@ -142,28 +142,14 @@ namespace GomLib.ModelLoader
                 rankstd.DefensiveStats = new List<Talent.StatData>();
                 foreach (GomObjectData defensiveStat in defensiveStatList)
                 {//create a stat type that will hold the stat, the value, a bool, and the affected ability
-                    Talent.StatData statData = new Talent.StatData();
-                    statData.StatId = defensiveStat.ValueOrDefault<ScriptEnum>("talTalentStatName", new ScriptEnum()).Value;
-                    statData.Stat = defensiveStat.ValueOrDefault<ScriptEnum>("talTalentStatName", new ScriptEnum()).ToString();
-                    statData.Value = defensiveStat.ValueOrDefault<float>("talTalentStatValue");
-                    statData.Modifier = defensiveStat.ValueOrDefault<ScriptEnum>("talTalentStatModifier", new ScriptEnum()).ToString().Replace("0x00", "AddToCurrent").Replace("modStatType_", "");
-                    statData.Enabled = defensiveStat.ValueOrDefault<bool>("talTalentStatIsEnabled");
-                    statData.AffectedNodeId = defensiveStat.ValueOrDefault<ulong>("talTalentStatTargetId");
-                    statData.AffectedAbility = _dom.abilityLoader.Load(statData.AffectedNodeId);
+                    Talent.StatData statData = new Talent.StatData(_dom, defensiveStat);
                     rankstd.DefensiveStats.Add(statData);
                 }
                 var offensiveStatList = statLookup.ValueOrDefault<List<object>>("talTalentOffensiveStats", null);
                 rankstd.OffensiveStats = new List<Talent.StatData>();
                 foreach (GomObjectData offensiveStat in offensiveStatList)
                 {
-                    Talent.StatData statData = new Talent.StatData();
-                    statData.StatId = offensiveStat.ValueOrDefault<ScriptEnum>("talTalentStatName", new ScriptEnum()).Value;
-                    statData.Stat = offensiveStat.ValueOrDefault<ScriptEnum>("talTalentStatName", new ScriptEnum()).ToString();
-                    statData.Value = offensiveStat.ValueOrDefault<float>("talTalentStatValue");
-                    statData.Modifier = offensiveStat.ValueOrDefault<ScriptEnum>("talTalentStatModifier", new ScriptEnum()).ToString().Replace("0x00", "AddToCurrent").Replace("modStatType_", "");
-                    statData.Enabled = offensiveStat.ValueOrDefault<bool>("talTalentStatIsEnabled");
-                    statData.AffectedNodeId = offensiveStat.ValueOrDefault<ulong>("talTalentStatTargetId");
-                    statData.AffectedAbility = _dom.abilityLoader.Load(statData.AffectedNodeId);
+                    Talent.StatData statData = new Talent.StatData(_dom, offensiveStat);
                     rankstd.OffensiveStats.Add(statData);
                 }
                 tal.RankStats.Add(rankstd);

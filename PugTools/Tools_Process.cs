@@ -1492,16 +1492,35 @@ namespace tor_tools
             return jsonString;
         }
 
-        private void GameObjectListAsJSON(string prefix, IEnumerable<GomLib.Models.GameObject> itmList)
+        private void GameObjectListAsJSON(string prefix, List<GomLib.Models.GameObject> itmList)
         {
             int i = 0;
             short e = 0;
             string n = Environment.NewLine;
             var txtFile = new StringBuilder();
-            string filename = String.Format("{0}{1}", prefix, ".json");
+            string filename = String.Format("\\json\\{0}{1}", prefix, ".json");
             WriteFile("", filename, false);
             var count = itmList.Count();
-            foreach (var itm in itmList)
+            //var blocksize = 100;
+            //var blocks = count % blocksize;
+            //if (blocks > 0)
+            //{
+            //    progressUpdate(i, count);
+            //    for (int b = blocks - 1; b >= 0; b--) //go backwards so we can delete items :)
+            //    {
+            //        System.Collections.Concurrent.BlockingCollection<string> blockCollection = new System.Collections.Concurrent.BlockingCollection<string>();
+            //        var block = itmList.GetRange(b * blocksize, blocksize);
+            //        Parallel.ForEach(block, itm =>
+            //        {
+            //            string jsonBlock = itm.ToJSON();
+            //            blockCollection.Add(jsonBlock);
+            //        });
+            //        i += blocksize;
+            //        txtFile.Append(String.Join(Environment.NewLine, blockCollection));
+            //        itmList.RemoveRange(b * blocksize, blocksize);
+            //    }
+            //}
+            for (int b = itmList.Count - 1; b >= 0; b--) //go backwards so we can delete values
             {
                 progressUpdate(i, count);
                 if (e % 1000 == 1)
@@ -1511,13 +1530,31 @@ namespace tor_tools
                     e = 0;
                 }
 
-                addtolist2(String.Format("{0}: {1}", prefix, itm.Fqn));
+                addtolist2(String.Format("{0}: {1}", prefix, itmList[b].Fqn));
 
-                string jsonString = itm.ToJSON(); // ConvertToJson(itm); //added method in Tools.cs
+                string jsonString = itmList[b].ToJSON(); // ConvertToJson(itm); //added method in Tools.cs
+                itmList[b] = null;
                 txtFile.Append(jsonString + Environment.NewLine); //Append it with a newline to the output.
                 i++;
                 e++;
             }
+            //foreach (var itm in itmList) //clean up what's left
+            //{
+            //    progressUpdate(i, count);
+            //    if (e % 1000 == 1)
+            //    {
+            //        WriteFile(txtFile.ToString(), filename, true);
+            //        txtFile.Clear();
+            //        e = 0;
+            //    }
+
+            //    addtolist2(String.Format("{0}: {1}", prefix, itm.Fqn));
+
+            //    string jsonString = itm.ToJSON(); // ConvertToJson(itm); //added method in Tools.cs
+            //    txtFile.Append(jsonString + Environment.NewLine); //Append it with a newline to the output.
+            //    i++;
+            //    e++;
+            //}
             addtolist(String.Format("The {0} json file has been generated; there were {1} {0}", prefix, i));
             WriteFile(txtFile.ToString(), filename, true);
             DeleteEmptyFile(filename);
@@ -1533,7 +1570,7 @@ namespace tor_tools
             short e = 0;
             string n = Environment.NewLine;
             var txtFile = new StringBuilder();
-            string filename = String.Format("{0}{1}", prefix, ".json");
+            string filename = String.Format("\\json\\{0}{1}", prefix, ".json");
             WriteFile("", filename, false);
             var count = itmList.Count();
             for(int c = 0; c < count; c++)
@@ -1608,9 +1645,9 @@ namespace tor_tools
             int f = 1;
             string n = Environment.NewLine;
             var txtFile = new StringBuilder();
-            string filename = String.Format("{0}{1}_", prefix, xmlRoot);
-            string frs = "{0}{1}.sql";
-            WriteFile("", filename, false);
+            string filename = String.Format("\\sql\\{0}{1}", prefix, xmlRoot);
+            string frs = "{0}.sql";
+            WriteFile("", String.Format(frs, filename, f), false);
             var count = itmList.Count();
             
             SQLInitStore transInit;
@@ -1665,7 +1702,7 @@ namespace tor_tools
             //WriteFile(transInit.InitEnd, String.Format(frs, filename, f), true);
             initTable[xmlRoot].OutputCreationSQL(); //output the creation sql file for this table
             sqlTransactionsFlush(); //flush the transaction queue
-            DeleteEmptyFile(filename);
+            DeleteEmptyFile(String.Format(frs, filename, f));
             itmList = null;
             GC.Collect();
             for (int j = 1; j <= f; j++)

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace GomLib.Models
 {
@@ -9,8 +11,11 @@ namespace GomLib.Models
     {
         [Newtonsoft.Json.JsonIgnore]
         public Companion Companion { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
         public GiftType GiftType { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
         public GiftInterest Reaction { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
         public GiftInterest RomancedReaction { get; set; }
 
         public override int GetHashCode()

@@ -94,6 +94,7 @@ namespace GomLib
         public SCFFShipLoader scFFShipLoader;
         public SchematicLoader schematicLoader;
         public Models.StatData statData;
+        public Models.FactionData factionData;
         //public Models.StatExtensions statExtensions;
         public StrongholdLoader strongholdLoader;
         public TalentLoader talentLoader;
@@ -333,6 +334,7 @@ namespace GomLib
                 Loaded = true;
 
                 statData = new Models.StatData(this);
+                factionData = new Models.FactionData(this);
                 enhanceData = new Models.EnhancementData(this);
                 socialTierData = new Models.SocialTierData(this);
                 alignmentData = new Models.AlignmentData(this);
@@ -412,6 +414,7 @@ namespace GomLib
 
                 gomTypeLoader = null;
                 statData = null;
+                factionData = null;
                 enhanceData = null;
                 socialTierData = null;
                 alignmentData = null;

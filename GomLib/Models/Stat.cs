@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
@@ -312,7 +313,9 @@ namespace GomLib.Models
         public string DisplayName { get; set; }
         public bool IsMeta { get; set; }
         public string NumFormat { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public long StringId { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public long Id { get; set; }
         public Dictionary<string, string> LocalizedDisplayName { get; set; }
 

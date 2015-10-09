@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
     public class scFFTalentTree : IEquatable<scFFTalentTree>
     {
+        [JsonIgnore]
         public Ability Ability { get; set; }
+        public string AbilityB62Id { get { if(Ability != null) return Ability.Id.ToMaskedBase62(); return null; } }
         [Newtonsoft.Json.JsonIgnore]
         public Dictionary<int, Dictionary<int, List<object>>> Tree { get; set; }
 

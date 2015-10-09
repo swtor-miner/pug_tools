@@ -17,14 +17,20 @@ namespace GomLib.Models
         [JsonIgnore]
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
-        [JsonIgnore]
+        [JsonConverter(typeof(LongConverter))]
         public long NameId { get; set; }
         public string Icon { get; set; }
         public int AlignmentLight { get; set; }
         public int AlignmentDark { get; set; }
-        [JsonIgnore]
+        [JsonConverter(typeof(ULongConverter))]
         public ulong AbilityPackageId { get; set; }
-        public string AbilityPackageB62Id { get; set; }
+        public string AbilityPackageB62Id
+        {
+            get
+            {
+                return AbilityPackageId.ToMaskedBase62();
+            }
+        }
         [JsonIgnore]
         public AbilityPackage AbilityPackage { get; set; }
 

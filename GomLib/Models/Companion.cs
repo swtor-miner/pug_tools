@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
@@ -11,12 +12,24 @@ namespace GomLib.Models
         public List<CompanionAffectionRank> AffectionRanks { get; set; }
         public ClassSpecList Classes { get; set; }
         public float ConversationMultiplier { get; set; }
+        [JsonIgnore]
         public List<Talent> CrewAbilities { get; set; }
+        public List<string> CrewAbilityB62Ids
+        {
+            get
+            {
+                if (CrewAbilities != null)
+                    return CrewAbilities.Select(x => x.Id.ToMaskedBase62()).ToList();
+                return null;
+            }
+        }
         public List<string> CrewPositions { get; set; }
         public string Description { get; set; }
         public string Faction { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public long FactionId { get; set; }
         public List<CompanionGiftInterest> GiftInterest { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public override long Id
         {
             get
@@ -29,16 +42,21 @@ namespace GomLib.Models
         public Dictionary<string, string> LocalizedDescription { get; set; }
         //public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Npc Npc { get; set; }
         public string Portrait { get; set; }
         public List<CompanionProfessionModifier> ProfessionModifiers { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         public Ability SpaceAbility { get; set; }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong SpaceAbilityId { get; set; }
+        public string SpaceAbilityB62Id { get { return SpaceAbilityId.ToMaskedBase62(); } }
         public string SpaceIcon { get; set; }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong uId { get; set; }
+        public string uB62Id { get { return uId.ToMaskedBase62(); } }
         public List<ulong> AllowedClasses { get; set; }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong NcoId { get; set; }
 
         public override int GetHashCode()
@@ -275,18 +293,25 @@ namespace GomLib.Models
         public List<object> AcquireConditionals { get; set; }
         public long AcquireMinLevel { get; set; }
         public List<object> AllianceAlerts { get; set; }
+        [JsonIgnore]
         public string Category { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public long CategoryId { get; set; }
         public long InfluenceCap { get; set; }
         public Dictionary<string, string> LocalizedName { get; internal set; }
         public Dictionary<string, string> LocalizedTitle { get; internal set; }
+        public Dictionary<string, string> LocalizedCategory { get; internal set; }
+        public Dictionary<string, string> LocalizedSubCategory { get; internal set; }
         public string Name { get; internal set; }
+        [JsonConverter(typeof(LongConverter))]
         public long NameId { get; internal set; }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong NpcId { get; set; }
         public string PreviewIcon { get; set; }
         public string SubCategory { get; set; }
         public long SubCategoryId { get; set; }
         public string Title { get; internal set; }
+        [JsonConverter(typeof(LongConverter))]
         public long TitleId { get; internal set; }
         internal Companion _comp { get; set; }
         public Companion Companion {
@@ -300,127 +325,51 @@ namespace GomLib.Models
             }
         }
 
-        //public override int GetHashCode()
-        //{
-        //    int hash = Id.GetHashCode();
-        //    if (Classes != null) hash ^= Classes.GetHashCode();
-        //    hash ^= ConversationMultiplier.GetHashCode();
-        //    if (Faction != null) hash ^= Faction.GetHashCode();
-        //    hash ^= FactionId.GetHashCode();
-        //    hash ^= IsGenderMale.GetHashCode();
-        //    hash ^= IsRomanceable.GetHashCode();
-        //    hash ^= Npc.GetHashCode();
-        //    if (Portrait != null) hash ^= Portrait.GetHashCode();
-        //    hash ^= SpaceAbilityId.GetHashCode();
-        //    if (SpaceIcon != null) hash ^= SpaceIcon.GetHashCode();
-        //    hash ^= uId.GetHashCode();
-        //    if (AffectionRanks != null) foreach (var x in AffectionRanks) { hash ^= x.GetHashCode(); }
-        //    if (CrewAbilities != null) foreach (var x in CrewAbilities) { hash ^= x.GetHashCode(); }
-        //    if (CrewPositions != null) foreach (var x in CrewPositions) { hash ^= x.GetHashCode(); }
-        //    if (GiftInterest != null) foreach (var x in GiftInterest) { hash ^= x.GetHashCode(); }
-        //    if (LocalizedDescription != null) foreach (var x in LocalizedDescription) { hash ^= x.GetHashCode(); }
-        //    if (LocalizedName != null) foreach (var x in LocalizedName) { hash ^= x.GetHashCode(); }
-        //    if (ProfessionModifiers != null) foreach (var x in ProfessionModifiers) { hash ^= x.GetHashCode(); }
-        //    return hash;
-        //}
+        public override int GetHashCode()
+        {
+            int hash = Id.GetHashCode();
+            if (AcquireConditionals != null) foreach (var x in AcquireConditionals) { hash ^= x.GetHashCode(); }
+            hash ^= AcquireMinLevel.GetHashCode();
+            if (AllianceAlerts != null) foreach (var x in AllianceAlerts) { hash ^= x.GetHashCode(); }
+            hash ^= CategoryId.GetHashCode();
+            hash ^= InfluenceCap.GetHashCode();
+            if (LocalizedName != null) foreach (var x in LocalizedName) { hash ^= x.GetHashCode(); }
+            if (LocalizedTitle != null) foreach (var x in LocalizedTitle) { hash ^= x.GetHashCode(); }
+            if (LocalizedName != null) foreach (var x in LocalizedName) { hash ^= x.GetHashCode(); }
+            if (LocalizedTitle != null) foreach (var x in LocalizedTitle) { hash ^= x.GetHashCode(); }
+            hash ^= NameId.GetHashCode();
+            hash ^= NpcId.GetHashCode();
+            hash ^= PreviewIcon.GetHashCode();
+            hash ^= SubCategory.GetHashCode();
+            hash ^= SubCategoryId.GetHashCode();
+            hash ^= TitleId.GetHashCode();
+            hash ^= SubCategory.GetHashCode();
+            if (Companion != null) hash ^= Companion.GetHashCode();
+            return hash;
+        }
 
-        //public override bool Equals(object obj)
-        //{
-        //    if (obj == null) return false;
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
 
-        //    if (ReferenceEquals(this, obj)) return true;
+            if (ReferenceEquals(this, obj)) return true;
 
-        //    Companion cmp = obj as Companion;
-        //    if (cmp == null) return false;
+            Companion cmp = obj as Companion;
+            if (cmp == null) return false;
 
-        //    return Equals(cmp);
-        //}
+            return Equals(cmp);
+        }
 
-        //public bool Equals(Companion cmp)
-        //{
-        //    if (cmp == null) return false;
+        public bool Equals(Companion cmp)
+        {
+            if (cmp == null) return false;
 
-        //    if (ReferenceEquals(this, cmp)) return true;
+            if (ReferenceEquals(this, cmp)) return true;
 
-        //    if (this.AffectionRanks != null)
-        //    {
-        //        if (cmp.AffectionRanks != null)
-        //        {
-        //            if (!this.AffectionRanks.SequenceEqual(cmp.AffectionRanks))
-        //                return false;
-        //        }
-        //    }
-        //    if (!this.Classes.Equals(cmp.Classes, false))
-        //        return false;
-        //    if (this.ConversationMultiplier != cmp.ConversationMultiplier)
-        //        return false;
-        //    if (this.CrewAbilities != null)
-        //    {
-        //        if (cmp.CrewAbilities != null)
-        //        {
-        //            if (!this.CrewAbilities.SequenceEqual(cmp.CrewAbilities))
-        //                return false;
-        //        }
-        //    }
-        //    if (this.CrewPositions != null)
-        //    {
-        //        if (cmp.CrewPositions != null)
-        //        {
-        //            if (!this.CrewPositions.SequenceEqual(cmp.CrewPositions))
-        //                return false;
-        //        }
-        //    }
-        //    if (this.Description != cmp.Description)
-        //        return false;
-        //    if (this.Faction != cmp.Faction)
-        //        return false;
-        //    if (this.FactionId != cmp.FactionId)
-        //        return false;
-        //    if (this.GiftInterest != null)
-        //    {
-        //        if (cmp.GiftInterest != null)
-        //        {
-        //            if (!this.GiftInterest.SequenceEqual(cmp.GiftInterest))
-        //                return false;
-        //        }
-        //    }
-        //    if (this.Id != cmp.Id)
-        //        return false;
-        //    if (this.IsGenderMale != cmp.IsGenderMale)
-        //        return false;
-        //    if (this.IsRomanceable != cmp.IsRomanceable)
-        //        return false;
-
-        //    var ssComp = new DictionaryComparer<string, string>();
-        //    if (!ssComp.Equals(this.LocalizedDescription, cmp.LocalizedDescription))
-        //        return false;
-
-        //    if (this.Name != cmp.Name)
-        //        return false;
-        //    if (!this.Npc.Equals(cmp.Npc))
-        //        return false;
-        //    if (this.Portrait != cmp.Portrait)
-        //        return false;
-        //    if (this.ProfessionModifiers != null)
-        //    {
-        //        if (cmp.ProfessionModifiers != null)
-        //        {
-        //            if (!this.ProfessionModifiers.SequenceEqual(cmp.ProfessionModifiers))
-        //                return false;
-        //        }
-        //    }
-        //    if (!this.SpaceAbility.Equals(cmp.SpaceAbility))
-        //        return false;
-        //    if (this.SpaceAbilityId != cmp.SpaceAbilityId)
-        //        return false;
-        //    if (this.SpaceIcon != cmp.SpaceIcon)
-        //        return false;
-        //    if (this.uId != cmp.uId)
-        //        return false;
-        //    if (NcoId != cmp.NcoId)
-        //        return false;
-        //    return true;
-        //}
+            if (this.GetHashCode() != cmp.GetHashCode())
+                return false;
+            return true;
+        }
 
         public override XElement ToXElement(bool verbose)
         {

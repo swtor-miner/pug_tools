@@ -5,15 +5,19 @@ using System.Text;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using System.Xml;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
     public class Stronghold : GameObject, IEquatable<Stronghold>
     {
+        [JsonIgnore]
         public ulong NodeId { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public long NameId { get; set; }
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public long DescId { get; set; }
         public string Description { get; set; }
         public Dictionary<string, string> LocalizedDescription { get; set; }
@@ -21,6 +25,7 @@ namespace GomLib.Models
         public string Icon { get; set; }
         public long DefaultOccupancy { get; set; }
         public long DefaultHooks { get; set; }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong PhsId { get; set; }
         public long MaxHooks { get; set; }
         public Dictionary<long, Room> RoomTable { get; set; }

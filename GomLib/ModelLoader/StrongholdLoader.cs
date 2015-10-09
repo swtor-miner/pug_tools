@@ -65,6 +65,7 @@ namespace GomLib.ModelLoader
             var apt = (Models.Stronghold)obj;
 
             apt.NodeId = gom.Id;
+            apt.Id = gom.Id;
             apt.Fqn = gom.Name;
             apt._dom = _dom;
             apt.References = obj.References;

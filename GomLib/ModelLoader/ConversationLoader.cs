@@ -132,6 +132,9 @@ namespace GomLib.ModelLoader
                         GomObjectData reactionClass = kvp.Value as GomObjectData;
                         long sid = reactionClass.ValueOrDefault<long>("cnvReactionString", 0);
                         long influenceMod = reactionClass.ValueOrDefault<long>("cnvReactionInfluenceModifier", 0);
+                        bool influenceNegative = reactionClass.ValueOrDefault("cnvReactionInfluenceNegative", false);
+
+                        if (influenceNegative) influenceMod = -influenceMod;
 
                         //Get the string from the string tables.
                         StringTable reactionStb = _dom.stringTable.Find("str.gui.conversationreactions");

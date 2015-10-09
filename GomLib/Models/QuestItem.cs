@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
     public class QuestItem : IEquatable<QuestItem>
     {
         public string Name { get; set; }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong Id { get; set; }
         public string Fqn { get; set; }
         public long MaxCount { get; set; }
@@ -16,6 +18,7 @@ namespace GomLib.Models
         [Newtonsoft.Json.JsonIgnore]
         public DataObjectModel _dom { get; set; }
 
+        [JsonConverter(typeof(LongConverter))]
         public long GUID { get; set; }
         public long Min { get; set; }
         public long Max { get; set; }

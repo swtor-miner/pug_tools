@@ -31,17 +31,18 @@ namespace tor_tools
             LoadData();
             Dictionary<string, string> gameObjects = new Dictionary<string, string>
             {
+                
                 {"ach.", "Achievement"},
-                //{"abl.", "Ability"},
-                /*{"apn.", true},
-                {"cdx.", true},
-                {"cnv.", true},
-                {"npc.", true},*/
-                //{"qst.", "Mission"},
-                //{"tal.", "Talent"},
-                //{"sche", "Schematics"},
-                /*{"dec.", true},*/
-                //{"itm.", "Item"}//,
+                {"abl.", "Ability"},
+                //{"apn.", true},
+                {"cdx.", "Codex"},
+                //*{"cnv.", true},
+                {"npc.", "Npc" },
+                {"qst.", "Mission"},
+                {"tal.", "Talent"},
+                {"sche", "Schematics"},
+                ///*{"dec.", true},*/
+                {"itm.", "Item"}//,
                 /*{"apt.", true},
                 {"apc.", true},
                 {"class.",true},
@@ -107,9 +108,9 @@ namespace tor_tools
                 }
                 //ObjectListAsSql(gameObj.Value, "Tooltip", iList);
                 CreatCompressedOutput(gameObj.Value, iList, "en-us");
-                if (false) //frLoaded)
+                if (frLoaded)
                     CreatCompressedOutput(gameObj.Value, iList, "fr-fr");
-                if (false) //deLoaded)
+                if (deLoaded)
                     CreatCompressedOutput(gameObj.Value, iList, "de-de");
             }
 
@@ -180,7 +181,7 @@ namespace tor_tools
 
         public void CreatCompressedOutput(string xmlRoot, IEnumerable<GomLib.Models.Tooltip> itmList, string language)
         {
-            string file = String.Format("{0}tips({1}).zip", xmlRoot, language);
+            string file = String.Format("tooltips\\{0}tips({1}).zip", xmlRoot, language);
             WriteFile("", file, false);
             HashSet<string> iconNames = new HashSet<string>();
             using (var compressStream = new MemoryStream())
@@ -212,12 +213,14 @@ namespace tor_tools
                         }*/
                         if (language != "en-us") continue;
                         string icon = "";
+                        string secondaryicon = "";
                         if (t.obj != null)
                         {
                             switch (t.obj.GetType().ToString())
                             {
                                 case "GomLib.Models.Item":
                                     icon = String.Format("icons/{0}", ((GomLib.Models.Item)t.obj).Icon);
+                                    secondaryicon = String.Format("icons/{0}", ((GomLib.Models.Item)t.obj).RepublicIcon);
                                     break;
                                 case "GomLib.Models.Ability":
                                     icon = String.Format("icons/{0}", ((GomLib.Models.Ability)t.obj).Icon);
@@ -230,6 +233,10 @@ namespace tor_tools
                                     break;
                                 case "GomLib.Models.Achievement":
                                     icon = String.Format("icons/{0}", ((GomLib.Models.Achievement)t.obj).Icon);
+                                    break;
+                                case "GomLib.Models.Codex":
+                                    //break;
+                                    icon = String.Format("codex/{0}", ((GomLib.Models.Codex)t.obj).Image);
                                     break;
                             }
                         }
@@ -252,17 +259,72 @@ namespace tor_tools
                             {
                                 if (iconStream != null)
                                 {
-                                    var iconEntry = zipArchive.CreateEntry(String.Format("icons/{0}.jpg", GetIconFilename(icon)), CompressionLevel.Fastest);
+                                    ZipArchiveEntry iconEntry;
+                                    if (icon.StartsWith("codex/"))
+                                    {
+                                        iconEntry = zipArchive.CreateEntry(String.Format("codex/{0}.jpg", GetIconFilename(icon)), CompressionLevel.Fastest);
+                                    }
+                                    else
+                                        iconEntry = zipArchive.CreateEntry(String.Format("icons/{0}.jpg", GetIconFilename(icon)), CompressionLevel.Fastest);
                                     using (var a = iconEntry.Open())
                                         iconStream.WriteTo(a);
                                     //using (Writer writer = new BinaryWriter(iconEntry.Open()))
                                     //writer.(iconStream);
                                 }
                             }
+                            if (icon.StartsWith("codex/"))
+                            {
+                                using (MemoryStream iconStream = GetIcon(icon, true))
+                                {
+                                    if (iconStream != null)
+                                    {
+                                        ZipArchiveEntry iconEntry;
+                                        iconEntry = zipArchive.CreateEntry(String.Format("codex/{0}_thumb.jpg", GetIconFilename(icon)), CompressionLevel.Fastest);
+                                        using (var a = iconEntry.Open())
+                                            iconStream.WriteTo(a);
+                                    }
+                                }
+                            }
+                        }
+                        if (!String.IsNullOrEmpty(secondaryicon))
+                        {
+                            if (iconNames.Contains(secondaryicon))
+                                continue;
+                            else
+                                iconNames.Add(secondaryicon);
+                            using (MemoryStream iconStream = GetIcon(secondaryicon))
+                            {
+                                if (iconStream != null)
+                                {
+                                    ZipArchiveEntry iconEntry;
+                                    if (icon.StartsWith("codex/"))
+                                    {
+                                        iconEntry = zipArchive.CreateEntry(String.Format("codex/{0}.jpg", GetIconFilename(secondaryicon)), CompressionLevel.Fastest);
+                                    }
+                                    else
+                                        iconEntry = zipArchive.CreateEntry(String.Format("icons/{0}.jpg", GetIconFilename(secondaryicon)), CompressionLevel.Fastest);
+                                    using (var a = iconEntry.Open())
+                                        iconStream.WriteTo(a);
+                                    //using (Writer writer = new BinaryWriter(iconEntry.Open()))
+                                    //writer.(iconStream);
+                                }
+                            }
+                            if (icon.StartsWith("codex/"))
+                            {
+                                using (MemoryStream iconStream = GetIcon(secondaryicon, true))
+                                {
+                                    if (iconStream != null)
+                                    {
+                                        ZipArchiveEntry iconEntry;
+                                        iconEntry = zipArchive.CreateEntry(String.Format("codex/{0}_thumb.jpg", GetIconFilename(secondaryicon)), CompressionLevel.Fastest);
+                                        using (var a = iconEntry.Open())
+                                            iconStream.WriteTo(a);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
-
                 compressStream.Position = 0;
                 WriteFile(compressStream, file);
             }
@@ -271,73 +333,88 @@ namespace tor_tools
 
         private MemoryStream GetIcon(string icon)
         {
+            return GetIcon(icon, false);
+        }
+        private MemoryStream GetIcon(string icon, bool generateThumb)
+        {
             if (icon == null) return null;
             using (var file = currentDom._assets.FindFile(String.Format("/resources/gfx/{0}.dds", icon)))
             {
                 if (file == null) return null;
                 var filename = String.Join("_", file.FileInfo.ph, file.FileInfo.sh);
-                return GetIcon(filename, file);
+                return GetIcon(filename, file, generateThumb);
             }
         }
 
-        private MemoryStream GetIcon(string filename, TorLib.File file)
+        private MemoryStream GetIcon(string filename, TorLib.File file, bool generateThumb)
         {
             if (file == null) return null;
             /*using (*/
             MemoryStream outputStream = new MemoryStream();//)
             //{
-                DevIL.ImageImporter imp = new DevIL.ImageImporter();
+            DevIL.ImageImporter imp = new DevIL.ImageImporter();
 
-                DevIL.Image dds;
-                using (MemoryStream iconStream = (MemoryStream)file.OpenCopyInMemory())
-                    dds = imp.LoadImageFromStream(DevIL.ImageType.Dds, iconStream);
-                var myparams = new EncoderParameters(1);
-                myparams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 90L);
-                ImageCodecInfo jpgEncoder = GetEncoder(ImageFormat.Jpeg);
+            DevIL.Image dds;
+            using (MemoryStream iconStream = (MemoryStream)file.OpenCopyInMemory())
+                dds = imp.LoadImageFromStream(DevIL.ImageType.Dds, iconStream);
+            var myparams = new EncoderParameters(1);
+            myparams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 90L);
+            ImageCodecInfo jpgEncoder = GetEncoder(ImageFormat.Jpeg);
 
-                DevIL.ImageExporter exp = new DevIL.ImageExporter();
-                if (dds.Width == 52 && dds.Height == 52) // needs cropped
+            DevIL.ImageExporter exp = new DevIL.ImageExporter();
+            if (dds.Width == 52 && dds.Height == 52) // needs cropped
+            {
+                var iconData = dds.GetImageData(0);
+
+                System.Drawing.Bitmap iconBM = new System.Drawing.Bitmap(iconData.Width, iconData.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+                for (int k = 0; k < iconData.Height * iconData.Width; k++) // loop through image data
                 {
-                    var iconData = dds.GetImageData(0);
+                    Color iconPixel = Color.FromArgb(iconData.Data[k * 4 + 3], // copy pixel values
+                                iconData.Data[k * 4 + 0],
+                                iconData.Data[k * 4 + 1],
+                                iconData.Data[k * 4 + 2]);
 
-                    System.Drawing.Bitmap iconBM = new System.Drawing.Bitmap(iconData.Width, iconData.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-                    for (int k = 0; k < iconData.Height * iconData.Width; k++) // loop through image data
-                    {
-                        Color iconPixel = Color.FromArgb(iconData.Data[k * 4 + 3], // copy pixel values
-                                    iconData.Data[k * 4 + 0],
-                                    iconData.Data[k * 4 + 1],
-                                    iconData.Data[k * 4 + 2]);
-
-                        iconBM.SetPixel(k % iconData.Width, (int)k / iconData.Width, iconPixel); //save pixel in new bitmap
-                    }
-
-                    Bitmap croppedIconBM = iconBM.Clone(new Rectangle(0, 0, 50, 50), iconBM.PixelFormat); // crop Bitmap
-                    //croppedIconBM.Save(outputStream, System.Drawing.Imaging.ImageFormat.Png); //Bitmap to PNG Stream
-                    croppedIconBM.Save(outputStream, jpgEncoder, myparams); //Bitmap to PNG Stream
-                }
-                else
-                {
-                    var iconData = dds.GetImageData(0);
-
-                    System.Drawing.Bitmap iconBM = new System.Drawing.Bitmap(iconData.Width, iconData.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-                    for (int k = 0; k < iconData.Height * iconData.Width; k++) // loop through image data
-                    {
-                        Color iconPixel = Color.FromArgb(iconData.Data[k * 4 + 3], // copy pixel values
-                                    iconData.Data[k * 4 + 0],
-                                    iconData.Data[k * 4 + 1],
-                                    iconData.Data[k * 4 + 2]);
-
-                        iconBM.SetPixel(k % iconData.Width, (int)k / iconData.Width, iconPixel); //save pixel in new bitmap
-                    }
-                    
-                    iconBM.Save(outputStream, jpgEncoder, myparams); //Bitmap to PNG Stream
-                    //exp.SaveImageToStream(dds, DevIL.ImageType.Png, outputStream); //save DDS to stream in PNG format
+                    iconBM.SetPixel(k % iconData.Width, (int)k / iconData.Width, iconPixel); //save pixel in new bitmap
                 }
 
-                //WriteFile(outputStream, String.Format("/{0}/Images/{1}.png", directory, filename));
-                return outputStream;
+                Bitmap croppedIconBM = iconBM.Clone(new Rectangle(0, 0, 50, 50), iconBM.PixelFormat); // crop Bitmap
+                //croppedIconBM.Save(outputStream, System.Drawing.Imaging.ImageFormat.Png); //Bitmap to PNG Stream
+                croppedIconBM.Save(outputStream, jpgEncoder, myparams); //Bitmap to PNG Stream
+            }
+            else
+            {
+                var iconData = dds.GetImageData(0);
+
+            //System.Drawing.Bitmap iconBM = new System.Drawing.Bitmap(iconData.Width, iconData.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            //for (int k = 0; k < iconData.Height * iconData.Width; k++) // loop through image data
+            //{
+            //    Color iconPixel = Color.FromArgb(iconData.Data[k * 4 + 3], // copy pixel values
+            //                iconData.Data[k * 4 + 0],
+            //                iconData.Data[k * 4 + 1],
+            //                iconData.Data[k * 4 + 2]);
+
+            //    iconBM.SetPixel(k % iconData.Width, (int)k / iconData.Width, iconPixel); //save pixel in new bitmap
+            //}
+
+            //iconBM.Save(outputStream, jpgEncoder, myparams); //Bitmap to PNG Stream
+                using (MemoryStream taco = new MemoryStream())
+                {
+                    exp.SaveImageToStream(dds, DevIL.ImageType.Bmp, taco); //save DDS to stream in jpg format
+                    System.Drawing.Bitmap iconBM = new System.Drawing.Bitmap(taco);
+                    if (generateThumb)
+                    {
+                        Bitmap resized = new Bitmap(iconBM, new System.Drawing.Size(iconBM.Width / 4, iconBM.Height / 4));
+                        resized.Save(outputStream, jpgEncoder, myparams);
+                    }
+                    else
+                        iconBM.Save(outputStream, jpgEncoder, myparams); //Bitmap to JPG Stream
+                }
+            }
+
+            //WriteFile(outputStream, String.Format("/{0}/Images/{1}.png", directory, filename));
+            return outputStream;
             //}
         }
 

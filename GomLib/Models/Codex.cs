@@ -12,14 +12,13 @@ namespace GomLib.Models
         //public ulong NodeId { get; set; }
 
         public Dictionary<string, string> LocalizedName { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedDescription { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public string Description { get; set; }
 
         public int Level { get; set; }
-        [JsonIgnore]
         public string Image { get; set; }
         public string Icon
         {
@@ -31,16 +30,16 @@ namespace GomLib.Models
         }
         public bool IsHidden { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public string CategoryName { get; set; }
         public Dictionary<string, string> LocalizedCategoryName { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public long CategoryId { get; set; }
         [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public Faction Faction { get; set; }
 
         [JsonIgnore]
         public List<ClassSpec> Classes { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         internal List<string> _ClassesB62 { get; set; }
         public List<string> ClassesB62
         {
@@ -60,11 +59,10 @@ namespace GomLib.Models
 
         public bool HasPlanets { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public List<Codex> Planets { get; set; }
         [JsonIgnore]
         public List<ulong> PlanetsIds { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         internal List<string> _PlanetsB62 { get; set; }
         public List<string> PlanetsB62
         {

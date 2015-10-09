@@ -32,15 +32,15 @@ namespace GomLib.Models
         public ulong PathApcId { get; set; }
         //[Newtonsoft.Json.JsonIgnore]
         public AbilityPackage PathAbilities { get; set; }
-        [JsonIgnore]
+        [JsonConverter(typeof(LongConverter))]
         public long DescriptionId { get; set; }
-        [JsonIgnore]
+        [JsonConverter(typeof(LongConverter))]
         public long NameId { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
         [JsonIgnore]
         public string Description { get; set; }
         public Dictionary<string, string> LocalizedDescription { get; set; }
-        [JsonIgnore]
+        [JsonConverter(typeof(LongConverter))]
         public long ClassNameId { get; set; }
         public Dictionary<string, string> LocalizedClassName { get; set; }
         [JsonIgnore]

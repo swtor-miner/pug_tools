@@ -15,14 +15,13 @@ namespace GomLib.Models
         [JsonIgnore]
         public ulong NodeId { get; set; }
         public string Name { get; set; }
-        [JsonIgnore]
+        [JsonConverter(typeof(LongConverter))]
         public long NameId { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
         public string Title { get; set; }
         public Dictionary<string, string> LocalizedTitle { get; set; }
-        [JsonIgnore]
+        [JsonConverter(typeof(ULongConverter))]
         public ulong ClassId { get; set; }
-        [JsonIgnore]
         public string ClassB62Id
         {
             get
@@ -45,8 +44,12 @@ namespace GomLib.Models
         public int MinLevel { get; set; }
         public int MaxLevel { get; set; }
         public Faction Faction { get; set; }
+        public DetailedFaction DetFaction { get; set; }
         [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public Toughness Toughness { get; set; }
+        [JsonConverter(typeof(LongConverter))]
+        public long ToughnessId { get; set; }
+        public Dictionary<string, string> LocalizedToughness { get; set; }
         public int DifficultyFlags { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]
@@ -64,7 +67,7 @@ namespace GomLib.Models
                     return null;
             }
         }
-        [JsonIgnore]
+        [JsonConverter(typeof(ULongConverter))]
         public ulong CodexId { get; set; }
         [JsonIgnore]
         public string CodexB62Id
@@ -81,7 +84,9 @@ namespace GomLib.Models
             get { return _dom.npcLoader.Load(CompanionOverrideId); }
             set { CompanionOverride = value; }
         }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong CompanionOverrideId { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public long LootTableId { get; set; }
 
         public bool IsClassTrainer { get; set; }
@@ -95,6 +100,35 @@ namespace GomLib.Models
         public List<NpcVisualData> VisualDataList { get; set; }
 
         public string charRef { get; set; }
+
+        internal string _FqnCategory { get; set; }
+        public string FqnCategory
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(_FqnCategory))
+                {
+                    string[] fqnParts = Fqn.Substring(4).Split('.');
+                    _FqnCategory = fqnParts[0];
+                    _FqnSubCategory = fqnParts[1];
+                }
+                return _FqnCategory;
+            }
+        }
+        internal string _FqnSubCategory { get; set; }
+        public string FqnSubCategory
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(_FqnSubCategory))
+                {
+                    string[] fqnParts = Fqn.Substring(4).Split('.');
+                    _FqnCategory = fqnParts[0];
+                    _FqnSubCategory = fqnParts[1];
+                }
+                return _FqnSubCategory;
+            }
+        }
 
         public Npc()
         {
@@ -315,13 +349,24 @@ namespace GomLib.Models
             {
                 return new List<SQLProperty>
                     {                //(SQL Column Name, C# Property Name, SQL Column type statement, IsUnique/PrimaryKey, Serialize value to json)
-                        new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("FrName", "LocalizedName[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("DeName", "LocalizedName[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddFullTextIndex),
+                        new SQLProperty("FrName", "LocalizedName[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddFullTextIndex),
+                        new SQLProperty("DeName", "LocalizedName[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddFullTextIndex),
                         new SQLProperty("Title", "Title", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.PrimaryKey),
                         new SQLProperty("MinLevel", "MinLevel", "int(11) NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("MaxLevel", "MaxLevel", "int(11) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FactionString", "DetFaction.FactionString", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Faction", "DetFaction.LocalizedName[enMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrFaction", "DetFaction.LocalizedName[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeFaction", "DetFaction.LocalizedName[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Toughness", "LocalizedToughness[enMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrToughness", "LocalizedToughness[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeToughness", "LocalizedToughness[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FqnCategory", "FqnCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FqnSubCategory", "FqnSubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("CodexB62Id", "CodexB62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex)
+
                     };
             }
         }

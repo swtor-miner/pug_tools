@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
@@ -134,5 +135,64 @@ namespace GomLib.Models
                     throw new InvalidOperationException("Unknown Faction: " + factionId);
             }
         }
+    }
+
+    public class FactionData
+    {
+        public Dictionary<long, DetailedFaction> FactionLookup { get; set; }
+
+        [Newtonsoft.Json.JsonIgnore]
+        DataObjectModel _dom;
+
+        public FactionData(DataObjectModel dom)
+        {
+            _dom = dom;
+        }
+
+        public DetailedFaction ToFaction(long id)
+        {
+            if (id == 0) { return new DetailedFaction(); }
+
+            if (FactionLookup == null)
+            {
+                FactionLookup = new Dictionary<long, DetailedFaction>();
+                var chrFactionPackages = _dom.GetObject("chrFactionPackagesPrototype");
+                Dictionary<object, object> chrFactionSpecToPackageMap = chrFactionPackages.Data.Get<Dictionary<object, object>>("chrFactionSpecToPackageMap");
+                chrFactionPackages.Unload();
+                StringTable table = _dom.stringTable.Find("str.sys.factions");
+                foreach (var faction in chrFactionSpecToPackageMap)
+                {
+                    DetailedFaction detFact = new DetailedFaction();
+                    GomObjectData gomy = faction.Value as GomObjectData;
+                    detFact.Id = gomy.ValueOrDefault<long>("cbtFaction", 0);
+                    detFact.RepublicReaction = gomy.ValueOrDefault<ScriptEnum>("chrFactionPackageRepublicPCsAttitude", new ScriptEnum()).ToString();
+                    detFact.ImperialReaction = gomy.ValueOrDefault<ScriptEnum>("chrFactionPackageEmpirePCsAttitude", new ScriptEnum()).ToString();
+                    detFact.NameId = gomy.ValueOrDefault<long>("chrFactionPackageDisplayName", 0) + 1173582633762816;
+                    detFact.LocalizedName = table.GetLocalizedText(detFact.NameId, "str.sys.factions");
+                    detFact.DefendedFactionIds = gomy.ValueOrDefault<Dictionary<object, object>>("chrFactionPackageDefendedFactions", new Dictionary<object, object>()).Select(x=> (long)x.Key).ToList();
+                    detFact.FactionString = gomy.ValueOrDefault<string>("cbtFactionString", "");
+                    detFact.OpposingFactionIds = gomy.ValueOrDefault<Dictionary<object, object>>("chrFactionPackageOpposingFactions", new Dictionary<object, object>()).Select(x => (long)x.Key).ToList();
+                    FactionLookup.Add(detFact.Id, detFact);
+                }
+                chrFactionSpecToPackageMap = null;
+            }
+
+            if (!FactionLookup.ContainsKey(id)) { return null; }
+            else { return FactionLookup[id]; }
+        }
+    }
+
+    public class DetailedFaction : PseudoGameObject
+    {
+        public string RepublicReaction { get; set; }
+        public string ImperialReaction { get; set; }
+        [JsonConverter(typeof(LongConverter))]
+        public long NameId { get; set; }
+        public Dictionary<string, string> LocalizedName { get; set; }
+        public List<long> DefendedFactionIds { get; set; }
+        [JsonConverter(typeof(LongConverter))]
+        public long FactionId { get { return Id; } }
+        public string FactionString { get; set; }
+        public List<long> OpposingFactionIds { get; set; }
     }
 }

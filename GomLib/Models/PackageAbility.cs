@@ -54,6 +54,7 @@ namespace GomLib.Models
         public int Level { get; set; }
         public bool AutoAcquire { get; set; }
         public string Toughness { get; set; }
+        public long AiUsePriority { get; set; }
         public bool IsUtilityPackage { get; set; }
         public long UtilityTier { get; set; }
         public long UtilityPosition { get; set; }
@@ -132,7 +133,6 @@ namespace GomLib.Models
                 return _Talent;
             }
         }
-        [JsonIgnore]
         public string TalentB62Id
         {
             get

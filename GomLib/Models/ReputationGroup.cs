@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
@@ -10,12 +11,15 @@ namespace GomLib.Models
         //repGroupInfosPrototype - repGroupInfoData - class lookup
 
         //General Fields
+        [JsonConverter(typeof(LongConverter))]
         public long GroupId { get; set; }                                    //repGroupInfoId - long : 4611686297436250001
         public string GroupFactionAvailability { get; set; }                 //repGroupInfoFactionAvailibilityEnum - enum : 4611686297436250007 - repFactionBoth
         public long GroupReputationWeeklyLimit { get; set; }                 //repGroupInfoWeeklyRepLimit - long : 4611686297719284000 - 12000
 
         //Republic Specific Fields
+        [JsonConverter(typeof(LongConverter))]
         public long GroupRepublicDescriptionId { get; set; }                 //repGroupInfoRepublicDescription - long lookup : 4611686297436250005 - str.lgc.reputation - 3171541290320167
+        [JsonConverter(typeof(LongConverter))]
         public long GroupRepublicTitleId { get; set; }                       //repRankInfoTitleId - long lookup : 4611686297436250003 - str.lgc.reputation - 3171541290320165
         public string GroupRepublicDescription { get; set; }                 //repRankInfoTitle - "Outsider"
         public string GroupRepublicTitle { get; set; }                       //repRankInfoTitle - "Outsider"        
@@ -25,7 +29,9 @@ namespace GomLib.Models
         public string GroupRepublicIcon { get; set; }                        //repGroupInfoIconRepublic - string : 4611686297701794046 - "rep.makeb.republic"        
 
         //Empire Specific Fields
+        [JsonConverter(typeof(LongConverter))]
         public long GroupEmpireDescriptionId { get; set; }                   //repGroupInfoEmpireDescriptionId - long lookup : 4611686297436250004 - str.lgc.reputation - 3171541290320167
+        [JsonConverter(typeof(LongConverter))]
         public long GroupEmpireTitleId { get; set; }                         //repGroupInfoEmpireTitleId - long lookup : 4611686297436250002 - str.lgc.reputation - 3171541290320165
         public string GroupEmpireDescription { get; set; }                   //repGroupInfoEmpireDescription - "Outsider"
         public string GroupEmpireTitle { get; set; }                         //repGroupInfoEmpireTitle - "Outsider"      

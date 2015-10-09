@@ -376,25 +376,30 @@ namespace GomLib.ModelLoader
 
             StringTable conCats = _dom.stringTable.Find("str.sys.contactcategories");
 
-                nco.AcquireConditionals = gom.Data.ValueOrDefault("ncoAcquireConditionalList", new List<object>()); //loop through and load these
-                nco.AllianceAlerts = gom.Data.ValueOrDefault("ncoAllianceAlertList", new List<object>()); //loop through and load these
-                nco.InfluenceCap = gom.Data.ValueOrDefault<long>("ncoInfluenceCap", 0);
-                nco.CategoryId = gom.Data.ValueOrDefault<long>("ncoCategory", 0);
+            nco.AcquireConditionals = gom.Data.ValueOrDefault("ncoAcquireConditionalList", new List<object>()); //loop through and load these
+            nco.AllianceAlerts = gom.Data.ValueOrDefault("ncoAllianceAlertList", new List<object>()); //loop through and load these
+            nco.InfluenceCap = gom.Data.ValueOrDefault<long>("ncoInfluenceCap", 0);
+            nco.CategoryId = gom.Data.ValueOrDefault<long>("ncoCategory", 0);
 
-                nco.Category = "";
-                if (nco.CategoryId != 0)
-                    nco.Category = conCats.GetText(nco.CategoryId, "str.sys.contactcategories");
+            nco.Category = "";
+            if (nco.CategoryId != 0)
+            {
+                nco.Category = conCats.GetText(nco.CategoryId, "str.sys.contactcategories");
+                nco.LocalizedCategory = conCats.GetLocalizedText(nco.CategoryId, "str.sys.contactcategories");
+            }
 
-                nco.SubCategoryId = gom.Data.ValueOrDefault<long>("ncoSubCategory", 0);
-                nco.SubCategory = "";
-                if (nco.SubCategoryId != 0)
-                    nco.SubCategory = conCats.GetText(nco.SubCategoryId, "str.sys.contactcategories");
+            nco.SubCategoryId = gom.Data.ValueOrDefault<long>("ncoSubCategory", 0);
+            nco.SubCategory = "";
+            if (nco.SubCategoryId != 0) { 
+                nco.SubCategory = conCats.GetText(nco.SubCategoryId, "str.sys.contactcategories");
+                nco.LocalizedSubCategory = conCats.GetLocalizedText(nco.SubCategoryId, "str.sys.contactcategories");
+            }
 
-                nco.AcquireMinLevel = gom.Data.ValueOrDefault<long>("ncoAcquireMinLevel", 0);
+            nco.AcquireMinLevel = gom.Data.ValueOrDefault<long>("ncoAcquireMinLevel", 0);
 
-                nco.NpcId = gom.Data.ValueOrDefault<ulong>("ncoNpcId", 0);
+            nco.NpcId = gom.Data.ValueOrDefault<ulong>("ncoNpcId", 0);
 
-                nco.PreviewIcon = gom.Data.ValueOrDefault("ncoPreviewIcon", "");
+            nco.PreviewIcon = gom.Data.ValueOrDefault("ncoPreviewIcon", "");
 
             Dictionary<object, object> ncoInteractionList = gom.Data.ValueOrDefault("ncoInteractionList", new Dictionary<object, object>());
 

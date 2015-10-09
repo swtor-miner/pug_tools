@@ -199,12 +199,14 @@ namespace GomLib.ModelLoader
                         itm.classAppearance.Add(classNameLookup[(ulong)appearancePair.Key], itemAppearance.Name);
                         if (classNameLookup[(ulong)appearancePair.Key] == "Agent")
                         {
+                            itm.ImperialIcon = itemAppearance.Name;
                             itm.AppearanceImperial = itemAppearance.Id.ToMaskedBase62();
                             itm.VOModulationImperial = itemAppearance.Data.ValueOrDefault<string>("ippVOSoundTypeOverride", "noModulation");
                             itm.ImperialAppearanceTag = AppearanceTags(itemAppearance);
                         }
                         if (classNameLookup[(ulong)appearancePair.Key] == "Smuggler")
                         {
+                            itm.RepublicIcon = itemAppearance.Name;
                             itm.AppearanceRepublic = itemAppearance.Id.ToMaskedBase62();
                             itm.VOModulationRepublic = itemAppearance.Data.ValueOrDefault<string>("ippVOSoundTypeOverride", "noModulation");
                             itm.RepublicAppearanceTag = AppearanceTags(itemAppearance);

@@ -5,21 +5,27 @@ using System.Text;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using System.Xml;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
     public class Conquest : PseudoGameObject, IEquatable<Conquest>
     {
+        [JsonConverter(typeof(LongConverter))]
         public long NameId { get; set; }
         //public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public long DescId { get; set; }
         public string Description { get; set; }
         public Dictionary<string, string> LocalizedDescription { get; set; }
         public string Icon { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public long ParticipateGoal { get; set; }
+        [JsonIgnore]
         public List<long> RepeatableObjectivesIdList { get; set; }
         public List<ConquestObjective> RepeatableObjectivesList { get; set; }
+        [JsonIgnore]
         public List<long> OneTimeObjectiveIdList { get; set; }
         public List<ConquestObjective> OneTimeObjectivesList { get; set; }
         public string DesignName { get; set; }

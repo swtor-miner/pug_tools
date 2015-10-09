@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
     public class QuestBranch : IEquatable<QuestBranch>
     {
+        [JsonConverter(typeof(LongConverter))]
         public long Id { get; set; }
         public int DbId { get; set; }
         [Newtonsoft.Json.JsonIgnore]

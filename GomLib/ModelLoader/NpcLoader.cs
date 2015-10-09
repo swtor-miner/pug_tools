@@ -14,6 +14,7 @@ namespace GomLib.ModelLoader
         Dictionary<ulong, Npc> idMap;
         Dictionary<string, Npc> nameMap;
         Dictionary<int, Npc> objIdMap;
+        Dictionary<Toughness, Dictionary<string, string>> ToughnessLocalizationMap { get; set; }
 
         DataObjectModel _dom;
 
@@ -28,6 +29,7 @@ namespace GomLib.ModelLoader
             idMap = new Dictionary<ulong, Npc>();
             nameMap = new Dictionary<string, Npc>();
             objIdMap = new Dictionary<int, Npc>();
+            ToughnessLocalizationMap = new Dictionary<Toughness, Dictionary<string, string>>();
         }
 
         public string ClassName
@@ -84,6 +86,41 @@ namespace GomLib.ModelLoader
             if (obj == null) { return npc; }
             if (npc == null) { return null; }
 
+            if(ToughnessLocalizationMap.Count == 0)
+            {
+                var strGuiMiscPrototype = _dom.GetObject("strGuiMiscPrototype");
+                var strGuiMiscEnumToStringId = strGuiMiscPrototype.Data.ValueOrDefault<Dictionary<object, object>>("strGuiMiscEnumToStringId");
+                StringTable portTable = _dom.stringTable.Find("str.gui.portraitbar");
+                StringTable miscTable = _dom.stringTable.Find("str.gui.auctionhouse");
+
+                foreach (var toughness in Enum.GetValues(typeof(Toughness)).Cast<Toughness>())
+                {
+                    switch (toughness)
+                    {
+                        case Toughness.None:
+                            ToughnessLocalizationMap.Add(toughness, null);
+                            break;
+                        case Toughness.Standard:
+                            ToughnessLocalizationMap.Add(toughness, miscTable.GetLocalizedText(1002634345447535, "str.gui.auctionhouse"));
+                            break;
+                        case Toughness.Weak:
+                            ToughnessLocalizationMap.Add(toughness, portTable.GetLocalizedText(946292964458570, "str.gui.portraitbar"));
+                            break;
+                        case Toughness.Strong:
+                            ToughnessLocalizationMap.Add(toughness, portTable.GetLocalizedText(946292964458546, "str.gui.portraitbar"));
+                            break;
+                        case Toughness.Boss1:
+                            ToughnessLocalizationMap.Add(toughness, portTable.GetLocalizedText(946292964458545, "str.gui.portraitbar"));
+                            break;
+                        case Toughness.BossRaid:
+                        case Toughness.Boss2:
+                        case Toughness.Boss3:
+                        case Toughness.Boss4:
+                            ToughnessLocalizationMap.Add(toughness, portTable.GetLocalizedText(946292964458567, "str.gui.portraitbar"));
+                            break;
+                    }
+                }
+            }
             npc.parentSpecId = obj.Data.ValueOrDefault<ulong>("npcParentSpecId", 0);
             npc.charRef = obj.Data.ValueOrDefault<string>("npcCharRef", "");
             Npc baseNpc;
@@ -143,6 +180,8 @@ namespace GomLib.ModelLoader
                 npc.Toughness = ToughnessExtensions.ToToughness(toughnessEnum);
             }
 
+            npc.LocalizedToughness = ToughnessLocalizationMap[npc.Toughness];
+
             // Load Packages
 
             npc.movementPackage = obj.Data.ValueOrDefault<string>("npcMovementPackage", "");
@@ -192,10 +231,12 @@ namespace GomLib.ModelLoader
             long factionId = obj.Data.ValueOrDefault<long>("npcFaction", 0);
             if (factionId == 0)
             {
+                var detFaction = baseNpc.DetFaction;
                 npc.Faction = baseNpc.Faction;
             }
             else
             {
+                npc.DetFaction = _dom.factionData.ToFaction(factionId);
                 npc.Faction = FactionExtensions.ToFaction(factionId);
             }
 
@@ -207,10 +248,15 @@ namespace GomLib.ModelLoader
             if (npc.ClassId == 0UL)
             {
                 npc.ClassSpec = baseNpc.ClassSpec;
+                npc.ClassId = baseNpc.ClassId;
             }
             else
             {
                 npc.ClassSpec = _dom.classSpecLoader.Load(npc.ClassId);
+            }
+            if(npc.ClassSpec == null)
+            {
+                string sionsodn = "";
             }
 
             npc.CodexId = obj.Data.ValueOrDefault<ulong>("npcCodexSpec", 0);

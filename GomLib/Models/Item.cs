@@ -33,6 +33,7 @@ namespace GomLib.Models
 
         #region Properties
         public ulong ShortId { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public long NameId { get; set; }
         public string CleanName
         {
@@ -46,6 +47,7 @@ namespace GomLib.Models
         }
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public long DescriptionId { get; set; }
         [JsonIgnore]
         public string _Description
@@ -68,12 +70,32 @@ namespace GomLib.Models
         [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ItemBindingRule Binding { get; set; }
         public string Icon { get; set; }
+        public string ImperialIcon { get; set; }
+        public string RepublicIcon { get; set; }
         public string HashedIcon
         {
             get
             {
                 var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", this.Icon));
                 return String.Format("{0}_{1}", fileId.ph, fileId.sh); 
+            }
+        }
+        public string HashedImperialIcon
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(RepublicIcon)) return "";
+                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", this.ImperialIcon));
+                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+            }
+        }
+        public string HashedRepublicIcon
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(RepublicIcon)) return "";
+                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", this.RepublicIcon));
+                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
             }
         }
         [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
@@ -109,20 +131,18 @@ namespace GomLib.Models
         public GiftRank GiftRank { get; set; }
         public int GiftRankNum { get; set; }
         public int AuctionCategoryId { get; set; }
-        [JsonIgnore]
         public AuctionCategory AuctionCategory { get; set; }
         public int AuctionSubCategoryId { get; set; }
-        [JsonIgnore]
         public AuctionSubCategory AuctionSubCategory { get; set; }
         public AppearanceColor AppearanceColor { get; set; }
         public int DyeId { get; set; }
         public DetailedAppearanceColor DyeColor { get; set; }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong EquipAbilityId { get; set; }
-        [JsonIgnore]
         public string EquipAbilityB62Id { get { return EquipAbilityId.ToMaskedBase62(); } }
         [JsonIgnore]
         public Ability EquipAbility { get; set; }
-
+        [JsonConverter(typeof(ULongConverter))]
         public ulong UseAbilityId { get; set; }
         public string UseAbilityB62Id { get { return UseAbilityId.ToMaskedBase62(); } }
         internal Ability _UseAbility { get; set; }
@@ -142,6 +162,7 @@ namespace GomLib.Models
         [JsonIgnore]
         public Conversation Conversation { get; set; }
 
+        [JsonConverter(typeof(LongConverter))]
         public long ModifierSpec { get; set; }
         [JsonIgnore]
         public Schematic _Schematic { get; set; }
@@ -157,10 +178,13 @@ namespace GomLib.Models
                 return _Schematic;
             }
         }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong SchematicId { get; set; }
         public string SchematicB62Id { get { return SchematicId.ToMaskedBase62(); } }
         //public string TreasurePackageSpec { get; set; } //unused
+        [JsonConverter(typeof(LongConverter))]
         public long TreasurePackageId { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public long MountSpec { get; set; }
         public Gender RequiredGender { get; set; }
         public int RequiredValorRank { get; set; }
@@ -231,6 +255,7 @@ namespace GomLib.Models
         public bool ConsumedOnUse { get; set; }
         public int TypeBitSet { get; set; }
 
+        [JsonConverter(typeof(LongConverter))]
         public long itmCraftedCategory { get; set; }
 
         [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
@@ -296,6 +321,7 @@ namespace GomLib.Models
         public string ImperialAppearanceTag { get; set; }
         public string RepublicAppearanceTag { get; set; }
 
+        [JsonConverter(typeof(ULongConverter))]
         public ulong TeachesRef { get; set; }
         public string TeachesRefB62 { get { return TeachesRef.ToMaskedBase62(); } }
         public string TeachesType { get; set; }
@@ -307,11 +333,10 @@ namespace GomLib.Models
         //public List<ulong> rewardedForQuests { get; set; }
         [JsonIgnore]
         public Dictionary<ulong, ulong> ippRefs { get; set; }
-        [JsonIgnore]
         public Dictionary<string, string> classAppearance { get; set; }
         public string AppearanceImperial { get; set; }
         public string AppearanceRepublic { get; set; }
-        [JsonIgnore]
+        [JsonConverter(typeof(LongConverter))]
         public long SetBonusId { get; set; }
         public string SetBonusB62Id { get { return SetBonusId.ToMaskedBase62(); } }
         [JsonIgnore]
@@ -332,7 +357,7 @@ namespace GomLib.Models
                 _SetBonus = value;
             }
         }
-
+        [JsonConverter(typeof(ULongConverter))]
         public ulong ChildId { get; set; }
         public string ChildBase62Id
         {
@@ -344,7 +369,6 @@ namespace GomLib.Models
                     return "";
             }
         }
-        [JsonIgnore]
         internal string mtxRarity { get; set; }
         public string MTXRarity
         {
@@ -1356,30 +1380,30 @@ namespace GomLib.Models
                         new SQLProperty("ShieldChance", "ShieldChance", "float(10,1) NOT NULL"),
                         new SQLProperty("ModLevel", "ModLevel", "int(11) NOT NULL"),
                         //typebitset
-                        new SQLProperty("IsArmor", "TypeBitFlags.IsArmor", "tinyint(1)NOTNULL"),
-                        new SQLProperty("IsWeapon", "TypeBitFlags.IsWeapon", "tinyint(1)NOTNULL"),
-                        new SQLProperty("HasGTNCategory", "TypeBitFlags.HasGTNCategory", "tinyint(1)NOTNULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("Unk8", "TypeBitFlags.Unk8", "tinyint(1)NOTNULL"),
-                        new SQLProperty("HasConversation", "TypeBitFlags.HasConversation", "tinyint(1)NOTNULL"),
-                        new SQLProperty("IsCrafted", "TypeBitFlags.IsCrafted", "tinyint(1)NOTNULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("CanBeDisassembled", "TypeBitFlags.CanBeDisassembled", "tinyint(1)NOTNULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("HasDurability", "TypeBitFlags.HasDurability", "tinyint(1)NOTNULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("IsModdable", "TypeBitFlags.IsModdable", "tinyint(1)NOTNULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("IsMod", "TypeBitFlags.IsMod", "tinyint(1)NOTNULL"),
-                        new SQLProperty("CanHaveStats", "TypeBitFlags.CanHaveStats", "tinyint(1)NOTNULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("Unk800", "TypeBitFlags.Unk800", "tinyint(1)NOTNULL"),
-                        new SQLProperty("IsGift", "TypeBitFlags.IsGift", "tinyint(1)NOTNULL"),
-                        new SQLProperty("IsMissionItem", "TypeBitFlags.IsMissionItem", "tinyint(1)NOTNULL"),
-                        new SQLProperty("Unk4000", "TypeBitFlags.Unk4000", "tinyint(1)NOTNULL"),
-                        new SQLProperty("IsShipPart", "TypeBitFlags.IsShipPart", "tinyint(1)NOTNULL"),
-                        new SQLProperty("Unk10000", "TypeBitFlags.Unk10000", "tinyint(1)NOTNULL"),
-                        new SQLProperty("IsCmpCstmztn", "TypeBitFlags.IsCmpCstmztn", "tinyint(1)NOTNULL"),
-                        new SQLProperty("HasUniqueLimit", "TypeBitFlags.HasUniqueLimit", "tinyint(1)NOTNULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("HasOnUse", "TypeBitFlags.HasOnUse", "tinyint(1)NOTNULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("IsEquipable", "TypeBitFlags.IsEquipable", "tinyint(1)NOTNULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("IsCurrency", "TypeBitFlags.IsCurrency", "tinyint(1)NOTNULL"),
-                        new SQLProperty("IsMtxItem", "TypeBitFlags.IsMtxItem", "tinyint(1)NOTNULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("IsRepTrophy", "TypeBitFlags.IsRepTrophy", "tinyint(1)NOTNULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("IsArmor", "TypeBitFlags.IsArmor", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsWeapon", "TypeBitFlags.IsWeapon", "tinyint(1) NOT NULL"),
+                        new SQLProperty("HasGTNCategory", "TypeBitFlags.HasGTNCategory", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Unk8", "TypeBitFlags.Unk8", "tinyint(1) NOT NULL"),
+                        new SQLProperty("HasConversation", "TypeBitFlags.HasConversation", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsCrafted", "TypeBitFlags.IsCrafted", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("CanBeDisassembled", "TypeBitFlags.CanBeDisassembled", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("HasDurability", "TypeBitFlags.HasDurability", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("IsModdable", "TypeBitFlags.IsModdable", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("IsMod", "TypeBitFlags.IsMod", "tinyint(1) NOT NULL"),
+                        new SQLProperty("CanHaveStats", "TypeBitFlags.CanHaveStats", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Unk800", "TypeBitFlags.Unk800", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsGift", "TypeBitFlags.IsGift", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsMissionItem", "TypeBitFlags.IsMissionItem", "tinyint(1) NOT NULL"),
+                        new SQLProperty("Unk4000", "TypeBitFlags.Unk4000", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsShipPart", "TypeBitFlags.IsShipPart", "tinyint(1) NOT NULL"),
+                        new SQLProperty("Unk10000", "TypeBitFlags.Unk10000", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsCmpCstmztn", "TypeBitFlags.IsCmpCstmztn", "tinyint(1) NOT NULL"),
+                        new SQLProperty("HasUniqueLimit", "TypeBitFlags.HasUniqueLimit", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("HasOnUse", "TypeBitFlags.HasOnUse", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("IsEquipable", "TypeBitFlags.IsEquipable", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("IsCurrency", "TypeBitFlags.IsCurrency", "tinyint(1) NOT NULL"),
+                        new SQLProperty("IsMtxItem", "TypeBitFlags.IsMtxItem", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("IsRepTrophy", "TypeBitFlags.IsRepTrophy", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
                         //Slots
                         new SQLProperty("Any", "Any", "tinyint(1) NOT NULL"),
                         new SQLProperty("EquipHumanEar", "EquipHumanEar", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),

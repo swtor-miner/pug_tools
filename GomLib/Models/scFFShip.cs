@@ -3,21 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
     public class scFFShip : PseudoGameObject, IEquatable<scFFShip>
     {
+        [JsonIgnore]
         public AbilityPackage abilityPackage { get; set; }
+        public string AbilityPackageB62Id
+        {
+            get
+            {
+                if (abilityPackage != null)
+                    return abilityPackage.Id.ToMaskedBase62();
+                return null;
+            }
+        }
         public string Category { get; set; }
         public Dictionary<string, List<scFFColorOption>> ColorOptions { get; set; }
         public Dictionary<string, List<scFFComponent>> ComponentMap { get; set; }
         public long Cost { get; set; }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong damagedPackageNodeId { get; set; }
         public Dictionary<string, ulong> DefaultLoadout { get; set; }
         public string Description { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public long DescriptionId { get; set; }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong engStatsNodeId { get; set; }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong EppDynamicCollectionId { get; set; }
         public string Faction { get; set; }
         public string Icon { get; set; }
@@ -26,15 +41,19 @@ namespace GomLib.Models
         public bool IsDeprecated { get; set; }
         public bool IsHidden { get; set; }
         public bool IsPurchasedWithCC { get; set; }
+        [JsonConverter(typeof(ULongConverter))]
         public long LookupId { get; set; }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong majorComponentsContainerId { get; set; }
         public Dictionary<string, long> MajorComponentSlots { get; set; }
         public string majorEquipType { get; set; }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong minorComponentsContainerId { get; set; }
         public Dictionary<string, long> MinorComponentSlots { get; set; }
         public string minorEquipType { get; set; }
         public string Model { get; set; }
         //public string Name { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public long NameId { get; set; }
         public List<scFFPattern> PatternOptions { get; set; }
         public string ShipIcon { get; set; }

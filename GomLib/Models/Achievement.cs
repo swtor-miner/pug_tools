@@ -17,15 +17,15 @@ namespace GomLib.Models
         public ulong NodeId { get; set; }
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
-        [JsonIgnore]
+        [JsonConverter(typeof(LongConverter))]
         public long NameId { get; set; }
         public string Description { get; set; }
         public Dictionary<string, string> LocalizedDescription { get; set; }
-        [JsonIgnore]
+        [JsonConverter(typeof(LongConverter))]
         public long DescriptionId { get; set; }
         public string NonSpoilerDesc { get; set; }
         public Dictionary<string, string> LocalizedNonSpoilerDesc { get; set; }
-        [JsonIgnore]
+        [JsonConverter(typeof(LongConverter))]
         public long nonSpoilerId { get; set; }
         public int Level { get; set; }
         public string Icon { get; set; }
@@ -513,6 +513,10 @@ namespace GomLib.Models
             if (tmpNode != null)
             {
                 NodePrefix = tmpNode.Name.Substring(0, tmpNode.Name.IndexOf("."));
+                if(NodePrefix != "npc")
+                {
+                    string sioin = "";
+                }
                 tmpNode.Unload();
             }
         }

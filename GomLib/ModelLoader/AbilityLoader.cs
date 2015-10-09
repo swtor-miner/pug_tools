@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GomLib.Models;
+using Newtonsoft.Json;
 
 namespace GomLib.ModelLoader
 {
@@ -616,6 +617,7 @@ namespace GomLib.ModelLoader
             {
                 KeyValuePair<string, List<Dictionary<string, string>>> kvp
                     = new KeyValuePair<string,List<Dictionary<string,string>>>(actionNames[i], LoadActionParams(actions[i]));
+                kvp.Value.Add(new Dictionary<string, string> { { "ablDescriptionTokenMultiplier", multi.ToString() } });
                 retVal.Add(kvp);
             }
 
@@ -719,6 +721,7 @@ namespace GomLib.ModelLoader
                 //Get the action details and return it in a list. We do this to maintain the same structure between dmg and heals.
                 KeyValuePair<string, List<Dictionary<string, string>>> kvp =
                     new KeyValuePair<string, List<Dictionary<string, string>>>("effAction_Heal", LoadActionParams(action));
+                kvp.Value.Add(new Dictionary<string, string> { { "ablDescriptionTokenMultiplier", multi.ToString() }});
                 var retVal = new List<KeyValuePair<string, List<Dictionary<string, string>>>>();
                 retVal.Add(kvp);
 

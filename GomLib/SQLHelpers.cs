@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.IO;
 using System.Reflection;
+using Newtonsoft.Json.Linq;
 
 namespace GomLib
 {
@@ -197,6 +198,7 @@ namespace GomLib
             IsPrimaryKey = settings.Contains(SQLPropSetting.PrimaryKey);
             JsonSerialize = settings.Contains(SQLPropSetting.JsonSerialize);
             AddIndex = settings.Contains(SQLPropSetting.AddIndex);
+            AddFullTextIndex = settings.Contains(SQLPropSetting.AddFullTextIndex);
         }
 
         public string Name;
@@ -205,6 +207,7 @@ namespace GomLib
         public bool IsPrimaryKey = false;
         public bool JsonSerialize = false;
         public bool AddIndex = false;
+        public bool AddFullTextIndex = false;
 
         internal void SetValues(string name, string propName, string type)
         {
@@ -217,7 +220,8 @@ namespace GomLib
     {
         PrimaryKey,
         JsonSerialize,
-        AddIndex
+        AddIndex,
+        AddFullTextIndex
     }
     #region Base62
     public static class EncodingExtensions
@@ -557,6 +561,68 @@ namespace GomLib
                 }
             }
             this.Position = tempPos;
+        }
+    }
+    #endregion
+    #region JsonConverters
+    public class ULongConverter : JsonConverter
+    {
+        private readonly Type[] _types;
+
+        public ULongConverter()
+        {
+            _types = new Type[] { typeof(ulong) };
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            JValue o = new JValue(value.ToString());
+            o.WriteTo(writer);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            throw new NotImplementedException("Unnecessary because CanRead is false. The type will skip the converter.");
+        }
+
+        public override bool CanRead
+        {
+            get { return false; }
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return _types.Any(t => t == objectType);
+        }
+    }
+    public class LongConverter : JsonConverter
+    {
+        private readonly Type[] _types;
+
+        public LongConverter()
+        {
+            _types = new Type[] { typeof(long) };
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            JValue o = new JValue(value.ToString());
+            o.WriteTo(writer);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            throw new NotImplementedException("Unnecessary because CanRead is false. The type will skip the converter.");
+        }
+
+        public override bool CanRead
+        {
+            get { return false; }
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return _types.Any(t => t == objectType);
         }
     }
     #endregion

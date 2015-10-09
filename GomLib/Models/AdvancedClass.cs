@@ -13,7 +13,7 @@ namespace GomLib.Models
         [JsonIgnore]
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
-        [JsonIgnore]
+        [JsonConverter(typeof(LongConverter))]
         public long NameId { get; set; }
 
         public override int GetHashCode()
@@ -23,7 +23,7 @@ namespace GomLib.Models
             return hash;
         }
 
-        [JsonIgnore]
+        [JsonConverter(typeof(LongConverter))]
         public long DescriptionId { get; set; }
 
         public string Description { get; set; }
@@ -61,7 +61,7 @@ namespace GomLib.Models
                 return false;
             if (this.ClassBackground != obj.ClassBackground)
                 return false;
-            if (this.classSpecId != obj.classSpecId)
+            if (this.ClassSpecId != obj.ClassSpecId)
                 return false;
             if (!this.ClassSpec.Equals(obj.ClassSpec))
                 return false;
@@ -96,7 +96,7 @@ namespace GomLib.Models
             return true;
         }
 
-        [JsonIgnore]
+        [JsonConverter(typeof(ULongConverter))]
         public ulong UtiltyPkgId { get; set; }
         public string UtiltyPkgB62Id { get { if (UtiltyPkgId != 0) return UtiltyPkgId.ToMaskedBase62(); else return ""; } }
         [Newtonsoft.Json.JsonIgnore]
@@ -112,13 +112,26 @@ namespace GomLib.Models
         }
         public bool UtilPkgIsActive { get; set; }
 
-        [JsonIgnore]
-        public ulong classSpecId { get; set; }
+        [JsonConverter(typeof(ULongConverter))]
+        public ulong ClassSpecId { get; set; }
+        public string ClassSpecB62Id { get { if (ClassSpecId != 0) return ClassSpecId.ToMaskedBase62(); else return ""; } }
 
         [JsonIgnore]
         public List<ulong> AdvancedClassPkgIds { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        public List<string> AdvancedClassPkgB62Ids
+        {
+            get
+            {
+                if (AdvancedClassPkgIds != null)
+                {
+                    return AdvancedClassPkgIds.Select(x => x.ToMaskedBase62()).ToList();
+                }
+                return null;
+            }
+        }
+        [JsonIgnore]
         internal List<AbilityPackage> _AdvancedClassPkgs;
+        [JsonIgnore]
         public List<AbilityPackage> AdvancedClassPkgs
         {
             get
@@ -135,6 +148,17 @@ namespace GomLib.Models
 
         [JsonIgnore]
         public List<ulong> BaseClassPkgIds { get; set; }
+        public List<string> BaseClassPkgB62Ids
+        {
+            get
+            {
+                if (BaseClassPkgIds != null)
+                {
+                    return BaseClassPkgIds.Select(x => x.ToMaskedBase62()).ToList();
+                }
+                return null;
+            }
+        }
         [Newtonsoft.Json.JsonIgnore]
         internal List<AbilityPackage> _BaseClassPkgs;
         public List<AbilityPackage> BaseClassPkgs

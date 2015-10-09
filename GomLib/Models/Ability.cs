@@ -14,11 +14,11 @@ namespace GomLib.Models
     {
         [JsonIgnore]
         public ulong NodeId { get; set; }
-        [JsonIgnore]
+        [JsonConverter(typeof(LongConverter))]
         public long NameId { get; set; }
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
-        [JsonIgnore]
+        [JsonConverter(typeof(LongConverter))]
         public long DescriptionId { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         public string _Description
@@ -164,6 +164,7 @@ namespace GomLib.Models
         public List<ulong> EffectIds { get; set; }
         public int Level { get; set; }
         public string Icon { get; set; }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong EffectZero { get; set; }
         public bool IsHidden { get; set; }
         public bool IsPassive { get; set; }

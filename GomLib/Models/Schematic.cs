@@ -10,13 +10,15 @@ namespace GomLib.Models
     public class Schematic : GameObject, IEquatable<Schematic>
     {
         #region Properties
+        [JsonIgnore]
         public ulong NodeId { get; set; }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong NameId { get; set; }
         public string Name { get { return _name ?? (_name = ""); } set { if (_name != value) { _name = value; } } }
         private string _name;
         public Dictionary<string, string> LocalizedName { get; set; }
         public Profession CrewSkill { get; set; }
-        [JsonIgnore]
+        [JsonConverter(typeof(LongConverter))]
         public long CrewSkillId { get; set; }
         [JsonIgnore]
         public string CrewSkillName { get; set; }
@@ -42,6 +44,7 @@ namespace GomLib.Models
         public int SkillGreen { get; set; }
         public int SkillGrey { get; set; }
 
+        [JsonConverter(typeof(ULongConverter))]
         public ulong ItemId { get; set; }
         public string ItemBase62Id { get { return ItemId.ToMaskedBase62(); } }
 
@@ -110,8 +113,8 @@ namespace GomLib.Models
         [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ItemQuality Quality { get; set; }
         public Dictionary<long, ModPackage> Variations { get; set; }
+        [JsonIgnore]
         public List<ulong> LearnedIds { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         public string LearnedBase62Ids
         {
             get
@@ -119,13 +122,12 @@ namespace GomLib.Models
                 return String.Join(", ", LearnedIds.Where(x => x != 0).Select(x => x.ToMaskedBase62()));
             }
         }
-        [Newtonsoft.Json.JsonIgnore]
         public string HashedIcon
         {
             get
             {
                 string icon = "none";
-                if (this.Item != null)
+                if (Item != null)
                 {
                     icon = Item.Icon;
                 }
@@ -134,6 +136,7 @@ namespace GomLib.Models
             }
         }
         public bool TrainerTaught { get; set; }
+        public string Icon { get { if (Item != null) return Item.Icon; return ""; } }
 
         #endregion
 

@@ -4,17 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace GomLib.Models
 {
     public class Talent : GameObject, IEquatable<Talent>
     {
+        [JsonIgnore]
         public ulong NodeId { get; set; }
-
+        [JsonConverter(typeof(LongConverter))]
         public long NameId { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public long DescriptionId { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         public string Description { get; set; }
@@ -164,14 +167,29 @@ namespace GomLib.Models
 
         public class StatData : IEquatable<StatData>
         {
+            internal DataObjectModel _dom;
+            public StatData(DataObjectModel dom, GomObjectData gom)
+            {
+                _dom = dom;
+                StatId = gom.ValueOrDefault<ScriptEnum>("talTalentStatName", new ScriptEnum()).Value;
+                Stat = gom.ValueOrDefault<ScriptEnum>("talTalentStatName", new ScriptEnum()).ToString();
+                Value = gom.ValueOrDefault<float>("talTalentStatValue");
+                Modifier = gom.ValueOrDefault<ScriptEnum>("talTalentStatModifier", new ScriptEnum()).ToString().Replace("0x00", "AddToCurrent").Replace("modStatType_", "");
+                Enabled = gom.ValueOrDefault<bool>("talTalentStatIsEnabled");
+                AffectedNodeId = gom.ValueOrDefault<ulong>("talTalentStatTargetId");
+            }
             public int StatId { get; set; }
             [Newtonsoft.Json.JsonIgnore]
             public string Stat { get; set; }
+            public DetailedStat DetStat { get; set; }
             public float Value { get; set; }
             public bool Enabled { get; set; }
+
+            [JsonConverter(typeof(ULongConverter))]
             public ulong AffectedNodeId { get; set; }
+            public string AffectedNodeB62Id { get { return (AffectedNodeId != 0) ? AffectedNodeId.ToMaskedBase62() : ""; } }
             [Newtonsoft.Json.JsonIgnore]
-            public Ability AffectedAbility { get; set; }
+            public Ability AffectedAbility { get { return _dom.abilityLoader.Load(AffectedNodeId); } }
             
             public string Modifier { get; set; }
 

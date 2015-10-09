@@ -13,9 +13,10 @@ namespace GomLib.Models
     {
         #region Properties
         internal Dictionary<object,object> TextLookup { get; set; }
-
+        [JsonIgnore]
         public ulong NodeId { get; set; }
         public string Name { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public long NameId { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
         public string Icon { get; set; }
@@ -28,7 +29,7 @@ namespace GomLib.Models
         public bool IsClassQuest { get; set; }
         public bool IsBonus { get; set; }
         public bool BonusShareable { get; set; }
-        [JsonIgnore]
+        [JsonConverter(typeof(LongConverter))]
         public long CategoryId { get; set; }
         [JsonIgnore]
         public string Category { get; set; }
@@ -59,8 +60,9 @@ namespace GomLib.Models
         }
         [JsonIgnore]
         public List<ulong> BonusMissionsIds { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public List<object> ItemMap { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public long CreditRewardType { get; set; }
         public float CreditsRewarded { get; set; }
         public long XP { get; set; }
@@ -68,7 +70,7 @@ namespace GomLib.Models
         public long F2PXP { get; set; }
         #endregion
         #region FlatQuestProperties
-            [Newtonsoft.Json.JsonIgnore]
+            [JsonIgnore]
             public string CleanName
         {
             get
@@ -79,7 +81,7 @@ namespace GomLib.Models
                 return System.IO.Path.GetInvalidFileNameChars().Aggregate(Name, (current, c) => current.Replace(c.ToString(), string.Empty)).Replace("'", "").Replace(" ", "_");
             }
         }
-            [Newtonsoft.Json.JsonIgnore]
+            [JsonIgnore]
             public string HashedIcon
             {
                 get
@@ -146,7 +148,7 @@ namespace GomLib.Models
             }
             #endregion
             #region Classes
-            [Newtonsoft.Json.JsonIgnore]
+            [JsonIgnore]
             internal List<string> _ClassesB62 { get; set; }
             public List<string> ClassesB62
             {
@@ -161,21 +163,14 @@ namespace GomLib.Models
                 }
             }
             [JsonIgnore]
-            public bool AllowedSmuggler{ get; set;}
-            [JsonIgnore]
-            public bool AllowedAgent { get; set; }
-            [JsonIgnore]
-            public bool AllowedWarrior { get; set; }
-            [JsonIgnore]
-            public bool AllowedBH { get; set; }
-            [JsonIgnore]
-            public bool AllowedInquisitor { get; set; }
-            [JsonIgnore]
-            public bool AllowedTrooper { get; set; }
-            [JsonIgnore]
-            public bool AllowedKnight { get; set; }
-            [JsonIgnore]
-            public bool AllowedConsular { get; set; }
+            public string AllowedClasses
+            {
+                get
+                {
+                    if (Classes == null) return "";
+                    return String.Join(",", Classes.Select(x => x.Name).ToList());
+                }
+            }
         #endregion
         #region Conversation Rewards
         [Newtonsoft.Json.JsonIgnore]
@@ -509,14 +504,7 @@ namespace GomLib.Models
                         new SQLProperty("ReqPrivacy", "ReqPrivacy", "varchar(255) COLLATE latin1_general_cs NOT NULL"),
                         new SQLProperty("BonusMissionsIds", "BonusMissionsB62Ids", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
                         new SQLProperty("ConversationGains","ConversationGains", "TEXT NOT NULL", SQLPropSetting.JsonSerialize),
-                        new SQLProperty("AllowedSmuggler", "AllowedSmuggler", "tinint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("AllowedAgent", "AllowedAgent", "tinint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("AllowedWarrior", "AllowedWarrior", "tinint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("AllowedBH", "AllowedBH", "tinint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("AllowedInquisitor", "AllowedInquisitor", "tinint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("AllowedTrooper", "AllowedTrooper", "tinint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("AllowedKnight", "AllowedKnight", "tinint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("AllowedConsular", "AllowedConsular", "tinint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("AllowedClasses", "AllowedClasses", "varchar(505) NOT NULL", SQLPropSetting.JsonSerialize, SQLPropSetting.AddFullTextIndex),
                         //new SQLProperty("ItemMap", "ItemMap", "TEXT NOT NULL", false, true),
 
                     };

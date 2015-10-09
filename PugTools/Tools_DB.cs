@@ -336,8 +336,11 @@ INSERT INTO `{0}` (`current_version`, `previous_version`, `first_seen`, `{1}`, `
 	INSERT INTO `{0}_old_versions` (`version`, `{2}`, `Hash`)
 	VALUES (OLD.`current_version`, OLD.`{3}`, OLD.`Hash`)", Table, priunikey, columns, oldColumns);
 
-            string indexString = String.Join(Environment.NewLine, SqlData.SQLProperties.Where(x => x.AddIndex).Select(x => String.Format("ALTER TABLE `{0}` ADD INDEX `{1}` (`{1}`);", Table, x.Name)).ToList());
-
+            string indexString = String.Join(
+                Environment.NewLine,
+                SqlData.SQLProperties.Where(x => x.AddIndex).Select(x => String.Format("ALTER TABLE `{0}` ADD INDEX `{1}` (`{1}`);", Table, x.Name)).ToList().Union(
+                SqlData.SQLProperties.Where(x => x.AddFullTextIndex).Select(x => String.Format("ALTER TABLE `{0}` ADD FULLTEXT INDEX `{1}` (`{1}`);", Table, x.Name)).ToList())
+            );
 
             /*
              * {0} = table name
