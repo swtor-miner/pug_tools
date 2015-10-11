@@ -57,7 +57,8 @@ namespace GomLib.Models
                 case "itmGiftSecret": return GiftType.Secret;
                 case "itmGiftDelicacies": return GiftType.Delicacies;
                 case "itmGiftMaintenance": return GiftType.Maintenance;
-                default: throw new InvalidOperationException("Invalid GiftType: " + str);
+                default:
+                    return GiftType.None; //throw new InvalidOperationException("Invalid GiftType: " + str);
             }
         }
     }
