@@ -15,6 +15,7 @@ namespace GomLib.ModelLoader
         StringTable prfStrTable;
         Dictionary<ulong, Schematic> idMap;
         Dictionary<string, Schematic> nameMap;
+        HashSet<ulong> TrainableRecipes { get; set; }
         //static int maxMats = 0;
 
         DataObjectModel _dom;
@@ -86,6 +87,17 @@ namespace GomLib.ModelLoader
                 missionStrTable = _dom.stringTable.Find("str.prf.missions");
                 prfSubStrTable = _dom.stringTable.Find("str.prf.subtypes");
                 prfStrTable = _dom.stringTable.Find("str.prf.professions");
+
+                var nodeList = _dom.GetObjectsStartingWith("pkg.profession_trainer");
+                TrainableRecipes = new HashSet<ulong>();
+                foreach (GomObject node in nodeList)
+                {
+                    List<object> schematics = node.Data.ValueOrDefault<List<object>>("prfTrainerSchematicList", null);
+                    if (schematics != null)
+                        TrainableRecipes.UnionWith(schematics.Select(x => (ulong)x).ToList());
+                    node.Unload();
+                }
+
             }
             schem.Id = obj.Id;
             schem.Fqn = obj.Name;
@@ -298,13 +310,14 @@ namespace GomLib.ModelLoader
             {
                 throw new InvalidOperationException("Attempting to set Id of a schematic to one that's already taken");
             }
-            if (obj.References != null)
-            {
-                if (obj.References.ContainsKey("trainerTaught"))
-                {
-                    schem.TrainerTaught = true;
-                }
-            }
+            //if (obj.References != null)
+            //{
+            //    if (obj.References.ContainsKey("trainerTaught"))
+            //    {
+            //        schem.TrainerTaught = true;
+            //    }
+            //}
+            schem.TrainerTaught = TrainableRecipes.Contains(schem.Id);
 
             long test = obj.Data.ValueOrDefault<long>("4611686304563444001", 0);
             if (test != 0)
