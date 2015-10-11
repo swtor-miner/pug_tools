@@ -81,7 +81,6 @@ namespace GomLib.Models
                 return System.IO.Path.GetInvalidFileNameChars().Aggregate(Name, (current, c) => current.Replace(c.ToString(), string.Empty)).Replace("'", "").Replace(" ", "_");
             }
         }
-            [JsonIgnore]
             public string HashedIcon
             {
                 get
