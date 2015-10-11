@@ -23,14 +23,27 @@ using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace tor_tools
 {
-    public partial class Tools
+    public partial class Tools : Form
     {
+        #region TorcDB
+        public void getDBOutput()
+        {
+            Clearlist2();
+            
+            LoadData();
+
+
+
+        }
+
+        #endregion
         public void getTorc()
         {
             Clearlist2();
 
             LoadData();
-
+            
+            getDisciplineCalcData();
             getCrewSkillData();
             outputTables();
             //getTooltips();
@@ -220,6 +233,14 @@ namespace tor_tools
             currentDom.enhanceData.ToEnhancement(1); //trick it into loading data
             json = JsonConvert.SerializeObject(currentDom.enhanceData.SlotLookup, settings);
             WriteFile(json, "slotData.json", false);
+
+            currentDom.questLoader.Load("qst.location.coruscant.world.enemies_of_the_republic"); //trick it into loading data
+            json = JsonConvert.SerializeObject(currentDom.questLoader.fullCreditRewardsTable, settings);
+            WriteFile(json, "fullCreditRewardsTable.json", false);
+            json = JsonConvert.SerializeObject(currentDom.questLoader.experienceTable, settings);
+            WriteFile(json, "experienceTable.json", false);
+            json = JsonConvert.SerializeObject(currentDom.questLoader.experienceDifficultyMultiplierTable, settings);
+            WriteFile(json, "experienceDifficultyMultiplierTable.json", false);
         }
         #region Discipline Calculator
         public void getDisciplineCalcData()
@@ -624,7 +645,7 @@ namespace tor_tools
             JProperty jDescTokens = new JProperty("Tokens", new JArray(descTokens
                 .Select(x => new JObject(
                     new JProperty("TokenId", x.Key),
-                    new JProperty("TokenData", x.Value["ablParsedDescriptionToken"].ToString()),
+                    new JProperty("TokenData", JsonConvert.SerializeObject(x.Value["ablParsedDescriptionToken"])),
                     new JProperty("TokenType", x.Value["ablDescriptionTokenType"].ToString().Replace("ablDescriptionTokenType", ""))
                         )
                     )
@@ -726,7 +747,7 @@ namespace tor_tools
                 currentDom.schematicLoader.Load(schem, gom);
                 if (schem.Deprecated)
                     continue;
-                string crewskill = schem.CrewSkillId.ToString();
+                string crewskill = schem.CrewSkill.ToString();
                 string subtype = "";
                 if (!professions.ContainsKey(crewskill))
                 {
@@ -781,12 +802,12 @@ namespace tor_tools
                                          from schem in s.Value
                                          select SchematicToMinifiedJSON(schem))));
 
-                WriteFile(output.ToString(), String.Format("PrfContent\\Data\\{0}.json", c.Key), false);
+                WriteFile(output.ToString(Newtonsoft.Json.Formatting.None), String.Format("PrfContent\\Data\\{0}.json", c.Key), false);
             }
 
             output = new JObject(from id in materialIds
                                  select new JProperty(id.ToMaskedBase62(), ItemToMinifiedJSON(currentDom.itemLoader.Load(id))));
-            WriteFile(output.ToString(), "PrfContent\\Data\\prfMaterials.json", false);
+            WriteFile(output.ToString(Newtonsoft.Json.Formatting.None), "PrfContent\\Data\\prfMaterials.json", false);
 
             foreach (var kvp in craftedIds)
             {
@@ -794,13 +815,15 @@ namespace tor_tools
                     continue;
                 var jDict = kvp.Value.Select(x => new KeyValuePair<ulong, JObject>(x, ItemToMinifiedJSON(currentDom.itemLoader.Load(x))));
                 output = new JObject(kvp.Value.Select(x => new JProperty(x.ToMaskedBase62(), ItemToMinifiedJSON(currentDom.itemLoader.Load(x)))));
-                WriteFile(output.ToString(), String.Format("PrfContent\\Data\\{0}_Items.json", kvp.Key), false);
+                WriteFile(output.ToString(Newtonsoft.Json.Formatting.None), String.Format("PrfContent\\Data\\{0}_Items.json", kvp.Key), false);
             }
         }
 
         private JObject ItemToMinifiedJSON(GomLib.Models.Item item)
         {
-            //OutputIcon(item.Icon, "PrfContent");
+            if (item != null) OutputIcon(item.Icon, "PrfContent");
+            if(item == null)
+                return new JObject();
             JObject jItm = new JObject(
                         new JProperty("Name", new JValue(item.Name ?? "")),
                         new JProperty("Description", new JValue((item.Description ?? "").Replace("\r\n", "<br />").Replace("\n", "<br />").Replace("\r", "<br />"))),
@@ -823,20 +846,32 @@ namespace tor_tools
             }
             if (item.DisassembleCategory != null)
                 jItm.Add(new JProperty("DissassembleCategory", new JValue(item.DisassembleCategory.ToString())));
-            var schemvar = item._dom.schemVariationLoader.Load(item.Id);
-            if (true)
+            if(item.References.ContainsKey("createdBy"))
             {
-                JArray variants = new JArray(
-                    schemvar.VariationPackages
-                        .Select(x =>
-                            new JObject(
-                                new JProperty("Name", x.Name),
-                                new JProperty("Stats",
-                                    new JArray(x.AtrributePercentages.Select(y=> String.Format("+{1}% {0}", y.Key.ToString(), y.Value)).ToArray()))
-                            )
-                        ).ToArray()
-                    );
+                JArray variants = new JArray();
+                if (item.References["createdBy"].Count > 1)
+                {
+                    string soindf = "";
+                }
+                else
+                {
+                    var schemvar = item._dom.schemVariationLoader.Load(item.References["createdBy"].First());
+                    if (schemvar.Id != 0)
+                    {
+                        variants = new JArray(
+                            schemvar.VariationPackages
+                                .Select(x =>
+                                    new JObject(
+                                        new JProperty("Name", x.Name),
+                                        new JProperty("Stats",
+                                            new JArray(x.AtrributePercentages.Select(y => String.Format("+{1}% {0}", y.Key, y.Value)).ToArray()))
+                                    )
+                                ).ToArray()
+                            );
+                    }
+                }
                 jItm.Add(new JProperty("Variations", variants));
+                
             }
             return jItm;
         }
