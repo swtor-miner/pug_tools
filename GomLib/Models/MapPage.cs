@@ -45,6 +45,88 @@ namespace GomLib.Models
         public long ExplorationId { get; set; }
         public float mapFowRadius { get; internal set; }
 
+        public int MiniMapColumnCount
+        {
+            get
+            {
+                if(_MiniMapColumCount != -1)
+                {
+                    return _MiniMapColumCount;
+                } else
+                {
+                    FindMiniMapPartCounts();
+                    return _MiniMapColumCount;
+                }
+            }
+        }
+
+        public int MiniMapRowCount
+        {
+            get
+            {
+                if(_MiniMapRowcount != -1)
+                {
+                    return _MiniMapRowcount;
+                } else
+                {
+                    FindMiniMapPartCounts();
+                    return _MiniMapRowcount;
+                }
+            }
+        }
+
+        internal int _MiniMapColumCount = -1;
+        internal int _MiniMapRowcount = -1;
+
+        public void FindMiniMapPartCounts()
+        {
+            //Find how many map tiles we have for the minimap.
+            string miniMapBasePath = "/resources/world/areas/{0}/minimaps/{1}_{2}_{3}_r.dds";
+            int columns = 0;
+            int rows = 0;
+
+            //Find the row tile count.
+            bool foundAllRows = false;
+            while (!foundAllRows)
+            {
+                string miniMapPartPath = string.Format(miniMapBasePath, Area.AreaId, MapName,
+                    rows.ToString("00"), "00");
+
+                if (Area._dom._assets.HasFile(miniMapPartPath))
+                {
+                    //Found map tile. Increment counter.
+                    rows++;
+                }
+                else
+                {
+                    //Can't find map tile.
+                    foundAllRows = true;
+                }
+            }
+
+            //Find the column tile count.
+            bool foundAllColumns = false;
+            while (!foundAllColumns)
+            {
+                string miniMapPartPath = string.Format(miniMapBasePath, Area.AreaId, MapName,
+                    "00", columns.ToString("00"));
+
+                if (Area._dom._assets.HasFile(miniMapPartPath))
+                {
+                    //Found map tile. Increment counter.
+                    columns++;
+                }
+                else
+                {
+                    //Can't find map tile.
+                    foundAllColumns = true;
+                }
+            }
+
+            _MiniMapColumCount = columns;
+            _MiniMapRowcount = rows;
+        }
+
         public void CalculateVolume()
         {
             float dx = MaxX - MinX;

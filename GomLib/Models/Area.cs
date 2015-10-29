@@ -28,8 +28,13 @@ namespace GomLib.Models
             {
                 if (_FowGroupLocalizedStrings == null)
                 {
-                    var strTable = _dom.stringTable.Find("str.sys.worldmap");
                     _FowGroupLocalizedStrings = new Dictionary<ulong, Dictionary<string, string>>();
+                    if(FowGroupStringIds == null)
+                    {
+                        return _FowGroupLocalizedStrings;
+                    }
+
+                    var strTable = _dom.stringTable.Find("str.sys.worldmap");
                     foreach (var kvp in FowGroupStringIds)
                     {
                         _FowGroupLocalizedStrings.Add(kvp.Key, strTable.GetLocalizedText(kvp.Value, "str.sys.worldmap"));
