@@ -90,6 +90,8 @@ namespace tor_tools
                 fileTypes.Add("CLASS");
             if (this.chkAPN.Checked)
                 fileTypes.Add("APN");
+            if (this.chkSPN.Checked)
+                fileTypes.Add("SPN");
             return fileTypes;
         }
 

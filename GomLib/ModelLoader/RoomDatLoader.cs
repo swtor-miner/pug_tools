@@ -82,6 +82,12 @@ namespace GomLib.FileLoaders
                     uint propteriesLength = br.ReadUInt32();
 
                     long startOffset = br.BaseStream.Position;
+
+                    if (!room.Area.Assets.ContainsKey(inst.AssetId))
+                    {
+                        br.BaseStream.Position = startOffset + propteriesLength;
+                        continue;
+                    }
                     byte nullByte3 = br.ReadByte();
                     try
                     {

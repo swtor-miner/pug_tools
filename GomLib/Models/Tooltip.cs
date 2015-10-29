@@ -123,6 +123,8 @@ namespace GomLib.Models
                         return ((Codex)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
                     case "GomLib.Models.Npc":
                         return ((Npc)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
+                    case "GomLib.Models.NewCompanion":
+                        return ((NewCompanion)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
                 }
                 return "<div>Not implemented</div>";
             }
@@ -171,7 +173,7 @@ namespace GomLib.Models
                     var impfileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", itm.ImperialIcon));
                     imgelement.Add(
                         new XElement("span",
-                            XClass("torctip_app_faction torctip_lc"),
+                            XClass("torctip_app_faction_imp torctip_lc"),
                             GetLocalizedText(1173582633762817, Tooltip.language)
                         ),
                         new XElement("div",
@@ -182,7 +184,7 @@ namespace GomLib.Models
                             )
                         ),
                         new XElement("span",
-                            XClass("torctip_app_faction torctip_lc"),
+                            XClass("torctip_app_faction_rep torctip_lc"),
                             GetLocalizedText(1173582633762818, Tooltip.language)
                         ),
                         new XElement("div",
@@ -754,7 +756,16 @@ namespace GomLib.Models
                         XElement desc = new XElement("div",
                             XClass("torctip_use"),
                             GetLocalizedText(836131348283442)); //"Equip: "
-                        AddStringWithBreaks(ref desc, ablDesc);
+                        XElement link = new XElement("a",
+                            new XAttribute("href",
+                                String.Format("https://torcommunity.com{2}/database/item/{0}/{1}/",
+                                    itm.EquipAbility.Base62Id,
+                                    itm.EquipAbility.LocalizedName[Tooltip.language].LinkString(),
+                                    Tooltip.linkLocal)),
+                            new XAttribute("data-torc", "norestyle")
+                        );
+                        AddStringWithBreaks(ref link, ablDesc);
+                        desc.Add(link);
                         tooltip.Add(desc);
                     }
                 }
@@ -821,7 +832,16 @@ namespace GomLib.Models
                                 XElement desc = new XElement("div",
                                     XClass("torctip_use"),
                                     String.Format("{0} ", GetLocalizedText(836131348283443))); //"Use: ");
-                                AddStringWithBreaks(ref desc, ablDesc);
+                                XElement link = new XElement("a",
+                                        new XAttribute("href",
+                                            String.Format("https://torcommunity.com{2}/database/item/{0}/{1}/",
+                                                itm.UseAbility.Base62Id,
+                                                itm.UseAbility.LocalizedName[Tooltip.language].LinkString(),
+                                                Tooltip.linkLocal)),
+                                        new XAttribute("data-torc", "norestyle")
+                                    );
+                                AddStringWithBreaks(ref link, ablDesc);
+                                desc.Add(link);
                                 tooltip.Add(desc);
                             }
                             break;
@@ -1109,10 +1129,10 @@ namespace GomLib.Models
                             ((itm.LocalizedName != null) ? itm.LocalizedName[Tooltip.language] : "")),
                         new XElement("div",
                             XClass("torctip_mission_desc"),
-                            ((itm.LocalizedName != null) ? itm.LocalizedMissionDescription[Tooltip.language] : "")),
+                            ((itm.LocalizedMissionDescription != null) ? itm.LocalizedMissionDescription[Tooltip.language] : "")),
                         new XElement("div",
                             XClass("torctip_mission_yield"),
-                            ((itm.LocalizedName != null) ? itm.LocalizedMissionYieldDescription[Tooltip.language] : "")),
+                            ((itm.LocalizedMissionYieldDescription != null) ? itm.LocalizedMissionYieldDescription[Tooltip.language] : "")),
                         new XElement("div",
                             XClass("torctip_mission_faction"),
                             itm.MissionFaction.ToString())
@@ -1303,7 +1323,7 @@ namespace GomLib.Models
                     AddStringWithBreaks(ref desc, journalText);
                     inner.Add(desc);
                 }
-                XElement taskText = new XElement("span",
+                XElement taskText = new XElement("div",
                     XClass("torctip_tsk_txt"),
                     GetLocalizedText(836096988545049)); //"Tasks:");
                 bool taskAdded = false;
@@ -1330,6 +1350,8 @@ namespace GomLib.Models
                             foreach (var task in step.Tasks)
                             {
                                 if (String.IsNullOrEmpty(task.String)) continue;
+                                if (itm.Fqn == "qst.location.coruscant.bonus.staged.crisis_control_stage_2")
+                                    break;
                                 if(task.ShowCount)
                                 {
                                     taskInner.Add(new XElement("div",
@@ -2130,6 +2152,80 @@ namespace GomLib.Models
                             ((itm.ClassSpec.LocalizedName != null) ? itm.ClassSpec.LocalizedName[Tooltip.language] : "Unknown")) 
                     )
                 );
+
+                tooltip.Add(inner);
+            }
+
+            return tooltip;
+        }
+
+        #endregion
+        #region companion
+        public static XElement GetHTML(this NewCompanion itm)
+        {
+            if (Tooltip.TooltipNameMap.Count == 0)
+            {
+                LoadNameMap(itm._dom);
+            }
+            if (itm.Id == 0) return new XElement("div", "Not Found");
+            string icon = "none";
+            if (!String.IsNullOrEmpty(itm.Icon))
+                icon = itm.Icon;
+            string stringQual = "none";
+            if (itm.Companion != null)
+            {
+                if (itm.Companion.Npc.DetFaction != null)
+                {
+                    if (itm.Companion.Npc.DetFaction.LocalizedName != null)
+                        stringQual = itm.Companion.Npc.DetFaction.LocalizedName["enMale"].ToLower();
+                    else
+                        stringQual = itm.Companion.Npc.DetFaction.FactionString.ToLower();
+                }
+            }
+
+            XElement tooltip = new XElement("div", new XAttribute("class", "torctip_wrapper"));
+            var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/portraits/{0}.dds", icon));
+
+            tooltip.Add(new XElement("div",
+                new XAttribute("class", String.Format("torctip_image torctip_image_{0}", stringQual)),
+                new XElement("img",
+                    new XAttribute("src", String.Format("https://torcommunity.com/db/portraits/{0}_{1}_thumb.png", fileId.ph, fileId.sh)),
+                    new XAttribute("alt", "")))
+            );
+
+            if (itm != null)
+            {
+                string toughness = "standard";
+                if (itm.Companion != null)
+                    toughness = (itm.Companion.Npc.LocalizedToughness != null ? itm.Companion.Npc.LocalizedToughness["enMale"] : "").Replace(" ", "_").ToLower();
+                XElement inner = new XElement("div",
+                    XClass("torctip_tooltip"),
+                    new XElement("span",
+                        XClass(String.Format("torctip_npc_{0}", stringQual)),
+                        itm.LocalizedName[Tooltip.language],
+                        new XElement("span",
+                            XClass(String.Format("torctip_toughness_{0}", toughness)),
+                            " "
+                        )
+                    )
+                );
+
+                if (itm.LocalizedTitle != null)
+                    inner.Add(new XElement("div",
+                        XClass("torctip_npc_title"),
+                        itm.LocalizedTitle[Tooltip.language]
+                    ));
+                if(itm.Companion != null)
+                    inner.Add(//new XElement("br"),
+                        new XElement("div",
+                            XClass("torctip_white"),
+                            String.Format(GetLocalizedText(848771437035837), //"Level {0} {1}"
+                                ((itm.Companion.Npc.MinLevel == itm.Companion.Npc.MaxLevel)
+                                    ? itm.Companion.Npc.MinLevel.ToString()
+                                    : String.Join("-", itm.Companion.Npc.MinLevel, itm.Companion.Npc.MaxLevel)),
+                                ((itm.Companion.Npc.ClassSpec.LocalizedName != null) ? itm.Companion.Npc.ClassSpec.LocalizedName[Tooltip.language] : "Unknown"))
+                        )
+                    );
 
                 tooltip.Add(inner);
             }

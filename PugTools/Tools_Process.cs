@@ -1533,8 +1533,8 @@ namespace tor_tools
                 addtolist2(String.Format("{0}: {1}", prefix, itmList[b].Fqn));
 
                 string jsonString = itmList[b].ToJSON(); // ConvertToJson(itm); //added method in Tools.cs
+                txtFile.Append(String.Format("{0},{1}{2}", itmList[b].Base62Id, jsonString, Environment.NewLine)); //Append it with a newline to the output.
                 itmList[b] = null;
-                txtFile.Append(jsonString + Environment.NewLine); //Append it with a newline to the output.
                 i++;
                 e++;
             }
@@ -1586,8 +1586,8 @@ namespace tor_tools
                 addtolist2(String.Format("{0}: {1}", prefix, itmList[c].Name));
 
                 string jsonString = itmList[c].ToJSON();
+                txtFile.Append(String.Format("{0},{1}{2}", itmList[c].Base62Id, jsonString, Environment.NewLine)); //Append it with a newline to the output.
                 itmList[c] = null;
-                txtFile.Append(jsonString + Environment.NewLine); //Append it with a newline to the output.
                 i++;
                 e++;
             }

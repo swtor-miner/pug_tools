@@ -72,14 +72,14 @@ namespace GomLib.ModelLoader
                         if (localizedStrings.Count == 0)
                         {
                             localizedStrings.Add("enMale", new List<string>());
-                            localizedStrings.Add("enFemale", new List<string>());
+                            //localizedStrings.Add("enFemale", new List<string>());
                             localizedStrings.Add("frMale", new List<string>());
                             localizedStrings.Add("frFemale", new List<string>());
                             localizedStrings.Add("deMale", new List<string>());
                             localizedStrings.Add("deFemale", new List<string>());
                         }
                         localizedStrings["enMale"].Add(String.Empty);
-                        localizedStrings["enFemale"].Add(String.Empty);
+                        //localizedStrings["enFemale"].Add(String.Empty);
                         localizedStrings["frMale"].Add(String.Empty);
                         localizedStrings["frFemale"].Add(String.Empty);
                         localizedStrings["deMale"].Add(String.Empty);

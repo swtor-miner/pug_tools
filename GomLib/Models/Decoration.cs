@@ -5,19 +5,22 @@ using System.Text;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using System.Xml;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
     public class Decoration : GameObject, IEquatable<Decoration>
     {
+        [JsonConverter(typeof(LongConverter))]
         public long NameId { get; set; }
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
         public float decPrevObjRotationX;
         public float decPrevObjRotationY;
         public bool UseItemName { get; set; }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong UnlockingItemId { get; set; }
-
+        public string UnlockingItemB62Id { get { return UnlockingItemId.ToMaskedBase62(); } }
         [Newtonsoft.Json.JsonIgnore]
         public Item _UnlockingItem { get; set; }
         [Newtonsoft.Json.JsonIgnore]
@@ -25,14 +28,26 @@ namespace GomLib.Models
         {
             get
             {
-                if(_UnlockingItem == null)
+                if (_UnlockingItem == null)
                 {
                     _UnlockingItem = _dom.itemLoader.Load(UnlockingItemId);
                 }
                 return _UnlockingItem;
             }
         }
+        public string UnlockingFqn {
+            get
+            {
+                var obj = _dom.GetObject(UnlockingItemId);
+                if (obj != null)
+                    return obj.Name;
+                return null;
+            }
+        }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong DecorationId { get; set; }
+        public string DecorationB62Id { get { return DecorationId.ToMaskedBase62(); } }
+        [JsonIgnore]
         public GameObject DecorationObject { get; set; }
         public string State { get; set; }
         public string DecorationFqn { get; set; }
@@ -40,7 +55,9 @@ namespace GomLib.Models
         public long MaxUnlockLimit { get; set; }
         public long F2PLimit { get; set; }
         public string FactionPlacementRestriction { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public long CategoryId { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public long SubCategoryId { get; set; }
         public Dictionary<long, bool> Hooks { get; set; }
         [Newtonsoft.Json.JsonIgnore]
@@ -50,13 +67,29 @@ namespace GomLib.Models
         public string StubType { get; set; }
         public bool RequiresAbilityUnlocked { get; set; }
         public long GuildPurchaseCost { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public long CategoryNameId { get; set; }
         public string CategoryName { get; set; }
+        public Dictionary<string, string> LocalizedCategory { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public long SubCategoryNameId { get; set; }
         public string SubCategoryName { get; set; }
+        public Dictionary<string, string> LocalizedSubCategory { get; set; }
+        [JsonIgnore]
         public Dictionary<long, string> SourceDict { get; set; }
+        public Dictionary<long, Dictionary<string, string>> LocalizedSourceDict { get; set; }
+        [JsonIgnore]
+        public Dictionary<string, string> SQLSources
+        {
+            get
+            {
+                //LocalizedSourceDict.Values.Union( )
+                return null;
+            }
+        }
         public bool UniquePerLegacy { get; set; }
 
+        #region IEquatable
         public override int GetHashCode()
         {
             int hash = Id.GetHashCode();
@@ -179,7 +212,7 @@ namespace GomLib.Models
                 return false; 
             return true;
         }
-
+        #endregion
         public override string ToString(bool verbose)
         {
             var hookNameList = _dom.decorationLoader.HookList.Select(x => x.Value.Name).ToList();
@@ -196,6 +229,32 @@ namespace GomLib.Models
                 GuildPurchaseCost,
                 StubType,
                 hookString).Replace("decStubType", "");
+        }
+
+        public override List<SQLProperty> SQLProperties
+        {
+            get
+            {
+                return new List<SQLProperty>
+                    {                //(SQL Column Name, C# Property Name, SQL Column type statement, IsUnique/PrimaryKey, Serialize value to json)
+                        new SQLProperty("Name", "LocalizedName[enMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrName", "LocalizedName[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeName", "LocalizedName[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.PrimaryKey),
+                        new SQLProperty("UnlockingItemB62Id", "UnlockingItemB62Id", "varchar(7) COLLATE latin1_general_cs", SQLPropSetting.AddIndex),
+                        new SQLProperty("DecorationB62Id", "DecorationB62Id", "varchar(7) COLLATE latin1_general_cs", SQLPropSetting.AddIndex),
+                        new SQLProperty("MaxUnlockLimit", "MaxUnlockLimit", "int(11) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("F2PLimit", "F2PLimit", "int(11) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("GuildPurchaseCost", "GuildPurchaseCost", "int(11) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FactionPlacementRestriction", "FactionPlacementRestriction", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Category", "LocalizedCategory[enMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrCategory", "LocalizedCategory[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeCategory", "LocalizedCategory[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("SubCategory", "LocalizedSubCategory[enMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrSubCategory", "LocalizedSubCategory[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeSubCategory", "LocalizedSubCategory[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                    };
+            }
         }
 
         public override XElement ToXElement(bool verbose)

@@ -217,7 +217,7 @@ namespace GomLib
                             Id = entryId,
                             localizedText = new Dictionary<string, string> {
                                 { "enMale", "" },
-                                { "enFemale", "" },
+                                //{ "enFemale", "" },
                                 { "frMale", "" },
                                 { "frFemale", "" },
                                 { "deMale", "" },
@@ -246,7 +246,7 @@ namespace GomLib
                             if (localization == "en-us")
                             {
                                 if (entry_t1 == 65 || entry_t1 == 80) { data[entryId].localizedText["enMale"] = text; }
-                                if (entry_t1 == 70 || entry_t1 == 81) { data[entryId].localizedText["enFemale"] = text; }
+                                //if (entry_t1 == 70 || entry_t1 == 81) { data[entryId].localizedText["enFemale"] = text; }
                             }
                             else if (localization == "de-de")
                             {
@@ -352,7 +352,7 @@ namespace GomLib
             long strId = textRetriever.ValueOrDefault<long>("strLocalizedTextRetrieverStringID", -1);
             Dictionary<string, string> defaultStr = new Dictionary<string, string> {
             { "enMale", textRetriever.ValueOrDefault<string>("strLocalizedTextRetrieverDesignModeText", String.Empty) },
-            { "enFemale", "" },
+            //{ "enFemale", "" },
             { "frMale", "" },
             { "frFemale", "" },
             { "deMale", "" },

@@ -11,7 +11,9 @@ namespace GomLib.Models
     public class Npc : GameObject, IEquatable<Npc>
     {
         #region Properties
-        public ulong parentSpecId { get; set; }
+        [JsonConverter(typeof(ULongConverter))]
+        public ulong ParentSpecId { get; set; }
+        public string ParentSpecB62Id { get { return ParentSpecId.ToMaskedBase62(); } }
         [JsonIgnore]
         public ulong NodeId { get; set; }
         public string Name { get; set; }
@@ -234,7 +236,7 @@ namespace GomLib.Models
                 return false;
             if (this.NodeId != npc.NodeId)
                 return false;
-            if (this.parentSpecId != npc.parentSpecId)
+            if (this.ParentSpecId != npc.ParentSpecId)
                 return false;
             if (this.ProfessionTrained != npc.ProfessionTrained)
                 return false;
@@ -349,9 +351,9 @@ namespace GomLib.Models
             {
                 return new List<SQLProperty>
                     {                //(SQL Column Name, C# Property Name, SQL Column type statement, IsUnique/PrimaryKey, Serialize value to json)
-                        new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddFullTextIndex),
-                        new SQLProperty("FrName", "LocalizedName[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddFullTextIndex),
-                        new SQLProperty("DeName", "LocalizedName[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddFullTextIndex),
+                        new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrName", "LocalizedName[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeName", "LocalizedName[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Title", "Title", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.PrimaryKey),
                         new SQLProperty("MinLevel", "MinLevel", "int(11) NOT NULL", SQLPropSetting.AddIndex),

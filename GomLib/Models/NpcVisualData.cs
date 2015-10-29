@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
@@ -18,7 +19,9 @@ namespace GomLib.Models
 
         public string CharSpec { get; set; }
         public float ScaleAdjustment { get; set; }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong MeleeWepId { get; set; }
+        public string MeleeWepB62Id { get { return MeleeWepId.ToMaskedBase62(); } }
         [Newtonsoft.Json.JsonIgnore]
         internal Item _MeleeWep;
         [Newtonsoft.Json.JsonIgnore]
@@ -31,7 +34,9 @@ namespace GomLib.Models
                 return _MeleeWep;
             }
         }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong MeleeOffWepId { get; set; }
+        public string MeleeOffWepB62Id { get { return MeleeOffWepId.ToMaskedBase62(); } }
         [Newtonsoft.Json.JsonIgnore]
         internal Item _MeleeOffWep;
         [Newtonsoft.Json.JsonIgnore]
@@ -44,7 +49,9 @@ namespace GomLib.Models
                 return _MeleeOffWep;
             }
         }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong RangedWepId { get; set; }
+        public string RangedWepB62Id { get { return RangedWepId.ToMaskedBase62(); } }
         [Newtonsoft.Json.JsonIgnore]
         internal Item _RangedWep;
         [Newtonsoft.Json.JsonIgnore]
@@ -57,7 +64,9 @@ namespace GomLib.Models
                 return _RangedWep;
             }
         }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong RangedOffWepId { get; set; }
+        public string RangedOffWepB62Id { get { return RangedOffWepId.ToMaskedBase62(); } }
         [Newtonsoft.Json.JsonIgnore]
         internal Item _RangedOffWep;
         [Newtonsoft.Json.JsonIgnore]
@@ -70,6 +79,7 @@ namespace GomLib.Models
                 return _RangedOffWep;
             }
         }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong AppearanceId { get; set; }
         public string AppearanceFqn { get; set; }
         internal NpcAppearance _Appearance;

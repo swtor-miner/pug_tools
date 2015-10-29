@@ -9,7 +9,6 @@ namespace GomLib.Models
 {
     public class Placeable : GameObject, IEquatable<Placeable>
     {
-        public ulong NodeId { get; set; }
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
 
@@ -33,7 +32,7 @@ namespace GomLib.Models
 
         public override int GetHashCode()
         {
-            int result = NodeId.GetHashCode();
+            int result = Id.GetHashCode();
             result ^= Name.GetHashCode();
             if (ConversationFqn != null) { result ^= ConversationFqn.GetHashCode(); }
             if (CodexId != 0) { result ^= CodexId.GetHashCode(); }
@@ -121,8 +120,6 @@ namespace GomLib.Models
             if (this.LootPackageId != plc.LootPackageId)
                 return false;
             if (this.Name != plc.Name)
-                return false;
-            if (this.NodeId != plc.NodeId)
                 return false;
             if (this.RequiredProfession != plc.RequiredProfession)
                 return false;

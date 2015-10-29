@@ -131,6 +131,7 @@ namespace GomLib.Models
                 case "ipp.": return gomItm._dom.appearanceLoader.Load(gomItm);
                 case "npp.": return gomItm._dom.appearanceLoader.Load(gomItm);
                 case "nco.": return gomItm._dom.newCompanionLoader.Load(gomItm);
+                case "spn.": return gomItm._dom.spawnerLoader.Load(gomItm);
                 default:
                     return null;
             }
@@ -184,7 +185,7 @@ namespace GomLib.Models
         {
             get
             {
-                return Id.ToMaskedBase62();
+                return ((ulong)Id).ToMaskedBase62();
             }
         }
         public virtual string Name { get; set; }

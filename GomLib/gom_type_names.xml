@@ -8158,7 +8158,7 @@
   <gom_type Id="4611686353485627000" name="ncoInfluenceCap" desc="" />
   <gom_type Id="4611686353877427000" name="ncoCategory" desc="" />
   <gom_type Id="4611686353877427001" name="ncoSubCategory" desc="" />
-  <gom_type Id="4611686354113987000" name="ncoAcquireMinLevel" desc="" />
+  <gom_type Id="4611686354113987000" name="ncoMaxInfluenceTier" desc="" />
   <gom_type Id="4611686353485537003" name="ncoInteractionList" desc="list of cnd. node ids with their stringtable id" />
   <gom_type Id="4611686353485537007" name="ncoNpcId" desc="" />
   <gom_type Id="4611686353485537001" name="ncoPreviewIcon" desc="" />
@@ -8282,4 +8282,16 @@
   <!-- apn.-->
   <gom_type Id="4611686063284631217" name="AiUsagePriority" desc="The priority weight given to the package ability" />
   
+  <!-- chrCompanionInfo_Prototype-->
+  <gom_type Id="4611686353557257000" name="chrCompanionInfo_tank_apc" desc="node id of the ability package" />
+  <gom_type Id="4611686353557257001" name="chrCompanionInfo_dps_apc" desc="node id of the ability package" />
+  <gom_type Id="4611686353557257002" name="chrCompanionInfo_heal_apc" desc="node id of the ability package" />
+  
+  <!-- qst.-->
+  <gom_type Id="4611686333821540000" name="qstTaskTriggerIdMap" desc="node id bool list of quest task triggers" />
+  <!-- cnv. -->
+  <gom_type Id="4611686304385494001" name="cnvNodeTransactionTaken" desc="" />
+  <gom_type Id="4611686304385494002" name="cnvNodeTransactionGiven" desc="" />
+  <gom_type Id="4611686304487024000" name="cnvNodeTransactionItems" desc="dictionary- ulong, long - itm - number. Found in the Taken/Given node" />
+  <gom_type Id="4611686304487024001" name="cnvNodeTransactionInfluence" desc="dictionary- ulong, long - nco - influence. Found in the Taken/Given node" />
 </gom_types>

@@ -94,6 +94,7 @@
     <Compile Include="DomType.cs" />
     <Compile Include="DomTypeLoaders\FileInstanceLoader.cs" />
     <Compile Include="ModelLoader\AreaDatLoader.cs" />
+    <Compile Include="ModelLoader\SpawnerLoader.cs" />
     <Compile Include="ModelLoader\RoomDatLoader.cs" />
     <Compile Include="Gom.cs" />
     <Compile Include="GomBinaryReader.cs" />

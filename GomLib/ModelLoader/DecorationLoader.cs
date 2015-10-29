@@ -98,7 +98,7 @@ namespace GomLib.ModelLoader
             if (!dec.UseItemName)
             {
                 dec.NameId = gom.Data.ValueOrDefault<long>("decNameId", 0);
-                dec.Name = nameTable.GetText(dec.NameId, "str.dec");
+                //dec.Name = nameTable.GetText(dec.NameId, "str.dec");
                 dec.LocalizedName = nameTable.GetLocalizedText(dec.NameId, "str.dec");
             }
 
@@ -108,13 +108,16 @@ namespace GomLib.ModelLoader
             dec.UnlockingItemId = gom.Data.ValueOrDefault<ulong>("decUnlockingItemId", 0);
             //dec.UnlockingItem = _dom.itemLoader.Load(dec.UnlockingItemId);
             dec.SourceDict = dec.UnlockingItem.StrongholdSourceNameDict;
+            dec.LocalizedSourceDict = dec.UnlockingItem.LocalizedStrongholdSourceNameDict;
 
             if (dec.UseItemName)
             {
                 dec.NameId = ((Item)dec.UnlockingItem).NameId;
-                dec.Name = ((Item)dec.UnlockingItem).Name;
+                //dec.Name = ((Item)dec.UnlockingItem).Name;
                 dec.LocalizedName = ((Item)dec.UnlockingItem).LocalizedName;
             }
+            Normalize.Dictionary(dec.LocalizedName, dec.Fqn);
+            dec.Name = dec.LocalizedName["enMale"];
 
             //dec.Id = (ulong)(dec.NameId >> 32);
 
@@ -186,6 +189,7 @@ namespace GomLib.ModelLoader
                 tableNameLookup.TryGetValue(dec.CategoryId, out catTab);
                 dec.CategoryNameId = ((GomObjectData)catTab).Get<long>("decCategoryTableNameId");
                 dec.CategoryName = catNameTable.GetText(dec.CategoryNameId, "str.gui.auctionhouse");
+                dec.LocalizedCategory = catNameTable.GetLocalizedText(dec.CategoryNameId, "str.gui.auctionhouse");
             }
 
             dec.SubCategoryId = gom.Data.ValueOrDefault<long>("decSubCategoryNameId", 0);
@@ -200,6 +204,7 @@ namespace GomLib.ModelLoader
                 tableNameLookup.TryGetValue(dec.SubCategoryId, out catTab);
                 dec.SubCategoryNameId = ((GomObjectData)catTab).Get<long>("decSubCategoryTableNameId");
                 dec.SubCategoryName = catNameTable.GetText(dec.SubCategoryNameId, "str.gui.auctionhouse");
+                dec.LocalizedSubCategory = catNameTable.GetLocalizedText(dec.SubCategoryNameId, "str.gui.auctionhouse");
             }
 
             var hookList = gom.Data.ValueOrDefault<Dictionary<object, object>>("decHookList", new Dictionary<object, object>()).ToDictionary(x => (long)x.Key, y => (bool)y.Value);

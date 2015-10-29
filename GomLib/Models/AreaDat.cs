@@ -14,29 +14,49 @@ namespace GomLib.Models
             AreaId = id;
             Id = (long)id;
         }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong AreaId { get; set; }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong AreaGuid { get; set; }
 
+        [JsonIgnore]
         public Dictionary<ulong, string> Assets { get; set; }
+        public Dictionary<string, string> AssetDefs
+        {
+            get
+            {
+                return ((Assets == null) ?
+                    new Dictionary<string, string>() :
+                    Assets.ToDictionary(x => x.Key.ToString(), x => x.Value));
+            }
+        }
         [JsonIgnore]
         public Dictionary<ulong, List<AssetInstance>> AssetInstances { get; set; }
 
         [JsonIgnore]
         public List<string> RoomNames { get; set; }
         internal Dictionary<string, RoomDat> _Rooms { get; set; }
-        [JsonIgnore]
         public Dictionary<string, RoomDat> Rooms
         {
             get
             {
                 if (_Rooms == null)
                 {
-                    _Rooms = new Dictionary<string, RoomDat>();
-                    foreach (var room in RoomNames) {
-                        _Rooms.Add(room, _dom.roomDatLoader.Load(room, this));
-                    }
+                    LoadRooms();
                 }
                 return _Rooms;
+            }
+        }
+
+        public void LoadRooms()
+        {
+            if (_Rooms == null)
+            {
+                _Rooms = new Dictionary<string, RoomDat>();
+                foreach (var room in RoomNames)
+                {
+                    _Rooms.Add(room, _dom.roomDatLoader.Load(room, this));
+                }
             }
         }
         

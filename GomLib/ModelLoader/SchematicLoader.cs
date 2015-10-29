@@ -132,16 +132,18 @@ namespace GomLib.ModelLoader
             schem.NameId = (ulong)obj.Data.ValueOrDefault<long>("prfSchematicNameId", 0);
             if (schem.NameId > 0)
             {
-                schem.Name = missionStrTable.GetText((int)schem.NameId + strOffset, schem.Fqn);
+                //schem.Name = missionStrTable.GetText((int)schem.NameId + strOffset, schem.Fqn);
                 schem.LocalizedName = missionStrTable.GetLocalizedText((int)schem.NameId + strOffset, schem.Fqn);
                 //schem.Id = schem.NameId;
             }
 
             if (String.IsNullOrEmpty(schem.Name) && (schem.Item != null))
             {
-                schem.Name = schem.Item.LocalizedName["enMale"];
+                //schem.Name = schem.Item.LocalizedName["enMale"];
                 schem.LocalizedName = schem.Item.LocalizedName;
             }
+            schem.LocalizedName = Normalize.Dictionary(schem.LocalizedName, schem.Fqn);
+            schem.Name = schem.LocalizedName["enMale"];
 
             schem.MissionYieldDescriptionId = (int)obj.Data.ValueOrDefault<long>("prfMissionYieldDescriptionId", 0);
             if (schem.MissionYieldDescriptionId > 0)

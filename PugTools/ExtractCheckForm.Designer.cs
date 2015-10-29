@@ -31,6 +31,7 @@
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.groupFileTypes = new System.Windows.Forms.GroupBox();
+            this.chkAPN = new System.Windows.Forms.CheckBox();
             this.chkClass = new System.Windows.Forms.CheckBox();
             this.chkDB = new System.Windows.Forms.CheckBox();
             this.chkSchemVaris = new System.Windows.Forms.CheckBox();
@@ -64,7 +65,7 @@
             this.chkCNV = new System.Windows.Forms.CheckBox();
             this.chkAPT = new System.Windows.Forms.CheckBox();
             this.chkABL = new System.Windows.Forms.CheckBox();
-            this.chkAPN = new System.Windows.Forms.CheckBox();
+            this.chkSPN = new System.Windows.Forms.CheckBox();
             this.groupFileTypes.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -93,6 +94,7 @@
             this.groupFileTypes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupFileTypes.Controls.Add(this.chkSPN);
             this.groupFileTypes.Controls.Add(this.chkAPN);
             this.groupFileTypes.Controls.Add(this.chkClass);
             this.groupFileTypes.Controls.Add(this.chkDB);
@@ -135,6 +137,16 @@
             this.groupFileTypes.TabIndex = 2;
             this.groupFileTypes.TabStop = false;
             this.groupFileTypes.Text = "File Types";
+            // 
+            // chkAPN
+            // 
+            this.chkAPN.AutoSize = true;
+            this.chkAPN.Location = new System.Drawing.Point(7, 342);
+            this.chkAPN.Name = "chkAPN";
+            this.chkAPN.Size = new System.Drawing.Size(132, 17);
+            this.chkAPN.TabIndex = 33;
+            this.chkAPN.Text = "APN - AbilityPackages";
+            this.chkAPN.UseVisualStyleBackColor = true;
             // 
             // chkClass
             // 
@@ -520,15 +532,15 @@
             this.chkABL.Text = "ABL - Abilities";
             this.chkABL.UseVisualStyleBackColor = true;
             // 
-            // chkAPN
+            // chkSPN
             // 
-            this.chkAPN.AutoSize = true;
-            this.chkAPN.Location = new System.Drawing.Point(7, 342);
-            this.chkAPN.Name = "chkAPN";
-            this.chkAPN.Size = new System.Drawing.Size(132, 17);
-            this.chkAPN.TabIndex = 33;
-            this.chkAPN.Text = "APN - AbilityPackages";
-            this.chkAPN.UseVisualStyleBackColor = true;
+            this.chkSPN.AutoSize = true;
+            this.chkSPN.Location = new System.Drawing.Point(6, 365);
+            this.chkSPN.Name = "chkSPN";
+            this.chkSPN.Size = new System.Drawing.Size(101, 17);
+            this.chkSPN.TabIndex = 34;
+            this.chkSPN.Text = "Spn - Spawners";
+            this.chkSPN.UseVisualStyleBackColor = true;
             // 
             // ExtractCheckForm
             // 
@@ -584,5 +596,6 @@
         private System.Windows.Forms.CheckBox chkClass;
         private System.Windows.Forms.CheckBox chkDB;
         private System.Windows.Forms.CheckBox chkAPN;
+        private System.Windows.Forms.CheckBox chkSPN;
     }
 }

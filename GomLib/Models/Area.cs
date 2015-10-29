@@ -128,7 +128,7 @@ namespace GomLib.Models
                     }
 
                 }
-                if (Assets.Count > 0)
+                if (Assets != null && Assets.Count > 0)
                 {
                     XElement assets = new XElement("Assets");
                     foreach (var kvp in Assets)

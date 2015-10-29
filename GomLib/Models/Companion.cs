@@ -59,6 +59,16 @@ namespace GomLib.Models
         [JsonConverter(typeof(ULongConverter))]
         public ulong NcoId { get; set; }
 
+        [JsonConverter(typeof(ULongConverter))]
+        public ulong TankApcId { get; set; }
+        public string TankApcB62Id { get { if(TankApcId != 0) return TankApcId.ToMaskedBase62(); return ""; } }
+        [JsonConverter(typeof(ULongConverter))]
+        public ulong DpsApcId { get; set; }
+        public string DpsApcB62Id { get { if (DpsApcId != 0) return DpsApcId.ToMaskedBase62(); return ""; } }
+        [JsonConverter(typeof(ULongConverter))]
+        public ulong HealApcId { get; set; }
+        public string HealApcB62Id { get { if (HealApcId != 0) return HealApcId.ToMaskedBase62(); return ""; } }
+
         public override int GetHashCode()
         {
             int hash = Id.GetHashCode();
@@ -290,24 +300,43 @@ namespace GomLib.Models
 
     public class NewCompanion: GameObject
     {
-        public List<object> AcquireConditionals { get; set; }
-        public long AcquireMinLevel { get; set; }
-        public List<object> AllianceAlerts { get; set; }
+        public List<ulong> AcquireConditionalIds { get; set; }
+        public List<string> AcquireConditionalB62Ids
+        {
+            get
+            {
+                return AcquireConditionalIds.Select(x => x.ToMaskedBase62()).ToList();
+            }
+        }
+        public long MaxInfluenceTier { get; set; }
+        public List<AllianceAlert> AllianceAlerts { get; set; }
         [JsonIgnore]
         public string Category { get; set; }
         [JsonConverter(typeof(LongConverter))]
         public long CategoryId { get; set; }
         public long InfluenceCap { get; set; }
         public Dictionary<string, string> LocalizedName { get; internal set; }
+        public Dictionary<string, string> LocalizedDescription { get; internal set; }
         public Dictionary<string, string> LocalizedTitle { get; internal set; }
         public Dictionary<string, string> LocalizedCategory { get; internal set; }
         public Dictionary<string, string> LocalizedSubCategory { get; internal set; }
         public string Name { get; internal set; }
         [JsonConverter(typeof(LongConverter))]
         public long NameId { get; internal set; }
+        public string Description { get; internal set; }
+        [JsonConverter(typeof(LongConverter))]
+        public long DescriptionId { get; internal set; }
         [JsonConverter(typeof(ULongConverter))]
         public ulong NpcId { get; set; }
-        public string PreviewIcon { get; set; }
+        public string Icon { get; set; }
+        public string HashedIcon
+        {
+            get
+            {
+                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/portraits/{0}.dds", this.Icon));
+                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+            }
+        }
         public string SubCategory { get; set; }
         public long SubCategoryId { get; set; }
         public string Title { get; internal set; }
@@ -328,8 +357,8 @@ namespace GomLib.Models
         public override int GetHashCode()
         {
             int hash = Id.GetHashCode();
-            if (AcquireConditionals != null) foreach (var x in AcquireConditionals) { hash ^= x.GetHashCode(); }
-            hash ^= AcquireMinLevel.GetHashCode();
+            if (AcquireConditionalIds != null) foreach (var x in AcquireConditionalIds) { hash ^= x.GetHashCode(); }
+            hash ^= MaxInfluenceTier.GetHashCode();
             if (AllianceAlerts != null) foreach (var x in AllianceAlerts) { hash ^= x.GetHashCode(); }
             hash ^= CategoryId.GetHashCode();
             hash ^= InfluenceCap.GetHashCode();
@@ -339,7 +368,7 @@ namespace GomLib.Models
             if (LocalizedTitle != null) foreach (var x in LocalizedTitle) { hash ^= x.GetHashCode(); }
             hash ^= NameId.GetHashCode();
             hash ^= NpcId.GetHashCode();
-            hash ^= PreviewIcon.GetHashCode();
+            hash ^= Icon.GetHashCode();
             hash ^= SubCategory.GetHashCode();
             hash ^= SubCategoryId.GetHashCode();
             hash ^= TitleId.GetHashCode();
@@ -371,6 +400,31 @@ namespace GomLib.Models
             return true;
         }
 
+        public override List<SQLProperty> SQLProperties
+        {
+            get
+            {
+                return new List<SQLProperty>
+                    {                //(SQL Column Name, C# Property Name, SQL Column type statement, IsUnique/PrimaryKey, Serialize value to json)
+                        new SQLProperty("Name", "LocalizedName[enMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrName", "LocalizedName[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeName", "LocalizedName[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Title", "LocalizedTitle[enMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE latin1_general_cs NOT NULL", SQLPropSetting.PrimaryKey),
+                        new SQLProperty("MaxInfluenceTier", "MaxInfluenceTier", "int(11) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("InfluenceCap", "InfluenceCap", "int(11) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Category", "LocalizedCategory[enMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrCategory", "LocalizedCategory[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeCategory", "LocalizedCategory[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("SubCategory", "LocalizedSubCategory[enMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrSubCategory", "LocalizedSubCategory[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeSubCategory", "LocalizedSubCategory[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                    };
+            }
+        }
+
+        public Dictionary<string, Dictionary<string, string>> InteractionList { get; internal set; }
+
         public override XElement ToXElement(bool verbose)
         {
             XElement companion = new XElement("NewCompanion");
@@ -385,7 +439,7 @@ namespace GomLib.Models
                         new XAttribute("Id", Id)));
 
 
-                    companion.Add(new XElement("AcquireMinLevel", AcquireMinLevel),
+                    companion.Add(new XElement("MaxInfluenceTier", MaxInfluenceTier),
                         new XElement("ContactCategory", Category),
                         new XElement("FollowerCategory", SubCategory),
                         new XElement("InfluenceCap", InfluenceCap));
@@ -397,5 +451,18 @@ namespace GomLib.Models
             }
             return companion;
         }
+    }
+
+    public class AllianceAlert
+    {
+        [JsonConverter(typeof(ULongConverter))]
+        public ulong ConditionId { get; set; }
+        public string ConditionB62Id { get { if(ConditionId != 0) return ConditionId.ToMaskedBase62(); return ""; } }
+        [JsonConverter(typeof(ULongConverter))]
+        public ulong MissionId { get; set; }
+        public string MissionB62Id { get { if (MissionId != 0) return MissionId.ToMaskedBase62(); return ""; } }
+        [JsonConverter(typeof(ULongConverter))]
+        public ulong NcoId { get; set; }
+        public string NcoB62Id { get { if (NcoId != 0) return NcoId.ToMaskedBase62(); return ""; } }
     }
 }

@@ -257,6 +257,7 @@ namespace GomLib.ModelLoader
             var nameLookupData = (GomObjectData)textLookup[NameLookupKey];
             ach.NameId = nameLookupData.Get<long>("strLocalizedTextRetrieverStringID");
             ach.LocalizedName = _dom.stringTable.TryGetLocalizedStrings(ach.Fqn, nameLookupData);
+            Normalize.Dictionary(ach.LocalizedName, ach.Fqn);
             ach.Name = _dom.stringTable.TryGetString(ach.Fqn, nameLookupData);
 
             // Load Achievement Description
@@ -396,7 +397,7 @@ namespace GomLib.ModelLoader
             else
                 return new Dictionary<string, string> {
                                 { "enMale", "" },
-                                { "enFemale", "" },
+                                //{ "enFemale", "" },
                                 { "frMale", "" },
                                 { "frFemale", "" },
                                 { "deMale", "" },

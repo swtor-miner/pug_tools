@@ -277,7 +277,7 @@ namespace GomLib.Models
                             case "plc":
                                 string plcName = ((GomLib.Models.Placeable)Conversation.Speakers[speakerId]).Name;
                                 if (plcName.Length == 0) { plcName = Conversation.Speakers[speakerId].Fqn; }
-                                dNode.Add(new XElement("Speaker", new XAttribute("Id", ((GomLib.Models.Placeable)Conversation.Speakers[speakerId]).NodeId >> 32), plcName));
+                                dNode.Add(new XElement("Speaker", new XAttribute("Id", ((GomLib.Models.Placeable)Conversation.Speakers[speakerId]).Id >> 32), plcName));
                                 break;
                             default:
                                 throw new Exception("Unaccounted for speaker type");

@@ -121,12 +121,12 @@ namespace GomLib.ModelLoader
                     }
                 }
             }
-            npc.parentSpecId = obj.Data.ValueOrDefault<ulong>("npcParentSpecId", 0);
+            npc.ParentSpecId = obj.Data.ValueOrDefault<ulong>("npcParentSpecId", 0);
             npc.charRef = obj.Data.ValueOrDefault<string>("npcCharRef", "");
             Npc baseNpc;
-            if (npc.parentSpecId > 0)
+            if (npc.ParentSpecId > 0)
             {
-                baseNpc = Load(npc.parentSpecId);
+                baseNpc = Load(npc.ParentSpecId);
             }
             else
             {
@@ -141,8 +141,10 @@ namespace GomLib.ModelLoader
             GomObjectData nameLookupData = (GomObjectData)textLookup[NameLookupKey];
             var nameId = nameLookupData.ValueOrDefault<long>("strLocalizedTextRetrieverStringID", 0);
             npc.NameId = nameId;
-            npc.Name = _dom.stringTable.TryGetString(npc.Fqn, nameLookupData);
+            //npc.Name = _dom.stringTable.TryGetString(npc.Fqn, nameLookupData);
             npc.LocalizedName = _dom.stringTable.TryGetLocalizedStrings(npc.Fqn, nameLookupData);
+            Normalize.Dictionary(npc.LocalizedName, npc.Fqn);
+            npc.Name = npc.LocalizedName["enMale"];
 
             if (textLookup.ContainsKey(TitleLookupKey))
             {

@@ -242,10 +242,11 @@ namespace GomLib.ModelLoader
                 var nameLookupData = (GomObjectData)(gom.Data.Get<Dictionary<object, object>>("locTextRetrieverMap")[NameLookupKey]);
                 itm.NameId = nameLookupData.Get<long>("strLocalizedTextRetrieverStringID");
                 itm.LocalizedName = _dom.stringTable.TryGetLocalizedStrings(itm.Fqn, nameLookupData);
-                itm.Name = _dom.stringTable.TryGetString(itm.Fqn, nameLookupData);
-                itm.Name = itm.Name.TrimStart(' ');
-
+                //itm.Name = _dom.stringTable.TryGetString(itm.Fqn, nameLookupData);
             }
+            Normalize.Dictionary(itm.LocalizedName, itm.Fqn);
+            itm.Name = itm.LocalizedName["enMale"];
+            itm.Name = itm.Name.Trim();
 
             itm.ShortId = (ulong)(itm.NameId >> 32);
             itm.Id = gom.Id;

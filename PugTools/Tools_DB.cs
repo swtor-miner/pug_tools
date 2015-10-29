@@ -67,7 +67,8 @@ namespace tor_tools
                 {"Tooltip", new SQLInitStore("tooltip", new GomLib.Models.Tooltip())},
                 {"ItemAppearances", new SQLInitStore("itemappearance", new GomLib.Models.ItemAppearance())},
                 {"Talents", new SQLInitStore("talent", new GomLib.Models.Talent())},
-                {"Npcs", new SQLInitStore("npc", new GomLib.Models.Npc())}
+                {"Npcs", new SQLInitStore("npc", new GomLib.Models.Npc())},
+                {"NewCompanions", new SQLInitStore("companion", new GomLib.Models.NewCompanion()) }
             };
 
             #endregion

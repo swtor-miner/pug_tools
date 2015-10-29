@@ -23,13 +23,80 @@ namespace GomLib.Models
                 return Room.Name;
             }
         }
-
+        [JsonConverter(typeof(ULongConverter))]
         public ulong InstanceId { get; set; }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong AssetId { get; set; }
+        internal string _AssetFqn { get; set; }
+        public string AssetFqn
+        {
+            get
+            {
+                if (_AssetFqn == null)
+                {
+                    string assetString;
+                    Room.Area.Assets.TryGetValue(AssetId, out assetString);
+                    string parsedAssetString = assetString;
+                    if (parsedAssetString.StartsWith("\\"))
+                        parsedAssetString = parsedAssetString.Substring(1);
+                    if (parsedAssetString.Contains(':'))
+                    {
+                        var splits = parsedAssetString.Split(':');
+                        EncounterComponent = splits[0];
+                        parsedAssetString = splits[1];
+                    }
+                    string assType = parsedAssetString.Substring(0, 3);
+                    switch (assType)
+                    {
+                        case "ser":
+                            parsedAssetString = parsedAssetString.Substring(7, parsedAssetString.Length - 11);
+                            break;
+                        case "spn":
+                        case "enc":
+                            if (parsedAssetString.Contains(".spn_"))
+                            {
+                                SpawnType = parsedAssetString.Substring(parsedAssetString.IndexOf(".spn_") + 5);
+                            }
+                            parsedAssetString = parsedAssetString.Replace(".spn_" + SpawnType, "");
+                            if (parsedAssetString.EndsWith(".enc"))
+                                parsedAssetString = parsedAssetString.Substring(0, parsedAssetString.Length - 4);
+                            break;
+                        default:
+                            break;
+                    }
+                    parsedAssetString = parsedAssetString.Replace('\\', '.');
+                    var obj = Room._dom.GetObject(parsedAssetString);
+                    if (obj == null)
+                    {
+
+                        Failed = true;
+                        if (SpawnType != null)
+                        {
+                            string poisn = "s";
+                        }
+                    }
+                    else
+                    {
+                        _AssetFqn = parsedAssetString;
+                        GomId = obj.Id;
+                        GomType = parsedAssetString.Substring(0, 3);
+                    }
+                }
+                return _AssetFqn;
+            }
+        }
+        [JsonConverter(typeof(ULongConverter))]
+        public ulong GomId { get; set; }
+        public string GomB62Id { get { return GomId.ToMaskedBase62(); } }
+        public string GomType { get; set; }
+        public bool Failed { get; set; }
+        public string EncounterComponent { get; set; } 
+        public string SpawnType { get; set; }
         [JsonIgnore]
         public AreaDat Area { get; set; }
 
         internal ulong _ParentInstance { get; set; }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong ParentInstance
         {
             get

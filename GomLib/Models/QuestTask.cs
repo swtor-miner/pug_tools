@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
@@ -23,7 +24,36 @@ namespace GomLib.Models
         public bool ShowCount { get; set; }
         public int CountMax { get; set; }
 
+        public List<ulong> TaskQuestIds { get; set; }
+        public List<string> TaskQuestB62Ids
+        {
+            get
+            {
+                if (TaskQuestIds == null) return new List<string>();
+                return TaskQuestIds.Select(x => x.ToMaskedBase62()).ToList();
+            }
+        }
+        public List<ulong> TaskNpcIds { get; set; }
+        public List<string> TaskNpcB62Ids
+        {
+            get
+            {
+                if (TaskNpcIds == null) return new List<string>();
+                return TaskNpcIds.Select(x => x.ToMaskedBase62()).ToList();
+            }
+        }
+        public List<ulong> TaskPlcIds { get; set; }
+        public List<string> TaskPlcB62Ids
+        {
+            get
+            {
+                if (TaskPlcIds == null) return new List<string>();
+                return TaskPlcIds.Select(x => x.ToMaskedBase62()).ToList();
+            }
+        }
+        [JsonIgnore]
         public List<Quest> TaskQuests { get; set; }
+        [JsonIgnore]
         public List<Npc> TaskNpcs { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]

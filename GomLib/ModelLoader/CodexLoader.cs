@@ -115,6 +115,7 @@ namespace GomLib.ModelLoader
             //cdx.Id = (ulong)(titleId >> 32);
 
             cdx.LocalizedName = _dom.stringTable.TryGetLocalizedStrings(cdx.Fqn, titleLookup);
+            Normalize.Dictionary(cdx.LocalizedName, cdx.Fqn);
             cdx.Name = _dom.stringTable.TryGetString(cdx.Fqn, titleLookup);
 
             cdx.LocalizedDescription = _dom.stringTable.TryGetLocalizedStrings(cdx.Fqn, descLookup);

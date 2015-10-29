@@ -85,7 +85,13 @@ namespace GomLib.FileLoaders
                     ulong assetId = br.ReadUInt64();
                     uint nameLength = br.ReadUInt32();
                     string assetName = ReadString(br, nameLength);
-                    area.Assets.Add(assetId, assetName);
+                    if(assetName.Contains(":enc."))
+                    {
+                        string sofdijhn = "";
+                    }
+                    if (assetName.Contains(":enc.") || assetName.Contains("\\enc\\") || assetName.Contains("spn") ||assetName.Contains("mpn"))
+                        if (!assetName.StartsWith("\\engine\\"))
+                            area.Assets.Add(assetId, assetName);
                 }
 
                 ////Paths

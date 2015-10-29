@@ -93,6 +93,7 @@ namespace GomLib
         public SCFFPatternLoader scFFPatternLoader;
         public SCFFShipLoader scFFShipLoader;
         public SchematicLoader schematicLoader;
+        public SpawnerLoader spawnerLoader;
         public Models.StatData statData;
         public Models.FactionData factionData;
         //public Models.StatExtensions statExtensions;
@@ -154,7 +155,8 @@ namespace GomLib
             scFFPatternLoader = new SCFFPatternLoader(this);
             scFFShipLoader = new SCFFShipLoader(this);
             schematicLoader = new SchematicLoader(this);
-            
+            spawnerLoader = new SpawnerLoader(this);
+
             //statExtensions = new Models.StatExtensions();
             strongholdLoader = new StrongholdLoader(this);
             talentLoader = new TalentLoader(this);

@@ -64,15 +64,16 @@ namespace GomLib.ModelLoader
             if (plc == null) { return null; }
 
             plc.Fqn = obj.Name;
-            plc.NodeId = obj.Id;
+            plc.Id = obj.Id;
             plc.References = obj.References;
 
             var textLookup = obj.Data.Get<Dictionary<object,object>>("locTextRetrieverMap");
             var nameLookupData = (GomObjectData)textLookup[NameLookupKey];
             long nameId = nameLookupData.Get<long>("strLocalizedTextRetrieverStringID");
-            plc.Id = (ulong)(nameId >> 32);
-            plc.Name = _dom.stringTable.TryGetString(plc.Fqn, nameLookupData);
+            //plc.Name = _dom.stringTable.TryGetString(plc.Fqn, nameLookupData);
             plc.LocalizedName = _dom.stringTable.TryGetLocalizedStrings(plc.Fqn, nameLookupData);
+            Normalize.Dictionary(plc.LocalizedName, plc.Fqn);
+            plc.Name = plc.LocalizedName["enMale"];
 
             //public Conversation Conversation { get; set; }
             plc.ConversationFqn = obj.Data.ValueOrDefault<string>("plcConvo", null);

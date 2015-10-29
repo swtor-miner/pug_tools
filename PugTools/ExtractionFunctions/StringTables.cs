@@ -193,7 +193,12 @@ namespace tor_tools
                     }
                     else
                     {
-                        stringTable.Add(new XElement("Entry", new XAttribute("Id", entry.Key), entry.Value.localizedText["enMale"]));
+                        if(!string.IsNullOrEmpty(entry.Value.localizedText["enMale"]))
+                            stringTable.Add(new XElement("Entry", new XAttribute("Id", entry.Key),
+                                new XElement("en", entry.Value.localizedText["enMale"]),
+                                new XElement("fr", entry.Value.localizedText["frMale"]),
+                                new XElement("de", entry.Value.localizedText["deMale"])
+                                ));
                     }
                 }
 

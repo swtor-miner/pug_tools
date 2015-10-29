@@ -247,6 +247,10 @@ namespace GomLib.ModelLoader
             NpcToNcoMap.TryGetValue(npcId, out ncoId);
             cmp.NcoId = ncoId;
 
+            cmp.TankApcId = obj.ValueOrDefault<ulong>("chrCompanionInfo_tank_apc", 0);
+            cmp.DpsApcId = obj.ValueOrDefault<ulong>("chrCompanionInfo_dps_apc", 0);
+            cmp.HealApcId = obj.ValueOrDefault<ulong>("chrCompanionInfo_heal_apc", 0);
+
             return cmp;
         }
 
@@ -258,8 +262,8 @@ namespace GomLib.ModelLoader
             _dom._assets.icons.AddPortrait(portrait);
 
             // Parse filename
-            var filename = System.IO.Path.GetFileNameWithoutExtension(portrait);
-            return filename;
+            //var filename = System.IO.Path.GetFileNameWithoutExtension(portrait);
+            return portrait.Replace("/gfx/portraits/", "");
         }
 
         public void LoadReferences(Models.GameObject obj, GomObject gom)
@@ -293,6 +297,7 @@ namespace GomLib.ModelLoader
         const long NameLookupKey = -2761358831308646330;
         const long TitleLookupKey = 4860477835249092778;
         const long UnknownLookupKey = 814171245593979527;
+        const long DescLookupKey = 1078249248256508798;
 
         Dictionary<ulong, NewCompanion> idMap;
         Dictionary<string, NewCompanion> nameMap;
@@ -376,8 +381,20 @@ namespace GomLib.ModelLoader
 
             StringTable conCats = _dom.stringTable.Find("str.sys.contactcategories");
 
-            nco.AcquireConditionals = gom.Data.ValueOrDefault("ncoAcquireConditionalList", new List<object>()); //loop through and load these
-            nco.AllianceAlerts = gom.Data.ValueOrDefault("ncoAllianceAlertList", new List<object>()); //loop through and load these
+            var ncoAcquireConditionalList = gom.Data.ValueOrDefault("ncoAcquireConditionalList", new List<object>()); //loop through and load these
+            nco.AcquireConditionalIds = ncoAcquireConditionalList.Select(x => (x as GomObjectData).ValueOrDefault<ulong>("contactsQstCondCndId", 0)).ToList();
+            var ncoAllianceAlertList = gom.Data.ValueOrDefault("ncoAllianceAlertList", new List<object>()); //loop through and load these
+            nco.AllianceAlerts = new List<AllianceAlert>();
+            foreach (var alert in ncoAllianceAlertList)
+            {
+                var goma = alert as GomObjectData;
+                AllianceAlert ally = new AllianceAlert();
+                ally.ConditionId = goma.ValueOrDefault<ulong>("contactsQstCondCndId", 0);
+                ally.MissionId = goma.ValueOrDefault<ulong>("contactsQstCondQstId", 0);
+                ally.NcoId = goma.ValueOrDefault<ulong>("contactsQstCondNcoId", 0);
+                nco.AllianceAlerts.Add(ally);
+            }
+            
             nco.InfluenceCap = gom.Data.ValueOrDefault<long>("ncoInfluenceCap", 0);
             nco.CategoryId = gom.Data.ValueOrDefault<long>("ncoCategory", 0);
 
@@ -395,37 +412,53 @@ namespace GomLib.ModelLoader
                 nco.LocalizedSubCategory = conCats.GetLocalizedText(nco.SubCategoryId, "str.sys.contactcategories");
             }
 
-            nco.AcquireMinLevel = gom.Data.ValueOrDefault<long>("ncoAcquireMinLevel", 0);
+            nco.MaxInfluenceTier = gom.Data.ValueOrDefault<long>("ncoMaxInfluenceTier", 0);
 
             nco.NpcId = gom.Data.ValueOrDefault<ulong>("ncoNpcId", 0);
 
-            nco.PreviewIcon = gom.Data.ValueOrDefault("ncoPreviewIcon", "");
+            nco.Icon = gom.Data.ValueOrDefault("ncoPreviewIcon", "");
+            if (String.IsNullOrEmpty(nco.Icon) && nco.Companion != null)
+                nco.Icon = (nco.Companion.Portrait ?? "").Replace(".dds", "");
 
             Dictionary<object, object> ncoInteractionList = gom.Data.ValueOrDefault("ncoInteractionList", new Dictionary<object, object>());
 
+            var ncoTable = _dom.stringTable.Find("str.nco");
+            nco.InteractionList = new Dictionary<string, Dictionary<string, string>>();
             foreach (var kvp in ncoInteractionList)
             {
                 var key = (ulong)kvp.Key;
                 var val = (long)kvp.Value;
 
+                var cndObj = _dom.GetObject(key);
 
+
+                var locals = ncoTable.GetLocalizedText(val, "str.nco");
+                if(cndObj != null)
+                    nco.InteractionList.Add(cndObj.Name.Substring(cndObj.Name.LastIndexOf('.') + 1), locals);
 
             }
 
             var textLookup = gom.Data.Get<Dictionary<object, object>>("locTextRetrieverMap");
 
-            // Load Achievement Name
+            // Load Name
             var nameLookupData = (GomObjectData)textLookup[NameLookupKey];
             nco.NameId = nameLookupData.Get<long>("strLocalizedTextRetrieverStringID");
             nco.LocalizedName = _dom.stringTable.TryGetLocalizedStrings("str.nco", nameLookupData);
-            nco.Name = _dom.stringTable.TryGetString("str.nco", nameLookupData);
+            Normalize.Dictionary(nco.LocalizedName, nco.Fqn);
+            //nco.Name = _dom.stringTable.TryGetString("str.nco", nameLookupData);
+            nco.Name = nco.LocalizedName["enMale"];
 
-            // Load Achievement Description
+            // Load Title
             var titleLookupData = (GomObjectData)textLookup[TitleLookupKey];
             nco.TitleId = titleLookupData.Get<long>("strLocalizedTextRetrieverStringID");
             nco.LocalizedTitle = _dom.stringTable.TryGetLocalizedStrings("str.nco", titleLookupData);
             nco.Title = _dom.stringTable.TryGetString("str.nco", titleLookupData);
-            
+
+            // Load Description
+            var descLookupData = (GomObjectData)textLookup[DescLookupKey];
+            nco.DescriptionId = descLookupData.Get<long>("strLocalizedTextRetrieverStringID");
+            nco.LocalizedDescription = _dom.stringTable.TryGetLocalizedStrings("str.nco", descLookupData);
+            nco.Description = _dom.stringTable.TryGetString("str.nco", descLookupData);
 
             gom.Unload();
             return nco;

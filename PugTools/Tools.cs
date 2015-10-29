@@ -451,6 +451,9 @@ namespace tor_tools
                 case "apn.":
                     obj = dom.abilityPackageLoader.Load(gObject);
                     break;
+                case "spn.":
+                    obj = dom.spawnerLoader.Load(gObject);
+                    break;
                 default:
                     throw new NotImplementedException();
             }
@@ -574,6 +577,11 @@ namespace tor_tools
                     {
                         DisableButtons();
                         getObjects("apt.", "Strongholds");
+                    }
+                    if (extensions.Contains("SPN"))
+                    {
+                        DisableButtons();
+                        getObjects("spn.", "Spawners");
                     }
                     if (extensions.Contains("AREA"))
                     {

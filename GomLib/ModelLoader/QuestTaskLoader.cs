@@ -43,29 +43,51 @@ namespace GomLib.ModelLoader
             {
                 task.String = _dom.stringTable.TryGetString(step.Branch.Quest.Fqn, (GomObjectData)txtLookup[stringId]);
                 task.LocalizedString = _dom.stringTable.TryGetLocalizedStrings(step.Branch.Quest.Fqn, (GomObjectData)txtLookup[stringId]);
+                task.LocalizedString = Normalize.Dictionary(task.LocalizedString, task.String);
             }
 
             task.TaskQuests = new List<Quest>();
             task.TaskNpcs = new List<Npc>();
-            var qstTaskObjects = (Dictionary<object, object>)obj.ValueOrDefault<Dictionary<object, object>>("qstTaskObjects", null);
+            var qstTaskObjects = (Dictionary<object, object>)obj.ValueOrDefault<Dictionary<object, object>>("qstTaskTriggerIdMap", null);
             if (qstTaskObjects != null)
             {
                 foreach (var taskObj in qstTaskObjects)
                 {
-                    string fqn = (string)taskObj.Key;
-                    if (fqn.StartsWith("qst."))
-                    {
-                        var qst = _dom.questLoader.Load(fqn);
-                        task.TaskQuests.Add(qst);
-                    }
-                    else if (fqn.StartsWith("npc."))
-                    {
-                        var npc = _dom.npcLoader.Load(fqn);
-                        task.TaskNpcs.Add(npc);
-                    }
-                    else if (fqn.StartsWith("plc."))
-                    {
-                        //add some code here
+                    GomObject taskgom = _dom.GetObject((ulong)taskObj.Key);
+                    if (taskgom == null) continue;
+                    string fqn = taskgom.Name;
+                    switch(fqn.Substring(0, 3)) {
+                        case "qst":
+                            if (task.TaskQuestIds == null)
+                                task.TaskQuestIds = new List<ulong>();
+                            task.TaskQuestIds.Add((ulong)taskObj.Key);
+                            break;
+                        case "npc":
+                            if (task.TaskNpcIds == null)
+                                task.TaskNpcIds = new List<ulong>();
+                            task.TaskNpcIds.Add((ulong)taskObj.Key);
+                            break;
+                        case "plc":
+                            if (task.TaskPlcIds == null)
+                                task.TaskPlcIds = new List<ulong>();
+                            task.TaskPlcIds.Add((ulong)taskObj.Key);
+                            break;
+                        case "enc":
+                            //defeat encounter
+                            break;
+                        case "mpn":
+                            //reach mapnote
+                            break;
+                        case "cos": //overhear convo?
+                        case "spn": //shouldn't be here
+                        case "itm": //shouldn't be here
+                            if (!fqn.Contains("test") && fqn != "spn.location.voss.class.sith_warrior.the_voice_of_darkness.crefac_sel_makor_minions")
+                                break;
+                            break;
+                        case "TIM":
+                            break; //timer
+                        default:
+                            break;
                     }
                 }
             }

@@ -14,14 +14,25 @@ namespace GomLib.Models
             Area = area;
             Room = room;
         }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong AreaId { get; set; }
         [JsonIgnore]
         public AreaDat Area { get; set; }
 
         public string Room { get; set; }
         
+        [JsonIgnore]
         public Dictionary<ulong, AssetInstance> Instances { get; set; }
-        
+        public Dictionary<string, AssetInstance> AssetInstances
+        {
+            get
+            {
+                return ((Instances == null) ?
+                    new Dictionary<string, AssetInstance>() :
+                    Instances.ToDictionary(x => x.Key.ToString(), x => x.Value));
+            }
+        }
+
         public override int GetHashCode()  //should be fixed.
         {
             int hash = Id.GetHashCode();

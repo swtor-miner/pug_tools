@@ -12,6 +12,7 @@ namespace GomLib.Models
         public string Name { get; set; }
         [JsonConverter(typeof(ULongConverter))]
         public ulong Id { get; set; }
+        public string Base62Id { get { return Id.ToMaskedBase62(); } }
         public string Fqn { get; set; }
         public long MaxCount { get; set; }
 
@@ -23,7 +24,9 @@ namespace GomLib.Models
         public long Min { get; set; }
         public long Max { get; set; }
 
+        [JsonConverter(typeof(ULongConverter))]
         public ulong VariableId { get; set; }
+        [JsonConverter(typeof(LongConverter))]
         public long UnknownLong { get; set; }
 
         public override bool Equals(object obj)

@@ -60,7 +60,7 @@ namespace GomLib.ModelLoader
             //area.CommentableId = Guid.NewGuid();
             area.Name = strTable.GetText(area.DisplayNameId, "MapArea." + area.DisplayNameId);
             area.AreaId = obj.ValueOrDefault<ulong>("mapAreasDataAreaId", 0);
-            area.Id = (long)(area.AreaId >> 32);
+            area.Id = (long)area.AreaId; //(long)(area.AreaId >> 32);
             if (area.Id == 0)
                 area.Id = (long)area.AreaId;
             area.ZoneName = obj.ValueOrDefault<string>("mapAreasDataDefaultZoneName", null);
@@ -89,7 +89,7 @@ namespace GomLib.ModelLoader
                 }
             }
 
-            area.Assets = LoadAssets(area.AreaId);
+            //area.Assets = LoadAssets(area.AreaId);
             area.AreaDat = _dom.areaDatLoader.Load(area.AreaId);
             /*}
             else

@@ -287,15 +287,15 @@ namespace GomLib.Models
                     shipContainer.Add(patternOptions);
                 }
                 XElement stats = new XElement("Stats");
-                if (Stats != null)
-                {
-                    //stats.Add("[ " + string.Join("; ", Stats.Select(x => currentDom.statD.ToStat(x.Key) + ", " + x.Value).ToArray()) + "; ]");
-                    stats.Add(Stats.Select(x => new XElement("Stat", new XAttribute("Id", _dom.statData.ToStat(x.Key)), x.Value)));
-                    if (!verbose)
-                    {
-                        stats.Elements().Where(x => x.Attribute("Id").Value.Contains("4611") || x.Attribute("Id").Value.Contains("OBSOLETE")).Remove();
-                    }
-                }
+                //if (Stats != null)
+                //{
+                //    //stats.Add("[ " + string.Join("; ", Stats.Select(x => currentDom.statD.ToStat(x.Key) + ", " + x.Value).ToArray()) + "; ]");
+                //    stats.Add(Stats.Select(x => new XElement("Stat", new XAttribute("Id", _dom.statData.ToStat(x.Key)), x.Value)));
+                //    if (!verbose)
+                //    {
+                //        stats.Elements().Where(x => x.Attribute("Id").Value.Contains("4611") || x.Attribute("Id").Value.Contains("OBSOLETE")).Remove();
+                //    }
+                //}
                 shipContainer.Add(stats);
                 shipContainer.Add(ContainerToXElement(MajorComponentSlots, ComponentMap, "MajorSlot", DefaultLoadout, verbose).Elements());
                 shipContainer.Add(ContainerToXElement(MinorComponentSlots, ComponentMap, "MinorSlot", DefaultLoadout, verbose).Elements());

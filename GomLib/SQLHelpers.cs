@@ -626,4 +626,27 @@ namespace GomLib
         }
     }
     #endregion
+    public static class Normalize
+    {
+        public static Dictionary<string, string> Dictionary(Dictionary<string, string> inc, string fqn)
+        {
+            string name = fqn.Split('.').Last();
+            if (inc == null || inc.Count == 0)
+            {
+                inc = new Dictionary<string, string>() {
+                    { "enMale", name },
+                    //{ "enFemale", name },
+                    { "frMale", name },
+                    { "frFemale", name },
+                    { "deMale", name },
+                    { "deFemale", name }
+                };
+                return inc;
+            }
+            var reps = inc.Where(x => String.IsNullOrWhiteSpace(x.Value));
+            foreach (var rep in reps.ToList())
+                inc[rep.Key] = name;
+            return inc;
+        }
+    }
 }
