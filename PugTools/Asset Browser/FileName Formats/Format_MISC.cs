@@ -257,7 +257,7 @@ namespace tor_tools
                             outputMapNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_world_map_file_names_" + fileCount + ".txt", false);
                             lineCount = 0;
                         }
-                        worldFileNames.Add(String.Format("/resources/world/areas/{0}/{1}_r.dds", kvp.Key, line).Replace("\\", "/").Replace("//", "/"));
+                        outputMapNames.WriteLine(String.Format("/resources/world/areas/{0}/{1}_r.dds", kvp.Key, line).Replace("\\", "/").Replace("//", "/"));
                         lineCount++;
                         for (int m = 0; m <= 50; m++)
                         {
