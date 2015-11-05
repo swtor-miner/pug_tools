@@ -140,7 +140,55 @@ namespace tor_tools
                     area.Assets.Clear();
             }
             worldAreasProto.Clear();
-        }       
+        }
+
+        public void ParseMISC_TUTORIAL(DataObjectModel currentDom)
+        {
+            var tutorialTable = currentDom.stringTable.Find("str.gui.tutorials");
+            if(tutorialTable != null && tutorialTable.data != null)
+            {                
+                foreach(KeyValuePair<long, StringTableEntry> item in tutorialTable.data)
+                {
+                    if(item.Value.localizedText.ContainsKey("enMale"))
+                    {
+                        string text = item.Value.localizedText["enMale"];
+                        if(text.Contains(".dds"))
+                        {                               
+                            int start = 0;
+                            int end = 0;
+                            while ((start = text.IndexOf("img://", start)) != -1)
+                            {
+                                end = text.IndexOf(".dds", start);
+                                if(end != -1)
+                                {
+                                    string temp = text.Substring(start, ((end - start) + 4)).ToLower();
+                                    temp = temp.Replace("img://", "/resources/").Replace("//", "/").Replace("<<grammar::locpath>>", "en-us");
+                                    fileNames.Add(temp);
+                                    start++;
+                                }
+                            }                            
+                            
+                        }
+                        else if(text.Contains("img://"))
+                        {
+                            int start = 0;
+                            int end = 0;
+                            while ((start = text.IndexOf("img://", start)) != -1)
+                            {
+                                end = text.IndexOf("'", start);
+                                if (end != -1)
+                                {
+                                    string temp = text.Substring(start, ((end - start) + 1)).ToLower();
+                                    temp = temp.Replace("img://", "/resources/").Replace("//", "/").Replace("<<grammar::locpath>>", "en-us");
+                                    fileNames.Add(temp + ".dds");                                        
+                                    start++;                                        
+                                }
+                            }                                
+                        }
+                    }
+                }                
+            }
+        }
 
         public void ParseMISC_NODE(Dictionary<string, DomType> nodeDict)
         {               
