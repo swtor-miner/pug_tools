@@ -25,7 +25,7 @@ namespace GomLib.ModelLoader
         }
 
         private Dictionary<string, Dictionary<ulong, Planet>> PlanetList;
-        private Dictionary<long, ConquestObjective> ObjectiveList;
+        private Dictionary<long, ConquestObjectivePackage> ObjectiveList;
         private Dictionary<long, List<ConquestData>> ActiveConquestData;
 
         public Models.PseudoGameObject CreateObject()
@@ -100,10 +100,10 @@ namespace GomLib.ModelLoader
             cnq.Icon = gom.ValueOrDefault<string>("wevConquestIcon", "");
             cnq.ParticipateGoal = gom.ValueOrDefault<long>("wevConquestParticipateGoal", 0);
             cnq.RepeatableObjectivesIdList = gom.ValueOrDefault<List<object>>("wevConquestRepeatableObjectivesList", new List<object>()).ConvertAll(x => (long)x).ToList();
-            cnq.RepeatableObjectivesList = new List<ConquestObjective>();
+            cnq.RepeatableObjectivesList = new List<ConquestObjectivePackage>();
             foreach (var key in cnq.RepeatableObjectivesIdList)
             {
-                ConquestObjective cqo;
+                ConquestObjectivePackage cqo;
                 ObjectiveList.TryGetValue(key, out cqo);
                 if (cqo != null)
                     cnq.RepeatableObjectivesList.Add(cqo);
@@ -111,10 +111,10 @@ namespace GomLib.ModelLoader
                     //throw new IndexOutOfRangeException();
             }
             cnq.OneTimeObjectiveIdList = gom.ValueOrDefault<List<object>>("wevConquestOneTimeObjectiveList", new List<object>()).ConvertAll(x => (long)x).ToList();
-            cnq.OneTimeObjectivesList = new List<ConquestObjective>();
+            cnq.OneTimeObjectivesList = new List<ConquestObjectivePackage>();
             foreach (var key in cnq.OneTimeObjectiveIdList)
             {
-                ConquestObjective cqo;
+                ConquestObjectivePackage cqo;
                 ObjectiveList.TryGetValue(key, out cqo);
                 if (cqo != null)
                     cnq.OneTimeObjectivesList.Add(cqo);
@@ -258,71 +258,58 @@ namespace GomLib.ModelLoader
             GomObject achProto = _dom.GetObject("wevConquestAchListPrototype");
             if (achProto == null)
             {
-                ObjectiveList = new Dictionary<long, ConquestObjective>();
+                ObjectiveList = new Dictionary<long, ConquestObjectivePackage>();
                 return;
             }
 
             var achDict = achProto.Data.Get<Dictionary<object, object>>("wevConquestAchListTable");
-            ObjectiveList = new Dictionary<long, ConquestObjective>();
+            ObjectiveList = new Dictionary<long, ConquestObjectivePackage>();
             foreach (var kvp in achDict)
             {
-                var tempDict = ((Dictionary<object, object>)kvp.Value).ToDictionary(x => (ulong)x.Key,
-                    x => ((Dictionary<object, object>)x.Value).ToDictionary(y => Convert.ToUInt64(y.Key), y => Convert.ToSingle(y.Value)));
-                if (tempDict.Count > 0)
+                ConquestObjectivePackage package = new ConquestObjectivePackage();
+                package.Id = (long)kvp.Key;
+
+                //Key is ulong, achievement node ID.
+                //Value is dictionary, ulong planet id key, float key.
+                Dictionary<object, object> objectiveDict = kvp.Value as Dictionary<object, object>;
+                foreach(KeyValuePair<object, object> objectiveKvp in objectiveDict)
                 {
-                    ObjectiveList.Add((long)kvp.Key, LoadObjective((long)kvp.Key, tempDict));
+                    ulong achID = (ulong)objectiveKvp.Key;
+                    Achievement achObj = _dom.achievementLoader.Load(achID);
+                    if (achObj != null)
+                    {
+                        Dictionary<object, object> objMultiplierDict = objectiveKvp.Value as Dictionary<object, object>;
+                        ConquestObjective objective = new ConquestObjective();
+                        objective.AchievementID = achID;
+                        objective.AchievementObj = achObj;
+
+                        foreach (KeyValuePair<object, object> multiplierKvp in objMultiplierDict)
+                        {
+                            KeyValuePair<long, float> multiplierConverted = new KeyValuePair<long, float>
+                                ((long)multiplierKvp.Key, (float)multiplierKvp.Value);
+
+                            objective.PlanetIDMultiplyerList.Add(multiplierConverted);
+                        }
+
+                        package.Objectives.Add(objective);
+                    }
                 }
-                /*else//obsolete debugging code
-                {
-                    string pausehere = "";
-                }*/
+
+                ObjectiveList.Add(package.Id, package);
             }
             achProto.Unload();
         }
 
-        public KeyValuePair<Dictionary<string, Dictionary<ulong, Planet>>, Dictionary<long, ConquestObjective>> ReturnAllObjectives()
+        public KeyValuePair<Dictionary<string, Dictionary<ulong, Planet>>, Dictionary<long, ConquestObjectivePackage>> ReturnAllObjectives()
         {
             if (ObjectiveList == null)
                 LoadObjectives();
             if (PlanetList == null)
                 LoadPlanets();
 
-            var returnObj = new KeyValuePair<Dictionary<string, Dictionary<ulong, Planet>>, Dictionary<long, ConquestObjective>>(PlanetList, ObjectiveList);
+            var returnObj = new KeyValuePair<Dictionary<string, Dictionary<ulong, Planet>>, Dictionary<long, ConquestObjectivePackage>>(PlanetList, ObjectiveList);
 
             return returnObj;
-        }
-
-        public ConquestObjective LoadObjective(long id, Dictionary<ulong, Dictionary<ulong, float>> objDict)
-        {
-            if (id == 0) { return new ConquestObjective(); }
-            if (objDict == null) { return new ConquestObjective(); }
-
-            var cqo = new ConquestObjective();
-
-            cqo._dom = _dom;
-            cqo.Id = id;
-
-            cqo.ObjectiveList = new Dictionary<Achievement, Dictionary<Planet, float>>();
-            foreach (var kvp in objDict)
-            {
-                var tempDict = new Dictionary<Planet, float>();
-                var ach = _dom.achievementLoader.Load(kvp.Key);
-                foreach(var subKvp in kvp.Value)
-                {
-                    Planet p;
-                    if (!PlanetList.ContainsKey("Republic"))
-                        return cqo;
-                    PlanetList["Republic"].TryGetValue(subKvp.Key, out p);
-                    if (p == null)
-                        PlanetList["Imperial"].TryGetValue(subKvp.Key, out p);
-                    if (p == null)
-                        p = cqo._dom.conquestLoader.LoadPlanet(subKvp.Key);
-                    tempDict.Add(p, subKvp.Value);
-                }
-                cqo.ObjectiveList.Add(ach, tempDict);
-            }
-
-            return cqo;
         }
 
         public void LoadActiveConquests()

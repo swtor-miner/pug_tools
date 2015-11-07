@@ -24,10 +24,10 @@ namespace GomLib.Models
         public long ParticipateGoal { get; set; }
         [JsonIgnore]
         public List<long> RepeatableObjectivesIdList { get; set; }
-        public List<ConquestObjective> RepeatableObjectivesList { get; set; }
+        public List<ConquestObjectivePackage> RepeatableObjectivesList { get; set; }
         [JsonIgnore]
         public List<long> OneTimeObjectiveIdList { get; set; }
-        public List<ConquestObjective> OneTimeObjectivesList { get; set; }
+        public List<ConquestObjectivePackage> OneTimeObjectivesList { get; set; }
         public string DesignName { get; set; }
         public Dictionary<ulong, bool> ActivePlanets { get; set; }
         public Dictionary<ulong, Planet> ActivePlanetObjects { get; set; }
@@ -155,14 +155,14 @@ namespace GomLib.Models
         public override string ToString(bool verbose)
         {
             string objectives = "";
-            if (RepeatableObjectivesList != null)
-                objectives = ObjectivesToText(ActivePlanets, RepeatableObjectivesList);
-            else
+            //if (RepeatableObjectivesList != null)
+              //  objectives = ObjectivesToText(ActivePlanets, RepeatableObjectivesList);
+            //else
                 objectives = "";
             string secondObjectives = "";
-            if (OneTimeObjectivesList != null)
-                secondObjectives = ObjectivesToText(ActivePlanets, OneTimeObjectivesList);
-            else
+            //if (OneTimeObjectivesList != null)
+                //secondObjectives = ObjectivesToText(ActivePlanets, OneTimeObjectivesList);
+            //else
                 secondObjectives = "";
             string conquestDates = "Event Order/Start Time: None Listed!";
             if (ActiveData != null)
@@ -185,7 +185,7 @@ namespace GomLib.Models
                 Environment.NewLine
                 );
         }
-        private string ObjectivesToText(Dictionary<ulong, bool> activePlanets, List<GomLib.Models.ConquestObjective> objectivesList)
+        /*private string ObjectivesToText(Dictionary<ulong, bool> activePlanets, List<GomLib.Models.ConquestObjective> objectivesList)
         {
             string objectives = String.Join(
                 Environment.NewLine + "  ",
@@ -231,19 +231,19 @@ namespace GomLib.Models
                     ).ToList()                                              // This enumerates the IEnumberable<string> Linq Statement and puts it into a List<string>
             );
             return objectives;
-        }
+        }*/
 
         public string ConquestToSCSV()
         {
             string objectives = "";
-            if (RepeatableObjectivesList != null)
-                objectives = ObjectivesToSCSV(ActivePlanets, RepeatableObjectivesList);
-            else
+            //if (RepeatableObjectivesList != null)
+                //objectives = ObjectivesToSCSV(ActivePlanets, RepeatableObjectivesList);
+            //else
                 objectives = "";
             string secondObjectives = "";
-            if (OneTimeObjectivesList != null)
-                secondObjectives = ObjectivesToSCSV(ActivePlanets, OneTimeObjectivesList);
-            else
+            //if (OneTimeObjectivesList != null)
+                //secondObjectives = ObjectivesToSCSV(ActivePlanets, OneTimeObjectivesList);
+            //else
                 secondObjectives = "";
             string conquestDates = "Event Order/Start Time: None Listed!";
             if (ActiveData != null)
@@ -292,7 +292,7 @@ namespace GomLib.Models
                 Environment.NewLine
                 );
         }
-        private string ObjectivesToSCSV(Dictionary<ulong, bool> activePlanets, List<GomLib.Models.ConquestObjective> objectivesList)
+        /*private string ObjectivesToSCSV(Dictionary<ulong, bool> activePlanets, List<GomLib.Models.ConquestObjective> objectivesList)
         {
             string objectives = String.Join(
                     Environment.NewLine,
@@ -332,7 +332,7 @@ namespace GomLib.Models
                         ).ToList()                                              // This enumerates the IEnumberable<string> Linq Statement and puts it into a List<string>
                 );
             return objectives;
-        }
+        }*/
 
         public override XElement ToXElement(bool verbose)
         {
@@ -389,27 +389,25 @@ namespace GomLib.Models
         }
     }
 
-    public class ConquestObjective : PseudoGameObject, IEquatable<ConquestObjective>
+    public class ConquestObjective
     {
-        public Dictionary<Achievement, Dictionary<Planet, float>> ObjectiveList { get; set; }
+        [JsonConverter(typeof(ULongConverter))]
+        public ulong AchievementID;
+        public Achievement AchievementObj;
 
-        public ConquestObjective()
-        {
-            ObjectiveList = new Dictionary<Achievement, Dictionary<Planet, float>>();
-            Prototype = "wevConquestAchListPrototype";
-            ProtoDataTable = "wevConquestAchListTable";
-        }
+        public List<KeyValuePair<long, float>> PlanetIDMultiplyerList = new List<KeyValuePair<long, float>>();
+        
+        //public Dictionary<Achievement, Dictionary<Planet, float>> ObjectiveList { get; set; }
 
         public override int GetHashCode()
         {
-            int hash = Id.GetHashCode();
-            if (ObjectiveList != null)
-                foreach (var x in ObjectiveList)
-                {
-                    hash ^= x.Key.GetHashCode();
-                    foreach (var y in x.Value) { hash ^= y.GetHashCode(); }
-                }
-
+            int hash = AchievementID.GetHashCode();
+            foreach (var x in PlanetIDMultiplyerList)
+            {
+                hash ^= x.Key.GetHashCode();
+                hash ^= x.Value.GetHashCode();
+            }
+            
             return hash;
         }
 
@@ -431,54 +429,100 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, itm)) return true;
 
-            if (this.Id != itm.Id)
+            if (this.AchievementID != itm.AchievementID)
                 return false;
 
-            var ufComp = new DictionaryComparer<ulong, float>();
-            if (this.ObjectiveList != null)
+            if (this.PlanetIDMultiplyerList.Count != itm.PlanetIDMultiplyerList.Count)
+                return false;
+
+            for(int i=0; i<this.PlanetIDMultiplyerList.Count; i++)
             {
-                if (itm.ObjectiveList == null)
+                KeyValuePair<long, float> thisPlanetMulti = this.PlanetIDMultiplyerList[i];
+                KeyValuePair<long, float> itmPlanetMulti = itm.PlanetIDMultiplyerList[i];
+                if (thisPlanetMulti.Key != itmPlanetMulti.Key || thisPlanetMulti.Value != itmPlanetMulti.Value)
                     return false;
-                if (this.ObjectiveList.Count != itm.ObjectiveList.Count)
-                    return false;
-                foreach (var kvp in this.ObjectiveList)
-                {
-                    var curDict = kvp.Value.ToDictionary(x => x.Key.Id, x => x.Value);
-                    Dictionary<Planet, float> prev;
-                    itm.ObjectiveList.TryGetValue(kvp.Key, out prev);
-                    if (prev != null)
-                    {
-                        var prevDict = kvp.Value.ToDictionary(x => x.Key.Id, x => x.Value);
-                        if (!ufComp.Equals(curDict, prevDict))
-                            return false; 
-                    }
-                }
             }
+
+            return true;
+        }
+
+        public XElement ToXElement(bool verbose)
+        {
+            XElement cObj = new XElement("ConquestObjective",
+                new XAttribute("Id", AchievementObj.Id));
+            cObj.Add(AchievementObj.ToXElement(verbose));
+
+            //Output the modifier list for the planets.
+            if (PlanetIDMultiplyerList.Count > 0)
+            {
+                XElement ModifierElem = new XElement("Modifiers");
+                foreach (KeyValuePair<long, float> kvp in PlanetIDMultiplyerList)
+                {
+                    ModifierElem.Add(new XElement("Planet",
+                        new XAttribute("Id", kvp.Key),
+                        kvp.Value));
+                }
+
+                cObj.Add(ModifierElem);
+            }
+
+            return cObj;
+        }
+    }
+
+    public class ConquestObjectivePackage : PseudoGameObject, IEquatable<ConquestObjectivePackage>
+    {
+        public List<ConquestObjective> Objectives = new List<ConquestObjective>();
+
+        public override int GetHashCode()
+        {
+            int hash = Id.GetHashCode();
+            foreach(ConquestObjective objective in Objectives)
+            {
+                hash ^= objective.GetHashCode();
+            }
+
+            return hash;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+
+            if (ReferenceEquals(this, obj)) return true;
+
+            ConquestObjectivePackage itm = obj as ConquestObjectivePackage;
+            if (itm == null) return false;
+
+            return Equals(itm);
+        }
+
+        public bool Equals(ConquestObjectivePackage obj)
+        {
+            if (obj == null) return false;
+
+            if (ReferenceEquals(this, obj)) return true;
+
+            if (this.Id != obj.Id)
+                return false;
+
+            if (this.Objectives.Count != obj.Objectives.Count)
+                return false;
+            if (!this.Objectives.SequenceEqual(obj.Objectives))
+                return false;
 
             return true;
         }
 
         public override XElement ToXElement(bool verbose)
         {
-            XElement cObj = new XElement("ConquestObjective");
-
-            cObj.Add(new XAttribute("Id", Id));
-            foreach (var kvp in ObjectiveList)
+            XElement packageElem = new XElement("ObjectivePackage", new XAttribute("Id", Id));
+            foreach(ConquestObjective objective in Objectives)
             {
-                var ach = kvp.Key.ToXElement(false);
-                if (kvp.Key.Name != null && kvp.Key.Name != "")
-                    ach.Add(new XElement("ObjectivePoints", kvp.Key.Rewards.AchievementPoints));
-                cObj.Add(ach);
-                XElement planetMods = new XElement("PlanetModifiers");
-                foreach (var subKvp in kvp.Value)
-                {
-                    var plt = subKvp.Key.ToXElement(false);
-                    plt.Add(new XElement("Modifier", String.Format("x{0}", subKvp.Value)));
-                    planetMods.Add(plt);
-                }
-                cObj.Add(planetMods);
+                packageElem.Add(objective.ToXElement(verbose));
             }
-            return cObj;
+
+            return packageElem;
         }
     }
 
