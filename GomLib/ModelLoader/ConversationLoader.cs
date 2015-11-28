@@ -171,6 +171,8 @@ namespace GomLib.ModelLoader
                     _dom._assets.HasFile(String.Format("/resources/{0}/bnk2/" + cnvPath + ".acb", fileGroup)));
             }
 
+            cnv.IsKOTORStyle = obj.Data.ValueOrDefault<bool>("cnvIsKOTORStyle", false);
+
             var dialogNodeMap = obj.Data.ValueOrDefault<Dictionary<object, object>>("cnvTreeDialogNodes_Prototype", new Dictionary<object,object>());
             foreach (var dialogKvp in dialogNodeMap)
             {

@@ -8294,4 +8294,5 @@
   <gom_type Id="4611686304385494002" name="cnvNodeTransactionGiven" desc="" />
   <gom_type Id="4611686304487024000" name="cnvNodeTransactionItems" desc="dictionary- ulong, long - itm - number. Found in the Taken/Given node" />
   <gom_type Id="4611686304487024001" name="cnvNodeTransactionInfluence" desc="dictionary- ulong, long - nco - influence. Found in the Taken/Given node" />
+  <gom_type Id="4611686303632834000" name="cnvIsKOTORStyle" desc="Bool, true if conversation is in KOTOR style. Doesn't seem to be present in non alliance nodes." />
 </gom_types>

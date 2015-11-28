@@ -368,7 +368,7 @@ namespace GomLib.Models
                 for (int i = 0; i < AffectionRewards.Count; i++)
                 {
                     KeyValuePair<Npc, KeyValuePair<int, string>> influenceDetails = AffectionRewards.ElementAt(i);
-                    dNode.Add(new XElement("AffectionGain", new XAttribute("Id", i), new XElement("RewardReceiver",
+                    dNode.Add(new XElement("AffectionGain", new XAttribute("Id", influenceDetails.Key.Base62Id), new XElement("RewardReceiver",
                         influenceDetails.Key.Name), new XElement("InfluenceChange", influenceDetails.Value.Key),
                         new XElement("RewardReaction", influenceDetails.Value.Value)));
                 }

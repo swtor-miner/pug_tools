@@ -32,6 +32,7 @@ namespace tor_tools
 
         //Should probably replicate this for the model and node viewers.
         Form AssetBrowser = null;
+        Form ModelBrowser = null;
 
         #region UI Element Event Receivers
         #region Folder Find Buttons
@@ -339,6 +340,8 @@ namespace tor_tools
         public void onAssetBrowserClosed(object sender, FormClosedEventArgs e)
         {
             AssetBrowser = null;
+            System.Runtime.GCSettings.LargeObjectHeapCompactionMode = System.Runtime.GCLargeObjectHeapCompactionMode.CompactOnce;
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
         }
 
         private void btnNodeBrowser_Click(object sender, EventArgs e)
@@ -353,8 +356,16 @@ namespace tor_tools
         {
             bool usePTS = this.usePTSAssets.Checked;
             System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.SustainedLowLatency;
-            Form ModelBrowser = new ModelBrowser(this.textBoxAssetsFolder.Text, usePTS, this.textBoxPrevAssetsFolder.Text, prevUsePTSAssets.Checked);
+            ModelBrowser = new ModelBrowser(this.textBoxAssetsFolder.Text, usePTS, this.textBoxPrevAssetsFolder.Text, prevUsePTSAssets.Checked);
+            ModelBrowser.FormClosed += onModelBrowserClosed;
             ModelBrowser.Show();
+        }
+
+        private void onModelBrowserClosed(object sender, FormClosedEventArgs e)
+        {
+            ModelBrowser = null;
+            System.Runtime.GCSettings.LargeObjectHeapCompactionMode = System.Runtime.GCLargeObjectHeapCompactionMode.CompactOnce;
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
         }
 
         private void btnWorldBrowser_Click(object sender, EventArgs e)
@@ -385,9 +396,10 @@ namespace tor_tools
             bool hasPTS = PathContainsPTSAssets(path);
             if(hasLive && !hasPTS)
             {
+                buttonFindAssets.Image = global::PugTools.Properties.Resources.tick_shield;
                 usePTSAssets.Checked = false;
             } else if(!hasLive && hasPTS) {
-                
+                buttonFindAssets.Image = global::PugTools.Properties.Resources.tick_shield;
                 usePTSAssets.Checked = true;
             } else if(!hasLive && !hasPTS) {
                 buttonFindAssets.Image = global::PugTools.Properties.Resources.cross_shield;

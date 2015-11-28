@@ -47,6 +47,8 @@ namespace GomLib.Models
 
         public string stb { get; set; }
 
+        public bool IsKOTORStyle { get; set; }
+
         public Conversation()
         {
             SpeakersIds = new List<ulong>();
@@ -67,6 +69,7 @@ namespace GomLib.Models
         public override int GetHashCode()
         {
             int hash = DefaultSpeakerId.GetHashCode();
+            hash ^= IsKOTORStyle.GetHashCode();
             if (stb != null) hash ^= stb.GetHashCode();
             if (AudioLanguageState != null) foreach (var x in AudioLanguageState) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
             if (SpeakersIds != null) foreach (var x in SpeakersIds) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
@@ -224,6 +227,11 @@ namespace GomLib.Models
             else if (cnv.SpeakersIds != null)
                 return false;
 
+            if(this.IsKOTORStyle != cnv.IsKOTORStyle)
+            {
+                return false;
+            }
+
             return true;
         }
 
@@ -278,6 +286,8 @@ namespace GomLib.Models
                     audioStateElem.SetAttributeValue(audKvp.Key, audKvp.Value);
                 }
                 conversation.Add(audioStateElem);
+
+                conversation.Add(new XElement("IsKOTORStyle", IsKOTORStyle));
 
                 XElement dialogNodes = new XElement("DialogNodes");
                 if (RootNodes != null)

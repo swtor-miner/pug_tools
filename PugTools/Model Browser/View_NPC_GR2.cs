@@ -318,6 +318,7 @@ namespace tor_tools
             {
                 if (disposing)
                 {
+                    Window = null;
                     foreach (var model in models)
                     {
                         foreach (var mesh in model.Value.meshes)

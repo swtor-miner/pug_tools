@@ -524,24 +524,46 @@ namespace tor_tools
             this.searchNodes = this.nodeKeys.Where(d => d.Contains(txtSearch.Text)).ToList();
             if (this.searchNodes.Count() > 0)
             {
-                this.btnClearSearch.Enabled = true;
-                this.btnSearch.Enabled = false;
-                this.txtSearch.Enabled = false;
-                this.btnFindNext.Enabled = true;
-                this.toolStripStatusLabel1.Text = "Found " + (this.searchNodes.Count() + 1) + " Matches";
-                showLoader();
-                await Task.Run(() => searchTreeNodes());
-                hideLoader();
-                treeViewFast1.SelectedNode = this.nodeMatch[0];
-                treeViewFast1.Focus();
-                this.toolStripStatusLabel2.Text = "Item " + (this.searchIndex + 1) + " of " + this.searchNodes.Count();
-                this.searchIndex++;
+                await onSuccesfulSearch();
             }
             else
             {
+                //Check if search value is ulong.
+                ulong nodeID = 0;
+                if (ulong.TryParse(txtSearch.Text, out nodeID))
+                {
+                    GomObject node = currentDom.GetObject(nodeID);
+                    if(node != null)
+                    {
+                        txtSearch.Text = node.Name;
+                        this.searchNodes = this.nodeKeys.Where(d => d.Contains(txtSearch.Text)).ToList();
+                        if (this.searchNodes.Count() > 0)
+                        {
+                            await onSuccesfulSearch();
+                            return;
+                        }
+                    }
+                }
+
                 this.toolStripStatusLabel1.Text = "Search complete";
                 MessageBox.Show("Search term not found.");
             }             
+        }
+
+        private async Task onSuccesfulSearch()
+        {
+            this.btnClearSearch.Enabled = true;
+            this.btnSearch.Enabled = false;
+            this.txtSearch.Enabled = false;
+            this.btnFindNext.Enabled = true;
+            this.toolStripStatusLabel1.Text = "Found " + (this.searchNodes.Count() + 1) + " Matches";
+            showLoader();
+            await Task.Run(() => searchTreeNodes());
+            hideLoader();
+            treeViewFast1.SelectedNode = this.nodeMatch[0];
+            treeViewFast1.Focus();
+            this.toolStripStatusLabel2.Text = "Item " + (this.searchIndex + 1) + " of " + this.searchNodes.Count();
+            this.searchIndex++;
         }
 
         private async void btnFindNext_Click(object sender, EventArgs e)
@@ -584,6 +606,44 @@ namespace tor_tools
 
         private void btnToggleCollapse_Click(object sender, EventArgs e)
         {
+            //Check if we can collapse or expand the selected node.
+            if (treeListView1.SelectedObject != null)
+            {
+                TreeListView.Branch br = treeListView1.TreeModel.GetBranch(treeListView1.SelectedObject);
+                if (br != null && br.CanExpand && !br.IsExpanded)
+                {
+                    //Expand node and all child nodes.
+                    treeListView1.Visible = false;
+                    showLoader();
+                    foreach(object nodeObj in treeListView1.GetChildren(treeListView1.SelectedObject))
+                    {
+                        treeListView1.Expand(nodeObj);
+                    }
+
+                    treeListView1.Expand(treeListView1.SelectedObject);
+                    this.btnToggleCollapse.Text = "Collapse Child Nodes";
+                    treeListView1.Visible = true;
+                    hideLoader();
+                    return;
+                } else if(br != null && br.CanExpand && br.IsExpanded)
+                {
+                    //Collapse node and all child nodes.
+                    treeListView1.Visible = false;
+                    showLoader();
+                    foreach (object nodeObj in treeListView1.GetChildren(treeListView1.SelectedObject))
+                    {
+                        treeListView1.Collapse(nodeObj);
+                    }
+
+                    treeListView1.Collapse(treeListView1.SelectedObject);
+                    this.btnToggleCollapse.Text = "Expand Child Nodes";
+                    treeListView1.Visible = true;
+                    hideLoader();
+                    return;
+                }
+            }
+
+            //Couldn't collapse or expand child node. Do whole page.
             if (this.collapseStatus)
             {
                 this.collapseStatus = false;
@@ -851,6 +911,30 @@ namespace tor_tools
             }
             dataGridView1.DataSource = dt;
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+
+            if (tlv.SelectedObject != null)
+            {
+                //Node selected. Lets see if it can collapse or not.
+                TreeListView.Branch br = tlv.TreeModel.GetBranch(tlv.SelectedObject);
+                if (br != null && br.CanExpand && br.IsExpanded)
+                {
+                    this.btnToggleCollapse.Text = "Collapse Child Nodes";
+                }
+                else if (br != null && br.CanExpand && !br.IsExpanded)
+                {
+                    this.btnToggleCollapse.Text = "Expand Child Nodes";
+                }
+            } else
+            {
+                //Page selected.
+                if(this.collapseStatus)
+                {
+                    this.btnToggleCollapse.Text = "Expand Child Nodes";
+                } else
+                {
+                    this.btnToggleCollapse.Text = "Collapse Child Nodes";
+                }
+            }
         }
 
         private void treeListView1_MouseUp(object sender, MouseEventArgs e)

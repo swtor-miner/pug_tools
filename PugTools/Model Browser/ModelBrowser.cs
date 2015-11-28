@@ -1614,6 +1614,19 @@ namespace tor_tools
             nodeKeys.Clear();
             models.Clear();
             resources.Clear();
+
+            currentAssets = null;
+            currentDom = null;
+
+            previousAssets = null;
+            previousDom = null;
+
+            
+            panelRender = null;
+
+            treeViewFast1.Dispose();
+            treeViewFast1 = null;
+
             this.Dispose();
         }
 
