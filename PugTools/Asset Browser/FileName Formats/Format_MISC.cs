@@ -28,6 +28,27 @@ namespace tor_tools
             this.extension = ext;
         }        
 
+        public void ParseMISC_LdnScn(GomObject ldnScreenNode)
+        {
+            Dictionary<object,object> ldgLookup = ldnScreenNode.Data.Get<Dictionary<object, object>>("ldgAreaNameToLoadScreen");
+            foreach(KeyValuePair<object, object> kvpLdgClass in ldgLookup)
+            {
+                searched++;
+                GomObjectData areaLdgInfo = (GomObjectData)kvpLdgClass.Value;
+                string loadingScreen = areaLdgInfo.ValueOrDefault<string>("ldgScreenName", string.Empty);
+                if(loadingScreen.Length > 0)
+                {
+                    fileNames.Add("/resources/gfx/loadingscreen/" + loadingScreen + ".dds");
+                }
+
+                string loadingOverlay = areaLdgInfo.ValueOrDefault<string>("ldgOverlayName", string.Empty);
+                if (loadingOverlay.Length > 0)
+                {
+                    fileNames.Add("/resources/gfx/gfx_productions/" + loadingOverlay + ".gfx");
+                }
+            }
+        }
+
         public void ParseMISC_IPP(List<GomObject> ippNodes)
         {
             foreach (GomObject obj in ippNodes)
