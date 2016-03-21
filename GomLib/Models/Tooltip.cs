@@ -366,7 +366,8 @@ namespace GomLib.Models
                             level = mainMod.Modification.ItemLevel;
                             qual = mainMod.Modification.Quality;
                         }
-                        //else
+                        else
+                            level = 1;
                         //nothing premium is what we want
                     }
                 }
@@ -1818,6 +1819,20 @@ namespace GomLib.Models
                                         )
                                     ));
                                     break;
+                                case "nco.":
+                                    taskText.Add(new XElement("div",
+                                        XClass("torctip_ach_tsk"),
+                                        new XElement("span",
+                                            String.Format("0/{0} ", tsk.Count)
+                                        ),
+                                        new XElement("a",
+                                            XClass(String.Format("torctip_{0}", "nco")),
+                                            new XAttribute("href", String.Format("https://torcommunity.com{2}/database/npc/{0}/{1}/", obj.Base62Id, ((NewCompanion)obj).Companion.LocalizedName[Tooltip.language].LinkString(), Tooltip.linkLocal)),
+                                            new XAttribute("data-torc", "norestyle"),
+                                            ((NewCompanion)obj).Companion.LocalizedName[Tooltip.language]
+                                        )
+                                    ));
+                                    break;
                                 case "qst.":
                                     taskText.Add(new XElement("div",
                                         XClass("torctip_ach_tsk"),
@@ -1856,7 +1871,8 @@ namespace GomLib.Models
                                     ));
                                     break;
                                 default:
-                                    return null;
+                                    break;
+                                    //return null;
                             }
                         }
                         else
