@@ -16,6 +16,7 @@ namespace GomLib.ModelLoader
         Dictionary<ulong, HashSet<ulong>> questRewardRefs;
         public Dictionary<ulong, List<ulong>> schematicLookupMap;
         Dictionary<ulong, ulong> childLookupMap;
+        HashSet<long> authFlags;
 
         DataObjectModel _dom;
 
@@ -32,6 +33,7 @@ namespace GomLib.ModelLoader
             questRewardRefs = new Dictionary<ulong, HashSet<ulong>>();
             schematicLookupMap = new Dictionary<ulong, List<ulong>>();
             childLookupMap = new Dictionary<ulong, ulong>();
+            authFlags = new HashSet<long>();
         }
 
         public string ClassName
@@ -504,6 +506,9 @@ namespace GomLib.ModelLoader
                     itm.SimilarAppearance = gom.References["similarAppearance"].Select(x => x.ToMaskedBase62()).ToList();
                 }
             }*/
+            var authFlag = gom.Data.ValueOrDefault<long>("itmAuthBitFlags", 0);
+            if (!authFlags.Contains(authFlag))
+                authFlags.Add(authFlag);
             gom.Unload();
             return itm;
         }

@@ -999,7 +999,7 @@ namespace GomLib.Models
             foreach (var x in EnhancementSlots) { hash ^= x.GetHashCode(); }
             foreach (var x in RequiredClasses) { hash ^= x.Id.GetHashCode(); }
             foreach (var x in Slots) { hash ^= x.GetHashCode(); }
-            foreach (var x in StatModifiers) { hash ^= x.GetHashCode(); }
+            //foreach (var x in StatModifiers) { hash ^= x.GetHashCode(); }
             hash ^= StackCount.GetHashCode();
             hash ^= MaxDurability.GetHashCode();
             if (WeaponAppSpec != null) hash ^= WeaponAppSpec.GetHashCode();
