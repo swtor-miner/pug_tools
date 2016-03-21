@@ -303,6 +303,21 @@ namespace tor_tools
                 dom.AddCrossLink(node.Data.ValueOrDefault<ulong>("npcClassPackage", 0UL), "npcsWithThisClass", node.Id);//class node
                 dom.AddCrossLink(node.Data.ValueOrDefault<ulong>("npcParentSpecId", 0UL), "npcsWithThisBlueprint", node.Id);//npc node
 
+                string npcCnvName = node.Data.ValueOrDefault<string>("cnvConversationName", "");
+                if (npcCnvName == "") {
+                    ulong ParentSpecId = node.Data.ValueOrDefault<ulong>("npcParentSpecId", 0);
+                    if(ParentSpecId != 0)
+                    {
+                        GomObject baseNpc = dom.GetObject(ParentSpecId);
+                        npcCnvName = baseNpc.Data.ValueOrDefault<string>("cnvConversationName", "");
+                    }
+                }
+                if (!String.IsNullOrEmpty(npcCnvName))
+                {
+                    ulong cnvId = dom.GetObjectId(npcCnvName);
+                    if (cnvId != 0)
+                        dom.AddCrossLink(cnvId, "npcStartsCnv", node.Id);
+                }
                 node.Unload();
             }
         }
