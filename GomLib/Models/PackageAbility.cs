@@ -172,7 +172,12 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, pkga)) return true;
 
-            if (!this.Talent.Equals(pkga.Talent))
+            if (this.Talent != null)
+            {
+                if (!this.Talent.Equals(pkga.Talent))
+                    return false;
+            }
+            else if (pkga.Talent != null)
                 return false;
             if (this.UtilityPosition != pkga.UtilityPosition)
                 return false;
