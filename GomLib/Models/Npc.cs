@@ -58,6 +58,22 @@ namespace GomLib.Models
         public Conversation Conversation { get; set; }
 
         public string cnvConversationName { get; set; }
+        internal string _cnvB62;
+        public string cnvB62
+        {
+            get
+            {
+                if (_cnvB62 == null) {
+                    var obj = _dom.GetObject(cnvConversationName);
+                    if (obj != null)
+                    {
+
+                        _cnvB62 = obj.Id.ToMaskedBase62();
+                    }
+                }
+                return _cnvB62;
+            }
+        }
 
         [Newtonsoft.Json.JsonIgnore]
         public Codex Codex
@@ -102,7 +118,7 @@ namespace GomLib.Models
         public List<NpcVisualData> VisualDataList { get; set; }
 
         public string charRef { get; set; }
-
+        public string Gender { get; set; }
         internal string _FqnCategory { get; set; }
         public string FqnCategory
         {

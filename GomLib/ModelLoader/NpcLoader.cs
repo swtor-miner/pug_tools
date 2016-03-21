@@ -303,6 +303,14 @@ namespace GomLib.ModelLoader
                 npc.VendorPackages = baseNpc.VendorPackages;
             }
 
+            var tgen = obj.Data.ValueOrDefault<ScriptEnum>("chrNPCGenderComplete", new ScriptEnum());
+            //if (tgen.EnumType != null)
+            //{
+            //    string text = string.Join(",", tgen.EnumType.names);
+            //    string blah = "";
+            //}
+            npc.Gender = tgen.ToString();
+
             obj.Unload();
             return npc;
         }
