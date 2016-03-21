@@ -200,6 +200,7 @@ namespace GomLib.ModelLoader
                 if ((long)legacyTitleField != 0)
                 {
                         ach.Rewards.LocalizedLegacyTitle = LegacyTitleLookup(legacyTitleField);
+                    if (ach.Rewards.LocalizedLegacyTitle != null)
                         ach.Rewards.LegacyTitle = ach.Rewards.LocalizedLegacyTitle["enMale"];
                 }
                 
