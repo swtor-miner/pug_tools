@@ -375,12 +375,15 @@ namespace tor_tools
             directory = Path.GetDirectoryName(fileName);
             if (!System.IO.Directory.Exists(directory)) { System.IO.Directory.CreateDirectory(directory); }
 
-            Stream file = assetFile.file.Open();
-            var outputStream = System.IO.File.Create(fileName);
-            byte[] fileBuffer = new byte[assetFile.file.FileInfo.UncompressedSize];
-            file.Read(fileBuffer, 0, fileBuffer.Length);
-            outputStream.Write(fileBuffer, 0, fileBuffer.Length);
-            outputStream.Close();
+            using (Stream file = assetFile.file.Open())
+            {
+                using (var outputStream = System.IO.File.Create(fileName))
+                {
+                    byte[] fileBuffer = new byte[assetFile.file.FileInfo.UncompressedSize];
+                    file.Read(fileBuffer, 0, fileBuffer.Length);
+                    outputStream.Write(fileBuffer, 0, fileBuffer.Length);
+                }
+            }
 
             extractCount++;
         }
@@ -1299,8 +1302,10 @@ namespace tor_tools
                     Dictionary<string, DomType> nodeDict;
                     dom.nodeLookup.TryGetValue(typeof(GomObject), out nodeDict);                    
                     misc_parser.ParseMISC_NODE(nodeDict);
+                    GomObject ldgNode = dom.Get<GomObject>("loadingAreaLoadScreenPrototype");
                     //nodeDict.Clear(); //this was destroying dom.nodeLookup causing an annoyingly hard to locate exception.
                     Dictionary<object, object> itemApperances = dom.GetObject("itmAppearanceDatatable").Data.Get<Dictionary<object, object>>("itmAppearances");
+                    misc_parser.ParseMISC_LdnScn(ldgNode);
                     misc_parser.ParseMISC_ITEM(itemApperances);                        
                     misc_parser.ParseMISC_TUTORIAL(dom);
                     misc_parser.WriteFile();
