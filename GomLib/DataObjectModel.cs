@@ -717,13 +717,15 @@ namespace GomLib
 
         public T Get<T>(string name) where T : DomType
         {
+            if (name == null)
+                return null;
             Type resultType = typeof(T);
             Dictionary<string, DomType> nameMap;
             if (!nodeLookup.TryGetValue(resultType, out nameMap))
             {
                 return null;
             }
-
+            
             DomType t;
             if (!nameMap.TryGetValue(name, out t))
             {
@@ -745,6 +747,14 @@ namespace GomLib
             GomObject result = Get<GomObject>(id);
             if (result != null) { result.Load(); }
             return result;
+        }
+
+        public ulong GetObjectId(string name)
+        {
+            GomObject result = Get<GomObject>(name);
+            if (result != null)
+                return result.Id;
+            return 0;
         }
 
         public SortedDictionary<string, long> GetAllInstanceNames()

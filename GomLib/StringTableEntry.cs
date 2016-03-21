@@ -10,6 +10,8 @@ namespace GomLib
         public long Id { get; internal set; }
 
         public Dictionary<string, string> localizedText { get; internal set; }
+        public Dictionary<string, string> optionText { get; internal set; }
+        public bool hasOptionText { get; set; }
 
         public override bool Equals(object obj)
         {

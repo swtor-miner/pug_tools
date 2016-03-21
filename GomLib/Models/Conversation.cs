@@ -5,14 +5,29 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
     public class Conversation : GameObject, IEquatable<Conversation>
     {
+        [JsonIgnore]
         public List<ulong> SpeakersIds { get; set; }
+        internal Dictionary<string, string> _SpeakersB62Ids;
+        public Dictionary<string, string> SpeakersB62Ids
+        {
+            get {
+                if(_SpeakersB62Ids == null)
+                {
+                    if(SpeakersIds == null) return new Dictionary<string, string>();
+                    _SpeakersB62Ids = SpeakersIds.ToDictionary(x => x.ToMaskedBase62(), x => (_dom.GetObject(x) ?? new GomObject()).Name);
+                }
+                return _SpeakersB62Ids;
+            }
+        }
         public Dictionary<string, bool> AudioLanguageState { get; set; }
         internal Dictionary<ulong, GameObject> LoadedSpeakers { get; set; }
+        [JsonIgnore]
         public Dictionary<ulong, GameObject> Speakers {
             get
             {
@@ -28,26 +43,44 @@ namespace GomLib.Models
                 return speaks;
             }
         }
+        [JsonIgnore]
         public List<Placeable> Placeables { get; set; }
         /*public List<Quest> QuestStarted { get; set; }
         public List<Quest> QuestEnded { get; set; }
         public List<Quest> QuestProgressed { get; set; }*/
 
+        [JsonIgnore]
         public List<ulong> QuestStarted { get; set; }
+        [JsonIgnore]
+        public List<string> _QuestB62Started;
+        public List<string> QuestB62Started { get { if (_QuestB62Started == null) _QuestB62Started = QuestStarted.ToMaskedBase62(); return _QuestB62Started; } }
+        [JsonIgnore]
         public List<ulong> QuestEnded { get; set; }
+        [JsonIgnore]
+        public List<string> _QuestB62Ended;
+        public List<string> QuestB62Ended { get { if (_QuestB62Ended == null) _QuestB62Ended = QuestEnded.ToMaskedBase62(); return _QuestB62Ended; } }
+        [JsonIgnore]
         public List<ulong> QuestProgressed { get; set; }
-
+        [JsonIgnore]
+        public List<string> _QuestB62Progressed;
+        public List<string> QuestB62Progressed { get { if (_QuestB62Progressed == null) _QuestB62Progressed = QuestProgressed.ToMaskedBase62(); return _QuestB62Progressed; } }
+        
         public Dictionary<int, long> RootNodes { get; set; }
+        [JsonIgnore]
         public List<DialogNode> DialogNodes { get; set; }
         public Dictionary<long, DialogNode> NodeLookup { get; set; }
         public Dictionary<long, long> NodeLinkList { get; set; }
 
         public ulong DefaultSpeakerId { get; set; }
+        [JsonIgnore]
         public GameObject DefaultSpeaker { get; set; }
 
         public string stb { get; set; }
 
         public bool IsKOTORStyle { get; set; }
+        
+        public HashSet<string> AffectionNpcB62 { get; set; }
+        public HashSet<string> AffectionNcoB62 { get; set; }
 
         public Conversation()
         {

@@ -118,6 +118,22 @@ namespace GomLib
             return null;
         }
 
+        public Dictionary<string, string> GetOptionText(long id, string forFqn)
+        {
+            StringTableEntry entry;
+            if (data.TryGetValue(id, out entry))
+            {
+                if (entry.hasOptionText)
+                {
+                    return entry.optionText;
+                }
+                else return null;
+            }
+
+            //Console.WriteLine("Cannot find String {0} in StringTable {1} for {2}", id, this.Fqn, forFqn);
+            return null;
+        }
+
         public bool StbFileExists()
         {
             List<string> localizations = new List<string> {
@@ -222,6 +238,14 @@ namespace GomLib
                                 { "frFemale", "" },
                                 { "deMale", "" },
                                 { "deFemale", "" },
+                            },
+                            optionText = new Dictionary<string, string> {
+                                { "enMale", "" },
+                                //{ "enFemale", "" },
+                                { "frMale", "" },
+                                { "frFemale", "" },
+                                { "deMale", "" },
+                                { "deFemale", "" },
                             }
 
                             //enMaleText = String.Empty
@@ -243,20 +267,35 @@ namespace GomLib
 
                         if (text.Length > 0)
                         {
-                            if (localization == "en-us")
+                            string textTag = "";
+                            switch (localization)
                             {
-                                if (entry_t1 == 65 || entry_t1 == 80) { data[entryId].localizedText["enMale"] = text; }
-                                //if (entry_t1 == 70 || entry_t1 == 81) { data[entryId].localizedText["enFemale"] = text; }
+                                case "en-us":
+                                    if(entry_t1 == 65 || entry_t1 == 80)
+                                        textTag = "enMale";
+                                    break;
+                                case "de-de":
+                                    if (entry_t1 == 65 || entry_t1 == 80)
+                                        textTag = "deMale";
+                                    else
+                                        textTag = "deFemale";
+                                    break;
+                                case "fr-fr":
+                                    if (entry_t1 == 65 || entry_t1 == 80)
+                                        textTag = "frMale";
+                                    else
+                                        textTag = "frFemale";
+                                    break;
                             }
-                            else if (localization == "de-de")
+
+                            if(entry_t1 == 65 || entry_t1 == 70)
                             {
-                                if (entry_t1 == 65 || entry_t1 == 80) { data[entryId].localizedText["deMale"] = text; }
-                                if (entry_t1 == 70 || entry_t1 == 81) { data[entryId].localizedText["deFemale"] = text; }
+                                data[entryId].localizedText[textTag] = text;
                             }
-                            else if (localization == "fr-fr")
+                            else if(entry_t1 == 80 || entry_t1 == 81)
                             {
-                                if (entry_t1 == 65 || entry_t1 == 80) { data[entryId].localizedText["frMale"] = text; }
-                                if (entry_t1 == 70 || entry_t1 == 81) { data[entryId].localizedText["frFemale"] = text; }
+                                data[entryId].hasOptionText = true;
+                                data[entryId].optionText[textTag] = text;
                             }
                         }
                     }
@@ -409,6 +448,35 @@ namespace GomLib
             }
 
             return strTable.GetLocalizedText(strId, "");
+        }
+
+        public Dictionary<string, string> TryGetLocalizedOptionStrings(string fqn, GomObjectData textRetriever)
+        {
+            string locBucket = textRetriever.ValueOrDefault<string>("strLocalizedTextRetrieverBucket", null);
+            long strId = textRetriever.ValueOrDefault<long>("strLocalizedTextRetrieverStringID", -1);
+
+            if ((locBucket == null) || (strId == -1))
+            {
+                return null;
+            }
+
+            StringTable strTable = null;
+            try
+            {
+                strTable = this.Find(locBucket);
+            }
+            catch
+            {
+                strTable = null;
+            }
+
+            if (strTable == null)
+            {
+                return null;
+            }
+
+            Dictionary<string, string> result = strTable.GetOptionText(strId, fqn);
+            return result;
         }
 
         public override bool Equals(object obj)

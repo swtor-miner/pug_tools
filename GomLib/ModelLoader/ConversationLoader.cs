@@ -15,6 +15,7 @@ namespace GomLib.ModelLoader
         Dictionary<ulong, long> CompanionSimpleNameByFqnID = new Dictionary<ulong, long>();
         Dictionary<long, ulong> CompanionFqnIDBySimpleName = new Dictionary<long, ulong>();
         Dictionary<long, KeyValuePair<int, string>> reactionDataByID = new Dictionary<long, KeyValuePair<int, string>>();
+        Dictionary<long, KeyValuePair<int, Dictionary<string, string>>> localizedReactionDataByID = new Dictionary<long, KeyValuePair<int, Dictionary<string, string>>>();
 
         Dictionary<long, Npc> companionShortNameMap;
 
@@ -118,6 +119,7 @@ namespace GomLib.ModelLoader
                 {
                     //Faster to check than to reassign regardless.
                     reactionDataByID = new Dictionary<long, KeyValuePair<int, string>>();
+                    localizedReactionDataByID = new Dictionary<long, KeyValuePair<int, Dictionary<string, string>>>();
                 }
 
                 //Not present pre 4.0 so have to check this exists. This could cause a slow down analayzing pre 4.0 clients.
@@ -139,9 +141,11 @@ namespace GomLib.ModelLoader
                         //Get the string from the string tables.
                         StringTable reactionStb = _dom.stringTable.Find("str.gui.conversationreactions");
                         string reactionString = reactionStb.GetText(sid, "str.gui.conversationreactions");
+                        Dictionary<string, string> localizedReactionString = reactionStb.GetLocalizedText(sid, "str.gui.conversationreactions");
 
                         //Store the data for quick lookup. Don't need the influence modifier to be long.
                         reactionDataByID.Add(id, new KeyValuePair<int, string>((int)influenceMod, reactionString));
+                        localizedReactionDataByID.Add(id, new KeyValuePair<int, Dictionary<string, string>>((int)influenceMod, localizedReactionString));
                     }
                 }
             }
@@ -238,6 +242,24 @@ namespace GomLib.ModelLoader
 
         public Npc CompanionBySimpleNameId(long nameId)
         {
+            LoadcompanionShortNameMap();
+            if (companionShortNameMap.ContainsKey(nameId))
+                return companionShortNameMap[nameId];
+            else
+                return null;
+        }
+
+        public string CompanionB62BySimpleNameId(long nameId)
+        {
+            LoadcompanionShortNameMap();
+            if (companionShortNameMap.ContainsKey(nameId))
+                return companionShortNameMap[nameId].Id.ToMaskedBase62();
+            else
+                return null;
+        }
+
+        private void LoadcompanionShortNameMap()
+        {
             if (companionShortNameMap.Count == 0)
             {
                 foreach (var kvp in CompanionFqnIDBySimpleName)
@@ -247,10 +269,6 @@ namespace GomLib.ModelLoader
                     companionShortNameMap[simpleNameId] = npc;
                 }
             }
-            if (companionShortNameMap.ContainsKey(nameId))
-                return companionShortNameMap[nameId];
-            else
-                return null;
         }
 
         DialogNode LoadDialogNode(Conversation cnv, GomObjectData data)
@@ -283,6 +301,11 @@ namespace GomLib.ModelLoader
             // Load Companion Affection Results pre 4.0 system.
             var affectionGains = data.ValueOrDefault<Dictionary<object, object>>("cnvRewardAffectionRewards", null);
             result.AffectionRewardEvents = new Dictionary<long, KeyValuePair<int, string>>();
+            result.AffectionRewardEventsB62 = new Dictionary<string, KeyValuePair<int, Dictionary<string, string>>>();
+            if (result.Conversation.AffectionNpcB62 == null)
+                result.Conversation.AffectionNpcB62 = new HashSet<string>();
+            if (result.Conversation.AffectionNcoB62 == null)
+                result.Conversation.AffectionNcoB62 = new HashSet<string>();
             if (affectionGains != null)
             {
                 foreach (var companionGain in affectionGains)
@@ -299,6 +322,9 @@ namespace GomLib.ModelLoader
                             string reactionString = reactionData.Value.Replace("<<1>>", companion.Name);
 
                             result.AffectionRewardEvents[companionShortNameId] = new KeyValuePair<int, string>(reactionData.Key, reactionString);
+                            string b62 = companion.Id.ToMaskedBase62();
+                            result.Conversation.AffectionNpcB62.Add(b62);
+                            result.AffectionRewardEventsB62[b62] = new KeyValuePair<int, Dictionary<string, string>>(reactionData.Key, localizedReactionDataByID[(long)companionGain.Value].Value);
                         }
                     }
                 }
@@ -335,6 +361,9 @@ namespace GomLib.ModelLoader
                                 if (CompanionSimpleNameByFqnID.TryGetValue(nco.NpcId, out simpleName))
                                 {
                                     result.AffectionRewardEvents[simpleName] = new KeyValuePair<int, string>(rewardData.Key, reactionString);
+                                    string b62 = nco.Id.ToMaskedBase62();
+                                    result.Conversation.AffectionNcoB62.Add(b62);
+                                    result.AffectionRewardEventsB62[b62] = new KeyValuePair<int, Dictionary<string, string>>(Math.Abs(rewardData.Key), localizedReactionDataByID[rewardID].Value);
                                 }
                             }
                         }
@@ -356,6 +385,9 @@ namespace GomLib.ModelLoader
                                 if (CompanionSimpleNameByFqnID.TryGetValue(npc.Id, out simpleName))
                                 {
                                     result.AffectionRewardEvents[simpleName] = new KeyValuePair<int, string>(rewardData.Key, reactionString);
+                                    string b62 = npc.Id.ToMaskedBase62();
+                                    result.Conversation.AffectionNpcB62.Add(b62);
+                                    result.AffectionRewardEventsB62[b62] = new KeyValuePair<int, Dictionary<string, string>>(Math.Abs(rewardData.Key), localizedReactionDataByID[rewardID].Value);
                                 }
                             }
                         }
@@ -380,6 +412,7 @@ namespace GomLib.ModelLoader
                 result.stb = txtData.Get<string>("strLocalizedTextRetrieverBucket");
                 result.Text = _dom.stringTable.TryGetString(cnv.Fqn, txtData);
                 result.LocalizedText = _dom.stringTable.TryGetLocalizedStrings(cnv.Fqn, txtData);
+                result.LocalizedOptionText = _dom.stringTable.TryGetLocalizedOptionStrings(cnv.Fqn, txtData);
             }
 
             result.ChildIds = new List<int>();

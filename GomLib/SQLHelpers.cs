@@ -242,7 +242,7 @@ namespace GomLib
         }
 
         /// <summary>
-        /// Convert a the last 5 bytes of a ulong value to a Base62 string
+        /// Convert a the last 5 bytes of a long value to a Base62 string
         /// </summary>
         /// <param name="original">ulong</param>
         /// <returns>Base62 string</returns>
@@ -253,6 +253,28 @@ namespace GomLib
             //maskedBytes.RemoveRange(5, 3);
             //return maskedBytes.ToArray().ToBase62();
             return ((ulong)id).ToMaskedBase62();
+        }
+
+        /// <summary>
+        /// Convert a List of ulong values to a Base62 string List
+        /// </summary>
+        /// <param name="original">ulong</param>
+        /// <returns>Base62 string</returns>
+        public static List<string> ToMaskedBase62(this List<ulong> ids)
+        {
+            if (ids == null || ids.Count == 0) return null;
+            return ids.Select(x => x.ToMaskedBase62()).ToList();
+        }
+
+        /// <summary>
+        /// Convert a List of long values to a Base62 string List
+        /// </summary>
+        /// <param name="original">ulong</param>
+        /// <returns>Base62 string</returns>
+        public static List<string> ToMaskedBase62(this List<long> ids)
+        {
+            if (ids == null) return new List<string>();
+            return ids.Select(x => x.ToMaskedBase62()).ToList();
         }
 
         /// <summary>

@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
     public class DialogNode : IEquatable<DialogNode>
     {
+        [JsonIgnore]
         public Conversation Conversation { get; set; }
         public long NodeId { get; set; }
 
@@ -18,16 +20,26 @@ namespace GomLib.Models
 
         public Quest ActionQuest { get; set; }*/
 
+        [JsonIgnore]
         public List<ulong> QuestsGranted { get; set; }
+        public List<string> QuestsGrantedB62 { get { return QuestsGranted.ToMaskedBase62(); } }
+        [JsonIgnore]
         public List<ulong> QuestsEnded { get; set; }
+        public List<string> QuestsEndedB62 { get { return QuestsEnded.ToMaskedBase62(); } }
+        [JsonIgnore]
         public List<ulong> QuestsProgressed { get; set; }
+        public List<string> QuestsProgressedB62 { get { return QuestsProgressed.ToMaskedBase62(); } }
+        [JsonIgnore]
         public ulong QuestReward { get; set; }
+        public string QuestRewardB62 { get { return QuestReward.ToMaskedBase62(); } }
 
         public ulong ActionQuest { get; set; }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public QuestHook ActionHook { get; set; }
 
         public int MinLevel { get; set; }
         public int MaxLevel { get; set; }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ConversationAlignment AlignmentGain { get; set; }
         public int CreditsGained { get; set; }
         public bool IsEmpty { get; set; }
@@ -36,16 +48,20 @@ namespace GomLib.Models
         public bool AbortsConversation { get; set; }
         public bool IsPlayerNode { get; set; }
 
+        [JsonIgnore]
         public ulong SpeakerId { get; set; }
+        public string SpeakerB62Id { get { return SpeakerId.ToMaskedBase62(); } }
 
         public string Text { get; set; }
         public Dictionary<string, string> LocalizedText { get; set; }
+        public Dictionary<string, string> LocalizedOptionText { get; set; }
 
         //To display what alien VO we should be using for this.
         public long cnvAlienVONode { get; set; }
         public string cnvAlienVOFQN { get; set; }
 
         internal Dictionary<Npc, KeyValuePair<int, string>> _AffectionRewards { get; set; }
+        [JsonIgnore]
         public Dictionary<Npc, KeyValuePair<int, string>> AffectionRewards
         {
             get
@@ -63,12 +79,15 @@ namespace GomLib.Models
                 return _AffectionRewards;
             }
         }
+        [JsonIgnore]
         public Dictionary<long, KeyValuePair<int, string>> AffectionRewardEvents { get; set; }
+        public Dictionary<string, KeyValuePair<int, Dictionary<string, string>>> AffectionRewardEventsB62 { get; set; }
 
         /// <summary>Doesn't trigger conversation mode - just speaks dialog and prints text to chat tab</summary>
         public bool IsAmbient { get; set; }
 
         public List<int> ChildIds { get; set; }
+        [JsonIgnore]
         public List<DialogNode> ChildNodes { get; set; }
 
         public string stb { get; set; }
