@@ -14,6 +14,7 @@ namespace GomLib.ModelLoader
         Dictionary<string, Quest> nameMap;
 
         Dictionary<object, object> fullQuestRewardsTable;
+        Dictionary<object, object> newfullQuestRewardsTable;
         public Dictionary<long, Dictionary<long, float>> fullCreditRewardsTable;
         public Dictionary<long, long> experienceTable;
         public Dictionary<QuestDifficulty, float> experienceDifficultyMultiplierTable;
@@ -31,6 +32,7 @@ namespace GomLib.ModelLoader
             idMap = new Dictionary<ulong, Quest>();
             nameMap = new Dictionary<string, Quest>();
             fullQuestRewardsTable = new Dictionary<object, object>();
+            newfullQuestRewardsTable = new Dictionary<object, object>();
             fullCreditRewardsTable = new Dictionary<long, Dictionary<long, float>>();
             experienceTable = new Dictionary<long, long>();
             experienceDifficultyMultiplierTable = new Dictionary<QuestDifficulty, float>();
@@ -242,6 +244,7 @@ namespace GomLib.ModelLoader
             if (fullQuestRewardsTable.Count == 0)
             {
                 fullQuestRewardsTable = _dom.GetObject("qstRewardsInfoPrototype").Data.Get<Dictionary<object, object>>("qstRewardsInfoData");
+                newfullQuestRewardsTable = _dom.GetObject("qstRewardsInfoPrototype").Data.ValueOrDefault<Dictionary<object, object>>("4611686305674744000", new Dictionary<object, object>());
                 fullCreditRewardsTable = _dom.GetObject("qstrewardscreditsData").Data.Get<Dictionary<object, object>>("qstRewardsPerLevelData")
                     .ToDictionary(x=> (long)x.Key, x => ((Dictionary<object, object>)x.Value).ToDictionary(y => (long)y.Key, y => (float)y.Value));
                 experienceTable = _dom.GetObject("qstExperiencePrototype").Data.Get<Dictionary<object, object>>("qstExperienceTable")
@@ -254,11 +257,17 @@ namespace GomLib.ModelLoader
             }
             //try
             //{
+            bool newFormat = false;
             var questRewardsTable = new List<object>();
 
             if (fullQuestRewardsTable.ContainsKey(obj.Id))
             {
                 questRewardsTable = (List<object>)fullQuestRewardsTable[obj.Id];
+            }
+            else if (newfullQuestRewardsTable.ContainsKey(obj.Id))
+            {
+                questRewardsTable = (List<object>)newfullQuestRewardsTable[obj.Id];
+                newFormat = true;
             }
             else
             {
@@ -271,7 +280,7 @@ namespace GomLib.ModelLoader
                 var reward = new QuestReward();
                 reward._dom = _dom;
 
-                long unknownNum = qReward.Get<long>("4611686090803470052");
+                long unknownNum = qReward.ValueOrDefault<long>("4611686090803470052", 0);
                 /*if (unknownNum != 1) //obsolete debugging code
                 {
                     var t = ""; //checking if always 1. Order of appearance in listing?!?
@@ -281,7 +290,11 @@ namespace GomLib.ModelLoader
                 bool isAlwaysProvided = qReward.ValueOrDefault<bool>("qstRewardIsAlwaysProvided", false);
                 reward.IsAlwaysProvided = isAlwaysProvided;
 
-                GomObjectData rewardLookup = qReward.Get<GomObjectData>("qstRewardData");
+                GomObjectData rewardLookup;
+                if (newFormat)
+                    rewardLookup = qReward;
+                else
+                    rewardLookup = qReward.Get<GomObjectData>("qstRewardData");
 
                 /*Item rewardItem = new Item(); 
                 rewardItem = _dom.itemLoader.Load(rewardLookup.ValueOrDefault<ulong>("qstRewardItemId", 0));
