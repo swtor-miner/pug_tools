@@ -132,20 +132,10 @@ namespace tor_tools
         private void chkDB_CheckedChanged(object sender, EventArgs e)
         {
             this.chkABLEFF.Checked = false;
-            this.chkAC.Checked = false;
-            this.chkAPT.Checked = false;
-            this.chkAREA.Checked = false;
-            this.chkCMP.Checked = false;
-            this.chkCNQ.Checked = false;
-            this.chkCNV.Checked = false;
-            this.chkCOL.Checked = false;
-            this.chkDEC.Checked = false;
             this.chkEXP.Checked = false;
             this.chkGOM.Checked = false;
-            this.chkGSF.Checked = false;
             this.chkIPP.Checked = false;
             this.chkMISC.Checked = false;
-            this.chkMTX.Checked = false;
             this.chkNPP.Checked = false;
             this.chkSTB.Checked = false;
             this.chkICONS.Checked = false;
@@ -154,8 +144,18 @@ namespace tor_tools
 
             this.chkACH.Checked = true;
             this.chkABL.Checked = true;
+            this.chkAC.Checked = true;
+            this.chkAPT.Checked = true;
+            this.chkAREA.Checked = true;
             this.chkCDX.Checked = true;
+            this.chkCMP.Checked = true;
+            this.chkCNQ.Checked = true;
+            this.chkCNV.Checked = true;
+            this.chkCOL.Checked = true;
+            this.chkDEC.Checked = true;
+            this.chkGSF.Checked = true;
             this.chkITM.Checked = true;
+            this.chkMTX.Checked = true;
             this.chkNPC.Checked = true;
             this.chkSCHEM.Checked = true;
             this.chkQST.Checked = true;
