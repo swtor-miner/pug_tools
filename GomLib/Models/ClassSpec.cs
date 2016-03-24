@@ -20,6 +20,16 @@ namespace GomLib.Models
         [JsonConverter(typeof(LongConverter))]
         public long NameId { get; set; }
         public string Icon { get; set; }
+        public string HashedIcon
+        {
+            get
+            {
+                if (Icon == null)
+                    return null;
+                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", this.Icon));
+                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+            }
+        }
         public int AlignmentLight { get; set; }
         public int AlignmentDark { get; set; }
         [JsonConverter(typeof(ULongConverter))]
