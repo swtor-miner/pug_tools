@@ -70,6 +70,11 @@ namespace GomLib.ModelLoader
                     else
                     {
                         Models.Codex cdx = _dom.codexLoader.Load(cdxNodeID);
+                        if(cdx == null)
+                        {
+                            continue;
+                        }
+
                         string faction = cdx.Faction.ToString();
                         if(faction != "None")
                         {
@@ -156,6 +161,11 @@ namespace GomLib.ModelLoader
                             else
                             {
                                 Models.Codex cdx = _dom.codexLoader.Load(cdxNodeID);
+                                if(cdx == null)
+                                {
+                                    continue;
+                                }
+
                                 string faction = cdx.Faction.ToString();
                                 if (faction != "None")
                                 {
@@ -226,7 +236,12 @@ namespace GomLib.ModelLoader
                         {
                             planetName = "Unknown";
                         } else {
-                             Models.Codex cdx = _dom.codexLoader.Load(cdxNodeID);
+                            Models.Codex cdx = _dom.codexLoader.Load(cdxNodeID);
+                            if(cdx == null)
+                            {
+                                continue;
+                            }
+
                             string faction = cdx.Faction.ToString();
                             if (faction != "None")
                             {
