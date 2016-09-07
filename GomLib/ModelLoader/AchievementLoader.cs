@@ -183,73 +183,78 @@ namespace GomLib.ModelLoader
 
             ach.AchId = gom.Data.ValueOrDefault<long>("achId", 0);
 
-            ach.Rewards = new Rewards();
+            ach.Rewards = null;
             if (gom.Data.ContainsKey("achRewardId"))
             {
                 ach.RewardsId = gom.Data.Get<long>("achRewardId");
                 GomObject rewardsTable = _dom.GetObject("achRewardsTable_Prototype");
                 var rewardsLookupList = rewardsTable.Data.Get<Dictionary<object, object>>("achRewardsData"); //fix this to be a reference to somehwere so we don't have to load it each time to read one value.
-                var rawRewards = (GomObjectData)rewardsLookupList[ach.RewardsId];
-                var achievementPoints = rawRewards.ValueOrDefault<long>("achRewardPoints", 0);
-                ach.Rewards.AchievementPoints = achievementPoints;
-                var cartelCoins = rawRewards.ValueOrDefault<long>("achRewardCartelCoins", 0);
-                ach.Rewards.CartelCoins = cartelCoins;
-                
-                var legacyTitleField = rawRewards.ValueOrDefault<long>("achRewardLegacyTitleId", 0);
-                ach.Rewards.LocalizedLegacyTitle = new Dictionary<string, string>();
-                if ((long)legacyTitleField != 0)
+                object rawRewardsObj = null;
+                if(rewardsLookupList.TryGetValue(ach.RewardsId, out rawRewardsObj))
                 {
-                        ach.Rewards.LocalizedLegacyTitle = LegacyTitleLookup(legacyTitleField);
-                    if (ach.Rewards.LocalizedLegacyTitle != null)
-                        ach.Rewards.LegacyTitle = ach.Rewards.LocalizedLegacyTitle["enMale"];
-                }
-                
+                    GomObjectData rawRewards = rawRewardsObj as GomObjectData;
+                    ach.Rewards = new Rewards();
 
-                long requisition = rawRewards.ValueOrDefault<long>("achRewardFleetRequisition", 0);
-                ach.Rewards.Requisition = requisition;
-                /*string title = "";
-                string codexFqn = "";
-                bool prefix = false;
-                if (titleField > 0 && titleField < 1000)
-                {
-                    GomObject titleTable = _dom.GetObject("chrPlayerTitlesTablePrototype");
-                    var titleLookupList = titleTable.Data.Get<List<object>>("chrPlayerTitlesMapping");
-                    var titleTextLookup = (GomObjectData)titleLookupList[Convert.ToInt32(titleField) - 1];
-                    var titleId = titleTextLookup.ValueOrDefault<long>("titleDetailStringID", -1);
-                    title = _dom.stringTable.TryGetString("str.pc.title", titleId);
-                    var titleCodexId = titleTextLookup.ValueOrDefault<ulong>("titleCodex", 0);
-                    GomObject codex = _dom.GetObject(titleCodexId);
-                    prefix = titleTextLookup.ValueOrDefault<bool>("titleDetailLegacyPrefix", false);
-                }
-                else if (titleField > 1000)
-                {
-                    GomObject titleTable = _dom.GetObject("chrPlayerTitlesTablePrototype");
-                    var titleLookupList = titleTable.Data.Get<List<object>>("chrPlayerTitlesMapping");
-                    var titleTextLookup = (GomObjectData)titleLookupList[Convert.ToInt32(titleField)];
-                    var titleId = titleTextLookup.ValueOrDefault<long>("titleDetailStringID", -1);
-                    title = _dom.stringTable.TryGetString("str.pc.title", titleId);
-                    var titleCodexId = titleTextLookup.ValueOrDefault<ulong>("titleCodex", 0);
-                    GomObject codex = _dom.GetObject(titleCodexId);
-                    prefix = titleTextLookup.ValueOrDefault<bool>("titleDetailLegacyPrefix", false);
-                }*/
+                    var achievementPoints = rawRewards.ValueOrDefault<long>("achRewardPoints", 0);
+                    ach.Rewards.AchievementPoints = achievementPoints;
+                    var cartelCoins = rawRewards.ValueOrDefault<long>("achRewardCartelCoins", 0);
+                    ach.Rewards.CartelCoins = cartelCoins;
 
-                //TODO: This is not working, no items are being read.
-                var itemRew = rawRewards.Get<List<object>>("achRewardItems");
-                ach.Rewards.ItemRewardList = new Dictionary<ulong, long>();
-                foreach (var gomDat in itemRew)
-                {
-                    var quant = ((GomObjectData)gomDat).Get<long>("achRewardItemQty");
-                    var itemId = ((GomObjectData)gomDat).Get<ulong>("achRewardItemId");
-                    GomObject rew = _dom.GetObject(itemId);
-                    /*if (rew.Name.Contains("itm.stronghold.") && !rew.Name.Contains(".trophy.") && !rew.Name.Contains("datacron_master_display")) //obsolete debugging code
+                    var legacyTitleField = rawRewards.ValueOrDefault<long>("achRewardLegacyTitleId", 0);
+                    ach.Rewards.LocalizedLegacyTitle = new Dictionary<string, string>();
+                    if ((long)legacyTitleField != 0)
                     {
-                        string paushere = "";
+                        ach.Rewards.LocalizedLegacyTitle = LegacyTitleLookup(legacyTitleField);
+                        if (ach.Rewards.LocalizedLegacyTitle != null)
+                            ach.Rewards.LegacyTitle = ach.Rewards.LocalizedLegacyTitle["enMale"];
+                    }
+
+
+                    long requisition = rawRewards.ValueOrDefault<long>("achRewardFleetRequisition", 0);
+                    ach.Rewards.Requisition = requisition;
+                    /*string title = "";
+                    string codexFqn = "";
+                    bool prefix = false;
+                    if (titleField > 0 && titleField < 1000)
+                    {
+                        GomObject titleTable = _dom.GetObject("chrPlayerTitlesTablePrototype");
+                        var titleLookupList = titleTable.Data.Get<List<object>>("chrPlayerTitlesMapping");
+                        var titleTextLookup = (GomObjectData)titleLookupList[Convert.ToInt32(titleField) - 1];
+                        var titleId = titleTextLookup.ValueOrDefault<long>("titleDetailStringID", -1);
+                        title = _dom.stringTable.TryGetString("str.pc.title", titleId);
+                        var titleCodexId = titleTextLookup.ValueOrDefault<ulong>("titleCodex", 0);
+                        GomObject codex = _dom.GetObject(titleCodexId);
+                        prefix = titleTextLookup.ValueOrDefault<bool>("titleDetailLegacyPrefix", false);
+                    }
+                    else if (titleField > 1000)
+                    {
+                        GomObject titleTable = _dom.GetObject("chrPlayerTitlesTablePrototype");
+                        var titleLookupList = titleTable.Data.Get<List<object>>("chrPlayerTitlesMapping");
+                        var titleTextLookup = (GomObjectData)titleLookupList[Convert.ToInt32(titleField)];
+                        var titleId = titleTextLookup.ValueOrDefault<long>("titleDetailStringID", -1);
+                        title = _dom.stringTable.TryGetString("str.pc.title", titleId);
+                        var titleCodexId = titleTextLookup.ValueOrDefault<ulong>("titleCodex", 0);
+                        GomObject codex = _dom.GetObject(titleCodexId);
+                        prefix = titleTextLookup.ValueOrDefault<bool>("titleDetailLegacyPrefix", false);
                     }*/
-                    ach.Rewards.ItemRewardList.Add(itemId, quant);
+
+                    //TODO: This is not working, no items are being read.
+                    var itemRew = rawRewards.Get<List<object>>("achRewardItems");
+                    ach.Rewards.ItemRewardList = new Dictionary<ulong, long>();
+                    foreach (var gomDat in itemRew)
+                    {
+                        var quant = ((GomObjectData)gomDat).Get<long>("achRewardItemQty");
+                        var itemId = ((GomObjectData)gomDat).Get<ulong>("achRewardItemId");
+                        GomObject rew = _dom.GetObject(itemId);
+                        /*if (rew.Name.Contains("itm.stronghold.") && !rew.Name.Contains(".trophy.") && !rew.Name.Contains("datacron_master_display")) //obsolete debugging code
+                        {
+                            string paushere = "";
+                        }*/
+                        ach.Rewards.ItemRewardList.Add(itemId, quant);
+                    }
                 }
 
                 rewardsTable.Unload();
-                rawRewards = null;
             }
             
             var textLookup = gom.Data.Get<Dictionary<object, object>>("locTextRetrieverMap");
