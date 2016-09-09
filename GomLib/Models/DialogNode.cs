@@ -34,8 +34,7 @@ namespace GomLib.Models
         public string QuestRewardB62 { get { return QuestReward.ToMaskedBase62(); } }
 
         public ulong ActionQuest { get; set; }
-        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public QuestHook ActionHook { get; set; }
+        public string ActionHook { get; set; }
 
         public int MinLevel { get; set; }
         public int MaxLevel { get; set; }

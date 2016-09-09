@@ -255,6 +255,8 @@ namespace GomLib.Models
             }
         }
 
+        public Dictionary<string, string> LocalizedCategory { get; set; }
+
         public override int GetHashCode()  //should be fixed.
         {
             int hash = Level.GetHashCode();

@@ -29,7 +29,7 @@ CREATE TABLE `{0}` (
   `previous_version` varchar(25) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `first_seen` varchar(25) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
 {1}
-  `Hash` int(11) NOT NULL,
+  `Hash` bigint NOT NULL,
 {2}
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -70,7 +70,7 @@ DROP TABLE IF EXISTS `{0}_old_versions`;
 CREATE TABLE `{0}_old_versions` (
   `version` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
 {1}
-  `Hash` int(11) NOT NULL,
+  `Hash` bigint NOT NULL,
 {4}
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

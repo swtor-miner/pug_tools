@@ -27,7 +27,9 @@ namespace GomLib.ModelLoader
         {
             if (idLookup.Count == 0)
             {
-                idLookup = _dom.GetObject("repGroupInfosPrototype").Data.Get<Dictionary<object, object>>("repGroupInfoData").ToDictionary(x => Convert.ToInt64(x.Key), x => Load(new ReputationGroup(), (GomObjectData)x.Value));
+                var proto = _dom.GetObject("repGroupInfosPrototype");
+                if(proto != null)
+                    idLookup = proto.Data.Get<Dictionary<object, object>>("repGroupInfoData").ToDictionary(x => Convert.ToInt64(x.Key), x => Load(new ReputationGroup(), (GomObjectData)x.Value));
             }
             ReputationGroup data = null;
             idLookup.TryGetValue(id, out data);

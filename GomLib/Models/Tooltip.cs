@@ -45,8 +45,8 @@ namespace GomLib.Models
         public Tooltip(PseudoGameObject gObj)
         {
             pObj = gObj;
-            Id = obj.Id;
-            Fqn = obj.Fqn;
+            Id = (ulong)gObj.Id;
+            Fqn = gObj.Prototype;
         }
         [Newtonsoft.Json.JsonIgnore]
         internal GameObject _obj { get; set; }
@@ -54,7 +54,7 @@ namespace GomLib.Models
         {
             get
             {
-                if (_obj == null)
+                if (_obj == null && pObj == null)
                 {
                     _obj = new GameObject().Load(Id, _dom);
                 }
@@ -128,8 +128,18 @@ namespace GomLib.Models
                 }
                 return "<div>Not implemented</div>";
             }
-            if (pObj == null)
+            if (pObj != null)
             {
+                string taco = pObj.GetType().ToString();
+                switch (pObj.GetType().ToString())
+                {
+                    case "GomLib.Models.Collection":
+                        return ((Collection)pObj).GetHTML().ToString(SaveOptions.DisableFormatting);
+                    case "GomLib.Models.MtxStorefrontEntry":
+                        return ((MtxStorefrontEntry)pObj).GetHTML().ToString(SaveOptions.DisableFormatting);
+                    default:
+                        break;
+                }
                 //if (obj.GetType() == typeof(Discipline))
                 //{
                 //    return ((Discipline)obj).GetHTML().ToString(SaveOptions.DisableFormatting);
@@ -606,7 +616,10 @@ namespace GomLib.Models
                 Dictionary<string, XElement> enhancements = new Dictionary<string, XElement>();
                 for (var i = 0; i < itm.EnhancementSlots.Count; i++)
                 {
-                    enhancements.Add(itm.EnhancementSlots[i].DetailedSlot.LocalizedDisplayName[Tooltip.language], itm.EnhancementSlots[i].ToHTML());
+                    string enhName = "unknown";
+                    if (itm.EnhancementSlots[i].DetailedSlot.LocalizedDisplayName != null)
+                        enhName = itm.EnhancementSlots[i].DetailedSlot.LocalizedDisplayName[Tooltip.language];
+                    enhancements.Add(enhName, itm.EnhancementSlots[i].ToHTML());
                 }
                 List<string> sortOrder = new List<string>
                     {
@@ -835,7 +848,7 @@ namespace GomLib.Models
                                     String.Format("{0} ", GetLocalizedText(836131348283443))); //"Use: ");
                                 XElement link = new XElement("a",
                                         new XAttribute("href",
-                                            String.Format("https://torcommunity.com{2}/database/item/{0}/{1}/",
+                                            String.Format("https://torcommunity.com{2}/database/ability/{0}/{1}/",
                                                 itm.UseAbility.Base62Id,
                                                 itm.UseAbility.LocalizedName[Tooltip.language].LinkString(),
                                                 Tooltip.linkLocal)),
@@ -880,7 +893,9 @@ namespace GomLib.Models
         private static XElement ToHTML(this ItemEnhancement itm)
         {
             //string slot = itm.Slot.ConvertToString();
-            string slot = itm.DetailedSlot.LocalizedDisplayName[Tooltip.language];
+            string slot = "unknown";
+            if(itm.DetailedSlot.LocalizedDisplayName != null)
+                slot = itm.DetailedSlot.LocalizedDisplayName[Tooltip.language];
             XElement enhancement = new XElement("div",
                 XClass("torctip_mod")
                 );
@@ -1760,7 +1775,7 @@ namespace GomLib.Models
                         var tskSub = itm._dom.GetObject(tsk.Id);
                         if (tskSub != null)
                         {
-                            GameObject obj = new GomLib.Models.GameObject().Load(tskSub);
+                            GameObject obj = GameObject.Load(tskSub);
                             switch (tskSub.Name.Substring(0, 4))
                             {
                                 case "ach.":
@@ -2243,6 +2258,137 @@ namespace GomLib.Models
                         )
                     );
 
+                tooltip.Add(inner);
+            }
+
+            return tooltip;
+        }
+
+        #endregion
+        #region collections
+        public static XElement GetHTML(this Collection itm)
+        {
+            if (Tooltip.TooltipNameMap.Count == 0)
+            {
+                LoadNameMap(itm._dom);
+            }
+            if (itm.Id == 0) return new XElement("div", "Not Found");
+            string icon = "none";
+            if (!String.IsNullOrEmpty(itm.Icon))
+                icon = itm.Icon.ToLower();
+
+            XElement tooltip = new XElement("div", new XAttribute("class", "torctip_wrapper"));
+            //var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/portraits/{0}.dds", icon));
+
+            if (itm != null)
+            {
+                XElement inner = new XElement("div",
+                    XClass("torctip_tooltip torctip_collection"),
+                    new XAttribute("style", String.Format("background-image:url(https://www.torcommunity.com/db/mtxstore/{0}_260x260.jpg);", icon)),
+                    new XElement("H2",
+                        XClass("torctip_white torctip_2l_elipsis"),
+                        itm.LocalizedName[Tooltip.language]
+                    )
+                );
+                XElement torc_relative = new XElement("div",
+                        XClass("torctip_rela")
+                    );
+                if (itm.RequiredLevel > 0)
+                    torc_relative.Add(
+                        new XElement("div",
+                            XClass("torctip_col_req"),
+                            new XElement("span",
+                                XClass("torc__req_parent"),
+                                itm.RequiredLevel,
+                                new XElement("div",
+                                    XClass("torc_hover"),
+                                    new XElement("div",
+                                        XClass("torctip_req_head"),
+                                        String.Format(GetLocalizedText(836131348283393), itm.RequiredLevel)
+                                    )
+                                )
+                            )
+                        )
+                    );
+                if(itm.ItemIdsList.Count > 0)
+                {
+                    XElement torc_req_block = new XElement("div",
+                        XClass("torctip_col_req_itms")
+                    );
+                    XElement torc_req_anchor = new XElement("span",
+                        XClass("torc__req_parent"),
+                        String.Format("0/{0}", itm.ItemIdsList.Count)
+                    );
+                    XElement torc_req_sub = new XElement("div",
+                        XClass("torc_hover"),
+                        new XElement("div",
+                            XClass("torctip_req_head"),
+                            String.Format("{0} 0/{1}", itm.LocalizedName[Tooltip.language], itm.ItemIdsList.Count)
+                        )
+                    );
+                    foreach (Item item in itm.ItemList)
+                    {
+                        torc_req_sub.Add(new XElement("div",
+                            XClass("torctip_col_req_itm"),
+                            new XElement("a",
+                                XClass(String.Format("torctip_{0}", ((Item)item).Quality.ToString().ToLower())),
+                                new XAttribute("href", String.Format("https://torcommunity.com{2}/database/item/{0}/{1}/", item.Base62Id, ((Item)item).LocalizedName[Tooltip.language].LinkString(), Tooltip.linkLocal)),
+                                new XAttribute("data-torc", "norestyle"),
+                                new XElement("div",
+                                    XClass(String.Format("torctip_image torctip_image_{0} small_border", ((Item)item).Quality.ToString().ToLower())),
+                                    new XElement("img",
+                                        new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}.jpg", item.HashedIcon)),
+                                        new XAttribute("alt",""),
+                                        XClass("small_image")
+                                    )
+                                ),
+                                new XElement("span",
+                                    XClass("torctip_name"),
+                                    ((Item)item).LocalizedName[Tooltip.language]
+                                )
+                            )
+                        ));
+                    }
+                    torc_req_anchor.Add(torc_req_sub);
+                    torc_req_block.Add(torc_req_anchor);
+                    torc_relative.Add(torc_req_block);
+                }
+                inner.Add(torc_relative);
+                tooltip.Add(inner);
+            }
+
+            return tooltip;
+        }
+
+        #endregion
+        #region mtxstorefront
+        public static XElement GetHTML(this MtxStorefrontEntry itm)
+        {
+            if (Tooltip.TooltipNameMap.Count == 0)
+            {
+                LoadNameMap(itm._dom);
+            }
+            if (itm.Id == 0) return new XElement("div", "Not Found");
+            string icon = "none";
+            if (!String.IsNullOrEmpty(itm.Icon))
+                icon = itm.Icon.ToLower();
+
+            XElement tooltip = new XElement("div", new XAttribute("class", "torctip_wrapper"));
+            //var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/portraits/{0}.dds", icon));
+
+            if (itm != null)
+            {
+                string name = "";
+                if(itm.LocalizedName != null)
+                    itm.LocalizedName.TryGetValue(Tooltip.language, out name);
+                XElement inner = new XElement("div",
+                    XClass("torctip_tooltip torctip_collection"),
+                    new XAttribute("style", String.Format("background-image:url(https://www.torcommunity.com/db/mtxstore/{0}_260x260.jpg);", icon)),
+                    new XElement("H2",
+                        XClass("torctip_white torctip_2l_elipsis"),
+                        name
+                    )
+                );
                 tooltip.Add(inner);
             }
 

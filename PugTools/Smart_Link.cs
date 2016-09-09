@@ -63,25 +63,57 @@ namespace tor_tools
             //add apc code here
             addtolist2("Smart-linking classes...");//Load classes
             nodeList = dom.GetObjectsStartingWith("class.");
+            Dictionary<ulong, GomLib.Models.AdvancedClass> LoadedACs = new Dictionary<ulong, GomLib.Models.AdvancedClass>();
             foreach (GomObject node in nodeList)
             {
                 ulong apcId = node.Data.ValueOrDefault<ulong>("chrAbilityPackage", 0UL);
                 dom.AddCrossLink(apcId, "usedByClass", node.Id);//apn node
-                if (node.Name.StartsWith("class.pc.") && apcId != 0)
+                if (node.Name.StartsWith("class.pc."))
                 {
-                    GomObject apc = dom.GetObject(apcId);
-                    if (apc != null)
+                    if (apcId != 0)
                     {
-                        Dictionary<object, object> abilities = apc.Data.ValueOrDefault<Dictionary<object, object>>("ablPackageAbilitiesList", null);
-                        if (abilities != null)
+                        GomObject apc = dom.GetObject(apcId);
+                        if (apc != null)
                         {
-                            foreach (KeyValuePair<object, object> ability in abilities)
+                            Dictionary<object, object> abilities = apc.Data.ValueOrDefault<Dictionary<object, object>>("ablPackageAbilitiesList", null);
+                            if (abilities != null)
                             {
-                                dom.AddCrossLink((ulong)ability.Key, "partOfApc", apc.Id);//abl node
-                                dom.AddCrossLink((ulong)ability.Key, "usedByPlayerClass", node.Id);//abl node
+                                foreach (KeyValuePair<object, object> ability in abilities)
+                                {
+                                    dom.AddCrossLink((ulong)ability.Key, "partOfApc", apc.Id);//abl node
+                                    dom.AddCrossLink((ulong)ability.Key, "usedByPlayerClass", node.Id);//abl node
+                                }
+                            }
+                            apc.Unload();
+                        }
+                    }
+                    else
+                    {
+                        GomLib.Models.AdvancedClass ac;
+                        LoadedACs.TryGetValue(node.Id, out ac);
+                        if (ac == null)
+                        {
+                            ac = dom.advancedClassLoader.Load(node);
+                            LoadedACs.Add(node.Id, ac);
+                        }
+                        if(ac != null && ac.BaseClassPkgIds != null)
+                        {
+                            apcId = ac.BaseClassPkgIds[1];
+                            GomObject apc = dom.GetObject(apcId);
+                            if (apc != null)
+                            {
+                                Dictionary<object, object> abilities = apc.Data.ValueOrDefault<Dictionary<object, object>>("ablPackageAbilitiesList", null);
+                                if (abilities != null)
+                                {
+                                    foreach (KeyValuePair<object, object> ability in abilities)
+                                    {
+                                        dom.AddCrossLink((ulong)ability.Key, "partOfApc", apc.Id);//abl node
+                                        dom.AddCrossLink((ulong)ability.Key, "usedByPlayerClass", node.Id);//abl node
+                                    }
+                                }
+                                apc.Unload();
                             }
                         }
-                        apc.Unload();
                     }
                 }
                 node.Unload();
@@ -462,7 +494,6 @@ namespace tor_tools
             List<GomObject> nodeList;
             addtolist2("Smart-linking quest rewards...");//Load phases
             var proto = dom.GetObject("qstRewardsInfoPrototype");
-            proto.Unload();
             if (proto != null)
             {
                 var table = proto.Data.ValueOrDefault<Dictionary<object, object>>("qstRewardsInfoData", null);
@@ -480,7 +511,9 @@ namespace tor_tools
                         }
                     }
                 }
+                proto.Unload();
             }
+
         }
         private void SmartLinkSchematics(DataObjectModel dom)
         {
@@ -514,7 +547,6 @@ namespace tor_tools
                 node.Unload();
             }
             var proto = dom.GetObject("prfBundlesTablePrototype");
-            proto.Unload();
             if (proto != null)
             {
                 var table = proto.Data.ValueOrDefault<List<object>>("prfBundlesTable", null);
@@ -532,6 +564,7 @@ namespace tor_tools
                         }
                     }
                 }
+                proto.Unload();
             }
         }
         private void SmartLinkSpawners(DataObjectModel dom)

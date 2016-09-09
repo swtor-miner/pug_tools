@@ -84,6 +84,10 @@ namespace TorLib
             LoadAssetFiles("fr-fr", isPtr);
             LoadAssetFiles("de-de", isPtr);
 
+            //beta
+            LoadAssetFiles("locale_en_us", isPtr);
+            LoadAssetFiles("system", isPtr);
+
             if (libraries.Count == 0)
             {
                 if (isPtr == false)
@@ -127,7 +131,12 @@ namespace TorLib
 
             var assetFilePaths = System.IO.Directory.GetFiles(assetPath, searchPattern, System.IO.SearchOption.TopDirectoryOnly);
 
-            if(assetFilePaths.Length > 0)
+            if (assetFilePaths.Length == 0)
+            {
+                searchPattern = String.Format("red_{0}_*.tor", fileGroup);
+                assetFilePaths = System.IO.Directory.GetFiles(assetPath, searchPattern, System.IO.SearchOption.TopDirectoryOnly);
+            }
+            if (assetFilePaths.Length > 0)
             {
                 loadedFileGroups.Add(fileGroup);
             }
@@ -141,6 +150,17 @@ namespace TorLib
                     string libName = match.Groups[1].Value;
                     var lib = new Library(libName, assetPath);
                     libraries.Add(lib);
+                }
+                else
+                {
+                    System.Text.RegularExpressions.Regex redNameParse = new System.Text.RegularExpressions.Regex("red_(?:test_)?(.*)");
+                    match = redNameParse.Match(assetFileName);
+                    if (match.Success)
+                    {
+                        string libName = match.Groups[1].Value;
+                        var lib = new Library(libName, assetPath);
+                        libraries.Add(lib);
+                    }
                 }
             }
         }

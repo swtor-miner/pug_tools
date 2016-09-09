@@ -282,7 +282,8 @@ namespace tor_tools
                             }
 
                             NodeAsset assetAll = new NodeAsset(prefixAll + hashInfo.Directory + "/" + hashInfo.FileName, prefixAll + hashInfo.Directory, hashInfo.FileName, hashInfo);
-                            assetDict.Add(prefixAll + hashInfo.Directory + "/" + hashInfo.FileName, assetAll);
+                            if (!assetDict.ContainsKey(prefixAll + hashInfo.Directory + "/" + hashInfo.FileName))
+                                assetDict.Add(prefixAll + hashInfo.Directory + "/" + hashInfo.FileName, assetAll);
                             fileDirs.Add(prefixAll + hashInfo.Directory);                            
 
                             if (hashInfo.FileState == HashFileInfo.State.New)

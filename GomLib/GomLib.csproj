@@ -267,7 +267,6 @@
     <Compile Include="Models\QuestCategory.cs" />
     <Compile Include="Models\QuestCredits.cs" />
     <Compile Include="Models\QuestDifficulty.cs" />
-    <Compile Include="Models\QuestHook.cs" />
     <Compile Include="Models\QuestRepeatInterval.cs" />
     <Compile Include="Models\QuestStep.cs" />
     <Compile Include="Models\QuestTask.cs" />
@@ -289,6 +288,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScriptEnum.cs" />
     <Compile Include="ScriptObjectReader.cs" />
+    <Compile Include="Smart_Link.cs" />
     <Compile Include="SQLHelpers.cs" />
     <Compile Include="StringTable.cs" />
     <Compile Include="StringTableEntry.cs" />

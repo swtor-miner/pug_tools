@@ -63,7 +63,7 @@ namespace GomLib.ModelLoader
                     crewPositionLookup = crewProto.Data.ValueOrDefault<Dictionary<object, object>>("scFFCrewPositionData", crewPositionLookup);
                     crewData = crewProto.Data.Get<Dictionary<object, object>>("scFFShipsCrewAndPatternData");
                     factionLookup = crewProto.Data.Get<Dictionary<object, object>>("scFFCrewFactionData");
-                    npcNodeIdLookup = crewProto.Data.Get<Dictionary<object, object>>("scFFCrewNpcNodeData"); 
+                    npcNodeIdLookup = crewProto.Data.Get<Dictionary<object, object>>("scFFCrewNpcNodeData");
                 }
                 crewProto = null;
 
@@ -103,7 +103,7 @@ namespace GomLib.ModelLoader
             CompanionAcquireMap.TryGetValue(npcId, out classes);
 
             object portrait;
-            if(obj.Dictionary.TryGetValue("chrCompanionInfo_portrait", out portrait))
+            if (obj.Dictionary.TryGetValue("chrCompanionInfo_portrait", out portrait))
             {
                 cmp.Portrait = ParsePortrait((string)portrait);
             }
@@ -111,15 +111,18 @@ namespace GomLib.ModelLoader
             cmp.IsGenderMale = (bool)obj.Dictionary.ContainsKey("chrCompanionInfo_gender_male");
             cmp.Classes = new ClassSpecList();
 
-            
-            var companionTable = _dom.GetObject("chrCompanionTable_Prototype").Data.Get<Dictionary<object, object>>("chrCompanionClassesData");
-            object listObj;
-            if(companionTable.TryGetValue(npcId, out listObj))
+
+            var companionTable = _dom.GetObject("chrCompanionTable_Prototype").Data.ValueOrDefault<Dictionary<object, object>>("chrCompanionClassesData", null);
+            if (companionTable != null)
             {
-                foreach (object clas in (List<object>)listObj)
+                object listObj;
+                if (companionTable.TryGetValue(npcId, out listObj))
                 {
-                    ClassSpec c = _dom.classSpecLoader.Load((ulong)clas);
-                    cmp.Classes.Add(c);
+                    foreach (object clas in (List<object>)listObj)
+                    {
+                        ClassSpec c = _dom.classSpecLoader.Load((ulong)clas);
+                        cmp.Classes.Add(c);
+                    }
                 }
             }
 

@@ -34,7 +34,7 @@ namespace GomLib.ModelLoader
             task.CountMax = (int)obj.ValueOrDefault<long>("qstTaskCountMax", 0);
             task.ShowTracking = obj.ValueOrDefault<bool>("qstTaskShowTracking", false);
             task.ShowCount = obj.ValueOrDefault<bool>("qstTaskShowTrackingCount", false);
-            task.Hook = QuestHookExtensions.ToQuestHook((string)obj.ValueOrDefault<string>("qstHook", null));
+            task.Hook = obj.ValueOrDefault<string>("qstHook", null);
             long stringId = 0;
             long.TryParse(obj.ValueOrDefault<string>("qstTaskStringid", null), out stringId);
 

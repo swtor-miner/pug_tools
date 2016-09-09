@@ -29,7 +29,36 @@ namespace GomLib.Models
         public PlaceableCategory Category { get; set; }
 
         public HydraScript HydraScript { get; set; }
+        internal string _FqnCategory { get; set; }
+        public string FqnCategory
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(_FqnCategory))
+                {
+                    string[] fqnParts = Fqn.Substring(4).Split('.');
+                    _FqnCategory = fqnParts[0];
+                    _FqnSubCategory = fqnParts[1];
+                }
+                return _FqnCategory;
+            }
+        }
+        internal string _FqnSubCategory { get; set; }
+        public string FqnSubCategory
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(_FqnSubCategory))
+                {
+                    string[] fqnParts = Fqn.Substring(4).Split('.');
+                    _FqnCategory = fqnParts[0];
+                    _FqnSubCategory = fqnParts[1];
+                }
+                return _FqnSubCategory;
+            }
+        }
 
+        #region IEquatable
         public override int GetHashCode()
         {
             int result = Id.GetHashCode();
@@ -52,7 +81,6 @@ namespace GomLib.Models
 
             return result;
         }
-
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
@@ -64,7 +92,6 @@ namespace GomLib.Models
 
             return Equals(plc);
         }
-
         public bool Equals(Placeable plc)
         {
             if (plc == null) return false;
@@ -128,6 +155,27 @@ namespace GomLib.Models
             if (this.WonkaPackageId != plc.WonkaPackageId)
                 return false;
             return true;
+        }
+        #endregion
+
+        public override List<SQLProperty> SQLProperties
+        {
+            get
+            {
+                return new List<SQLProperty>
+                    {                //(SQL Column Name, C# Property Name, SQL Column type statement, isUnique/PrimaryKey, Serialize value to json)
+                        new SQLProperty("Name", "Name", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FrName", "LocalizedName[frMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("DeName", "LocalizedName[deMale]", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("Base62Id", "Base62Id", "varchar(7) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.PrimaryKey),
+                        new SQLProperty("FqnCategory", "FqnCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("FqnSubCategory", "FqnSubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("IsBank", "IsBank", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("MtxReward", "MtxReward", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("TitleReward", "TitleReward", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                        new SQLProperty("GsfReward", "GsfReward", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
+                    };
+            }
         }
     }
 }

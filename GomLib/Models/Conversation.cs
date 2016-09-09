@@ -17,9 +17,9 @@ namespace GomLib.Models
         public Dictionary<string, string> SpeakersB62Ids
         {
             get {
-                if(_SpeakersB62Ids == null)
+                if (_SpeakersB62Ids == null)
                 {
-                    if(SpeakersIds == null) return new Dictionary<string, string>();
+                    if (SpeakersIds == null) return new Dictionary<string, string>();
                     _SpeakersB62Ids = SpeakersIds.ToDictionary(x => x.ToMaskedBase62(), x => (_dom.GetObject(x) ?? new GomObject()).Name);
                 }
                 return _SpeakersB62Ids;
@@ -64,7 +64,7 @@ namespace GomLib.Models
         [JsonIgnore]
         public List<string> _QuestB62Progressed;
         public List<string> QuestB62Progressed { get { if (_QuestB62Progressed == null) _QuestB62Progressed = QuestProgressed.ToMaskedBase62(); return _QuestB62Progressed; } }
-        
+
         public Dictionary<int, long> RootNodes { get; set; }
         [JsonIgnore]
         public List<DialogNode> DialogNodes { get; set; }
@@ -78,9 +78,10 @@ namespace GomLib.Models
         public string stb { get; set; }
 
         public bool IsKOTORStyle { get; set; }
-        
+
         public HashSet<string> AffectionNpcB62 { get; set; }
         public HashSet<string> AffectionNcoB62 { get; set; }
+        public Dictionary<string, string> LocalizedName { get; set; }
 
         public Conversation()
         {

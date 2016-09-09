@@ -118,9 +118,15 @@ namespace GomLib.Models
                     DetailedEnhancementType detEnhance = new DetailedEnhancementType();
                     detEnhance.IsArmorMod = ((GomLib.GomObjectData)enh.Value).ValueOrDefault<bool>("itmEnhancementTypeIsArmor", false);
                     detEnhance.Id = ((GomLib.GomObjectData)enh.Value).ValueOrDefault<long>("itmEnhancementTypeDisplayStringID", 0);
-                    detEnhance.StringId =  detEnhance.Id + 1173453784743936;
-                    detEnhance.DisplayName = table.GetText(detEnhance.StringId, "str.gui.stats");
-                    detEnhance.LocalizedDisplayName = table.GetLocalizedText(detEnhance.StringId, "str.gui.stats");
+                    detEnhance.StringId = detEnhance.Id;
+                    if (table != null)
+                    {
+                        string text = table.GetText(detEnhance.StringId, "str.gui.stats");
+                        if(String.IsNullOrWhiteSpace(text))
+                            detEnhance.StringId = detEnhance.Id + 1173453784743936;
+                        detEnhance.DisplayName = table.GetText(detEnhance.StringId, "str.gui.stats");
+                        detEnhance.LocalizedDisplayName = table.GetLocalizedText(detEnhance.StringId, "str.gui.stats");
+                    }
                     detEnhance.Mount = ((GomLib.GomObjectData)enh.Value).ValueOrDefault<string>("itmEnhancementTypeMount", "");
                     detEnhance.Icon = ((GomLib.GomObjectData)enh.Value).ValueOrDefault<string>("itmEnhancementTypeIconAsset", "");
                     detEnhance.ModType = ((GomLib.GomObjectData)enh.Value).ValueOrDefault<ScriptEnum>("itmEnhancementModificationType", new ScriptEnum());

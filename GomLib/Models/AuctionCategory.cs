@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
@@ -69,6 +70,9 @@ namespace GomLib.Models
         //public string Name { get; set; } //str.gui.tooltips 836131348283392
         public long NameId { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
+        [JsonIgnore]
+        public bool SerializeSubCats { get; set; }
+        public bool ShouldSerializeSubCategories() { return SerializeSubCats; }
         public Dictionary<int, AuctionSubCategory> SubCategories { get; set; }
 
         public static Dictionary<long, AuctionCategory> AuctionCategoryList;
@@ -263,17 +267,20 @@ namespace GomLib.Models
                 itm.Name = itm._dom.stringTable.TryGetString("str.gui.auctionhouse", itm.NameId);
 
             GomObject gom = itm._dom.GetObject("ahItemSlotCategoriesPrototype");
-            Dictionary<object, object> ahItemSlotCategories = gom.Data.Get<Dictionary<object, object>>("ahItemSlotCategories");
-            Dictionary<object, object> ahItemSlotConSlotNameIds = gom.Data.Get<Dictionary<object, object>>("ahItemSlotConSlotNameIds");
-            itm.SlotCategories = new List<AuctionItemSlot>();
-            if (ahItemSlotCategories.ContainsKey(itm.Id))
+            if (gom != null)
             {
-                foreach (ScriptEnum obj in (List<ScriptEnum>)ahItemSlotCategories[itm.SId])
+                Dictionary<object, object> ahItemSlotCategories = gom.Data.Get<Dictionary<object, object>>("ahItemSlotCategories");
+                Dictionary<object, object> ahItemSlotConSlotNameIds = gom.Data.Get<Dictionary<object, object>>("ahItemSlotConSlotNameIds");
+                itm.SlotCategories = new List<AuctionItemSlot>();
+                if (ahItemSlotCategories.ContainsKey(itm.Id))
                 {
-                    AuctionItemSlot sub;
-                    if (!AuctionItemSlot.AuctionItemSlotList.TryGetValue(obj.ToString(), out sub))
-                        sub = new AuctionItemSlot(itm._dom, obj.ToString(), (long)(ahItemSlotConSlotNameIds[obj.ToString()]));
-                    itm.SlotCategories.Add(sub);
+                    foreach (ScriptEnum obj in (List<ScriptEnum>)ahItemSlotCategories[itm.SId])
+                    {
+                        AuctionItemSlot sub;
+                        if (!AuctionItemSlot.AuctionItemSlotList.TryGetValue(obj.ToString(), out sub))
+                            sub = new AuctionItemSlot(itm._dom, obj.ToString(), (long)(ahItemSlotConSlotNameIds[obj.ToString()]));
+                        itm.SlotCategories.Add(sub);
+                    }
                 }
             }
             return itm;

@@ -78,6 +78,7 @@ namespace GomLib.Models
             {
                 get
                 {
+                    if (BonusAbilityIdsByNum == null) return null;
                     return BonusAbilityIdsByNum.ToDictionary(x => x.Key, x => (_dom.abilityLoader.Load(x.Value) ?? new Ability()).ParsedLocalizedDescription);
                 }
             }

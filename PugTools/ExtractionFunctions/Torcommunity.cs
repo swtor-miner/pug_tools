@@ -41,8 +41,27 @@ namespace tor_tools
         {
             Clearlist2();
 
+            //temp
+
+            //var newLines = File.ReadAllLines("i:\\new.txt");
+            //HashSet<string> newHash = new HashSet<string>();
+            //newHash.UnionWith(newLines);
+
+            //var oldLines = File.ReadAllLines("i:\\old.txt");
+            //HashSet<string> oldHash = new HashSet<string>();
+            //oldHash.UnionWith(oldLines);
+
+            //newHash.RemoveWhere(x => oldHash.Contains(x));
+
+            //StringBuilder t = new StringBuilder();
+
+            //t.Append(String.Join(Environment.NewLine, newHash));
+            //WriteFile(t.ToString(), "unique.txt", false);
+
+            //temp end
             LoadData();
-            
+
+            groupFinder();
             getDisciplineCalcData();
             getCrewSkillData();
             outputTables();
@@ -53,7 +72,7 @@ namespace tor_tools
             //getitemIds();
 
             //torheadscanner();
-            //groupFinder();
+            
             
             EnableButtons();
         }
@@ -704,6 +723,7 @@ namespace tor_tools
             ClearProgress();
 
             LoadData();
+            GomLib.Smart smart = new Smart(addtolist2);
             SmartLinkSchematics(currentDom);
             /*var prfBundlesTablePrototype = currentDom.GetObject("prfBundlesTablePrototype");
             List<GomObjectData> prfBundlesTable = prfBundlesTablePrototype.Data.ValueOrDefault<List<object>>("prfBundlesTable")

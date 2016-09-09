@@ -35,7 +35,7 @@ namespace GomLib.Tables
         public int GetRating(int level, Models.ItemQuality quality)
         {
             if (level <= 0) { return 0; }
-            else if (level > 100) { return GetRating(100, quality); }
+            else if (level > item_rating_data.Count - 1) { return GetRating(item_rating_data.Count - 1, quality); }
             if (item_rating_data == null) { LoadData(); }
 
             return item_rating_data[level][quality];

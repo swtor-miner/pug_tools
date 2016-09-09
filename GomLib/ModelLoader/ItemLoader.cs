@@ -59,24 +59,28 @@ namespace GomLib.ModelLoader
             }
             if (questRewardRefs.Count == 0)
             {
-                var qstRewProto = _dom.GetObject("qstRewardsInfoPrototype").Data.Get<Dictionary<object, object>>("qstRewardsInfoData");
-                foreach (var kvp in qstRewProto)
+                var proto = _dom.GetObject("qstRewardsInfoPrototype");
+                if (proto != null)
                 {
-                    ulong qstId = (ulong)kvp.Key;
-                    List<GomObjectData> qRewards = ((List<object>)kvp.Value).ConvertAll(x => (GomObjectData)x);
-                    foreach (GomObjectData qReward in qRewards)
+                    var qstRewProto = proto.Data.Get<Dictionary<object, object>>("qstRewardsInfoData");
+                    foreach (var kvp in qstRewProto)
                     {
-                        GomObjectData rewardLookup = qReward.Get<GomObjectData>("qstRewardData");
-                        ulong rewardItemId = rewardLookup.ValueOrDefault<ulong>("qstRewardItemId", 0);
-                        if (!questRewardRefs.ContainsKey(rewardItemId))
+                        ulong qstId = (ulong)kvp.Key;
+                        List<GomObjectData> qRewards = ((List<object>)kvp.Value).ConvertAll(x => (GomObjectData)x);
+                        foreach (GomObjectData qReward in qRewards)
                         {
-                            HashSet<ulong> l = new HashSet<ulong>();
-                            l.Add(qstId);
-                            questRewardRefs.Add(rewardItemId, l);
-                        }
-                        else
-                        {
-                            questRewardRefs[rewardItemId].Add(qstId);
+                            GomObjectData rewardLookup = qReward.Get<GomObjectData>("qstRewardData");
+                            ulong rewardItemId = rewardLookup.ValueOrDefault<ulong>("qstRewardItemId", 0);
+                            if (!questRewardRefs.ContainsKey(rewardItemId))
+                            {
+                                HashSet<ulong> l = new HashSet<ulong>();
+                                l.Add(qstId);
+                                questRewardRefs.Add(rewardItemId, l);
+                            }
+                            else
+                            {
+                                questRewardRefs[rewardItemId].Add(qstId);
+                            }
                         }
                     }
                 }
@@ -91,8 +95,8 @@ namespace GomLib.ModelLoader
             itm.Fqn = gom.Name;
             itm._dom = _dom;
             itm.References = gom.References;
-            itm.AppearanceColor = Models.AppearanceColorExtensions.ToAppearanceColor((string)gom.Data.ValueOrDefault<string>("itmEnhancementColor", null));
-            if (itm.AppearanceColor != AppearanceColor.None)
+            itm.AppearanceColor = (string)gom.Data.ValueOrDefault<string>("itmEnhancementColor", null);
+            if (itm.AppearanceColor != "None")
             {
 
                 string oshdfoi = "";
@@ -518,6 +522,7 @@ namespace GomLib.ModelLoader
             if (schematicLookupMap.Count == 0) //load child and parent items
             {
                 var debugmap = _dom.GetObject("prfDebugSchematicMapPrototype");
+                if (debugmap == null) return;
                 var childmap = debugmap.Data.ValueOrDefault<Dictionary<object, object>>("schemChildMap", new Dictionary<object, object>());
                 debugmap.Unload();
                 childLookupMap = childmap.ToDictionary(x => (ulong)x.Key, x => (ulong)((List<object>)x.Value).First());
@@ -541,16 +546,18 @@ namespace GomLib.ModelLoader
                     if (itemAppearanceAssets.Count == 0)
                     {
                         var ami = _dom.ami.GetAMI("ami.face"); //Apparently they removed these from the client. Luckily I had implemented the AMI Loading.
-                        
-                        foreach (var kvp in ami.data)
+                        if (ami != null)
                         {
-                            long id = kvp.Key;
-                            string name = kvp.Value.BaseFile;
-                            if (name.Contains('_'))
+                            foreach (var kvp in ami.data)
                             {
-                                name = name.Split('_')[1];
+                                long id = kvp.Key;
+                                string name = kvp.Value.BaseFile;
+                                if (name.Contains('_'))
+                                {
+                                    name = name.Split('_')[1];
+                                }
+                                itemAppearanceAssets.Add(id, name);
                             }
-                            itemAppearanceAssets.Add(id, name);
                         }
                     }
                     long modelId = itemAppearance.Data.ValueOrDefault<long>("appAppearanceSlotModelID", 0);

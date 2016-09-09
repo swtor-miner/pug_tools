@@ -58,7 +58,8 @@ namespace GomLib.ModelLoader
             {
                 return nameMap[obj.Name];
             }
-
+            if (obj.Name.StartsWith("pkg.") && !obj.Name.StartsWith("pkg.abilities."))
+                return null;
             Models.AbilityPackage pkg = new Models.AbilityPackage();
             pkg._dom = _dom;
             pkg.References = obj.References;

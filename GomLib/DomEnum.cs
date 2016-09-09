@@ -7,7 +7,7 @@ namespace GomLib
 {
     public class DomEnum : DomType
     {
-        private List<string> names;
+        public List<string> names;
         private List<short> vals;
 
         internal void AddValue(short val)

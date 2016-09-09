@@ -18,7 +18,7 @@ namespace GomLib.Models
 
         public string String { get; set; }
         public Dictionary<string, string> LocalizedString { get; set; }
-        public QuestHook Hook { get; set; }
+        public string Hook { get; set; }
 
         public bool ShowTracking { get; set; }
         public bool ShowCount { get; set; }

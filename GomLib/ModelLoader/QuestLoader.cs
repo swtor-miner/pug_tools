@@ -243,15 +243,24 @@ namespace GomLib.ModelLoader
         {
             if (fullQuestRewardsTable.Count == 0)
             {
-                fullQuestRewardsTable = _dom.GetObject("qstRewardsInfoPrototype").Data.Get<Dictionary<object, object>>("qstRewardsInfoData");
-                newfullQuestRewardsTable = _dom.GetObject("qstRewardsInfoPrototype").Data.ValueOrDefault<Dictionary<object, object>>("4611686305674744000", new Dictionary<object, object>());
-                fullCreditRewardsTable = _dom.GetObject("qstrewardscreditsData").Data.Get<Dictionary<object, object>>("qstRewardsPerLevelData")
-                    .ToDictionary(x=> (long)x.Key, x => ((Dictionary<object, object>)x.Value).ToDictionary(y => (long)y.Key, y => (float)y.Value));
-                experienceTable = _dom.GetObject("qstExperiencePrototype").Data.Get<Dictionary<object, object>>("qstExperienceTable")
-                    .ToDictionary(x => (long)x.Key, x => (long)x.Value);
+                var proto = _dom.GetObject("qstRewardsInfoPrototype");
+                if (proto != null)
+                {
+                    fullQuestRewardsTable = proto.Data.Get<Dictionary<object, object>>("qstRewardsInfoData");
+                    newfullQuestRewardsTable = proto.Data.ValueOrDefault<Dictionary<object, object>>("4611686305674744000", new Dictionary<object, object>());
+                }
+                proto = _dom.GetObject("qstrewardscreditsData");
+                if(proto != null)
+                    fullCreditRewardsTable = proto.Data.Get<Dictionary<object, object>>("qstRewardsPerLevelData")
+                        .ToDictionary(x=> (long)x.Key, x => ((Dictionary<object, object>)x.Value).ToDictionary(y => (long)y.Key, y => (float)y.Value));
+                proto = _dom.GetObject("qstExperiencePrototype");
+                if(proto != null)
+                    experienceTable = proto.Data.Get<Dictionary<object, object>>("qstExperienceTable")
+                        .ToDictionary(x => (long)x.Key, x => (long)x.Value);
                 var qstExperienceMultiplierPrototype = _dom.GetObject("qstExperienceMultiplierPrototype");
-                experienceDifficultyMultiplierTable = qstExperienceMultiplierPrototype.Data.ValueOrDefault<Dictionary<object, object>>("qstExperienceMultiplierTable", new Dictionary<object, object>())
-                    .ToDictionary(x=> QuestDifficultyExtensions.ToQuestDifficulty((ScriptEnum)x.Key), x=> (float)x.Value);
+                if(qstExperienceMultiplierPrototype != null)
+                    experienceDifficultyMultiplierTable = qstExperienceMultiplierPrototype.Data.ValueOrDefault<Dictionary<object, object>>("qstExperienceMultiplierTable", new Dictionary<object, object>())
+                        .ToDictionary(x=> QuestDifficultyExtensions.ToQuestDifficulty((ScriptEnum)x.Key), x=> (float)x.Value);
                 // Subscriber XP: base xp * difficulty multiplier * (1.2853 - level * .0012)
                 // F2P XP: base xp * difficulty multiplier * (1.2573 - level * .0012)
             }

@@ -8299,4 +8299,7 @@
   <!-- itm. -->
   <gom_type Id="4611686297857184009" name="itmRating" desc="This is a new entry that skips the lookup step" />
   <gom_type Id="4611686345863420000" name="itmReqPermission" desc="" />
+
+  <!-- class. -->
+  <gom_type Id="4611686354161167000" name="chrAdvancedClassIcon" desc="" />
 </gom_types>

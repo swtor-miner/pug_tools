@@ -13,6 +13,7 @@ namespace GomLib
 {
     public class DataObjectModel : IDisposable
     {
+        public string version { get; set; }
         private Dictionary<int, DomTypeLoaders.IDomTypeLoader> typeLoaderMap = new Dictionary<int, DomTypeLoaders.IDomTypeLoader>();
         public Dictionary<Type, Dictionary<string, DomType>> nodeLookup = new Dictionary<Type, Dictionary<string, DomType>>();
         public Dictionary<ulong, DomType> DomTypeMap { get; set; }

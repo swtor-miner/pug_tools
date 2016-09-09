@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
@@ -16,11 +17,13 @@ namespace GomLib.Models
         public long linkedId { get; set; }
         public long CategoryId { get; set; }
         public long RequiredLevel { get; set; }
+        [JsonIgnore]
         public string RarityDesc { get; set; }
         public Dictionary<string, string> LocalizedRarityDesc { get; set; }
         public string unknowntext { get; set; }
         public Dictionary<string, string> Localizedunknowntext { get; set; }
         internal List<Ability> LoadedAbilityList { get; set; }
+        [JsonIgnore]
         public List<Ability> AbilityList
         {
             get
@@ -36,10 +39,13 @@ namespace GomLib.Models
             }
         }
         public List<ulong> AbilityIdsList { get; set; }
+        public List<string> AbilityB62IdsList { get { return AbilityIdsList.ToMaskedBase62(); } }
+        [JsonIgnore]
         public List<string> BulletPoints { get; set; }
         public List<Dictionary<string, string>> LocalizedBulletPoints { get; set; }
         public bool IsFoundInPacks { get; set; }
         internal List<Item> LoadedItemList { get; set; }
+        [JsonIgnore]
         public List<Item> ItemList
         {
             get
@@ -54,7 +60,9 @@ namespace GomLib.Models
                 return LoadedItemList;
             }
         }
+        [JsonIgnore]
         public List<ulong> ItemIdsList { get; set; }
+        public List<string> ItemB62IdsList { get { return ItemIdsList.ToMaskedBase62(); } }
         public long unknowntextId { get; set; }
         public long RarityDescId { get; set; }
         public bool HasAlternateUnlocks { get; set; }

@@ -44,6 +44,16 @@ namespace GomLib.Models
         [JsonIgnore]
         public AbilityPackage AbilityPackage { get; set; }
 
+        public int NpcsWithThisClass
+        {
+            get
+            {
+                if (this.B62References != null && this.B62References.ContainsKey("npcsWithThisClass"))
+                    return this.B62References["npcsWithThisClass"].Count;
+                return 0;
+            }
+        }
+
         //public static List<string> ParseClassList(string str)
         //{
         //    List<string> results = new List<string>();

@@ -54,6 +54,8 @@ namespace GomLib.ModelLoader
             {
                 strTable = _dom.stringTable.Find("str.gui.itm.setbonuses");
             }
+            if (strTable == null)
+                return null;
             //The base id to use for finding the real id with an offset.
             //First id in the file take 1.
             long baseId = strTable.data.Keys.First() - 1;

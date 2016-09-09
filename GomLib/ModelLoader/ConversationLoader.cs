@@ -216,6 +216,11 @@ namespace GomLib.ModelLoader
                 cnv.SpeakersIds.Add(cnv.DefaultSpeakerId); //, LoadSpeaker(cnv.DefaultSpeakerId));
             }
 
+            cnv.LocalizedName = new Dictionary<string, string>() {
+                { "enMale", obj.Name },
+                { "frMale", obj.Name },
+                { "deMale", obj.Name }
+            };
             obj.Unload();
             return cnv;
         }
@@ -288,7 +293,7 @@ namespace GomLib.ModelLoader
             result.cnvAlienVOFQN = data.ValueOrDefault<string>("cnvAlienVOConvoFQN", string.Empty);
             result.cnvAlienVONode = data.ValueOrDefault<long>("cnvAlienVONodeNumber", -1);
 
-            result.ActionHook = QuestHookExtensions.ToQuestHook(data.ValueOrDefault<string>("cnvActionHook", null));
+            result.ActionHook = data.ValueOrDefault<string>("cnvActionHook", null);
 
             // Load Alignment Results
             long alignmentAmount = data.ValueOrDefault<long>("cnvRewardForceAmount", 0);
@@ -324,7 +329,8 @@ namespace GomLib.ModelLoader
                             result.AffectionRewardEvents[companionShortNameId] = new KeyValuePair<int, string>(reactionData.Key, reactionString);
                             string b62 = companion.Id.ToMaskedBase62();
                             result.Conversation.AffectionNpcB62.Add(b62);
-                            result.AffectionRewardEventsB62[b62] = new KeyValuePair<int, Dictionary<string, string>>(reactionData.Key, localizedReactionDataByID[(long)companionGain.Value].Value);
+                            if(localizedReactionDataByID.Count > 0)
+                                result.AffectionRewardEventsB62[b62] = new KeyValuePair<int, Dictionary<string, string>>(reactionData.Key, localizedReactionDataByID[(long)companionGain.Value].Value);
                         }
                     }
                 }
@@ -389,6 +395,14 @@ namespace GomLib.ModelLoader
                                     result.Conversation.AffectionNpcB62.Add(b62);
                                     result.AffectionRewardEventsB62[b62] = new KeyValuePair<int, Dictionary<string, string>>(Math.Abs(rewardData.Key), localizedReactionDataByID[rewardID].Value);
                                 }
+                                else
+                                {
+                                    result.AffectionRewardEvents[0] = new KeyValuePair<int, string>(rewardData.Key, reactionString);
+                                    string b62 = npc.Id.ToMaskedBase62();
+                                    result.Conversation.AffectionNpcB62.Add(b62);
+                                    result.AffectionRewardEventsB62[b62] = new KeyValuePair<int, Dictionary<string, string>>(Math.Abs(rewardData.Key), localizedReactionDataByID[rewardID].Value);
+                                }
+
                             }
                         }
                     }

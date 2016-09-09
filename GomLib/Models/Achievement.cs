@@ -15,14 +15,17 @@ namespace GomLib.Models
     {
         [JsonIgnore]
         public ulong NodeId { get; set; }
+        [JsonIgnore]
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
         [JsonConverter(typeof(LongConverter))]
         public long NameId { get; set; }
+        [JsonIgnore]
         public string Description { get; set; }
         public Dictionary<string, string> LocalizedDescription { get; set; }
         [JsonConverter(typeof(LongConverter))]
         public long DescriptionId { get; set; }
+        [JsonIgnore]
         public string NonSpoilerDesc { get; set; }
         public Dictionary<string, string> LocalizedNonSpoilerDesc { get; set; }
         [JsonConverter(typeof(LongConverter))]

@@ -154,22 +154,27 @@ namespace TorLib
 
                     if (!hasFile)
                     {
-                        if (archive == null)
+                        filePath = Path.Combine(basePath, String.Format("red_{0}.tor", this.Name, i));
+                        hasFile = System.IO.File.Exists(filePath);
+                        if (!hasFile)
                         {
-                            // Can't find a single file for this library?! Something is quite wrong with this.
-                            throw new InvalidOperationException("Cannot find any files for library named " + this.Name + " in " + this.Location);
+                            if (archive == null)
+                            {
+                                // Can't find a single file for this library?! Something is quite wrong with this.
+                                throw new InvalidOperationException("Cannot find any files for library named " + this.Name + " in " + this.Location);
+                            }
+
+                            // What is currently in 'archive' is the last archive in this library -- we need to get metadata from it!
+                            File metadataFile = archive.FindFile(FileId.FromFilePath("metadata.bin"));
+                            if (metadataFile == null)
+                            {
+                                throw new InvalidOperationException("Cannot Load metadata.bin for this library from " + archive.FileName);
+                            }
+
+                            this.LoadMetadataFromFile(metadataFile);
+
+                            break;
                         }
-
-                        // What is currently in 'archive' is the last archive in this library -- we need to get metadata from it!
-                        File metadataFile = archive.FindFile(FileId.FromFilePath("metadata.bin"));
-                        if (metadataFile == null)
-                        {
-                            throw new InvalidOperationException("Cannot Load metadata.bin for this library from " + archive.FileName);
-                        }
-
-                        this.LoadMetadataFromFile(metadataFile);
-
-                        break;
                     }
 
                     archive = new Archive();

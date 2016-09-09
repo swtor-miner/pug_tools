@@ -41,13 +41,8 @@ namespace tor_tools
                 {"qst.", "Mission"},
                 {"tal.", "Talent"},
                 {"sche", "Schematic"},
-                //{"apn.", true},
-                //*{"cnv.", true},
-                ///*{"dec.", true},*/
-                /*{"apt.", true},
-                {"ipp.",true},
-                {"npp.",true}*/
             };
+
             bool frLoaded = currentAssets.loadedFileGroups.Contains("fr-fr");
             bool deLoaded = currentAssets.loadedFileGroups.Contains("de-de");
             for (int f = 0; f < gameObjects.Count; f++)
@@ -68,7 +63,7 @@ namespace tor_tools
                     bool okToOutput = true;
                     if (chkBuildCompare.Checked)
                     {
-                        var itm = new GomLib.Models.GameObject().Load(gom);
+                        var itm = GomLib.Models.GameObject.Load(gom);
                         var itm2 = new GomLib.Models.GameObject().Load(gom.Id, previousDom);
                         if (itm2 != null)
                         {
@@ -125,8 +120,12 @@ namespace tor_tools
             //};
             Dictionary<string, string[]> protoGameObjects = new Dictionary<string, string[]>
             {
-                //{"Discipline", new string[] {"ablPackagePrototype", "classDisciplinesTable"}},
+
+                { "Collections", new string[2] { "colCollectionItemsPrototype", "colCollectionItemsData" } },
+                { "MtxStoreFronts", new string[2] { "mtxStorefrontInfoPrototype", "mtxStorefrontData" } },
+                //{"Discipline", new string[2] {"ablPackagePrototype", "classDisciplinesTable"}},
             };
+                
 
             for (int f = 0; f < protoGameObjects.Count; f++)
             {
@@ -147,17 +146,17 @@ namespace tor_tools
                 foreach (var gom in currentDataProto)
                 {
                     progressUpdate(i, count);
-                    GomLib.Models.PseudoGameObject itm = GomLib.Models.PseudoGameObject.LoadFromProtoName(gameObj.Key, currentDom, gom.Key, (GomObjectData)gom.Value);
+                    GomLib.Models.PseudoGameObject itm = GomLib.Models.PseudoGameObject.Load(gameObj.Key, currentDom, gom.Key, (GomObjectData)gom.Value);
                     bool okToOutput = true;
-                    if (chkBuildCompare.Checked)
-                    {
-                        var itm2 = GomLib.Models.PseudoGameObject.LoadFromProtoName(gameObj.Key, previousDom, gom.Key, (GomObjectData)gom.Value);
-                        if (itm2 != null)
-                        {
-                            if (itm.GetHashCode() == itm2.GetHashCode())
-                                okToOutput = false;
-                        }
-                    }
+                    //if (chkBuildCompare.Checked)
+                    //{
+                    //    var itm2 = GomLib.Models.PseudoGameObject.LoadFromProtoName(gameObj.Value[0], previousDom, gom.Key, (GomObjectData)gom.Value);
+                    //    if (itm2 != null)
+                    //    {
+                    //        if (itm.GetHashCode() == itm2.GetHashCode())
+                    //            okToOutput = false;
+                    //    }
+                    //}
 
                     if (okToOutput)
                     {
@@ -173,6 +172,10 @@ namespace tor_tools
                 }
 
                 CreatCompressedOutput(gameObj.Key, iList, "en-us");
+                if (frLoaded)
+                    CreatCompressedOutput(gameObj.Key, iList, "fr-fr");
+                if (deLoaded)
+                    CreatCompressedOutput(gameObj.Key, iList, "de-de");
             }
             OutputDiscIcons();
             EnableButtons();
@@ -250,6 +253,13 @@ namespace tor_tools
                                 case "GomLib.Models.Discipline":
                                     icon = String.Format("icons/{0}", ((GomLib.Models.Item)t.obj).Icon);
                                     break;
+                                case "GomLib.Models.Collection":
+                                    break;
+                                    icon = String.Format("mtxstore/{0}_260x260", ((GomLib.Models.Collection)t.pObj).Icon);
+                                    break;
+                                case "GomLib.Models.MtxStorefrontEntry":
+                                    icon = String.Format("mtxstore/{0}_260x260", ((GomLib.Models.MtxStorefrontEntry)t.pObj).Icon);
+                                    break;
                             }
                         }
                         if (!String.IsNullOrEmpty(icon))
@@ -272,6 +282,8 @@ namespace tor_tools
                                     }
                                     else if(icon.StartsWith("portraits/"))
                                         iconEntry = zipArchive.CreateEntry(String.Format("portraits/{0}.png", GetIconFilename(icon)), CompressionLevel.Fastest);
+                                    else if (icon.StartsWith("mtxstore/"))
+                                        iconEntry = zipArchive.CreateEntry(String.Format("{0}.jpg", icon.ToLower()), CompressionLevel.Fastest);
                                     else
                                         iconEntry = zipArchive.CreateEntry(String.Format("icons/{0}.jpg", GetIconFilename(icon)), CompressionLevel.Fastest);
                                     using (var a = iconEntry.Open())
@@ -306,6 +318,25 @@ namespace tor_tools
                                     }
                                 }
                             }
+                            else if (icon.StartsWith("mtxstore/"))
+                            {
+                                List<string> sizes = new List<string>() { "120x120", "260x400", "400x400" };
+                                foreach (string size in sizes)
+                                {
+                                    string sizedIcon = icon.Replace("260x260", size);
+                                    using (MemoryStream iconStream = GetIcon(sizedIcon))
+                                    {
+                                        if (iconStream != null)
+                                        {
+                                            ZipArchiveEntry iconEntry;
+                                            iconEntry = zipArchive.CreateEntry(String.Format("{0}.jpg", sizedIcon.ToLower()), CompressionLevel.Fastest);
+                                            using (var a = iconEntry.Open())
+                                                iconStream.WriteTo(a);
+                                        }
+                                    }
+                                }
+                            }
+                            
                         }
                         if (!String.IsNullOrEmpty(secondaryicon))
                         {
@@ -322,6 +353,8 @@ namespace tor_tools
                                     {
                                         iconEntry = zipArchive.CreateEntry(String.Format("codex/{0}.jpg", GetIconFilename(secondaryicon)), CompressionLevel.Fastest);
                                     }
+                                    else if (icon.StartsWith("mtxstore/"))
+                                        iconEntry = zipArchive.CreateEntry(String.Format("{0}.jpg", secondaryicon.ToLower()), CompressionLevel.Fastest);
                                     else
                                         iconEntry = zipArchive.CreateEntry(String.Format("icons/{0}.jpg", GetIconFilename(secondaryicon)), CompressionLevel.Fastest);
                                     using (var a = iconEntry.Open())

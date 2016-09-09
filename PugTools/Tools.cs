@@ -195,12 +195,12 @@ namespace tor_tools
             addtolist2("Done.");
         }
 
-        public void DeleteEmptyFile(string filename) //deletes empty files that were created for streaming output
+        public void DeleteEmptyFile(string filename, int count) //deletes empty files that were created for streaming output
         {
             string filepath = String.Join("", Config.ExtractPath, prefix, filename);
             FileInfo fInfo = new FileInfo(filepath);
             if (fInfo != null)
-                if (fInfo.Length == 0)
+                if (fInfo.Length == 0 || count == 0)
                     System.IO.File.Delete(filepath);
         }
 
@@ -786,8 +786,8 @@ namespace tor_tools
                 foreach (var gom in gomList)
                 {
                     progressUpdate(i, count);
-                    var itm = new GomLib.Models.GameObject().Load(gom);
-                    var itm2 = new GomLib.Models.GameObject().Load(gom);
+                    var itm =  GomLib.Models.GameObject.Load(gom);
+                    var itm2 = GomLib.Models.GameObject.Load(gom);
                     if (itm == null) continue;
                     if (itm.GetHashCode() != itm2.GetHashCode())
                     {
@@ -934,6 +934,7 @@ namespace tor_tools
                 currentAssets = TorLib.AssetHandler.Instance.getCurrentAssets(textBoxAssetsFolder.Text, usePTS);
                 //currentAssets = currentAssets.getCurrentAssets(textBoxAssetsFolder.Text, usePTS);                
                 currentDom = DomHandler.Instance.getCurrentDOM(currentAssets);
+                currentDom.version = Tools.patchVersion;
                 Clearlist();
                 addtolist("Loading Current Data Object Model. - Done");
                 if (chkBuildCompare.Checked && textBoxPrevAssetsFolder.Text != "")
@@ -968,7 +969,8 @@ namespace tor_tools
                 else if (SmartLinkDomCheckBox.Checked)// MessageBox.Show("Do you want to Cross-link the Data Object Model? - It can be a slow process.\n\nIt will scan each object in the Data Object Model for references to other objects, and store these connections in the referenced object.", "Select Yes or No.", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
                 {
                     addtolist("Crosslinking Current Data Object Model.");
-                    SmartLink(currentDom);
+                    Smart smart = new Smart(addtolist2);
+                    smart.Link(currentDom);
                     Clearlist();
                     addtolist("Crosslinking Data Object Model. - Done");
                     if (chkBuildCompare.Checked)

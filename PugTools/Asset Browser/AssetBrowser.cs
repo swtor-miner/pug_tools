@@ -195,7 +195,12 @@ namespace tor_tools
                             }
 
                             TreeListItem assetAll = new TreeListItem(prefixDir + "/" + hashInfo.FileName, prefixDir, hashInfo.FileName, hashInfo);
-                            assetDict.Add(prefixDir + "/" + hashInfo.FileName, assetAll);
+                            if(!assetDict.ContainsKey(prefixDir + "/" + hashInfo.FileName))
+                                assetDict.Add(prefixDir + "/" + hashInfo.FileName, assetAll);
+                            else
+                            {
+                                string pausehere = "";
+                            }                                
                             fileDirs.Add(prefixDir);
                             intNamCount++;
 

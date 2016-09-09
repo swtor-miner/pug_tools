@@ -111,7 +111,7 @@ namespace tor_tools
             try
             {
                 string selected = comboBoxExtractTypes.SelectedItem.ToString();
-                if (cbxExtractFormat.SelectedItem.ToString() == "SQL" && versionTexBox.Text == "")
+                if ((cbxExtractFormat.SelectedItem.ToString() == "SQL" || cbxExtractFormat.SelectedItem.ToString() == "JSON" )&& versionTexBox.Text == "")
                 {
                     System.Windows.Forms.MessageBox.Show("A patch version number is required for SQL Output.");
                     EnableButtons();

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using System.Xml;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
@@ -11,9 +12,13 @@ namespace GomLib.Models
     {
         public ulong NodeId { get; set; }
         public string Name { get; set; }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public MapNoteIcon Icon { get; set; }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public MapNoteCondition Condition { get; set; }
+        [JsonIgnore]
         public HuntingRadius HuntingRadius { get; set; }
+        [JsonIgnore]
         public HuntingRadius BonusHuntingRadius { get; set; }
         public int LinkedMapId { get; set; }
         public long WonkaPackageId { get; set; }

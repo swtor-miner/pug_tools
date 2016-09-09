@@ -59,6 +59,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -220,6 +221,12 @@
     <Compile Include="Controls\TreeViewFast.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="DBOutputForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DBOutputForm.Designer.cs">
+      <DependentUpon>DBOutputForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ExtractionFunctions\BnkIdDict.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -251,6 +258,7 @@
       <DependentUpon>ModelBrowserViewMaterial.cs</DependentUpon>
     </Compile>
     <Compile Include="Model Browser\View_NPC_GR2.cs" />
+    <Compile Include="murmur.cs" />
     <Compile Include="Node Browser\NodeAsset.cs" />
     <Compile Include="Node Browser\NodeBrowser.cs">
       <SubType>Form</SubType>
@@ -387,6 +395,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Asset Browser\AssetBrowserFileTable.resx">
       <DependentUpon>AssetBrowserFileTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DBOutputForm.resx">
+      <DependentUpon>DBOutputForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ExtractCheckForm.resx">
       <DependentUpon>ExtractCheckForm.cs</DependentUpon>

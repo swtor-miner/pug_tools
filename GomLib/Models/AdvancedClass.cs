@@ -165,7 +165,7 @@ namespace GomLib.Models
         {
             get
             {
-                if (_BaseClassPkgs == null)
+                if (_BaseClassPkgs == null && BaseClassPkgIds != null)
                 {
                     _BaseClassPkgs = new List<AbilityPackage>();
                     foreach (var id in BaseClassPkgIds)

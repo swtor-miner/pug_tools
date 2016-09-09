@@ -847,7 +847,7 @@ namespace tor_tools
             }
             addtolist(String.Join("", "The ", prefix, " text file has been generated; there are ", i, " ", prefix));
             WriteFile(txtFile.ToString(), filename, true);
-            DeleteEmptyFile(filename);
+            DeleteEmptyFile(filename, i);
             ClearProgress();
         }
         private void PseudoGameObjectListAsText(string prefix, IEnumerable<GomLib.Models.PseudoGameObject> itmList)
@@ -898,7 +898,7 @@ namespace tor_tools
                 WriteFile(String.Join(Environment.NewLine, conqOrder.OrderBy(x => x.Key).Select(x => x.Value)), "ConquestOrder.txt", true);
             addtolist(String.Join("", "The ", prefix, " text file has been generated; there are ", i, " ", prefix));
             WriteFile(txtFile.ToString(), filename, true);
-            DeleteEmptyFile(filename);
+            DeleteEmptyFile(filename, i);
             ClearProgress();
         }
         private void GomObjectListAsText(string prefix, IEnumerable<GomLib.GomObject> itmList)
@@ -929,7 +929,7 @@ namespace tor_tools
             }
             addtolist(String.Join("", "The ", prefix, " text file has been generated; there are ", i, " ", prefix));
             WriteFile(txtFile.ToString(), filename, true);
-            DeleteEmptyFile(filename);
+            DeleteEmptyFile(filename, i);
             ClearProgress();
         }
 
@@ -1499,8 +1499,9 @@ namespace tor_tools
             string n = Environment.NewLine;
             var txtFile = new StringBuilder();
             string filename = String.Format("\\json\\{0}{1}", prefix, ".json");
-            WriteFile("", filename, false);
+            WriteFile(String.Format("{0}{1}", Tools.patchVersion, n), filename, false);
             var count = itmList.Count();
+            HashTableHashing.MurmurHash2Unsafe jsonHasher = new HashTableHashing.MurmurHash2Unsafe();
             //var blocksize = 100;
             //var blocks = count % blocksize;
             //if (blocks > 0)
@@ -1533,7 +1534,8 @@ namespace tor_tools
                 addtolist2(String.Format("{0}: {1}", prefix, itmList[b].Fqn));
 
                 string jsonString = itmList[b].ToJSON(); // ConvertToJson(itm); //added method in Tools.cs
-                txtFile.Append(String.Format("{0},{1}{2}", itmList[b].Base62Id, jsonString, Environment.NewLine)); //Append it with a newline to the output.
+                uint hash = jsonHasher.Hash(Encoding.ASCII.GetBytes(jsonString));
+                txtFile.Append(String.Format("{0},{1},{2}{3}", itmList[b].Base62Id, hash, jsonString, Environment.NewLine)); //Append it with a newline to the output.
                 itmList[b] = null;
                 i++;
                 e++;
@@ -1557,7 +1559,7 @@ namespace tor_tools
             //}
             addtolist(String.Format("The {0} json file has been generated; there were {1} {0}", prefix, i));
             WriteFile(txtFile.ToString(), filename, true);
-            DeleteEmptyFile(filename);
+            DeleteEmptyFile(filename, i);
             itmList = null;
             GC.Collect();
             CreateGzip(filename);
@@ -1571,9 +1573,10 @@ namespace tor_tools
             string n = Environment.NewLine;
             var txtFile = new StringBuilder();
             string filename = String.Format("\\json\\{0}{1}", prefix, ".json");
-            WriteFile("", filename, false);
+            WriteFile(String.Format("{0}{1}", Tools.patchVersion, n), filename, false);
             var count = itmList.Count();
-            for(int c = 0; c < count; c++)
+            HashTableHashing.MurmurHash2Unsafe jsonHasher = new HashTableHashing.MurmurHash2Unsafe();
+            for (int c = 0; c < count; c++)
             {
                 progressUpdate(i, count);
                 if (e % 1000 == 1)
@@ -1586,14 +1589,15 @@ namespace tor_tools
                 addtolist2(String.Format("{0}: {1}", prefix, itmList[c].Name));
 
                 string jsonString = itmList[c].ToJSON();
-                txtFile.Append(String.Format("{0},{1}{2}", itmList[c].Base62Id, jsonString, Environment.NewLine)); //Append it with a newline to the output.
+                uint hash = jsonHasher.Hash(Encoding.ASCII.GetBytes(jsonString));
+                txtFile.Append(String.Format("{0},{1},{2}{3}", itmList[c].Base62Id, hash, jsonString, Environment.NewLine)); //Append it with a newline to the output.
                 itmList[c] = null;
                 i++;
                 e++;
             }
             addtolist(String.Format("The {0} json file has been generated; there were {1} {0}", prefix, i));
             WriteFile(txtFile.ToString(), filename, true);
-            DeleteEmptyFile(filename);
+            DeleteEmptyFile(filename, i);
             itmList = null;
             GC.Collect();
             CreateGzip(filename);
@@ -1628,12 +1632,13 @@ namespace tor_tools
             }
             addtolist(String.Format("The {0} json file has been generated; there were {1} {0}", prefix, i));
             WriteFile(txtFile.ToString(), filename, true);
-            DeleteEmptyFile(filename);
+            DeleteEmptyFile(filename, i);
             itmList = null;
             GC.Collect();
             CreateGzip(filename);
             ClearProgress();
         }
+
         #endregion
         #region SQL Functions
         private void ObjectListAsSql(string prefix, string xmlRoot, IEnumerable<object> itmList)
@@ -1702,7 +1707,7 @@ namespace tor_tools
             //WriteFile(transInit.InitEnd, String.Format(frs, filename, f), true);
             initTable[xmlRoot].OutputCreationSQL(); //output the creation sql file for this table
             sqlTransactionsFlush(); //flush the transaction queue
-            DeleteEmptyFile(String.Format(frs, filename, f));
+            DeleteEmptyFile(String.Format(frs, filename, f), i);
             itmList = null;
             GC.Collect();
             for (int j = 1; j <= f; j++)

@@ -108,7 +108,11 @@ namespace GomLib.Models
             if (gomItm != null) return Load(gomItm);
             return null;
         }
-        public GameObject Load(GomObject gomItm)
+        public static GameObject Load(GomObject gomItm)
+        {
+            return Load(gomItm, false);
+        }
+        public static GameObject Load(GomObject gomItm, bool classOverride)
         {
             switch (gomItm.Name.Substring(0, 4))
             {
@@ -117,7 +121,7 @@ namespace GomLib.Models
                     if (!gomItm.Name.Contains("/"))
                         return gomItm._dom.abilityLoader.Load(gomItm);
                     return null;
-                case "apn.": case "apc.": return gomItm._dom.abilityPackageLoader.Load(gomItm);
+                case "apn.": case "apc.": case "pkg.": return gomItm._dom.abilityPackageLoader.Load(gomItm);
                 case "cdx.": return gomItm._dom.codexLoader.Load(gomItm);
                 case "cnv.": return gomItm._dom.conversationLoader.Load(gomItm);
                 case "npc.": return gomItm._dom.npcLoader.Load(gomItm);
@@ -127,7 +131,11 @@ namespace GomLib.Models
                 case "dec.": return gomItm._dom.decorationLoader.Load(gomItm);
                 case "itm.": return gomItm._dom.itemLoader.Load(gomItm);
                 case "apt.": return gomItm._dom.strongholdLoader.Load(gomItm);
-                case "class.": return gomItm._dom.classSpecLoader.Load(gomItm);
+                case "class.":
+                    if (classOverride && gomItm.Name.StartsWith("class.pc.advanced."))
+                        return gomItm._dom.advancedClassLoader.Load(gomItm);
+                    else
+                        return gomItm._dom.classSpecLoader.Load(gomItm);
                 case "ipp.": return gomItm._dom.appearanceLoader.Load(gomItm);
                 case "npp.": return gomItm._dom.appearanceLoader.Load(gomItm);
                 case "nco.": return gomItm._dom.newCompanionLoader.Load(gomItm);
@@ -195,7 +203,7 @@ namespace GomLib.Models
         public string ProtoDataTable { get; set; } //which prototype field contains the object
         [Newtonsoft.Json.JsonIgnore]
         public DataObjectModel _dom { get; set; }
-
+        
         public string ToJSON()
         {
             JsonSerializerSettings settings = new JsonSerializerSettings();

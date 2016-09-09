@@ -134,7 +134,7 @@ namespace GomLib.Models
         public AuctionCategory AuctionCategory { get; set; }
         public int AuctionSubCategoryId { get; set; }
         public AuctionSubCategory AuctionSubCategory { get; set; }
-        public AppearanceColor AppearanceColor { get; set; }
+        public string AppearanceColor { get; set; }
         public int DyeId { get; set; }
         public DetailedAppearanceColor DyeColor { get; set; }
         [JsonConverter(typeof(ULongConverter))]
@@ -491,45 +491,78 @@ namespace GomLib.Models
         }
         #endregion
         #region FlatData Properties and Methods
+        [JsonIgnore]
         public string ArmoringBId { get; set; }
+        [JsonIgnore]
         public string ModificationBId { get; set; }
+        [JsonIgnore]
         public string EnhancementBId { get; set; }
+        [JsonIgnore]
         public string ColorCrystalBId { get; set; }
+        [JsonIgnore]
         public string BarrelBId { get; set; }
+        [JsonIgnore]
         public string HiltBId { get; set; }
 
         //primary
+        [JsonIgnore]
         public int Endurance { get; set; }
+        [JsonIgnore]
         public int Presence { get; set; }
+        [JsonIgnore]
         public int Aim { get; set; }
+        [JsonIgnore]
         public int Cunning { get; set; }
+        [JsonIgnore]
         public int Strength { get; set; }
+        [JsonIgnore]
         public int Willpower { get; set; }
+        [JsonIgnore]
         public int Mastery { get; set; }
         //secondary
+        [JsonIgnore]
         public int AbsorptionRating { get; set; }
+        [JsonIgnore]
         public int CriticalRating { get; set; }
+        [JsonIgnore]
         public int DefenseRating { get; set; }
+        [JsonIgnore]
         public int Power { get; set; }
         //tertiary
+        [JsonIgnore]
         public int AccuracyRating { get; set; }
+        [JsonIgnore]
         public int AlacrityRating { get; set; }
+        [JsonIgnore]
         public int ShieldRating { get; set; }
+        [JsonIgnore]
         public int SurgeRating { get; set; }
         //quarternary
+        [JsonIgnore]
         public int ExpertiseRating { get; set; }
+        [JsonIgnore]
         public int ForcePower { get; set; }
+        [JsonIgnore]
         public int TechPower { get; set; }
+        [JsonIgnore]
         public int TechHealingPower { get; set; }
+        [JsonIgnore]
         public int ForceHealingPower { get; set; }
         // Derived
+        [JsonIgnore]
         public int Armor { get; set; }
+        [JsonIgnore]
         public string AdaptiveArmor { get; set; }
+        [JsonIgnore]
         public float WeaponMinDamage { get; set; }
+        [JsonIgnore]
         public float WeaponMaxDamage { get; set; }
+        [JsonIgnore]
         public int ModLevel { get; set; }
         //offhand stats
+        [JsonIgnore]
         public float AbsorbChance { get; set; }
+        [JsonIgnore]
         public float ShieldChance { get; set; }
 
         //Slots
@@ -901,9 +934,9 @@ namespace GomLib.Models
                 itm.RequiredClasses = null;
             if (itm.StrongholdSourceList.Count == 0)
                 itm.StrongholdSourceList = null;
-            if (itm.StrongholdSourceNameDict.Count == 0)
+            if (itm.StrongholdSourceNameDict != null && itm.StrongholdSourceNameDict.Count == 0)
                 itm.StrongholdSourceNameDict = null;
-            if (itm.LocalizedStrongholdSourceNameDict.Count == 0)
+            if (itm.LocalizedStrongholdSourceNameDict != null && itm.LocalizedStrongholdSourceNameDict.Count == 0)
                 itm.LocalizedStrongholdSourceNameDict = null;
             return itm;
         }

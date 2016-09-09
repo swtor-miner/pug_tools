@@ -374,6 +374,60 @@ namespace GomLib.ModelLoader
             abl.UnknownBool = gom.Data.ValueOrDefault<bool>("4611686025269794705", false);
             abl.UnknownInt2 = gom.Data.ValueOrDefault<ulong>("4611686028321074586", 0);
 
+            if (gom.References != null)
+            {
+                string stb = "str.gui.questcategories";
+                long sId = 2466269005611266; //uncategorized
+                if (gom.References.ContainsKey("usedByPlayerClass"))
+                {
+                    stb = "str.gui.map";
+                    sId = 945872057663588; //Player
+                    //if (gom.References["usedByPlayerClass"].Count > 0)
+                    //{
+                    //    foreach (ulong cId in gom.References["usedByPlayerClass"]) {
+                    //        GomObject cObj = _dom.GetObject(cId);
+                    //        long subId = 0;
+                    //        if (cObj.Name.StartsWith("class.pc.advanced"))
+                    //            subId = cObj.Data.ValueOrDefault<long>("chrAdvancedClassDataNameId", 0);
+                    //        else
+                    //            subId = cObj.Data.ValueOrDefault<long>("chrClassDataNameId", 0); // Index into str.gui.classnames
+                    //        StringTable subTable = _dom.stringTable.Find("str.gui.classnames");
+                    //        abl.LocalizedSubCategory = subTable.GetLocalizedText(subId, "str.gui.classnames");
+                    //    }
+                    //}
+                }
+                else if (gom.References.ContainsKey("partOfApn"))
+                {
+                    abl.LocalizedCategory = new Dictionary<string, string>()
+                    {
+                        { "enMale", "Npc" },
+                        { "frMale", "Pnj" },
+                        { "deMale", "Nsc" },
+                    };
+                }
+                else if (gom.References.ContainsKey("calledByItmUse") || gom.References.ContainsKey("calledByItmEquip") || gom.References.ContainsKey("taughtByItem"))
+                {
+                    stb = "str.gui.guildbank";
+                    sId = 2813023190253604;
+                }
+                else if (gom.References.ContainsKey("calledByPlcUse"))
+                {
+                    abl.LocalizedCategory = new Dictionary<string, string>()
+                    {
+                        { "enMale", "Placeable Object" },
+                        { "frMale", "Objet Plaçable" },
+                        { "deMale", "Platzierbaren Objekt" },
+                    }; ;
+                }
+
+                
+                if (abl.LocalizedCategory == null)
+                {
+                    StringTable stbTable = _dom.stringTable.Find(stb);
+                    if(stbTable != null)
+                        abl.LocalizedCategory = stbTable.GetLocalizedText(sId, stb);
+                }
+            }
             gom.Unload();
             return abl;
         }

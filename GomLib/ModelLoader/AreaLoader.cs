@@ -155,7 +155,7 @@ namespace GomLib.ModelLoader
 
                     page.Name = strTable.GetText(page.Guid, "MapPage." + page.MapName);
 
-                    page.ExplorationId = mapPage.ValueOrDefault<long>("mapExplorationId", 0);
+                    page.ExplorationId = Int64.Parse(mapPage.ValueOrDefault<object>("mapExplorationId", 0).ToString());
                     page.mapFowRadius = mapPage.ValueOrDefault<float>("mapFowRadius", 0f);
 
                     pageLookup[page.SId] = page;
