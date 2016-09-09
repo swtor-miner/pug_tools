@@ -318,7 +318,7 @@ namespace GomLib.Models
                 }*/
 
                 //string rewards = "{ " + String.Join(", ", RewardsList) + " }";
-                if (RewardsId != 0)
+                if (RewardsId != 0 && Rewards != null)
                 {
                     string cC = Rewards.CartelCoins.ToString();
                     if (cC == "0") cC = null;

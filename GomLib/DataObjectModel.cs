@@ -188,7 +188,6 @@ namespace GomLib
             {
                 typeLoaderMap.Clear();
                 nodeLookup.Clear();                
-                DomTypeMap.Clear();
                 DomTypeMap = null;                
                 StoredNameMap.Clear();
                 StoredNameMap = null;

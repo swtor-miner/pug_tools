@@ -24,7 +24,8 @@ namespace GomLib.Models
         ColorCrystal = 14,
         ColorCartridge = 15,
         Modulator = 16,
-        Dye = 17
+        Dye = 17,
+        Tuning = 18,
     }
 
     public static class EnhancementTypeExtensions
@@ -85,6 +86,7 @@ namespace GomLib.Models
                 case 1578998821196777783: return EnhancementType.Barrel;
                 case 7738793343379667311: return EnhancementType.Circuitry;
                 case 3038083514834894874: return EnhancementType.Dye;
+                case -9019913455529737630: return EnhancementType.Tuning;
                 default: throw new InvalidOperationException("Unknown EnhancementType: " + val);
             }
         }
