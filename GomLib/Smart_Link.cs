@@ -507,7 +507,15 @@ namespace GomLib
             var proto = dom.GetObject("qstRewardsInfoPrototype");
             if (proto != null)
             {
-                var table = proto.Data.ValueOrDefault<Dictionary<object, object>>("qstRewardsInfoData", null);
+                Dictionary<object, object> table;
+                if (proto.Data.ContainsKey(""))
+                {
+                    table = proto.Data.Get<Dictionary<object, object>>("qstRewardsInfoData");
+                }
+                else
+                {
+                    table = proto.Data.Get<Dictionary<object, object>>("qstRewardsNewInfoData");
+                }
                 if (table != null)
                 {
                     foreach (KeyValuePair<object, object> node in table)

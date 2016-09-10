@@ -107,8 +107,11 @@ namespace GomLib.ModelLoader
             if (textLookup.TryGetValue(CategoryLookupKey, out categoryLookup))
             {
                 cdx.CategoryId = ((GomObjectData)categoryLookup).ValueOrDefault<long>("strLocalizedTextRetrieverStringID", 0);
-                cdx.CategoryName = _dom.stringTable.Find("str.sys.codexcategories").GetText(cdx.CategoryId, cdx.Fqn);
-                cdx.LocalizedCategoryName = _dom.stringTable.Find("str.sys.codexcategories").GetLocalizedText(cdx.CategoryId, cdx.Fqn);
+                var CatSTB = _dom.stringTable.Find("str.sys.codexcategories");
+                if (CatSTB != null) {
+                    cdx.CategoryName = CatSTB.GetText(cdx.CategoryId, cdx.Fqn);
+                    cdx.LocalizedCategoryName = CatSTB.GetLocalizedText(cdx.CategoryId, cdx.Fqn);
+                }
             }
 
             var titleId = titleLookup.ValueOrDefault<long>("strLocalizedTextRetrieverStringID", 0);

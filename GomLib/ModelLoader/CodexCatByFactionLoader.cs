@@ -136,7 +136,6 @@ namespace GomLib.ModelLoader
                     foreach(KeyValuePair<object, object> catValuesDictBySIDkvp in catValuesDictBySID)
                     {
                         //Create the dictionary to hold the value each cat by name.
-                        
                         string catName = catStb.GetText((long)catValuesDictBySIDkvp.Key, string.Empty);
                         if(catName.Length == 0)
                         {

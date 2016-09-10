@@ -246,7 +246,15 @@ namespace GomLib.ModelLoader
                 var proto = _dom.GetObject("qstRewardsInfoPrototype");
                 if (proto != null)
                 {
-                    fullQuestRewardsTable = proto.Data.Get<Dictionary<object, object>>("qstRewardsInfoData");
+                    Dictionary<object, object> fullQuestRewardsTable;
+                    if (proto.Data.ContainsKey(""))
+                    {
+                        fullQuestRewardsTable = proto.Data.Get<Dictionary<object, object>>("qstRewardsInfoData");
+                    }
+                    else
+                    {
+                        fullQuestRewardsTable = proto.Data.Get<Dictionary<object, object>>("qstRewardsNewInfoData");
+                    }
                     newfullQuestRewardsTable = proto.Data.ValueOrDefault<Dictionary<object, object>>("4611686305674744000", new Dictionary<object, object>());
                 }
                 proto = _dom.GetObject("qstrewardscreditsData");

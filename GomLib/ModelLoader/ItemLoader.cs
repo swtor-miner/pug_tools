@@ -62,14 +62,27 @@ namespace GomLib.ModelLoader
                 var proto = _dom.GetObject("qstRewardsInfoPrototype");
                 if (proto != null)
                 {
-                    var qstRewProto = proto.Data.Get<Dictionary<object, object>>("qstRewardsInfoData");
+                    Dictionary<object, object>  qstRewProto;
+                    if (proto.Data.ContainsKey(""))
+                    {
+                        qstRewProto = proto.Data.Get<Dictionary<object, object>>("qstRewardsInfoData");
+                    }
+                    else
+                    {
+                        qstRewProto = proto.Data.Get<Dictionary<object, object>>("qstRewardsNewInfoData");
+                    }
                     foreach (var kvp in qstRewProto)
                     {
                         ulong qstId = (ulong)kvp.Key;
                         List<GomObjectData> qRewards = ((List<object>)kvp.Value).ConvertAll(x => (GomObjectData)x);
                         foreach (GomObjectData qReward in qRewards)
                         {
-                            GomObjectData rewardLookup = qReward.Get<GomObjectData>("qstRewardData");
+                            GomObjectData rewardLookup = qReward.ValueOrDefault<GomObjectData>("qstRewardData", null);
+                            if(rewardLookup == null)
+                            {
+                                rewardLookup = qReward;
+                                //continue;
+                            }
                             ulong rewardItemId = rewardLookup.ValueOrDefault<ulong>("qstRewardItemId", 0);
                             if (!questRewardRefs.ContainsKey(rewardItemId))
                             {

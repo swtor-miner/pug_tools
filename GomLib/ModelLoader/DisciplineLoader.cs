@@ -63,7 +63,14 @@ namespace GomLib.ModelLoader
             for (int i = 1; i < 5; i++)
             {
                 ulong baseId = ((GomObjectData)disPrevObj).ValueOrDefault<ulong>(String.Format("disBaseAbl{0}", i));
-                int lvl = model.PathAbilities.PackageAbilities.Where(x => x.AbilityId == baseId).Select(y => y.Level).First();
+                int lvl = 0;
+                try
+                {
+                    lvl = model.PathAbilities.PackageAbilities.Where(x => x.AbilityId == baseId).Select(y => y.Level).First();
+                }catch (Exception ex)
+                {
+                    continue;
+                }
                 model.BaseAbilityIds.Add(baseId, lvl);
             }
 

@@ -985,7 +985,7 @@ namespace GomLib.Models
             int hash = Id.GetHashCode();
             if (LocalizedName != null) foreach (var x in LocalizedName) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
             if (LocalizedDescription != null) foreach (var x in LocalizedDescription) { hash ^= x.GetHashCode(); } //dictionaries need to hashed like this
-            hash ^= AppearanceColor.GetHashCode();
+            if(AppearanceColor != null) hash ^= AppearanceColor.GetHashCode();
             if (ArmorSpec != null) hash ^= ArmorSpec.GetHashCode();
             hash ^= Binding.GetHashCode();
             hash ^= Category.GetHashCode();

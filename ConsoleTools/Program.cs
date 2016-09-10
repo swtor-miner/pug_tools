@@ -209,7 +209,7 @@ namespace ConsoleTools
             foreach (var itmList in ObjectLists)
             {
                 GameObjectListAsJSON(String.Join("", itmList.Key, xmlRoot), itmList.Value);
-                GetTips(xmlRoot, itmList.Value);
+                //GetTips(xmlRoot, itmList.Value);
             }
             Console.WriteLine();
         }
