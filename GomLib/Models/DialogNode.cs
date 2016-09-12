@@ -319,7 +319,7 @@ namespace GomLib.Models
                 if (JoinDisabledForHolocom) { dNode.Add(new XElement("JoinDisabledForHolocom", JoinDisabledForHolocom)); }
                 if (ChoiceDisabledForHolocom) { dNode.Add(new XElement("ChoiceDisabledForHolocom", ChoiceDisabledForHolocom)); }
                 if (AbortsConversation) { dNode.Add(new XElement("AbortsConversation", AbortsConversation)); }
-                if (ActionHook.ToString() != "None") { dNode.Add(new XElement("ActionHook", ActionHook.ToString())); }
+                if (ActionHook != null && ActionHook.ToString() != "None") { dNode.Add(new XElement("ActionHook", ActionHook.ToString())); }
                 if (ActionQuest != 0)
                 {
                     /*dNode.Add(new XElement("ActionQuest", new XElement("Name", ActionQuest.Name),

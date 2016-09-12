@@ -82,7 +82,7 @@ namespace GomLib.Models
         {
             int hash = Id.GetHashCode();
             if (String != null) { hash ^= String.GetHashCode(); }
-            hash ^= Hook.GetHashCode();
+            if (Hook != null) { hash ^= Hook.GetHashCode(); }
             hash ^= ShowTracking.GetHashCode();
             hash ^= ShowCount.GetHashCode();
             hash ^= CountMax.GetHashCode();
@@ -123,8 +123,16 @@ namespace GomLib.Models
                 return false;
             if (this.DbId != qts.DbId)
                 return false;
-            if (!this.Hook.Equals(qts.Hook))
-                return false;
+            if (this.Hook != null)
+            {
+                if (qts.Hook == null)
+                    return false;
+                else
+                {
+                    if (!this.Hook.Equals(qts.Hook))
+                        return false;
+                }
+            }
             if (this.Id != qts.Id)
                 return false;
             if (this.ItemsGiven != null)
