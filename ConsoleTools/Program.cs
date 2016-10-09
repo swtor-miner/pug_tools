@@ -26,6 +26,10 @@ namespace ConsoleTools
             else
             {
                 Console.WriteLine(String.Join(", ", args));
+                if(args.Count() == 0)
+                {
+                    args = new string[]{ "5.0P4", "J:\\swtor_db\\", "J:\\swtor_db\\processed\\"};
+                }
                 patch = args[0];
                 patchDir = args[1];
                 outputDir = String.Format("{0}{1}\\", args[2], patch);
@@ -35,6 +39,7 @@ namespace ConsoleTools
                 {
                     dom = new DataObjectModel(assets);
                     dom.version = patch;
+                    Console.WriteLine("Loading Assets");
                     dom.Load();
                     Smart smart = new Smart(Console.WriteLine);
                     smart.Link(dom);
