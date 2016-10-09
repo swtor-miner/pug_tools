@@ -207,16 +207,24 @@ namespace tor_tools
                             if (hashInfo.FileState == HashFileInfo.State.New)
                             {
                                 TreeListItem assetNew = new TreeListItem(prefixNew + hashInfo.Directory + "/" + hashInfo.FileName, prefixNew + hashInfo.Directory, hashInfo.FileName, hashInfo);
-                                assetDict.Add(prefixNew + hashInfo.Directory + "/" + hashInfo.FileName, assetNew);
-                                fileDirs.Add(prefixNew + hashInfo.Directory);
-                                intNewCount++;
+                                string filename = String.Format("{0}{1}/{2}", prefixNew, hashInfo.Directory, hashInfo.FileName);
+                                if (!assetDict.ContainsKey(filename))
+                                {
+                                    assetDict.Add(prefixNew + hashInfo.Directory + "/" + hashInfo.FileName, assetNew);
+                                    fileDirs.Add(prefixNew + hashInfo.Directory);
+                                    intNewCount++;
+                                }
                             }
                             if (hashInfo.FileState == HashFileInfo.State.Modified)
                             {
                                 TreeListItem assetMod = new TreeListItem(prefixMod + hashInfo.Directory + "/" + hashInfo.FileName, prefixMod + hashInfo.Directory, hashInfo.FileName, hashInfo);
-                                assetDict.Add(prefixMod + hashInfo.Directory + "/" + hashInfo.FileName, assetMod);
-                                fileDirs.Add(prefixMod + hashInfo.Directory);
-                                intModCount++;
+                                string filename = String.Format("{0}{1}/{2}", prefixMod, hashInfo.Directory , hashInfo.FileName);
+                                if (!assetDict.ContainsKey(filename))
+                                {
+                                    assetDict.Add(prefixMod + hashInfo.Directory + "/" + hashInfo.FileName, assetMod);
+                                    fileDirs.Add(prefixMod + hashInfo.Directory);
+                                    intModCount++;
+                                }
                             }
                         }
                         else
