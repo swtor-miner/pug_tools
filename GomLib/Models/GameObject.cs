@@ -131,7 +131,7 @@ namespace GomLib.Models
                 case "dec.": return gomItm._dom.decorationLoader.Load(gomItm);
                 case "itm.": return gomItm._dom.itemLoader.Load(gomItm);
                 case "apt.": return gomItm._dom.strongholdLoader.Load(gomItm);
-                case "class.":
+                case "clas":
                     if (classOverride && gomItm.Name.StartsWith("class.pc.advanced."))
                         return gomItm._dom.advancedClassLoader.Load(gomItm);
                     else
