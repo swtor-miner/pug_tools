@@ -22,6 +22,7 @@ namespace GomLib
         public ModificationNames modificationNames;
         public SchematicVariationsPrototype schematicVariationsPrototype;
         public ShieldPerLevel shieldPerLevel;
+        public QuestDifficulty questDifficulty;
 
         [Newtonsoft.Json.JsonIgnore]
         private DataObjectModel _dom;
@@ -40,7 +41,7 @@ namespace GomLib
             modificationNames = new ModificationNames(_dom);
             schematicVariationsPrototype = new SchematicVariationsPrototype(_dom);
             shieldPerLevel = new ShieldPerLevel(_dom);
-
+            questDifficulty = new QuestDifficulty(_dom);
         }
 
         public void Dispose()
@@ -64,6 +65,7 @@ namespace GomLib
                 //modificationNames.Dispose();
                 schematicVariationsPrototype.Dispose();
                 shieldPerLevel.Dispose();
+                questDifficulty.Dispose();
             }
             disposed = true;
         }

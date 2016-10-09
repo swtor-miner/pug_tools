@@ -258,7 +258,7 @@ namespace tor_tools
             WriteFile(json, "fullCreditRewardsTable.json", false);
             json = JsonConvert.SerializeObject(currentDom.questLoader.experienceTable, settings);
             WriteFile(json, "experienceTable.json", false);
-            json = JsonConvert.SerializeObject(currentDom.questLoader.experienceDifficultyMultiplierTable, settings);
+            json = JsonConvert.SerializeObject(currentDom.data.questDifficulty, settings);
             WriteFile(json, "experienceDifficultyMultiplierTable.json", false);
         }
         #region Discipline Calculator

@@ -1439,7 +1439,7 @@ namespace GomLib.Models
                 XElement rewardContainer = new XElement("div",
                     XClass("torctip_rwd_inner"));
                 int rewardCount = 0;
-                if (itm.XP != 0 && itm.Difficulty != QuestDifficulty.NoExp)
+                if (itm.XP != 0 && itm.Difficulty != "qstDifficultyNoExp")
                 {
                     rewardContainer.Add(new XElement("div",
                         XClass("torctip_rwd_info"),
@@ -1719,7 +1719,7 @@ namespace GomLib.Models
             XElement tooltip = new XElement("div", new XAttribute("class", "torctip_wrapper"));
             var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", icon));
 
-            if (itm != null)
+            if (itm != null && itm.Rewards != null)
             {
                 tooltip.Add(new XElement("div",
                     new XAttribute("class", String.Format("torctip_image torctip_image_{0}", stringQual)),
@@ -2282,6 +2282,7 @@ namespace GomLib.Models
 
             if (itm != null)
             {
+                itm.LocalizedName = Normalize.Dictionary(itm.LocalizedName, itm.Icon);
                 XElement inner = new XElement("div",
                     XClass("torctip_tooltip torctip_collection"),
                     new XAttribute("style", String.Format("background-image:url(https://www.torcommunity.com/db/mtxstore/{0}_260x260.jpg);", icon)),

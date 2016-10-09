@@ -17,7 +17,7 @@ namespace GomLib.ModelLoader
         Dictionary<object, object> newfullQuestRewardsTable;
         public Dictionary<long, Dictionary<long, float>> fullCreditRewardsTable;
         public Dictionary<long, long> experienceTable;
-        public Dictionary<QuestDifficulty, float> experienceDifficultyMultiplierTable;
+        //public Dictionary<QuestDifficulty, float> experienceDifficultyMultiplierTable;
 
         DataObjectModel _dom;
 
@@ -35,7 +35,7 @@ namespace GomLib.ModelLoader
             newfullQuestRewardsTable = new Dictionary<object, object>();
             fullCreditRewardsTable = new Dictionary<long, Dictionary<long, float>>();
             experienceTable = new Dictionary<long, long>();
-            experienceDifficultyMultiplierTable = new Dictionary<QuestDifficulty, float>();
+            //experienceDifficultyMultiplierTable = new Dictionary<QuestDifficulty, float>();
         }
 
         public string ClassName
@@ -105,7 +105,7 @@ namespace GomLib.ModelLoader
             qst.RequiredLevel = (int)obj.Data.ValueOrDefault<long>("qstReqMinLevel", 0);
             qst.IsRepeatable = obj.Data.ValueOrDefault<bool>("qstIsRepeatable", false);
             qst.XpLevel = (int)obj.Data.ValueOrDefault<long>("qstXpLevel", 0);
-            qst.Difficulty = QuestDifficultyExtensions.ToQuestDifficulty((ScriptEnum)obj.Data.ValueOrDefault<ScriptEnum>("qstDifficulty", null));
+            qst.Difficulty = (((ScriptEnum)obj.Data.ValueOrDefault<ScriptEnum>("qstDifficulty", null)) ?? new ScriptEnum()).ToString();
             qst.ReqPrivacy = obj.Data.ValueOrDefault<object>("qstReqPrivacy", (object)"").ToString().Replace("qstPrivacy", "");
             qst.CanAbandon = obj.Data.ValueOrDefault<bool>("qstAllowAbandonment", false);
             qst.Icon = obj.Data.ValueOrDefault<string>("qstMissionIcon", "").Replace(" ", "");
@@ -265,10 +265,10 @@ namespace GomLib.ModelLoader
                 if(proto != null)
                     experienceTable = proto.Data.Get<Dictionary<object, object>>("qstExperienceTable")
                         .ToDictionary(x => (long)x.Key, x => (long)x.Value);
-                var qstExperienceMultiplierPrototype = _dom.GetObject("qstExperienceMultiplierPrototype");
-                if(qstExperienceMultiplierPrototype != null)
-                    experienceDifficultyMultiplierTable = qstExperienceMultiplierPrototype.Data.ValueOrDefault<Dictionary<object, object>>("qstExperienceMultiplierTable", new Dictionary<object, object>())
-                        .ToDictionary(x=> QuestDifficultyExtensions.ToQuestDifficulty((ScriptEnum)x.Key), x=> (float)x.Value);
+                //var qstExperienceMultiplierPrototype = _dom.GetObject("qstExperienceMultiplierPrototype");
+                //if(qstExperienceMultiplierPrototype != null)
+                //    experienceDifficultyMultiplierTable = qstExperienceMultiplierPrototype.Data.ValueOrDefault<Dictionary<object, object>>("qstExperienceMultiplierTable", new Dictionary<object, object>())
+                //        .ToDictionary(x=> QuestDifficultyExtensions.ToQuestDifficulty((ScriptEnum)x.Key), x=> (float)x.Value);
                 // Subscriber XP: base xp * difficulty multiplier * (1.2853 - level * .0012)
                 // F2P XP: base xp * difficulty multiplier * (1.2573 - level * .0012)
             }
@@ -347,7 +347,7 @@ namespace GomLib.ModelLoader
             {
                 // Subscriber XP: base xp * difficulty multiplier * (1.2853 - level * .0012)
                 // F2P XP: base xp * difficulty multiplier * (1.2573 - level * .0012)
-                float diffMulti = experienceDifficultyMultiplierTable[qst.Difficulty];
+                float diffMulti = _dom.data.questDifficulty.GetMultiplier(qst.Difficulty);
                 if(qst.IsClassQuest)
                     qst.SubXP = (long)Math.Round(12 * experienceTable[qst.XpLevel] * diffMulti * (1.2853 - qst.XpLevel * .0012));
                 else

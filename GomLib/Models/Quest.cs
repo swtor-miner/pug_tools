@@ -23,7 +23,7 @@ namespace GomLib.Models
         public bool IsRepeatable { get; set; }
         public int RequiredLevel { get; set; }
         public int XpLevel { get; set; }
-        public QuestDifficulty Difficulty { get; set; }
+        public string Difficulty { get; set; }
         public bool CanAbandon { get; set; }
         public bool IsHidden { get; set; }
         public bool IsClassQuest { get; set; }

@@ -5,46 +5,98 @@ using System.Text;
 
 namespace GomLib.Models
 {
-    public enum QuestDifficulty
-    {
-        NoExp = 0,
-        ChainStep = 1,
-        Easy = 2,
-        Normal = 3,
-        Hard = 4,
-        VeryHard = 5,
-        SeasonOne = 6
-    }
+    public class QuestDifficulty {
+        private DataObjectModel _dom;
 
-    public static class QuestDifficultyExtensions
-    {
-        public static QuestDifficulty ToQuestDifficulty(this string str)
+        public QuestDifficulty(DataObjectModel dom)
         {
-            if (String.IsNullOrEmpty(str)) { return QuestDifficulty.NoExp; }
-            str = str.ToLower();
-            switch (str)
+            _dom = dom;
+            LoadData();
+        }
+
+        private Dictionary<string, float> table_data;
+        string tablePath = "qstExperienceMultiplierPrototype";
+        private bool disposed = false;
+
+        private void LoadData()
+        {
+            GomObject table = _dom.GetObject(tablePath);
+            Dictionary<object, object> tableData = table.Data.Get<Dictionary<object, object>>("qstExperienceMultiplierTable");
+
+            table_data = tableData.ToDictionary(x => ((ScriptEnum)x.Key).ToString(), x => (float)x.Value);
+        }
+
+        public float GetMultiplier(string str)
+        {
+            float ret;
+            table_data.TryGetValue(str, out ret);
+            return ret;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+            if (disposing)
             {
-                case "qstdifficultynoexp":
-                case "noexp": return QuestDifficulty.NoExp;
-                case "qstdifficultychainstep":
-                case "chainstep": return QuestDifficulty.ChainStep;
-                case "qstdifficultyeasy":
-                case "easy": return QuestDifficulty.Easy;
-                case "qstdifficultynormal":
-                case "normal": return QuestDifficulty.Normal;
-                case "qstdifficultyhard":
-                case "hard": return QuestDifficulty.Hard;
-                case "qstdifficultyveryhard":
-                case "veryhard": return QuestDifficulty.VeryHard;
-                case "qstdifficultyseasonone":return QuestDifficulty.SeasonOne;
-                default: throw new InvalidOperationException("Unknown Quest Difficulty: " + str);
+                table_data.Clear();
+                table_data = null;
             }
+            disposed = true;
         }
 
-        public static QuestDifficulty ToQuestDifficulty(this ScriptEnum val)
+
+        ~QuestDifficulty()
         {
-            if (val == null) { return ToQuestDifficulty(String.Empty); }
-            return ToQuestDifficulty(val.ToString());
+            Dispose(false);
         }
     }
+    //public enum QuestDifficulty
+    //{
+    //    NoExp = 0,
+    //    ChainStep = 1,
+    //    Easy = 2,
+    //    Normal = 3,
+    //    Hard = 4,
+    //    VeryHard = 5,
+    //    SeasonOne = 6
+    //}
+
+    //public static class QuestDifficultyExtensions
+    //{
+    //    public static QuestDifficulty ToQuestDifficulty(this string str)
+    //    {
+    //        if (String.IsNullOrEmpty(str)) { return QuestDifficulty.NoExp; }
+    //        str = str.ToLower();
+    //        switch (str)
+    //        {
+    //            case "qstdifficultynoexp":
+    //            case "noexp": return QuestDifficulty.NoExp;
+    //            case "qstdifficultychainstep":
+    //            case "chainstep": return QuestDifficulty.ChainStep;
+    //            case "qstdifficultyeasy":
+    //            case "easy": return QuestDifficulty.Easy;
+    //            case "qstdifficultynormal":
+    //            case "normal": return QuestDifficulty.Normal;
+    //            case "qstdifficultyhard":
+    //            case "hard": return QuestDifficulty.Hard;
+    //            case "qstdifficultyveryhard":
+    //            case "veryhard": return QuestDifficulty.VeryHard;
+    //            case "qstdifficultyseasonone":return QuestDifficulty.SeasonOne;
+    //            default: throw new InvalidOperationException("Unknown Quest Difficulty: " + str);
+    //        }
+    //    }
+
+    //    public static QuestDifficulty ToQuestDifficulty(this ScriptEnum val)
+    //    {
+    //        if (val == null) { return ToQuestDifficulty(String.Empty); }
+    //        return ToQuestDifficulty(val.ToString());
+    //    }
+//}
 }
