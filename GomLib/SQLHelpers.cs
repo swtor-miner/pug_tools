@@ -671,4 +671,17 @@ namespace GomLib
             return inc;
         }
     }
+    public static class Trim
+    {
+        public static Dictionary<string, string> Dictionary(Dictionary<string, string> inc)
+        {
+            return inc.ToDictionary(x=> x.Key, x => Truncate(x.Value, 512));
+        }
+
+        public static string Truncate(this string value, int maxLength)
+        {
+            if (string.IsNullOrEmpty(value)) return value;
+            return value.Length <= maxLength ? value : value.Substring(0, maxLength);
+        }
+    }
 }

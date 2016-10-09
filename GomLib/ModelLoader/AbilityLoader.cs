@@ -148,6 +148,7 @@ namespace GomLib.ModelLoader
             abl.NameId = nameLookupData.Get<long>("strLocalizedTextRetrieverStringID");
             abl.LocalizedName = _dom.stringTable.TryGetLocalizedStrings(abl.Fqn, nameLookupData);
             Normalize.Dictionary(abl.LocalizedName, abl.Fqn);
+            abl.LocalizedName = Trim.Dictionary(abl.LocalizedName);
             abl.Name = abl.LocalizedName["enMale"];
 
             // Load Ability Description

@@ -267,7 +267,7 @@ namespace GomLib
 
                         if (text.Length > 0)
                         {
-                            string textTag = "";
+                            string textTag = "unknown";
                             switch (localization)
                             {
                                 case "en-us":
@@ -288,7 +288,7 @@ namespace GomLib
                                     break;
                             }
 
-                            if(entry_t1 == 65 || entry_t1 == 70)
+                            if (entry_t1 == 65 || entry_t1 == 70)
                             {
                                 data[entryId].localizedText[textTag] = text;
                             }
