@@ -263,7 +263,7 @@ namespace GomLib.ModelLoader
                 itm.LocalizedName = _dom.stringTable.TryGetLocalizedStrings(itm.Fqn, nameLookupData);
                 //itm.Name = _dom.stringTable.TryGetString(itm.Fqn, nameLookupData);
             }
-            Normalize.Dictionary(itm.LocalizedName, itm.Fqn);
+            Normalize.Dictionary(itm.LocalizedName, itm.Fqn, true);
             itm.Name = itm.LocalizedName["enMale"];
             itm.Name = itm.Name.Trim();
 

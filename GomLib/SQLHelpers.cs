@@ -652,7 +652,15 @@ namespace GomLib
     {
         public static Dictionary<string, string> Dictionary(Dictionary<string, string> inc, string fqn)
         {
-            string name = fqn.Split('.').Last();
+            return Normalize.Dictionary(inc, fqn, false);
+        }
+        public static Dictionary<string, string> Dictionary(Dictionary<string, string> inc, string fqn, bool fullfqn)
+        {
+            string name;
+            if (fullfqn)
+                name = fqn.Split(new char[] {'.'}, 2).Last();
+            else
+                name = fqn.Split('.').Last();
             if (inc == null || inc.Count == 0)
             {
                 inc = new Dictionary<string, string>() {
@@ -668,6 +676,7 @@ namespace GomLib
             var reps = inc.Where(x => String.IsNullOrWhiteSpace(x.Value));
             foreach (var rep in reps.ToList())
                 inc[rep.Key] = name;
+            inc["enMale"] = inc["enMale"].Trim();
             return inc;
         }
     }
