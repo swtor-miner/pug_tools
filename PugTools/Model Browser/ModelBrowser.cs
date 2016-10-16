@@ -46,7 +46,8 @@ namespace tor_tools
         Dictionary<object, object> mntMountInfoTable = new Dictionary<object, object>();
 
         public ModelBrowser(string assetLocation, bool usePTS,
-            string previousAssetLocation, bool previousUsePTS)
+            string previousAssetLocation, bool previousUsePTS,
+            bool loadprevious)
         {
             InitializeComponent();
 
@@ -55,6 +56,7 @@ namespace tor_tools
             args.Add(usePTS);
             args.Add(previousAssetLocation);
             args.Add(previousUsePTS);
+            args.Add(loadprevious);
 
             toolStripProgressBar1.Visible = true;
             toolStripStatusLabel1.Text = "Loading Assets";
@@ -70,9 +72,12 @@ namespace tor_tools
             this.currentAssets = AssetHandler.Instance.getCurrentAssets((string)args[0], (bool)args[1]);            
             this.currentDom = DomHandler.Instance.getCurrentDOM(currentAssets);
 
-            //Load previous assets.
-            this.previousAssets = AssetHandler.Instance.getPreviousAssets((string)args[2], (bool)args[3]);
-            this.previousDom = DomHandler.Instance.getPreviousDOM(previousAssets);
+            if ((bool)args[4])
+            {
+                //Load previous assets.
+                this.previousAssets = AssetHandler.Instance.getPreviousAssets((string)args[2], (bool)args[3]);
+                this.previousDom = DomHandler.Instance.getPreviousDOM(previousAssets);
+            }
         }
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -87,15 +92,18 @@ namespace tor_tools
 
             //Determine which nodes are new.
             List<int> newNodeIndexes = new List<int>();
-            for (int i = 0; i < itmList.Count; i++ )
+            if (previousDom != null)
             {
-                GomObject newObj = itmList[i];
-
-                GomObject oldObj = previousDom.GetObject(newObj.Name);
-                if (oldObj == null)
+                for (int i = 0; i < itmList.Count; i++)
                 {
-                    //Node is new.
-                    newNodeIndexes.Add(i);
+                    GomObject newObj = itmList[i];
+
+                    GomObject oldObj = previousDom.GetObject(newObj.Name);
+                    if (oldObj == null)
+                    {
+                        //Node is new.
+                        newNodeIndexes.Add(i);
+                    }
                 }
             }
 
@@ -288,15 +296,23 @@ namespace tor_tools
 
                             if (hashInfo.FileState == HashFileInfo.State.New)
                             {
-                                NodeAsset assetNew = new NodeAsset(prefixNew + hashInfo.Directory + "/" + hashInfo.FileName, prefixNew + hashInfo.Directory, hashInfo.FileName, hashInfo);
-                                assetDict.Add(prefixNew + hashInfo.Directory + "/" + hashInfo.FileName, assetNew);
-                                fileDirs.Add(prefixNew + hashInfo.Directory);                                
+                                string assetFilename = String.Format("{0}{1}/{2}", prefixNew, hashInfo.Directory, hashInfo.FileName);
+                                if (!assetDict.ContainsKey(assetFilename))
+                                {
+                                    NodeAsset assetNew = new NodeAsset(prefixNew + hashInfo.Directory + "/" + hashInfo.FileName, prefixNew + hashInfo.Directory, hashInfo.FileName, hashInfo);
+                                    assetDict.Add(prefixNew + hashInfo.Directory + "/" + hashInfo.FileName, assetNew);
+                                    fileDirs.Add(prefixNew + hashInfo.Directory);
+                                }                         
                             }
                             if (hashInfo.FileState == HashFileInfo.State.Modified)
                             {
-                                NodeAsset assetMod = new NodeAsset(prefixMod + hashInfo.Directory + "/" + hashInfo.FileName, prefixMod + hashInfo.Directory, hashInfo.FileName, hashInfo);
-                                assetDict.Add(prefixMod + hashInfo.Directory + "/" + hashInfo.FileName, assetMod);
-                                fileDirs.Add(prefixMod + hashInfo.Directory);                                
+                                string assetFilename = String.Format("{0}{1}/{2}", prefixMod, hashInfo.Directory, hashInfo.FileName);
+                                if (!assetDict.ContainsKey(assetFilename))
+                                {
+                                    NodeAsset assetMod = new NodeAsset(assetFilename, prefixMod + hashInfo.Directory, hashInfo.FileName, hashInfo);
+                                    assetDict.Add(assetFilename, assetMod);
+                                    fileDirs.Add(prefixMod + hashInfo.Directory);
+                                }                                
                             }
                         }
                         else

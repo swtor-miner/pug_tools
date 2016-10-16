@@ -356,7 +356,7 @@ namespace tor_tools
         {
             bool usePTS = this.usePTSAssets.Checked;
             System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.SustainedLowLatency;
-            ModelBrowser = new ModelBrowser(this.textBoxAssetsFolder.Text, usePTS, this.textBoxPrevAssetsFolder.Text, prevUsePTSAssets.Checked);
+            ModelBrowser = new ModelBrowser(this.textBoxAssetsFolder.Text, usePTS, this.textBoxPrevAssetsFolder.Text, prevUsePTSAssets.Checked, chkBuildCompare.Checked);
             ModelBrowser.FormClosed += onModelBrowserClosed;
             ModelBrowser.Show();
         }
