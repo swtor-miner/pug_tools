@@ -723,8 +723,8 @@ namespace tor_tools
             ClearProgress();
 
             LoadData();
-            GomLib.Smart smart = new Smart(addtolist2);
-            SmartLinkSchematics(currentDom);
+            //GomLib.Smart smart = new Smart(addtolist2);
+            Smart.LinkSchematics(currentDom, addtolist2);
             /*var prfBundlesTablePrototype = currentDom.GetObject("prfBundlesTablePrototype");
             List<GomObjectData> prfBundlesTable = prfBundlesTablePrototype.Data.ValueOrDefault<List<object>>("prfBundlesTable")
                 .ConvertAll<GomObjectData>(x => (GomObjectData)x);
