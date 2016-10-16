@@ -364,7 +364,7 @@ namespace GomLib
         }
         public void AddCrossLink(ulong id, string type, ulong reference)
         {
-            GomObject testNode = this.GetObject(id);
+            GomObject testNode = this.GetObjectNoLoad(id);
             if (testNode != null)
             {
                 if (testNode.References == null) testNode.References = new Dictionary<string, List<ulong>>();
@@ -374,7 +374,7 @@ namespace GomLib
         }
         public void AddCrossLink(string name, string type, ulong reference)
         {
-            GomObject testNode = this.GetObject(name); 
+            GomObject testNode = this.GetObjectNoLoad(name); 
             if (testNode != null)
             {
                 if (testNode.References == null) testNode.References = new Dictionary<string, List<ulong>>();
@@ -746,6 +746,17 @@ namespace GomLib
         {
             GomObject result = Get<GomObject>(id);
             if (result != null) { result.Load(); }
+            return result;
+        }
+
+        public GomObject GetObjectNoLoad(string name)
+        {
+            GomObject result = Get<GomObject>(name);
+            return result;
+        }
+        public GomObject GetObjectNoLoad(ulong id)
+        {
+            GomObject result = Get<GomObject>(id);
             return result;
         }
 
