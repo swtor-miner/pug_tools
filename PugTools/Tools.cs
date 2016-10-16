@@ -969,8 +969,9 @@ namespace tor_tools
                 else if (SmartLinkDomCheckBox.Checked)// MessageBox.Show("Do you want to Cross-link the Data Object Model? - It can be a slow process.\n\nIt will scan each object in the Data Object Model for references to other objects, and store these connections in the referenced object.", "Select Yes or No.", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
                 {
                     addtolist("Crosslinking Current Data Object Model.");
-                    Smart smart = new Smart(addtolist2);
-                    smart.Link(currentDom);
+                    //Smart smart = new Smart(addtolist2);
+                    //smart.Link(currentDom);
+                    Smart.Link(currentDom, addtolist2);
                     Clearlist();
                     addtolist("Crosslinking Data Object Model. - Done");
                     if (chkBuildCompare.Checked)

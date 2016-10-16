@@ -19,42 +19,42 @@ using System.Xml.Serialization;
 
 namespace GomLib
 {
-    public class Smart
+    public static class Smart
     {
-        public Smart(Action<string> _MessageDelegate)
-        {
-            MessageDelegate = _MessageDelegate;
-        }
-        public Action<string> MessageDelegate { get; set; }
+        //public Smart(Action<string> _MessageDelegate)
+        //{
+        //    MessageDelegate = _MessageDelegate;
+        //}
+        //public Action<string> MessageDelegate { get; set; }
 
-        public void InvokeMessage(String mess)
+        //public void InvokeMessage(String mess)
+        //{
+        //    if (MessageDelegate != null)
+        //    {
+        //        MessageDelegate(mess);
+        //    }
+        //}
+
+        public static void Link(DataObjectModel dom, Action<string> MessageDelegate)
         {
-            if (MessageDelegate != null)
-            {
-                MessageDelegate(mess);
-            }
+           LinkAbilityPackages(dom, MessageDelegate);
+           LinkAchievements(dom, MessageDelegate);
+           LinkCodex(dom, MessageDelegate);
+           LinkConversations(dom, MessageDelegate);
+           LinkDecorations(dom, MessageDelegate);
+           LinkEncounters(dom, MessageDelegate);
+           LinkItems(dom, MessageDelegate);
+           LinkItemAppearances(dom, MessageDelegate);
+           LinkNpcs(dom, MessageDelegate);
+           LinkPhases(dom, MessageDelegate);
+           LinkPlaceables(dom, MessageDelegate);
+           LinkQuests(dom, MessageDelegate);
+           LinkQuestRewards(dom, MessageDelegate);
+           LinkSchematics(dom, MessageDelegate);
+           LinkSpawners(dom, MessageDelegate);
         }
 
-        public void Link(DataObjectModel dom)
-        {
-           LinkAbilityPackages(dom);
-           LinkAchievements(dom);
-           LinkCodex(dom);
-           LinkConversations(dom);
-           LinkDecorations(dom);
-           LinkEncounters(dom);
-           LinkItems(dom);
-           LinkItemAppearances(dom);
-           LinkNpcs(dom);
-           LinkPhases(dom);
-           LinkPlaceables(dom);
-           LinkQuests(dom);
-           LinkQuestRewards(dom);
-           LinkSchematics(dom);
-           LinkSpawners(dom);
-        }
-
-        public void LinkAbilityPackages(DataObjectModel dom)
+        public static void LinkAbilityPackages(DataObjectModel dom, Action<string> MessageDelegate)
         {
             List<GomObject> nodeList;
             MessageDelegate("Smart-linking ability packages (NPCs)...");//Load apns
@@ -130,7 +130,7 @@ namespace GomLib
                 node.Unload();
             }
         }
-        public void LinkAchievements(DataObjectModel dom)
+        public static void LinkAchievements(DataObjectModel dom, Action<string> MessageDelegate)
         {
             List<GomObject> nodeList;
             MessageDelegate("Smart-linking achievements...");//Load ach
@@ -163,7 +163,7 @@ namespace GomLib
                 node.Unload();
             }
         }
-        public void LinkCodex(DataObjectModel dom)
+        public static void LinkCodex(DataObjectModel dom, Action<string> MessageDelegate)
         {
             List<GomObject> nodeList;
             MessageDelegate("Smart-linking codex entries...");//Load codex entries
@@ -181,7 +181,7 @@ namespace GomLib
                 node.Unload();
             }
         }
-        public void LinkConversations(DataObjectModel dom)
+        public static void LinkConversations(DataObjectModel dom, Action<string> MessageDelegate)
         {
             List<GomObject> nodeList;
             MessageDelegate("Smart-linking conversations...");//Load cnv
@@ -237,7 +237,7 @@ namespace GomLib
                 node.Unload();
             }
         }
-        public void LinkDecorations(DataObjectModel dom)
+        public static void LinkDecorations(DataObjectModel dom, Action<string> MessageDelegate)
         {
             List<GomObject> nodeList;
             MessageDelegate("Smart-linking decorations...");//Load decorations
@@ -249,7 +249,7 @@ namespace GomLib
                 node.Unload();
             }
         }
-        public void LinkEncounters(DataObjectModel dom)
+        public static void LinkEncounters(DataObjectModel dom, Action<string> MessageDelegate)
         {
             List<GomObject> nodeList;
             MessageDelegate("Smart-linking encounters...");//Load enc
@@ -268,7 +268,7 @@ namespace GomLib
                 node.Unload();
             }
         }
-        public void LinkItems(DataObjectModel dom)
+        public static void LinkItems(DataObjectModel dom, Action<string> MessageDelegate)
         {
             List<GomObject> nodeList;
             MessageDelegate("Smart-linking items...");//Load items
@@ -283,7 +283,7 @@ namespace GomLib
                 node.Unload();
             }
         }
-        public void LinkItemAppearances(DataObjectModel dom)
+        public static void LinkItemAppearances(DataObjectModel dom, Action<string> MessageDelegate)
         {
             List<GomObject> nodeList;
             MessageDelegate("Smart-linking item apperances...");//Load items
@@ -330,7 +330,7 @@ namespace GomLib
                 
             }
         }
-        public void LinkNpcs(DataObjectModel dom)
+        public static void LinkNpcs(DataObjectModel dom, Action<string> MessageDelegate)
         {
             List<GomObject> nodeList;
             MessageDelegate("Smart-linking NPCs...");//Load NPCs
@@ -364,7 +364,7 @@ namespace GomLib
                 node.Unload();
             }
         }
-        public void LinkPhases(DataObjectModel dom)
+        public static void LinkPhases(DataObjectModel dom, Action<string> MessageDelegate)
         {
             List<GomObject> nodeList;
             MessageDelegate("Smart-linking phases...");//Load phases
@@ -375,7 +375,7 @@ namespace GomLib
                 node.Unload();
             }
         }
-        public void LinkPlaceables(DataObjectModel dom)
+        public static void LinkPlaceables(DataObjectModel dom, Action<string> MessageDelegate)
         {
             List<GomObject> nodeList;
             MessageDelegate("Smart-linking placeables...");//Load placeables
@@ -396,7 +396,7 @@ namespace GomLib
                 node.Unload();
             }
         }
-        public void LinkQuests(DataObjectModel dom)
+        public static void LinkQuests(DataObjectModel dom, Action<string> MessageDelegate)
         {
             List<GomObject> nodeList;
             MessageDelegate("Smart-linking quests...");//Load cnv
@@ -500,7 +500,7 @@ namespace GomLib
                 node.Unload();
             }
         }
-        public void LinkQuestRewards(DataObjectModel dom)
+        public static void LinkQuestRewards(DataObjectModel dom, Action<string> MessageDelegate)
         {
             List<GomObject> nodeList;
             MessageDelegate("Smart-linking quest rewards...");//Load phases
@@ -534,7 +534,7 @@ namespace GomLib
             }
 
         }
-        public void LinkSchematics(DataObjectModel dom)
+        public static void LinkSchematics(DataObjectModel dom, Action<string> MessageDelegate)
         {
             List<GomObject> nodeList;
             MessageDelegate("Smart-linking schematics...");//Load schematics
@@ -586,7 +586,7 @@ namespace GomLib
                 proto.Unload();
             }
         }
-        public void LinkSpawners(DataObjectModel dom)
+        public static void LinkSpawners(DataObjectModel dom, Action<string> MessageDelegate)
         {
             List<GomObject> nodeList;
             MessageDelegate("Smart-linking spawners...");//Load spawners
