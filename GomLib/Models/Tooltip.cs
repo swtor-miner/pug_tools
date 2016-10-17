@@ -100,7 +100,34 @@ namespace GomLib.Models
                     };
             }
         }
-
+        public bool IsImplemented() {
+            if (obj != null)
+            {
+                switch (obj.GetType().ToString())
+                {
+                    case "GomLib.Models.Item":
+                    case "GomLib.Models.Schematic":
+                    case "GomLib.Models.Ability":
+                    case "GomLib.Models.Quest":
+                    case "GomLib.Models.Talent":
+                    case "GomLib.Models.Achievement":
+                    case "GomLib.Models.Codex":
+                    case "GomLib.Models.Npc":
+                    case "GomLib.Models.NewCompanion":
+                        return true;
+                }
+            }
+            if (pObj != null)
+            {
+                switch (pObj.GetType().ToString())
+                {
+                    case "GomLib.Models.Collection":
+                    case "GomLib.Models.MtxStorefrontEntry":
+                        return true;
+                }
+            }
+            return false;
+        }
         private string GetHTML()
         {
             if (obj != null)
@@ -367,7 +394,7 @@ namespace GomLib.Models
                 }
                 //if (mainMod.Count == 0
                 ItemQuality qual = ItemQuality.Premium;
-                if (itm.EnhancementSlots.Count() != 0)
+                if (itm.EnhancementSlots != null && itm.EnhancementSlots.Count() != 0)
                 {
                     if (mainMod != null)
                     {
@@ -445,7 +472,7 @@ namespace GomLib.Models
                     }
                     //if (mainMod.Count == 0
                     ItemQuality qual = ItemQuality.Premium;
-                    if (itm.EnhancementSlots.Count() != 0)
+                    if (itm.EnhancementSlots != null && itm.EnhancementSlots.Count() != 0)
                     {
                         if (mainMod != null)
                         {
@@ -503,7 +530,11 @@ namespace GomLib.Models
                     }
                     else
                     {
-                        var temp = itm.EnhancementSlots.Where(x => x.Slot == EnhancementType.Harness);
+                        IEnumerable<ItemEnhancement> temp;
+                        if (itm.EnhancementSlots != null)
+                            temp = itm.EnhancementSlots.Where(x => x.Slot == EnhancementType.Harness);
+                        else
+                            temp = new ItemEnhancementList();
                         if (temp.Count() != 0)
                             if (temp.First().ModificationId != 0)
                                 level = temp.First().Modification.ItemLevel;
@@ -549,7 +580,7 @@ namespace GomLib.Models
             }
             //stats
             //tooltip.Append("<br />");
-            if (itm.CombinedStatModifiers.Count != 0 || itm.WeaponSpec != null)
+            if ((itm.CombinedStatModifiers != null && itm.CombinedStatModifiers.Count != 0) || itm.WeaponSpec != null)
             {
                 XElement stats = new XElement("div",
                     XClass("torctip_stats"),
@@ -583,12 +614,15 @@ namespace GomLib.Models
                             break;
                     }
                 }
-                for (var i = 0; i < itm.CombinedStatModifiers.Count; i++)
+                if (itm.CombinedStatModifiers != null)
                 {
-                    stats.Add(new XElement("div",
-                        XClass("torctip_stat"),
-                        //new XAttribute("id", String.Format("torctip_stat_{0}", i)),
-                        String.Format("+{0} {1}", itm.CombinedStatModifiers[i].Modifier, itm.CombinedStatModifiers[i].DetailedStat.LocalizedDisplayName[Tooltip.language])));
+                    for (var i = 0; i < itm.CombinedStatModifiers.Count; i++)
+                    {
+                        stats.Add(new XElement("div",
+                            XClass("torctip_stat"),
+                            //new XAttribute("id", String.Format("torctip_stat_{0}", i)),
+                            String.Format("+{0} {1}", itm.CombinedStatModifiers[i].Modifier, itm.CombinedStatModifiers[i].DetailedStat.LocalizedDisplayName[Tooltip.language])));
+                    }
                 }
                 if (techpower > 0)
                     stats.Add(new XElement("div",
@@ -604,7 +638,7 @@ namespace GomLib.Models
             }
             //Modifications
 
-            if (itm.EnhancementSlots.Count != 0)
+            if (itm.EnhancementSlots != null && itm.EnhancementSlots.Count != 0)
             {
                 XElement enhance = new XElement("div",
                     XClass("torctip_mods"),
@@ -661,7 +695,7 @@ namespace GomLib.Models
             string reqString = GetLocalizedText(836131348283394);  //"Requires {0}"
             if (itm.RequiredLevel != 0)
                 tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format(GetLocalizedText(836131348283393), itm.RequiredLevel))); //"Requires Level {0}"
-            if (itm.RequiredClasses.Count != 0)
+            if (itm.RequiredClasses != null && itm.RequiredClasses.Count != 0)
                 tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format(reqString, String.Join(",", itm.RequiredClasses.Select(x => x.Name))))); //"Requires {0}"
             if (itm.ArmorSpec != null)
                 tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format(reqString, itm.ArmorSpec.LocalizedName[Tooltip.language]))); //"Requires {0}"
@@ -873,14 +907,17 @@ namespace GomLib.Models
                 tooltip.Add(desc);
             }
             //Decoration Source
-            if (itm.TeachesType == "Decoration" || itm.StrongholdSourceList.Count > 0)
+            if (itm.TeachesType == "Decoration" || (itm.StrongholdSourceList != null && itm.StrongholdSourceList.Count > 0))
             {
-                foreach (var kvp in itm.LocalizedStrongholdSourceNameDict)
+                if (itm.LocalizedStrongholdSourceNameDict != null)
                 {
-                    tooltip.Add(new XElement("div",
-                        XClass("torctip_source"),
-                        String.Format(GetLocalizedText(946314439295249), kvp.Value[Tooltip.language]) // "Source: {0}"
-                    ));
+                    foreach (var kvp in itm.LocalizedStrongholdSourceNameDict)
+                    {
+                        tooltip.Add(new XElement("div",
+                            XClass("torctip_source"),
+                            String.Format(GetLocalizedText(946314439295249), ((kvp.Value != null) ? kvp.Value[Tooltip.language] : "unknown")) // "Source: {0}"
+                        ));
+                    }
                 }
             }
             if (itm.SetBonusId != 0)
