@@ -118,5 +118,17 @@ namespace TorLib
             memStream.Position = 0;
             return memStream;
         }
+
+        public byte[] PeakBytes(int bytes)
+        {
+            var fs = Open();
+            var buffer = new byte[bytes];
+            //This will screw up if we have a single file greater than 2.1 GB.. probably not an issue.
+            if (this.FileInfo.UncompressedSize < bytes)
+                fs.Read(buffer, 0, (int)this.FileInfo.UncompressedSize);
+            else
+                fs.Read(buffer, 0, bytes);
+            return buffer;
+        }
     }
 }
