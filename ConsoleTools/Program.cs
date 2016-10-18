@@ -63,7 +63,7 @@ namespace ConsoleTools
                 Console.WriteLine(String.Join(", ", args));
                 if(args.Count() == 0)
                 {
-                    args = new string[]{ "5.0P5", "J:\\swtor_db\\", "J:\\swtor_db\\processed\\"};
+                    args = new string[]{ "5.0P6", "J:\\swtor_db\\", "J:\\swtor_db\\processed\\"};
                 }
                 patch = args[0];
                 patchDir = args[1];
@@ -76,45 +76,44 @@ namespace ConsoleTools
                     dom.version = patch;
                     Console.WriteLine("Loading Assets");
                     dom.Load();
-                    //Smart smart = new Smart(Console.WriteLine);
-                    //Smart.Link(dom, Console.WriteLine);
+                    Smart.Link(dom, Console.WriteLine);
 
-                    //getObjects("class.pc.advanced", "AdvancedClasses");
-                    //getPrototypeObjects("Conquests", "wevConquestInfosPrototype", "wevConquestTable");
-                    //getObjects("abl.", "Abilities");
-                    //if (dom.GetObjectsStartingWith("pkg.abilities").Count > 0)
-                    //    getObjects("pkg.abilities", "AbilityPackages");
-                    //else
-                    //    getObjects("apn.", "AbilityPackages");
-                    //getObjects("ach.", "Achievements");
-                    //getObjects("apt.", "Strongholds");
-                    //getObjects("spn.", "Spawners");
-                    //getPrototypeObjects("Areas", "mapAreasDataProto", "mapAreasDataObjectList"); // getAreas();
-                    //getObjects("cdx.", "CodexEntries");
-                    //getObjects("class.", "Classes");
-                    //getObjects("cnv.", "Conversations");
-                    //getObjects("dec.", "Decorations");
-                    //getObjects("eff.", "Effects");
-                    //getObjects("itm.", "Items");
-                    //getObjects("npc.", "Npcs");
-                    //getObjects("qst.", "Quests");
-                    //getObjects("schem.", "Schematics");
-                    //getPrototypeObjects("SetBonuses", "itmSetBonusesPrototype", "itmSetBonuses");
-                    //getObjects("tal.", "Talents");
-                    //getPrototypeObjects("Collections", "colCollectionItemsPrototype", "colCollectionItemsData");
+                    getObjects("class.pc.advanced", "AdvancedClasses");
+                    getPrototypeObjects("Conquests", "wevConquestInfosPrototype", "wevConquestTable");
+                    getObjects("abl.", "Abilities");
+                    if (dom.GetObjectsStartingWith("pkg.abilities").Count > 0)
+                        getObjects("pkg.abilities", "AbilityPackages");
+                    else
+                        getObjects("apn.", "AbilityPackages");
+                    getObjects("ach.", "Achievements");
+                    getObjects("apt.", "Strongholds");
+                    getObjects("spn.", "Spawners");
+                    getPrototypeObjects("Areas", "mapAreasDataProto", "mapAreasDataObjectList"); // getAreas();
+                    getObjects("cdx.", "CodexEntries");
+                    getObjects("class.", "Classes");
+                    getObjects("cnv.", "Conversations");
+                    getObjects("dec.", "Decorations");
+                    getObjects("eff.", "Effects");
+                    getObjects("itm.", "Items");
+                    getObjects("npc.", "Npcs");
+                    getObjects("qst.", "Quests");
+                    getObjects("schem.", "Schematics");
+                    getPrototypeObjects("SetBonuses", "itmSetBonusesPrototype", "itmSetBonuses");
+                    getObjects("tal.", "Talents");
+                    getPrototypeObjects("Collections", "colCollectionItemsPrototype", "colCollectionItemsData");
 
-                    //TorLib.HashDictionaryInstance.Instance.Unload();
-                    //TorLib.HashDictionaryInstance.Instance.Load();
-                    //TorLib.HashDictionaryInstance.Instance.dictionary.CreateHelpers();
-                    //getObjects("nco.", "NewCompanions");
-                    //getPrototypeObjects("Companions", "chrCompanionInfo_Prototype", "chrCompanionInfoData");
-                    //getPrototypeObjects("MtxStoreFronts", "mtxStorefrontInfoPrototype", "mtxStorefrontData");
+                    TorLib.HashDictionaryInstance.Instance.Unload();
+                    TorLib.HashDictionaryInstance.Instance.Load();
+                    TorLib.HashDictionaryInstance.Instance.dictionary.CreateHelpers();
+                    getObjects("nco.", "NewCompanions");
+                    getPrototypeObjects("Companions", "chrCompanionInfo_Prototype", "chrCompanionInfoData");
+                    getPrototypeObjects("MtxStoreFronts", "mtxStorefrontInfoPrototype", "mtxStorefrontData");
 
-                    ////Reload hash dict.
-                    //TorLib.HashDictionaryInstance.Instance.Unload();
-                    //TorLib.HashDictionaryInstance.Instance.Load();
-                    //TorLib.HashDictionaryInstance.Instance.dictionary.CreateHelpers();
-                    //getPrototypeObjects("Ships", "scFFShipsDataPrototype", "scFFShipsData");
+                    //Reload hash dict.
+                    TorLib.HashDictionaryInstance.Instance.Unload();
+                    TorLib.HashDictionaryInstance.Instance.Load();
+                    TorLib.HashDictionaryInstance.Instance.dictionary.CreateHelpers();
+                    getPrototypeObjects("Ships", "scFFShipsDataPrototype", "scFFShipsData");
                     getIcons();
                 }
                 else
