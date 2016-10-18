@@ -241,21 +241,13 @@ namespace GomLib.ModelLoader
 
         private void LoadRewards(ref Quest qst, GomObject obj)
         {
-            if (fullQuestRewardsTable.Count == 0)
+            if (fullQuestRewardsTable.Count == 0 && newfullQuestRewardsTable.Count == 0)
             {
                 var proto = _dom.GetObject("qstRewardsInfoPrototype");
                 if (proto != null)
                 {
-                    Dictionary<object, object> fullQuestRewardsTable;
-                    if (proto.Data.ContainsKey(""))
-                    {
-                        fullQuestRewardsTable = proto.Data.Get<Dictionary<object, object>>("qstRewardsInfoData");
-                    }
-                    else
-                    {
-                        fullQuestRewardsTable = proto.Data.Get<Dictionary<object, object>>("qstRewardsNewInfoData");
-                    }
-                    newfullQuestRewardsTable = proto.Data.ValueOrDefault<Dictionary<object, object>>("4611686305674744000", new Dictionary<object, object>());
+                    fullQuestRewardsTable = proto.Data.ValueOrDefault<Dictionary<object, object>>("qstRewardsInfoData", new Dictionary<object, object>());
+                    newfullQuestRewardsTable = proto.Data.ValueOrDefault<Dictionary<object, object>>("qstRewardsNewInfoData", new Dictionary<object, object>());
                 }
                 proto = _dom.GetObject("qstrewardscreditsData");
                 if(proto != null)
@@ -286,10 +278,10 @@ namespace GomLib.ModelLoader
                 questRewardsTable = (List<object>)newfullQuestRewardsTable[obj.Id];
                 newFormat = true;
             }
-            else
-            {
-                return;
-            }
+            //else
+            //{
+            //    return;
+            //}
             qst.Rewards = new List<QuestReward>();
 
             foreach (GomObjectData qReward in questRewardsTable)
