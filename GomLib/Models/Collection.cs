@@ -84,7 +84,7 @@ namespace GomLib.Models
             if (LocalizedRarityDesc != null) foreach (var x in LocalizedRarityDesc) { hash ^= x.GetHashCode(); }
             if (Localizedunknowntext != null) foreach (var x in Localizedunknowntext) { hash ^= x.GetHashCode(); }
             if (AbilityIdsList != null) foreach (var x in AbilityIdsList) { hash ^= x.GetHashCode(); }
-            if (LocalizedBulletPoints != null) foreach (var x in LocalizedBulletPoints) foreach (var y in x) { hash ^= y.GetHashCode(); }
+            if (LocalizedBulletPoints != null) foreach (var x in LocalizedBulletPoints) if(x != null) foreach (var y in x) { hash ^= y.GetHashCode(); }
             if (ItemIdsList != null) foreach (var x in ItemIdsList) { hash ^= x.GetHashCode(); }
             if (AlternateUnlocksMap != null) foreach (var x in AlternateUnlocksMap)
             {
