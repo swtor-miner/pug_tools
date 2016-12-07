@@ -30,7 +30,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -78,10 +78,6 @@
   <ItemGroup>
     <Reference Include="ColorCode">
       <HintPath>..\Libs\ColorCode.dll</HintPath>
-    </Reference>
-    <Reference Include="HashDictionary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libs\HashDictionary.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\Libs\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -469,6 +465,10 @@
     <ProjectReference Include="..\GomLib\GomLib.csproj">
       <Project>{A147D4D8-1EA1-4BDA-A388-AB843B037307}</Project>
       <Name>GomLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HashDictionary\HashDictionary.csproj">
+      <Project>{7d3858a9-1902-46b0-a121-c8b2f18806ed}</Project>
+      <Name>HashDictionary</Name>
     </ProjectReference>
     <ProjectReference Include="..\ObjectListView\ObjectListView2012.csproj">
       <Project>{18feda0c-d147-4286-b39a-01204808106a}</Project>
