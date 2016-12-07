@@ -153,6 +153,7 @@ namespace GomLib.Models
             VendorPackages = new List<string>();
         }
 
+        public long CommandXP { get; set; }
         //public List<string> AbilityPackagesTrained { get; set; }
         #endregion
 

@@ -16,6 +16,7 @@ namespace GomLib.Models
         //public Guid CommentableId { get; set; }
         public long DisplayNameId { get; set; }
         //public string Name { get; set; }
+        public Dictionary<string, string> LocalizedName { get; set; }
         public ulong AreaId { get; set; }
         public string ZoneName { get; set; }
 

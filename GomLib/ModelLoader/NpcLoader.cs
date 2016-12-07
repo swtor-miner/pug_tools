@@ -311,6 +311,8 @@ namespace GomLib.ModelLoader
             //}
             npc.Gender = tgen.ToString();
 
+            npc.CommandXP = obj.Data.ValueOrDefault<long>("npcCommandXP", 0);
+
             obj.Unload();
             return npc;
         }

@@ -2313,7 +2313,8 @@ namespace GomLib.Models
             string icon = "none";
             if (!String.IsNullOrEmpty(itm.Icon))
                 icon = itm.Icon.ToLower();
-
+            if (!itm._dom._assets.HasFile(String.Format("/resources/gfx/mtxstore/{0}_260x260.dds", icon)))
+                icon = "titles_sticker";
             XElement tooltip = new XElement("div", new XAttribute("class", "torctip_wrapper"));
             //var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/portraits/{0}.dds", icon));
 

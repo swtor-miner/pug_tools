@@ -124,7 +124,7 @@ namespace GomLib
                 }
                 else if (b0 == 0xD0)
                 {
-                    return (long)this.ReadByte();
+                    return 0; // (long)this.ReadByte(); // this was wrong
                 }
                 else
                 {

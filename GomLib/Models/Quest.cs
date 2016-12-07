@@ -68,9 +68,10 @@ namespace GomLib.Models
         public long XP { get; set; }
         public long SubXP { get; set; }
         public long F2PXP { get; set; }
+        public long CommandXP { get; set; }
         #endregion
         #region FlatQuestProperties
-            [JsonIgnore]
+        [JsonIgnore]
             public string CleanName
         {
             get

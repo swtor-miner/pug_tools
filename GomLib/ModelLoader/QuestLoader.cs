@@ -151,6 +151,8 @@ namespace GomLib.ModelLoader
                 qst.IsHidden = true;
             }
 
+            qst.CommandXP = obj.Data.ValueOrDefault<long>("qstCommandXP", 0);
+
             _dom._assets.icons.AddCodex(qst.Icon);
 
             obj.Unload(); // These GomObjects are staying loaded in memory and cause our massive memory issues.

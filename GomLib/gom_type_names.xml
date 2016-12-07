@@ -8304,4 +8304,6 @@
   <gom_type Id="4611686354161167000" name="chrAdvancedClassIcon" desc="" />
   <!-- 5.0 stuff -->
   <gom_type Id="4611686305674744000" name="qstRewardsNewInfoData" desc="" />
+  <gom_type Id="4611686356790427001" name="qstCommandXP" desc="" />
+  <gom_type Id="4611686356790457002" name="npcCommandXP" desc="" />
 </gom_types>

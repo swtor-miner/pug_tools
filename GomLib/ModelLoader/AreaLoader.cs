@@ -59,6 +59,7 @@ namespace GomLib.ModelLoader
             //area.Id = (int)(area.DisplayNameId & 0x7FFFFFFF);
             //area.CommentableId = Guid.NewGuid();
             area.Name = strTable.GetText(area.DisplayNameId, "MapArea." + area.DisplayNameId);
+            area.LocalizedName = strTable.GetLocalizedText(area.DisplayNameId, "MapArea." + area.DisplayNameId);
             area.AreaId = obj.ValueOrDefault<ulong>("mapAreasDataAreaId", 0);
             area.Id = (long)area.AreaId; //(long)(area.AreaId >> 32);
             if (area.Id == 0)

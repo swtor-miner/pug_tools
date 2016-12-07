@@ -302,7 +302,7 @@ namespace GomLib
         public void Load()
         {
             if (IsLoaded) { return; }
-            if (this.Name == "chrPaidPermissionDefsTablePrototype") { return; } //bandaid, need to probe this failure.
+            //if (this.Name == "chrPaidPermissionDefsTablePrototype") { return; } //bandaid, need to probe this failure. Probed. Was a 0xD0 variable length int error.
             //if (IsUnloaded) { throw new InvalidOperationException("Cannot reload object once it's unloaded"); } //Fuck you yes I can reload it.
 
             if ((NumGlommed > 0) || (ObjectSizeInFile > 0))
@@ -341,6 +341,7 @@ namespace GomLib
                 using (var ms = new System.IO.MemoryStream(buffer))
                 using (var br = new GomBinaryReader(ms, _dom))
                 {
+                    //System.IO.File.WriteAllBytes("j://tempfile.txt", buffer);
                     ms.Position = Zeroes;
                     this.GlommedClasses = new List<DomClass>();
                     for (var glomIdx = 0; glomIdx < NumGlommed; glomIdx++)
