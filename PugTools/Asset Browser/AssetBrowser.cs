@@ -1483,7 +1483,7 @@ namespace tor_tools
         {
             //Reload hash list to ensure other code is unaffected.
             HashDictionaryInstance.Instance.Unload();
-            HashDictionaryInstance.Instance.Load();
+            //HashDictionaryInstance.Instance.Load();
 
             if (panelRender != null)
             {
@@ -1540,6 +1540,8 @@ namespace tor_tools
                 
         private async void testHashFiles(string singleFile = null)
         {
+            this.hashData.dictionary.SaveHashList();
+            return;
             foundFiles.Clear();
             string[] testFiles;
             if (singleFile != null)
@@ -1551,28 +1553,54 @@ namespace tor_tools
                 foreach (string file in testFiles)
                 {
                     HashSet<string> testLines = new HashSet<string>();
-                    string[] lines = System.IO.File.ReadAllLines(file);
-                    foreach (var line in lines)
+                    if (file.EndsWith(".bin")) //import jedipedia hashes.bin format
                     {
-                        if (line.Contains("#")) //old hash dict format
+                        using (System.IO.FileStream fs = new FileStream(file, FileMode.Open))
                         {
-                            string[] temp = line.Split('#');
-                            if (temp.Length < 3 || temp[2].Length == 0)
-                                continue;
-                            else
-                                testLines.Add(temp[2].ToLower());
+                            using (BinaryReader br = new BinaryReader(fs))
+                            {
+                                while (br.BaseStream.Position != br.BaseStream.Length)
+                                {
+                                    br.ReadUInt32(); //ph
+                                    br.ReadUInt32(); //sh
+                                    var len = br.ReadByte(); //filename length
+                                    var nul = br.ReadByte();
+                                    if (nul != 0x00)
+                                    {
+                                        string second_len = "????";
+                                    }
+                                    var filename = System.Text.Encoding.Default.GetString(br.ReadBytes(len));
+                                    testLines.Add(filename.ToLower());
+                                }
+                            }
                         }
-                        else if (line.Contains("?")) //new hash dict format
+                    }
+                    else
+                    {
+
+                        string[] lines = System.IO.File.ReadAllLines(file);
+                        foreach (var line in lines)
                         {
-                            string[] temp = line.Split('?');
-                            if (temp.Length < 4 || temp[3].Length == 0)
-                                continue;
+                            if (line.Contains("#")) //old hash dict format
+                            {
+                                string[] temp = line.Split('#');
+                                if (temp.Length < 3 || temp[2].Length == 0)
+                                    continue;
+                                else
+                                    testLines.Add(temp[2].ToLower());
+                            }
+                            else if (line.Contains("?")) //new hash dict format
+                            {
+                                string[] temp = line.Split('?');
+                                if (temp.Length < 4 || temp[3].Length == 0)
+                                    continue;
+                                else
+                                    testLines.Add(temp[3].ToLower());
+                            }
                             else
-                                testLines.Add(temp[3].ToLower());
-                        }
-                        else
-                        {
-                            testLines.Add(line.ToLower());
+                            {
+                                testLines.Add(line.ToLower());
+                            }
                         }
                     }
 
@@ -1602,7 +1630,7 @@ namespace tor_tools
         private async void btnTestFile_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Text Files (.txt)|*.txt|All Files (*.*)|*.*";
+            ofd.Filter = "Text Files (.txt)|*.txt|Bin Files (.bin)|*.bin|All Files (*.*)|*.*";
             ofd.FilterIndex = 1;
             DialogResult result = ofd.ShowDialog();
             if (result == DialogResult.OK)
