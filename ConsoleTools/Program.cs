@@ -57,13 +57,13 @@ namespace ConsoleTools
             }
             else
             {
-                _client = new MongoClient();
+                _client = new MongoClient("mongodb://127.0.0.1:5151");
                 _database = _client.GetDatabase("torc_db");
 
                 Console.WriteLine(String.Join(", ", args));
                 if(args.Count() == 0)
                 {
-                    args = new string[]{ "5.0P6", "J:\\swtor_db\\", "J:\\swtor_db\\processed\\"};
+                    args = new string[]{ "5.0", "I:\\swtor\\", "J:\\swtor_db\\processed\\"};
                 }
                 patch = args[0];
                 patchDir = args[1];
@@ -74,6 +74,11 @@ namespace ConsoleTools
                 {
                     dom = new DataObjectModel(assets);
                     dom.version = patch;
+
+                    //DateTime time = new DateTime(1601, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+                    //time = time.AddSeconds(13176086400000 / 1000).ToLocalTime();
+                    //Console.WriteLine(time);
+                    //Console.ReadLine();
                     Console.WriteLine("Loading Assets");
                     dom.Load();
                     Smart.Link(dom, Console.WriteLine);
@@ -494,25 +499,17 @@ namespace ConsoleTools
             curIds = null;
             GC.Collect();
             CreateGzip(filename);
-            Dictionary<string, string> gameObjects = new Dictionary<string, string>
+            Dictionary<string, string> protoGameObjects = new Dictionary<string, string>
             {
-
-                {"ach.", "Achievement"},
-                {"abl.", "Ability"},
-                {"cdx.", "Codex"},
-                {"itm.", "Item"},
-                {"nco.", "Companion" },
-                {"npc.", "Npc" },
-                {"qst.", "Mission"},
-                {"tal.", "Talent"},
-                {"sche", "Schematic"},
+                { "GomLib.Models.Collection", "Collections" },
+                { "GomLib.Models.MtxStorefrontEntry", "MtxStoreFronts" },
             };
             if (iList.Count > 0)
             {
                 using (var progress = new ProgressBar())
                 {
                     string gameObj;
-                    gameObjects.TryGetValue(iList.First().Fqn.Substring(0, 4), out gameObj);
+                    protoGameObjects.TryGetValue(iList.First().pObj.GetType().ToString(), out gameObj);
                     if (!String.IsNullOrWhiteSpace(gameObj))
                     {
                         Console.Write(String.Format(" - Generating Tooltips. ({0})", ie));
@@ -868,7 +865,6 @@ namespace ConsoleTools
                                     icon = String.Format("icons/{0}", ((GomLib.Models.Item)t.obj).Icon);
                                     break;
                                 case "GomLib.Models.Collection":
-                                    break;
                                     icon = String.Format("mtxstore/{0}_260x260", ((GomLib.Models.Collection)t.pObj).Icon);
                                     break;
                                 case "GomLib.Models.MtxStorefrontEntry":
