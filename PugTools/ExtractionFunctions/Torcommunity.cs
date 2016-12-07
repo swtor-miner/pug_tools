@@ -533,13 +533,13 @@ namespace tor_tools
             {
                 var abl = pAbl.Ability;
                 abl.Level = pAbl.Level;
-                path.Add(abl.Level, AbilityToMinifiedJSON(abl));
+                path[abl.Level] = AbilityToMinifiedJSON(abl);
             }
             foreach (var pTal in dis.PathAbilities.PackageTalents)
             {
                 var tal = pTal.Talent;
                 var level = (int)pTal.Level;
-                path.Add(level, TalentToMinifiedJSON(tal, level));
+                path[level] = TalentToMinifiedJSON(tal, level);
             }
             var disUtilityLevelsPrototype = currentDom.GetObject("disUtilityLevelsPrototype");
             var disUtilityLevelsLookup = disUtilityLevelsPrototype.Data.ValueOrDefault<Dictionary<object, object>>("disUtilityLevelsLookup").ToDictionary(x => Convert.ToInt32(x.Key), x => Convert.ToInt32(x.Value));
