@@ -35,7 +35,9 @@ namespace GomLib.Models
 
         [JsonIgnore]
         public List<string> RoomNames { get; set; }
+        [JsonIgnore]
         internal Dictionary<string, RoomDat> _Rooms { get; set; }
+        [JsonIgnore]
         public Dictionary<string, RoomDat> Rooms
         {
             get
@@ -47,15 +49,28 @@ namespace GomLib.Models
                 return _Rooms;
             }
         }
+        public Dictionary<string, string> B62RoomIds
+        {
+            get
+            {
+                if (_Rooms == null)
+                {
+                    LoadRooms();
+                }
+                return _Rooms.ToDictionary(x => x.Key, x => x.Value.Base62Id);
+            }
+        }
 
         public void LoadRooms()
         {
             if (_Rooms == null)
             {
                 _Rooms = new Dictionary<string, RoomDat>();
+                int i = 0;
                 foreach (var room in RoomNames)
                 {
-                    _Rooms.Add(room, _dom.roomDatLoader.Load(room, this));
+                    _Rooms.Add(room, _dom.roomDatLoader.Load(room, i, this));
+                    i++;
                 }
             }
         }

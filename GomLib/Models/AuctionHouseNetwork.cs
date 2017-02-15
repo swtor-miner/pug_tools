@@ -8,6 +8,7 @@ namespace GomLib.Models
     public enum AuctionHouseNetwork
     {
         None = 0,
+        Both = 1,
         Empire = 2,
         Republic = 3,
         Neutral = 4
@@ -22,6 +23,7 @@ namespace GomLib.Models
             switch (str)
             {
                 case "ahNetworkNone": return AuctionHouseNetwork.None;
+                case "ahNetworkBoth": return AuctionHouseNetwork.Both;
                 case "ahNetworkEmpire": return AuctionHouseNetwork.Empire;
                 case "ahNetworkRepublic": return AuctionHouseNetwork.Republic;
                 case "ahNetworkNeutral": return AuctionHouseNetwork.Neutral;
@@ -37,6 +39,7 @@ namespace GomLib.Models
             switch (val.Value)
             {
                 case 0: return AuctionHouseNetwork.None;
+                case 1: return AuctionHouseNetwork.Both;
                 case 2: return AuctionHouseNetwork.Empire;
                 case 3: return AuctionHouseNetwork.Republic;
                 case 4: return AuctionHouseNetwork.Neutral;

@@ -56,16 +56,16 @@ namespace GomLib
                 return;
             if (disposing)
             {
-                weaponPerLevel.Dispose();
-                abilityDamageTable.Dispose();
-                armorPerLevel.Dispose();
-                itemBudget.Dispose();
-                itemModifierPackageTablePrototype.Dispose();
+                if(weaponPerLevel != null) weaponPerLevel.Dispose();
+                if (abilityDamageTable != null) abilityDamageTable.Dispose();
+                if (armorPerLevel != null) armorPerLevel.Dispose();
+                if (itemBudget != null) itemBudget.Dispose();
+                if (itemModifierPackageTablePrototype != null) itemModifierPackageTablePrototype.Dispose();
                 //itemRating.Dispose();
                 //modificationNames.Dispose();
-                schematicVariationsPrototype.Dispose();
-                shieldPerLevel.Dispose();
-                questDifficulty.Dispose();
+                if (schematicVariationsPrototype != null) schematicVariationsPrototype.Dispose();
+                if (shieldPerLevel != null) shieldPerLevel.Dispose();
+                if (questDifficulty != null) questDifficulty.Dispose();
             }
             disposed = true;
         }

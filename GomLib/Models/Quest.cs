@@ -246,14 +246,14 @@ namespace GomLib.Models
         #endregion
 
             #region Quest Links
-            internal List<ulong> _QuestsNext { get; set; }
-            internal List<ulong> QuestsNext
+            internal SortedSet<ulong> _QuestsNext { get; set; }
+            internal SortedSet<ulong> QuestsNext
             {
                 get
                 {
                     if (_QuestsNext == null)
                     {
-                        _QuestsNext = new List<ulong>();
+                        _QuestsNext = new SortedSet<ulong>();
                         if (this.References != null)
                         {
                             if (this.References.ContainsKey("conversationEnds"))
@@ -289,14 +289,14 @@ namespace GomLib.Models
                 }
             }
 
-            internal List<ulong> _QuestsPrevious { get; set; }
-            internal List<ulong> QuestsPrevious
+            internal SortedSet<ulong> _QuestsPrevious { get; set; }
+            internal SortedSet<ulong> QuestsPrevious
             {
                 get
                 {
                     if (_QuestsPrevious == null)
                     {
-                        _QuestsPrevious = new List<ulong>();
+                        _QuestsPrevious = new SortedSet<ulong>();
                         if (this.References != null)
                         {
                             if (this.References.ContainsKey("conversationStarts"))

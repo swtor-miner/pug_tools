@@ -142,7 +142,7 @@ namespace GomLib.ModelLoader
                         page.MiniMapMaxZ = miniMaxCoord[2];
                     }
                     page.CalculateVolume();
-                    page.ExplorationType = mapPage.ValueOrDefault<ScriptEnum>("mapExplorationType", new ScriptEnum());
+                    page.ExplorationType = mapPage.ValueOrDefault<ScriptEnum>("mapExplorationType", new ScriptEnum()).ToString();
                     page.MountAllowed = mapPage.ValueOrDefault<bool>("mapMountAllowed", false);
                     page.IsHeroic = mapPage.ValueOrDefault<bool>("mapIsHeroic", false);
                     page.ParentId = mapPage.ValueOrDefault<long>("mapParentNameSId", 0);

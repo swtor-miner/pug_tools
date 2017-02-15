@@ -23,7 +23,7 @@ namespace GomLib.Models
         [Newtonsoft.Json.JsonIgnore]
         public DataObjectModel _dom { get; set; }
         [Newtonsoft.Json.JsonIgnore]
-        public Dictionary<string, List<ulong>> References { get; set; }
+        public Dictionary<string, SortedSet<ulong>> References { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         public Dictionary<string, List<string>> _B62References { get; set; }
         public Dictionary<string, List<string>> B62References {
@@ -140,6 +140,7 @@ namespace GomLib.Models
                 case "npp.": return gomItm._dom.appearanceLoader.Load(gomItm);
                 case "nco.": return gomItm._dom.newCompanionLoader.Load(gomItm);
                 case "spn.": return gomItm._dom.spawnerLoader.Load(gomItm);
+                case "plc.": return gomItm._dom.placeableLoader.Load(gomItm);
                 default:
                     return null;
             }
@@ -150,7 +151,7 @@ namespace GomLib.Models
             XElement references = new XElement("References");
             if (References != null)
             {
-                foreach (KeyValuePair<string, List<ulong>> entry in References)
+                foreach (KeyValuePair<string, SortedSet<ulong>> entry in References)
                 {
                     XElement tmpEle = new XElement(entry.Key);
                     foreach (ulong ele in entry.Value)

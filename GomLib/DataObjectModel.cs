@@ -172,6 +172,8 @@ namespace GomLib
 
             areaDatLoader = new FileLoaders.AreaDatLoader(this);
             roomDatLoader = new FileLoaders.RoomDatLoader(this);
+
+            GomLib.Models.Tooltip.Flush();
         }
 
         public void Dispose()
@@ -367,8 +369,8 @@ namespace GomLib
             GomObject testNode = this.GetObjectNoLoad(id);
             if (testNode != null)
             {
-                if (testNode.References == null) testNode.References = new Dictionary<string, List<ulong>>();
-                if (!testNode.References.ContainsKey(type)) testNode.References.Add(type, new List<ulong>());
+                if (testNode.References == null) testNode.References = new Dictionary<string, SortedSet<ulong>>();
+                if (!testNode.References.ContainsKey(type)) testNode.References.Add(type, new SortedSet<ulong>());
                 if (!testNode.References[type].Contains(reference)) testNode.References[type].Add(reference);
             }
         }
@@ -377,9 +379,20 @@ namespace GomLib
             GomObject testNode = this.GetObjectNoLoad(name); 
             if (testNode != null)
             {
-                if (testNode.References == null) testNode.References = new Dictionary<string, List<ulong>>();
-                if (!testNode.References.ContainsKey(type)) testNode.References.Add(type, new List<ulong>());
+                if (testNode.References == null) testNode.References = new Dictionary<string, SortedSet<ulong>>();
+                if (!testNode.References.ContainsKey(type)) testNode.References.Add(type, new SortedSet<ulong>());
                 if (!testNode.References[type].Contains(reference)) testNode.References[type].Add(reference);
+            }
+        }
+        public void AddCrossLinkRange(ulong id, string type, List<ulong> reference)
+        {
+            GomObject testNode = this.GetObjectNoLoad(id);
+            if (testNode != null)
+            {
+                if (testNode.References == null) testNode.References = new Dictionary<string, SortedSet<ulong>>();
+                if (!testNode.References.ContainsKey(type)) testNode.References.Add(type, new SortedSet<ulong>());
+                testNode.References[type].UnionWith(reference);
+                testNode.References[type].Remove(id); //remove self references
             }
         }
 
@@ -640,6 +653,10 @@ namespace GomLib
                         var domType = loader.Load(defReader);
                         domType._dom = this;
                         domType.Id = defId;
+                        if(defId == 16141050636868461855)
+                        {
+                            string sfiino = "";
+                        }
                         if (!DomTypeMap.ContainsKey(domType.Id))
                         {
                             DomTypeMap.Add(domType.Id, domType);

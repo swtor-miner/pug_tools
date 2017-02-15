@@ -24,6 +24,7 @@ namespace GomLib.Models
             }
         }
         public static Dictionary<long, Dictionary<string, string>> TooltipNameMap = new Dictionary<long, Dictionary<string, string>>();
+        public static void Flush() { TooltipNameMap = new Dictionary<long, Dictionary<string, string>>(); }
         public Tooltip() { }
         public Tooltip(ulong id, DataObjectModel dom) {
             _dom = dom;
@@ -262,7 +263,7 @@ namespace GomLib.Models
                     ));
             }
             //Reputation item
-            if (itm.TypeBitFlags.IsRepTrophy)
+            if (itm.TypeBitFlags.IsRepTrophy && itm.LocalizedRepFactionDictionary.Count() != 0)
             {
                 string repName = "";
                 if (itm.LocalizedRepFactionDictionary["Imperial"][Tooltip.language] != itm.LocalizedRepFactionDictionary["Republic"][Tooltip.language])
@@ -650,9 +651,15 @@ namespace GomLib.Models
                 Dictionary<string, XElement> enhancements = new Dictionary<string, XElement>();
                 for (var i = 0; i < itm.EnhancementSlots.Count; i++)
                 {
-                    string enhName = "unknown";
+                    string enhName = "";
                     if (itm.EnhancementSlots[i].DetailedSlot.LocalizedDisplayName != null)
                         enhName = itm.EnhancementSlots[i].DetailedSlot.LocalizedDisplayName[Tooltip.language];
+                    else if (itm.EnhancementSlots[i].Modification != null && itm.EnhancementSlots[i].Modification.AuctionSubCategory != null)
+                        enhName = itm.EnhancementSlots[i].Modification.AuctionSubCategory.LocalizedName[Tooltip.language];
+                    
+                    if(String.IsNullOrWhiteSpace(enhName))
+                        enhName = itm.EnhancementSlots[i].Slot.ToString();
+
                     enhancements.Add(enhName, itm.EnhancementSlots[i].ToHTML());
                 }
                 List<string> sortOrder = new List<string>
@@ -753,7 +760,7 @@ namespace GomLib.Models
 
             if (itm.RequiredReputationId != 0)
             {
-                string repString = GetLocalizedText(836131348283738);
+                string repString = GetLocalizedText(836131348283738, Tooltip.language, "Requires {1} standing with {0}");
                 tooltip.Add(new XElement("div",
                     XClass("torctip_main"),
                     String.Format(repString, itm.LocalizedRequiredReputationLevelName[Tooltip.language], itm.LocalizedRepFactionName[Tooltip.language]) //"Requires {1} standing with {0}"
@@ -897,7 +904,7 @@ namespace GomLib.Models
                 }
             }
             //Description
-            if (itm.Description != "")
+            if (!string.IsNullOrWhiteSpace(itm.Description))
             {
                 string itmDesc = itm.LocalizedDescription[Tooltip.language];
                 itmDesc = System.Text.RegularExpressions.Regex.Replace(itmDesc, @"\r\n?|\n", "\n");
@@ -1012,6 +1019,7 @@ namespace GomLib.Models
         private static XElement ToHTML(this SetBonusEntry itm)
         {
             string name = null;
+            if (itm == null) return new XElement("div", "set bonus not found");
             if (itm.LocalizedNameStrings != null)
                 itm.LocalizedNameStrings.TryGetValue(Tooltip.language, out name);
             if (!String.IsNullOrEmpty(name))
@@ -1461,10 +1469,16 @@ namespace GomLib.Models
                         string joiner = ",";
                         if (i == classes.Count - 1)
                             joiner = "";
-                        requiredClasses.Add(new XElement("span",
-                            XClass(String.Format("torc_cls_{0}", classes[i].GetFaction())),
-                            String.Format("{0}{1} ", classes[i].LocalizedName[Tooltip.language], joiner))                            
-                        );
+                        if(classes[i].LocalizedName == null)
+                            requiredClasses.Add(new XElement("span",
+                                XClass(String.Format("torc_cls_{0}", classes[i].GetFaction())),
+                                String.Format("{0}{1} ", classes[i].Name, joiner))
+                            );
+                        else
+                            requiredClasses.Add(new XElement("span",
+                                XClass(String.Format("torc_cls_{0}", classes[i].GetFaction())),
+                                String.Format("{0}{1} ", classes[i].LocalizedName[Tooltip.language], joiner))                            
+                            );
                     }
                     inner.Add(requiredClasses);
                 }
@@ -2608,6 +2622,7 @@ namespace GomLib.Models
 
         private static void AddTableToMap(StringTable table)
         {
+            if (table == null) return;
             foreach (var entry in table.data)
             {
                 Dictionary<string, string> tempDict = entry.Value.localizedText.ToDictionary(x => x.Key, x => x.Value.Replace("<<1>>", "{0}").Replace("<<2>>", "{1}"));

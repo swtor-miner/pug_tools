@@ -161,7 +161,7 @@ namespace GomLib.Models
                     (z <= MiniMapMaxZ) && (z <= MaxZ);
         }
 
-        public ScriptEnum ExplorationType { get; set; }
+        public string ExplorationType { get; set; }
 
         public override int GetHashCode()  //should be fixed.
         {

@@ -454,7 +454,7 @@ namespace GomLib.Models
                         _LocalizedRepFactionDictionary.Add("Republic", faction.LocalizedGroupRepublicTitle);
                     }
                     else
-                        return null;
+                        return new Dictionary<string, Dictionary<string, string>>();
                 }
                 return _LocalizedRepFactionDictionary;
             }
@@ -480,6 +480,10 @@ namespace GomLib.Models
                 _LocalizedRepFactionName = value;
             }
         }
+
+        public long RequiredPermission { get; set; }
+        public bool ReqArtEquipAuth { get; set; }
+        public long DisintegrateCmdXP { get; set; }
 
         [JsonIgnore]
         public string Tooltip
@@ -1483,6 +1487,7 @@ namespace GomLib.Models
             };
             }
         }
+
         public override XElement ToXElement(bool verbose)
         {
             XElement item = new XElement("Item",

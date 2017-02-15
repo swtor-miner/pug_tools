@@ -63,7 +63,7 @@ namespace GomLib.ModelLoader
             if (enc == null) { return null; }
 
             enc.Fqn = obj.Name;
-            enc.NodeId = obj.Id;
+            enc.Id = obj.Id;
             enc.References = obj.References;
 
             enc.Spawners = new Dictionary<string, string>();

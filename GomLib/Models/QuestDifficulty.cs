@@ -21,7 +21,8 @@ namespace GomLib.Models
         private void LoadData()
         {
             GomObject table = _dom.GetObject(tablePath);
-            Dictionary<object, object> tableData = table.Data.Get<Dictionary<object, object>>("qstExperienceMultiplierTable");
+            if (table == null) return;
+            Dictionary<object, object> tableData = table.Data.ValueOrDefault<Dictionary<object, object>>("qstExperienceMultiplierTable", new Dictionary<object, object>());
 
             table_data = tableData.ToDictionary(x => ((ScriptEnum)x.Key).ToString(), x => (float)x.Value);
         }
@@ -45,7 +46,7 @@ namespace GomLib.Models
                 return;
             if (disposing)
             {
-                table_data.Clear();
+                if(table_data != null) table_data.Clear();
                 table_data = null;
             }
             disposed = true;

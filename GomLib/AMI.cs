@@ -13,6 +13,7 @@ namespace GomLib
         private Dictionary<string, AMI> fqnMap;
         public Dictionary<long, AMIEntry> data;
         bool loaded = false;
+        bool load_failed = false;
 
         public AMI(DataObjectModel dom)
         {
@@ -25,6 +26,7 @@ namespace GomLib
             fqnMap = new Dictionary<string, AMI>();
             data = new Dictionary<long, AMIEntry>();
             loaded = false;
+            load_failed = false;
         }
 
         public AMIEntry Find(string fqn, long id)
@@ -78,6 +80,7 @@ namespace GomLib
 
         public void Load()
         {
+            if (load_failed) return;
             var amis = _dom.GetObjectsStartingWith("ami.");
 
             foreach (var ami in amis)
@@ -97,8 +100,10 @@ namespace GomLib
                 }
                 this.fqnMap.Add(table.Fqn, table);
             }
-
-            loaded = true;
+            if (this.fqnMap.Count == 0)
+                load_failed = true;
+            else
+                loaded = true;
         }
 
         public void UnLoad()

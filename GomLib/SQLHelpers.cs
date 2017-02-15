@@ -663,7 +663,7 @@ namespace GomLib
                 name = fqn.Split('.').Last();
             if (inc == null || inc.Count == 0)
             {
-                inc = new Dictionary<string, string>() {
+                return new Dictionary<string, string>() {
                     { "enMale", name },
                     //{ "enFemale", name },
                     { "frMale", name },
@@ -671,7 +671,6 @@ namespace GomLib
                     { "deMale", name },
                     { "deFemale", name }
                 };
-                return inc;
             }
             var reps = inc.Where(x => String.IsNullOrWhiteSpace(x.Value));
             foreach (var rep in reps.ToList())

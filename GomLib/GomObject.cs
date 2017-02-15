@@ -46,7 +46,7 @@ namespace GomLib
         public int DecompressedLength { get; set; }
         //public byte[] FirstBytes { get; set; }
 
-        public Dictionary<string, List<ulong>> References { get; set; }
+        public Dictionary<string, SortedSet<ulong>> References { get; set; }
         public Dictionary<ulong, string> FullReferences { get; set; }
 
         public override void Link(DataObjectModel dom)
@@ -307,35 +307,7 @@ namespace GomLib
 
             if ((NumGlommed > 0) || (ObjectSizeInFile > 0))
             {
-                byte[] buffer;
-
-                if (IsCompressed)
-                {
-                    int dataLen = 8 * NumGlommed + ObjectSizeInFile;
-                    int maxLen = dataLen + 8;
-                    buffer = new byte[maxLen];
-
-                    // Decompress DataBuffer
-                    using (var ms = new System.IO.MemoryStream(DataBuffer))
-                    using (var istream = new ICSharpCode.SharpZipLib.Zip.Compression.Streams.InflaterInputStream(ms, new ICSharpCode.SharpZipLib.Zip.Compression.Inflater(false)))
-                    {
-                        int readBytes = istream.Read(buffer, 0, maxLen);
-                        Zeroes = readBytes - dataLen;
-                        //istream.Read(buffer, 0, 0xF);
-                    }
-                }
-                else
-                {
-                    string path = String.Format("/resources/systemgenerated/prototypes/{0}.node", this.Id);
-                    TorLib.File protoFile = _dom._assets.FindFile(path);
-                    using (var fs = protoFile.Open())
-                    using (var br = new GomBinaryReader(fs, Encoding.UTF8, _dom))
-                    {
-                        br.ReadBytes(NodeDataOffset);
-                        buffer = br.ReadBytes(ObjectSizeInFile);
-                        Zeroes = 0;
-                    }
-                }
+                byte[] buffer = GetRawUncompressedNode();
 
                 // Load data from decompressed buffer
                 using (var ms = new System.IO.MemoryStream(buffer))
@@ -353,12 +325,62 @@ namespace GomLib
 
                     this._data = _dom.scriptObjectReader.ReadObject(this.DomClass, br, _dom);
                 }
+                //if(this.Id == 16141050636868461855)
+                //{
+                //    using (var stream = System.IO.File.OpenRead("j:\\16141050636868461855.uncompressed"))
+                //    using (var ms = new System.IO.MemoryStream(DataBuffer))
+                //    {
+                //        //using (var istream = new ICSharpCode.SharpZipLib.Zip.Compression.Streams.DeflaterOutputStream(ms, new ICSharpCode.SharpZipLib.Zip.Compression.Deflater()))
+                //        //{
+                //        //    stream.CopyTo(istream);
+                //            using (var output = System.IO.File.OpenWrite("j:\\16141050636868461855.compressed"))
+                //            {
+                //                ms.Position = 0;
+                //                ms.WriteTo(output);
+                //            }
+                //        //}
 
+                //    }
+                //}
                 //FirstBytes = buffer.Take(0xF).ToArray();
             }
 
             //this.DataBuffer = null; // Since we're loaded, we don't need to hold on to the compressed data anymore // Why the fuck shouldn't I unload the damn object and reclaim the memory. This idiocy prevented me from reloading it.
             IsLoaded = true;
+        }
+
+        public byte[] GetRawUncompressedNode()
+        {
+            byte[] buffer;
+            if (IsCompressed)
+            {
+                int dataLen = 8 * NumGlommed + ObjectSizeInFile;
+                int maxLen = dataLen + 8;
+                buffer = new byte[maxLen];
+
+                // Decompress DataBuffer
+                using (var ms = new System.IO.MemoryStream(DataBuffer))
+                using (var istream = new ICSharpCode.SharpZipLib.Zip.Compression.Streams.InflaterInputStream(ms, new ICSharpCode.SharpZipLib.Zip.Compression.Inflater(false)))
+                {
+                    int readBytes = istream.Read(buffer, 0, maxLen);
+                    Zeroes = readBytes - dataLen;
+                    //istream.Read(buffer, 0, 0xF);
+                }
+            }
+            else
+            {
+                string path = String.Format("/resources/systemgenerated/prototypes/{0}.node", this.Id);
+                TorLib.File protoFile = _dom._assets.FindFile(path);
+                using (var fs = protoFile.Open())
+                using (var br = new GomBinaryReader(fs, Encoding.UTF8, _dom))
+                {
+                    br.ReadBytes(NodeDataOffset);
+                    buffer = br.ReadBytes(ObjectSizeInFile);
+                    Zeroes = 0;
+                }
+            }
+
+            return buffer;
         }
 
         public void Unload()

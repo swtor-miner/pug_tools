@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using System.Xml;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
@@ -13,21 +14,27 @@ namespace GomLib.Models
         public Dictionary<string, string> LocalizedName { get; set; }
 
         public string ConversationFqn { get; set; }
+        [JsonConverter(typeof(ULongConverter))]
         public ulong CodexId { get; set; }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public Profession RequiredProfession { get; set; }
         public int RequiredProfessionLevel { get; set; }
         public bool IsBank { get; set; }
         public bool IsMailbox { get; set; }
         public bool IsAuctionHouse { get; set; }
         public bool IsEnhancementStation { get; set; }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public AuctionHouseNetwork AuctionNetwork { get; set; }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public Faction Faction { get; set; }
         public int LootLevel { get; set; }
         public long LootPackageId { get; set; }
         public long WonkaPackageId { get; set; }
         public int DifficultyFlags { get; set; }
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public PlaceableCategory Category { get; set; }
 
+        [JsonIgnore]
         public HydraScript HydraScript { get; set; }
         internal string _FqnCategory { get; set; }
         public string FqnCategory
@@ -171,11 +178,17 @@ namespace GomLib.Models
                         new SQLProperty("FqnCategory", "FqnCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("FqnSubCategory", "FqnSubCategory", "varchar(255) COLLATE utf8_unicode_ci NOT NULL", SQLPropSetting.AddIndex),
                         new SQLProperty("IsBank", "IsBank", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("MtxReward", "MtxReward", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("TitleReward", "TitleReward", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
-                        new SQLProperty("GsfReward", "GsfReward", "tinyint(1) NOT NULL", SQLPropSetting.AddIndex),
                     };
             }
         }
+
+        public string TemplateComment { get; set; }
+        public bool TemplateNoGlow { get; set; }
+        public long PropState { get; set; }
+        [JsonIgnore]
+        public ulong AbilitySpecOnUseId { get; set; }
+        public string AbilitySpecOnUseB62Id { get { return AbilitySpecOnUseId.ToMaskedBase62(); } }
+
+        public string Model { get; internal set; }
     }
 }

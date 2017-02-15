@@ -99,6 +99,7 @@ namespace nsHashDictionary
 
         ///  \todo Speed: move that to an SortedDictionnary?
         SortedList<string, SortedList<long, HashData>> hashList = new SortedList<string, SortedList<long, HashData>>();
+        Dictionary<long, HashSet<string>> masterArchiveHashList = new Dictionary<long, HashSet<string>>();
         //RedBlack hashtree = new RedBlack();
         HashSet<string> dirListing = new HashSet<string>();
         HashSet<string> fileListing = new HashSet<string>();
@@ -154,6 +155,7 @@ namespace nsHashDictionary
         public void AddHash(uint ph, uint sh, string name, int crc, string archiveName)
         {
             long sig = (((long)ph) << 32) + sh;
+            AddArchiveHashToMaster(sig, archiveName);
             if (!hashList[archiveName].ContainsKey(sig))
             {
                 hashList[archiveName].Add(sig, new HashData(ph, sh, name, crc, archiveName));
@@ -165,13 +167,28 @@ namespace nsHashDictionary
                 }
             }
             else
-
                 UpdateHash(ph, sh, name, crc, archiveName);
         }
 
         public void AddHash(uint ph, uint sh, string name, int crc, short archive)
         {
             AddHash(ph, sh, name, crc, ArchiveList[archive]);
+        }
+
+
+        private void AddArchiveHashToMaster(long sig, string archiveName)
+        {
+            if (masterArchiveHashList.ContainsKey(sig))
+                masterArchiveHashList[sig].Add(archiveName);
+            else
+                masterArchiveHashList.Add(sig, new HashSet<string>() { archiveName });
+        }
+
+        public void CreateArchiveHashMasterList()
+        {
+            foreach (var hList in hashList)
+                foreach (var sig in hList.Value.Keys)
+                    AddArchiveHashToMaster(sig, hList.Key);
         }
 
         public void LoadHash(uint ph, uint sh, string name, int crc, string archiveName)
@@ -198,14 +215,25 @@ namespace nsHashDictionary
         /// <param name="sh">sh value</param>
         /// <param name="name">equivalent of the hash as a string</param>
         /// <returns>0=not found, 1=already up-to-date, 2= name updated, 3=archive updated</returns>
-        public List<UpdateResults> UpdateHash(uint ph, uint sh, string name, int crc)
+        public List<UpdateResults> UpdateHash(uint ph, uint sh, string name, int crc, bool updates_only = false)
         {
             int i = 0;
             List<UpdateResults> result = new List<UpdateResults>();
-            while (i < hashList.Count)
+            long sig = (((long)ph) << 32) + sh;
+            HashSet<string> archives;
+            masterArchiveHashList.TryGetValue(sig, out archives);
+            if (archives != null)
             {
-                result.Add(UpdateHash(ph, sh, name, crc, hashList.Keys[i]));
-                i++;
+                foreach(var arch in archives) { 
+                    UpdateResults upd = UpdateHash(ph, sh, name, crc, arch);
+                    if (updates_only)
+                    {
+                        if ((int)upd > 1)
+                            result.Add(upd);
+                    }
+                    else
+                        result.Add(upd);
+                }
             }
             return result;
         }
@@ -481,7 +509,13 @@ namespace nsHashDictionary
                             br.Write((uint)(subHashList.Keys[i] >> 32)); //ph
                             br.Write((uint)(subHashList.Keys[i] & 0xFFFFFFFF)); //sh
                             br.Write(subHashList.Values[i].crc); //crc
-                            br.Write(ArchiveReverseList[subHashList.Values[i].archiveName]); //archive id
+                            short id;
+                            if (ArchiveReverseList.TryGetValue(subHashList.Values[i].archiveName, out id))
+                                br.Write(id); //archive id
+                            else
+                            {
+                                string sdofin = "";
+                            }
                             //br.Write((short)subHashList.Values[i].filename.Length);
                             br.Write(subHashList.Values[i].filename);
                             

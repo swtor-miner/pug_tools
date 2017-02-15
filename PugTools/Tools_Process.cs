@@ -1429,12 +1429,12 @@ namespace tor_tools
             return null;
         }
 
-        private static XElement ReferencesToXElement(Dictionary<string, List<ulong>> refs)
+        private static XElement ReferencesToXElement(Dictionary<string, SortedSet<ulong>> refs)
         {
             XElement references = new XElement("References");
             if (refs != null)
             {
-                foreach (KeyValuePair<string, List<ulong>> entry in refs)
+                foreach (KeyValuePair<string, SortedSet<ulong>> entry in refs)
                 {
                     XElement tmpEle = new XElement(entry.Key);
                     foreach (ulong ele in entry.Value)

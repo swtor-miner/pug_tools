@@ -58,7 +58,7 @@ namespace GomLib.ModelLoader
             //Console.WriteLine(obj.Name);
             pkg.Id = obj.Id;
             pkg._dom = _dom;
-
+            pkg.References = obj.References;
             pkg.BodyType = obj.Data.ValueOrDefault<string>("nppBodyType");
 
             var slotMap = obj.Data.ValueOrDefault<Dictionary<object, object>>("nppAppearanceSlotMap_ForPrototype", null);
@@ -104,7 +104,7 @@ namespace GomLib.ModelLoader
             pkg.Fqn = obj.Name;
             pkg.Id = obj.Id;
             pkg._dom = _dom;
-
+            pkg.References = obj.References;
             pkg.ColorScheme = obj.Data.ValueOrDefault<long>("ippColorScheme", 0);
             pkg.VOSoundTypeOverride = obj.Data.ValueOrDefault<string>("ippVOSoundTypeOverride", "");
             pkg.IPP = LoadAppSlot(obj.Data, "");

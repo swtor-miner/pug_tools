@@ -55,7 +55,8 @@ namespace GomLib.ModelLoader
             if (itm == null) { return null; }
 
             itm.Fqn = obj.Name;
-            //plc.NodeId = obj.Id;
+            itm.Id = obj.Id;
+            
             itm.References = obj.References;
 
             FieldList.UnionWith(obj.Data.Dictionary.Keys);

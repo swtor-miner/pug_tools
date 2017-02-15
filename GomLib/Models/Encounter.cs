@@ -10,7 +10,6 @@ namespace GomLib.Models
 {
     public class Encounter : GameObject
     {
-        public ulong NodeId { get; set; }
         public Dictionary<string,string> Spawners { get; set; }
 
         public HydraScript HydraScript { get; set; }

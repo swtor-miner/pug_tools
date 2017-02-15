@@ -21,14 +21,14 @@ namespace GomLib.FileLoaders
         {
         }
 
-        public RoomDat Load(string room, AreaDat area)
+        public RoomDat Load(string room, int offset, AreaDat area)
         {
             if (area == null) return null;
             var file = _dom._assets.FindFile(String.Format("/resources/world/areas/{0}/{1}.dat", area.AreaId, room.ToLower()));
             if (file == null) return null;
             Stream fileStream = file.OpenCopyInMemory();
             BinaryReader binReader = new BinaryReader(fileStream);
-            return Load(new RoomDat(room, area), binReader);
+            return Load(new RoomDat(room, offset, area), binReader);
         }
 
         public RoomDat Load(RoomDat room, BinaryReader br)
@@ -54,7 +54,6 @@ namespace GomLib.FileLoaders
                 uint settingsOffset = br.ReadUInt32();
 
                 ulong unknownUInt64 = br.ReadUInt64(); //Always 281479271743491 : (03 00 01 00 01 00 01 00)
-
                 uint fileNameLength = br.ReadUInt32();
                 string filename = ReadString(br, fileNameLength);
 

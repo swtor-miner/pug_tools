@@ -9,10 +9,11 @@ namespace GomLib.Models
 {
     public class RoomDat : PseudoGameObject, IEquatable<RoomDat>
     {
-        public RoomDat(string room, AreaDat area)
+        public RoomDat(string room, int id, AreaDat area)
         {
             Area = area;
             Room = room;
+            Id = area.Id + id;
         }
         [JsonConverter(typeof(ULongConverter))]
         public ulong AreaId { get; set; }

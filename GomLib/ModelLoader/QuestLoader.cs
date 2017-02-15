@@ -19,6 +19,8 @@ namespace GomLib.ModelLoader
         public Dictionary<long, long> experienceTable;
         //public Dictionary<QuestDifficulty, float> experienceDifficultyMultiplierTable;
 
+        public Dictionary<ulong, ClassSpec> classSpecTable;
+
         DataObjectModel _dom;
 
         public QuestLoader(DataObjectModel dom)
@@ -35,6 +37,7 @@ namespace GomLib.ModelLoader
             newfullQuestRewardsTable = new Dictionary<object, object>();
             fullCreditRewardsTable = new Dictionary<long, Dictionary<long, float>>();
             experienceTable = new Dictionary<long, long>();
+            classSpecTable = new Dictionary<ulong, ClassSpec>();
             //experienceDifficultyMultiplierTable = new Dictionary<QuestDifficulty, float>();
         }
 
@@ -219,7 +222,11 @@ namespace GomLib.ModelLoader
             {
                 foreach (var kvp in reqClasses)
                 {
-                    var spec = _dom.classSpecLoader.Load((ulong)kvp.Key);
+                    ClassSpec spec;
+                    if (!classSpecTable.TryGetValue((ulong)kvp.Key, out spec)) { 
+                        spec = _dom.classSpecLoader.Load((ulong)kvp.Key);
+                        classSpecTable.Add((ulong)kvp.Key, spec);
+                    }
                     var enabled = (bool)kvp.Value;
                     if (enabled)
                     {
@@ -333,7 +340,7 @@ namespace GomLib.ModelLoader
                 qst.Rewards.Add(reward);
             }
             qst.CreditRewardType = obj.Data.ValueOrDefault<long>("creditRewardType", 0);
-            if (qst.CreditRewardType != 0)
+            if (qst.CreditRewardType != 0 && fullCreditRewardsTable.ContainsKey(qst.CreditRewardType))
             {
                 qst.CreditsRewarded = fullCreditRewardsTable[qst.CreditRewardType][qst.XpLevel];
             }

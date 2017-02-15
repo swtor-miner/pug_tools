@@ -8306,4 +8306,12 @@
   <gom_type Id="4611686305674744000" name="qstRewardsNewInfoData" desc="" />
   <gom_type Id="4611686356790427001" name="qstCommandXP" desc="" />
   <gom_type Id="4611686356790457002" name="npcCommandXP" desc="" />
+  <gom_type Id="4611686356830357000" name="itmDisintegrateCmdXP" desc="" />
+
+  <!-- spawners -->
+  <gom_type Id="4611686344614400167" name ="spnWeightWrapper" desc=""/>
+  <gom_type Id="4611686080104478193" name ="spnWeightsTable" desc=""/>
+  <gom_type Id="4611686294700360002" name ="spnWeightIdTable" desc=""/>
+  <gom_type Id="4611686080104478192" name ="spnTotalWeightValue" desc=""/>
+  <gom_type Id="4611686029875809984" name ="spnFqnMap" desc=""/>
 </gom_types>

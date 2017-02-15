@@ -10,7 +10,7 @@ namespace GomLib.Models
 {
     public class Spawner : GameObject
     {
-        public SpawnerType SpawnerType { get; set; }
+        public string SpawnerType { get; set; }
         public List<GameObject> Entities { get; set; }
     }
 }

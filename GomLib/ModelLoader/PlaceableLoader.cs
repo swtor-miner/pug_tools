@@ -58,6 +58,12 @@ namespace GomLib.ModelLoader
             return Load(plc, obj);
         }
 
+        public Models.Placeable Load(GomObject obj)
+        {
+            Placeable plc = new Placeable();
+            return Load(plc, obj);
+        }
+
         public Models.Placeable Load(Models.Placeable plc, GomObject obj)
         {
             if (obj == null) { return null; }
@@ -123,6 +129,16 @@ namespace GomLib.ModelLoader
             {
                 //plc.HydraScript = HydraScriptLoader.Load(hydNodeId);
             }
+
+            plc.TemplateNoGlow = obj.Data.ValueOrDefault<bool>("plcTemplateNoGlow", false);
+
+            plc.PropState = obj.Data.ValueOrDefault<long>("plcPropState", 0);
+
+            plc.AbilitySpecOnUseId = obj.Data.ValueOrDefault<ulong>("plcAbilitySpecOnUse", 0);
+            
+            plc.TemplateComment = obj.Data.ValueOrDefault<string>("utlTemplateComment", null);
+
+            plc.Model = obj.Data.ValueOrDefault<string>("plcModel", null);
 
             Categorize(plc, obj);
 

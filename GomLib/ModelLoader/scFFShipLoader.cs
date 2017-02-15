@@ -38,7 +38,7 @@ namespace GomLib.ModelLoader
             if (obj == null) { return shp; }
             if (shp == null) { return null; }
 
-            if (shipMap.Count == 0)
+            if (shipMap != null && shipMap.Count == 0)
             {
                 GomObject masterMap = _dom.GetObject("MasterComponentMap");
                 if (masterMap != null)
@@ -204,7 +204,8 @@ namespace GomLib.ModelLoader
             shp.DefaultLoadout = new Dictionary<string, ulong>();
             if (defaultLoadoutData != null)
             {
-                object shipLoadoutMap = defaultLoadoutData[(ulong)shp.Id];
+                object shipLoadoutMap;
+                defaultLoadoutData.TryGetValue((ulong)shp.Id, out shipLoadoutMap);
                 if (shipLoadoutMap != null)
                 {
                     foreach (var slotList in (Dictionary<object, object>)shipLoadoutMap)

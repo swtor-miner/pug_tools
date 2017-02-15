@@ -1541,7 +1541,6 @@ namespace tor_tools
         private async void testHashFiles(string singleFile = null)
         {
             this.hashData.dictionary.SaveHashList();
-            return;
             foundFiles.Clear();
             string[] testFiles;
             if (singleFile != null)
@@ -1603,24 +1602,14 @@ namespace tor_tools
                             }
                         }
                     }
-
+                    this.hashData.dictionary.CreateArchiveHashMasterList();
                     foreach (string line in testLines)
                     {                        
                         hasher.Hash(line, 0xdeadbeef);
-                        List<UpdateResults> results = this.hashData.dictionary.UpdateHash(hasher.ph, hasher.sh, line, 0);
-                        foreach (UpdateResults result in results)
-                        {
-                            if (result == UpdateResults.UPTODATE)
-                            {
-                                continue;
-                            }
-
-                            if (result != UpdateResults.NOT_FOUND)
-                            {
-                                this.foundFiles.Add(line);
-                            }
-                        }
-                        results.Clear();
+                        IEnumerable<UpdateResults> results = this.hashData.dictionary.UpdateHash(hasher.ph, hasher.sh, line, 0, true);
+                        if(results.Count() > 0)
+                            this.foundFiles.Add(line);
+                        //results.Clear();
                     }
                     testLines.Clear();
                 }

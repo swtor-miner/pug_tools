@@ -58,6 +58,7 @@ namespace GomLib.ModelLoader
             model.DescriptionId = ((GomObjectData)disPrevObj).ValueOrDefault<long>("disPreviewDesc");
             var descTable = _dom.stringTable.Find("str.gui.disciplines");
             model.Description = descTable.GetText(model.DescriptionId, "str.gui.disciplines");
+            model.LocalizedDescription = descTable.GetLocalizedText(model.DescriptionId, "str.gui.disciplines");
 
             model.BaseAbilityIds = new Dictionary<ulong, int>();
             for (int i = 1; i < 5; i++)

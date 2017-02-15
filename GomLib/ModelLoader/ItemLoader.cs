@@ -62,37 +62,48 @@ namespace GomLib.ModelLoader
                 var proto = _dom.GetObject("qstRewardsInfoPrototype");
                 if (proto != null)
                 {
-                    Dictionary<object, object>  qstRewProto;
-                    if (proto.Data.ContainsKey(""))
+                    Dictionary<object, object>  table;
+                    if (proto.Data.ContainsKey("qstRewardsNewInfoData"))
                     {
-                        qstRewProto = proto.Data.Get<Dictionary<object, object>>("qstRewardsInfoData");
+                        table = proto.Data.ValueOrDefault<Dictionary<object, object>>("qstRewardsNewInfoData", null);
+                        if (proto.Data.ContainsKey("qstRewardsInfoData"))
+                        {
+                            foreach (var kvp in table = proto.Data.ValueOrDefault<Dictionary<object, object>>("qstRewardsInfoData", new Dictionary<object, object>()))
+                            {
+                                if(!table.ContainsKey(kvp.Key))
+                                    table.Add(kvp.Key, kvp.Value);
+                            }
+                        }
                     }
                     else
                     {
-                        qstRewProto = proto.Data.Get<Dictionary<object, object>>("qstRewardsNewInfoData");
+                        table = proto.Data.ValueOrDefault<Dictionary<object, object>>("qstRewardsInfoData", null);
                     }
-                    foreach (var kvp in qstRewProto)
+                    if (table != null)
                     {
-                        ulong qstId = (ulong)kvp.Key;
-                        List<GomObjectData> qRewards = ((List<object>)kvp.Value).ConvertAll(x => (GomObjectData)x);
-                        foreach (GomObjectData qReward in qRewards)
+                        foreach (var kvp in table)
                         {
-                            GomObjectData rewardLookup = qReward.ValueOrDefault<GomObjectData>("qstRewardData", null);
-                            if(rewardLookup == null)
+                            ulong qstId = (ulong)kvp.Key;
+                            List<GomObjectData> qRewards = ((List<object>)kvp.Value).ConvertAll(x => (GomObjectData)x);
+                            foreach (GomObjectData qReward in qRewards)
                             {
-                                rewardLookup = qReward;
-                                //continue;
-                            }
-                            ulong rewardItemId = rewardLookup.ValueOrDefault<ulong>("qstRewardItemId", 0);
-                            if (!questRewardRefs.ContainsKey(rewardItemId))
-                            {
-                                HashSet<ulong> l = new HashSet<ulong>();
-                                l.Add(qstId);
-                                questRewardRefs.Add(rewardItemId, l);
-                            }
-                            else
-                            {
-                                questRewardRefs[rewardItemId].Add(qstId);
+                                GomObjectData rewardLookup = qReward.ValueOrDefault<GomObjectData>("qstRewardData", null);
+                                if (rewardLookup == null)
+                                {
+                                    rewardLookup = qReward;
+                                    //continue;
+                                }
+                                ulong rewardItemId = rewardLookup.ValueOrDefault<ulong>("qstRewardItemId", 0);
+                                if (!questRewardRefs.ContainsKey(rewardItemId))
+                                {
+                                    HashSet<ulong> l = new HashSet<ulong>();
+                                    l.Add(qstId);
+                                    questRewardRefs.Add(rewardItemId, l);
+                                }
+                                else
+                                {
+                                    questRewardRefs[rewardItemId].Add(qstId);
+                                }
                             }
                         }
                     }
@@ -222,6 +233,9 @@ namespace GomLib.ModelLoader
                             itm.AppearanceImperial = itemAppearance.Id.ToMaskedBase62();
                             itm.VOModulationImperial = itemAppearance.Data.ValueOrDefault<string>("ippVOSoundTypeOverride", "noModulation");
                             itm.ImperialAppearanceTag = AppearanceTags(itemAppearance);
+                            DupeAppReferences(itm, itemAppearance, "similarBaseModel");
+                            DupeAppReferences(itm, itemAppearance, "similarAppearance");
+                            DupeAppReferences(itm, itemAppearance, "npcSporting", "npcWearingAppearance");
                         }
                         if (classNameLookup[(ulong)appearancePair.Key] == "Smuggler")
                         {
@@ -229,6 +243,9 @@ namespace GomLib.ModelLoader
                             itm.AppearanceRepublic = itemAppearance.Id.ToMaskedBase62();
                             itm.VOModulationRepublic = itemAppearance.Data.ValueOrDefault<string>("ippVOSoundTypeOverride", "noModulation");
                             itm.RepublicAppearanceTag = AppearanceTags(itemAppearance);
+                            DupeAppReferences(itm, itemAppearance, "similarBaseModel");
+                            DupeAppReferences(itm, itemAppearance, "similarAppearance");
+                            DupeAppReferences(itm, itemAppearance, "npcSporting", "npcWearingAppearance");
                         }
                         itemAppearance.Unload();
                     }
@@ -245,6 +262,9 @@ namespace GomLib.ModelLoader
                             itm.VOModulationRepublic = itm.VOModulationImperial;
                             itm.ImperialAppearanceTag = AppearanceTags(itemAppearance);
                             itm.RepublicAppearanceTag = itm.ImperialAppearanceTag;
+                            DupeAppReferences(itm, itemAppearance, "similarBaseModel");
+                            DupeAppReferences(itm, itemAppearance, "similarAppearance");
+                            DupeAppReferences(itm, itemAppearance, "npcSporting", "npcWearingAppearance");
                             itemAppearance.Unload();
                         }
                     }
@@ -263,7 +283,7 @@ namespace GomLib.ModelLoader
                 itm.LocalizedName = _dom.stringTable.TryGetLocalizedStrings(itm.Fqn, nameLookupData);
                 //itm.Name = _dom.stringTable.TryGetString(itm.Fqn, nameLookupData);
             }
-            Normalize.Dictionary(itm.LocalizedName, itm.Fqn, true);
+            itm.LocalizedName = Normalize.Dictionary(itm.LocalizedName, itm.Fqn, true);
             itm.Name = itm.LocalizedName["enMale"];
             itm.Name = itm.Name.Trim();
 
@@ -320,6 +340,8 @@ namespace GomLib.ModelLoader
                 itm.RequiredReputationId = (int)repContainer.ValueOrDefault<long>("itmRequiredReputations", 0);
                 itm.RequiredReputationLevelId = (int)repContainer.ValueOrDefault<long>("itmRequiredReputationLevel", 0);
             }
+            itm.RequiredPermission = gom.Data.ValueOrDefault<long>("itmReqPermission", 0);
+            itm.ReqArtEquipAuth = itm.RequiredPermission == 6;
 
             // Item is a recipe/schematic/mount
             object schematic = gom.Data.ValueOrDefault<object>("itmTeaches", null);
@@ -526,8 +548,33 @@ namespace GomLib.ModelLoader
             var authFlag = gom.Data.ValueOrDefault<long>("itmAuthBitFlags", 0);
             if (!authFlags.Contains(authFlag))
                 authFlags.Add(authFlag);
+            itm.DisintegrateCmdXP = gom.Data.ValueOrDefault<long>("itmDisintegrateCmdXP", 0);
             gom.Unload();
             return itm;
+        }
+
+        private static void DupeAppReferences(Item itm, GomObject itemAppearance, string key, string dupekey = "givenByItem")
+        {
+            if (itemAppearance.References == null)
+                return;
+            if (itemAppearance.References.ContainsKey(key))
+            {
+                if (itm.References == null)
+                    itm.References = new Dictionary<string, SortedSet<ulong>>();
+                if (!itm.References.ContainsKey(key))
+                    itm.References.Add(key, new SortedSet<ulong>());
+                if (itemAppearance.References.ContainsKey(dupekey))
+                    itm.References[key].UnionWith(itemAppearance.References[dupekey]);
+                if (itemAppearance.References[key].Count > 0)
+                {
+                    foreach (var refs in itemAppearance.References[key])
+                    {
+                        var obj = itm._dom.GetObjectNoLoad(refs);
+                        if (obj.References.ContainsKey(dupekey))
+                            itm.References[key].UnionWith(obj.References[dupekey]);
+                    }
+                }
+            }
         }
 
         public void LoadChildMap()

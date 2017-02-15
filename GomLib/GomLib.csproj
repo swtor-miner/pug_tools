@@ -94,6 +94,7 @@
     <Compile Include="DomType.cs" />
     <Compile Include="DomTypeLoaders\FileInstanceLoader.cs" />
     <Compile Include="ModelLoader\AreaDatLoader.cs" />
+    <Compile Include="ModelLoader\EffectLoader.cs" />
     <Compile Include="ModelLoader\SpawnerLoader.cs" />
     <Compile Include="ModelLoader\RoomDatLoader.cs" />
     <Compile Include="Gom.cs" />
@@ -167,6 +168,7 @@
     <Compile Include="Models\AchievementCategory.cs" />
     <Compile Include="Models\Appearances.cs" />
     <Compile Include="Models\AssetInstance.cs" />
+    <Compile Include="Models\Effect.cs" />
     <Compile Include="Models\RoomDat.cs" />
     <Compile Include="Models\AreaDat.cs" />
     <Compile Include="Models\CodexCatByFaction.cs" />
