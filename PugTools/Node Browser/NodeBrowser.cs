@@ -498,6 +498,8 @@ namespace tor_tools
             TreeNode node = treeViewFast1.SelectedNode;
             NodeAsset asset = (NodeAsset)node.Tag;                      
             WriteFile(new XDocument(new XElement(asset.obj.Print())), asset.obj.Name + ".xml", false, false);
+            byte[] buffer = asset.obj.GetRawUncompressedNode();
+            WriteFile(buffer, asset.obj.Name + ".node");
             MessageBox.Show("Extracted " + asset.obj.Name + " to " + this.extractPath);
         } 
         
@@ -517,7 +519,15 @@ namespace tor_tools
                 content.Save(file2, SaveOptions.None);
             } 
         }
-        
+
+        public void WriteFile(byte[] content, string filename)
+        {
+            if (content == null || content.Count() == 0) return;
+            filename = filename.Replace('/', '.');
+            if (!System.IO.Directory.Exists(this.extractPath)) { System.IO.Directory.CreateDirectory(this.extractPath); }
+            System.IO.File.WriteAllBytes(this.extractPath + filename, content);
+        }
+
         private async void btnSearch_Click(object sender, EventArgs e)
         {            
             this.toolStripStatusLabel1.Text = "Performing Search ...";
