@@ -1770,8 +1770,15 @@ namespace GomLib.Models
             XElement tooltip = new XElement("div", new XAttribute("class", "torctip_wrapper"));
             var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", icon));
 
-            if (itm != null && itm.Rewards != null)
+            if (itm != null)
             {
+                long points = 0;
+                if (itm.Rewards != null)
+                    points = itm.Rewards.AchievementPoints;
+                else
+                {
+                    string sofisndf = "";
+                }
                 tooltip.Add(new XElement("div",
                     new XAttribute("class", String.Format("torctip_image torctip_image_{0}", stringQual)),
                     new XElement("img",
@@ -1783,7 +1790,7 @@ namespace GomLib.Models
                             XClass("torctip_ach_star"),
                             " "
                         ),
-                        itm.Rewards.AchievementPoints
+                        points
                     )
 
                 ));

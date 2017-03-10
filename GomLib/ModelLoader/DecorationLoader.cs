@@ -247,8 +247,11 @@ namespace GomLib.ModelLoader
                             if (baseId != dec.Id) //self-referencing decoration check!
                             {
                                 var baseDecoration = _dom.decorationLoader.Load(baseId);
-                                dec.Name = String.Format("{0} - Holo", baseDecoration.Name);
-                                dec.SourceDict.Add(0, "Fallback");
+                                if (baseDecoration != null)
+                                {
+                                    dec.Name = String.Format("{0} - Holo", baseDecoration.Name);
+                                    dec.SourceDict.Add(0, "Fallback");
+                                }
                             }
                         }
                     }
