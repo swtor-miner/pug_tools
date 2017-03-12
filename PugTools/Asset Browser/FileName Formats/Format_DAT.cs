@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Xml.Linq;
 
 namespace tor_tools
 {
@@ -27,7 +28,7 @@ namespace tor_tools
             this.extension = ext;
         }        
 
-        public void parseDAT(Stream fileStream, string fullFileName)
+        public void parseDAT(Stream fileStream, string fullFileName, tor_tools.AssetBrowser form)
         {
             this.filename = fullFileName;
             bool oldFormat = true;
@@ -445,7 +446,8 @@ namespace tor_tools
         #endregion
         #region Old Format Readers
         public void parseAreaDAT(List<string> lines)
-        {   
+        {
+            return;
             string areaID = "";
             if (this.filename.Contains("/resources/world/areas"))
             {
@@ -523,7 +525,8 @@ namespace tor_tools
             }            
         }
         public void parseRoomDAT(List<string> lines)
-        {   
+        {
+            return;
             List<string> sectionNames = new List<string>(new string[] { "[INSTANCES]", "[VISIBLE]", "[SETTINGS]" });
 
             Dictionary<string, HashSet<string>> instances = new Dictionary<string, HashSet<string>>();
@@ -655,10 +658,95 @@ namespace tor_tools
             if (parts.ContainsKey("AnimMetadataFqn"))
             {
                 string[] temp = parts["AnimMetadataFqn"].Split(',');
+                TorLib.Assets assets = TorLib.AssetHandler.Instance.getCurrentAssets();
                 foreach (string item in temp)
                 {
-                    string tempName = "/resources/" + item;
-                    fileNames.Add(tempName.Replace('\\', '/').Replace("//", "/"));
+                    string tempName = "/resources/" + item.Replace('\\', '/').Replace("//", "/");
+                    fileNames.Add(tempName);
+                    if (parts.ContainsKey("AnimNetworkFolder"))
+                    {
+                        string netfold = string.Format("/resources/{0}", parts["AnimNetworkFolder"].Replace('\\', '/').Replace("//", "/"));
+                        var file = assets.FindFile(tempName);
+                        if (file != null)
+                        {
+                            try
+                            {
+                                using (var fileStream = file.OpenCopyInMemory())
+                                {
+                                    var doc = XDocument.Load(fileStream);
+
+                                    XElement aamElement = doc.Element("aam");
+                                    if (aamElement != null)
+                                    {
+                                        var actionElement = aamElement.Element("actions");
+                                        if (actionElement != null) {
+                                            var actionList = actionElement.Elements("action");
+
+                                            foreach (var action in actionList)
+                                            {
+                                                var actionName = action.Attribute("name").Value;
+                                                if (action.Attribute("actionProvider") != null)
+                                                {
+                                                    var actionProvider = action.Attribute("actionProvider").Value + ".mph";
+                                                    animFileNames.Add(netfold + actionProvider);
+                                                    animFileNames.Add(netfold + actionProvider + ".amx");
+                                                }
+                                                if (action.Attribute("animName") != null)
+                                                {
+                                                    var animationName = action.Attribute("animName").Value;
+                                                    if (actionName != animationName)
+                                                    {
+                                                        animationName += ".jba";
+
+                                                        animFileNames.Add(netfold + animationName);
+                                                    }
+                                                }
+                                                actionName += ".jba";
+                                                animFileNames.Add(netfold + actionName);
+                                            }
+                                        }
+
+                                        XElement networkElem = aamElement.Element("networks");
+                                        if (networkElem != null)
+                                        {
+                                            var networkList = networkElem.Descendants("literal");
+                                            foreach (var network in networkList)
+                                            {
+                                                var fqnName = network.Attribute("fqn").Value;
+                                                if (fqnName != null)
+                                                {
+                                                    animFileNames.Add(netfold + fqnName);
+                                                    animFileNames.Add(netfold + fqnName + ".amx");
+                                                }
+                                            }
+                                        }
+                                        var inputElement = aamElement.Element("inputs");
+                                        if (inputElement != null)
+                                        {
+                                            var inputList = inputElement.Elements("input").Descendants("value");
+                                            foreach (var input in inputList)
+                                            {
+                                                var fqnName = input.Attribute("name").Value;
+                                                if (fqnName != null)
+                                                {
+                                                    animFileNames.Add(netfold + fqnName);
+                                                    animFileNames.Add(netfold + fqnName + ".amx");
+                                                    animFileNames.Add(netfold + fqnName + ".jba");
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                errors.Add("File: " + tempName);
+                                errors.Add(ex.Message + ":");
+                                errors.Add(ex.StackTrace);
+                                errors.Add("");
+                            }
+                        }
+                    }
                 }
             }
 

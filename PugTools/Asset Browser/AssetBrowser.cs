@@ -1292,7 +1292,7 @@ namespace tor_tools
                     {
                         this.filesSearched++;
                         Stream assetStream = asset.hashInfo.file.OpenCopyInMemory();
-                        dat_reader.parseDAT(assetStream, asset.hashInfo.Directory + "/" + asset.hashInfo.FileName);
+                        dat_reader.parseDAT(assetStream, asset.hashInfo.Directory + "/" + asset.hashInfo.FileName, this);
                     }
                     this.namesFound = dat_reader.fileNames.Count;
                     dat_reader.WriteFile();                    

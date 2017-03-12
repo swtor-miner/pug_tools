@@ -157,173 +157,194 @@ namespace tor_tools
             spvpIcons.Clear();
 
             GomLib.GomObject shipDataProto = currentDom.GetObject("scFFShipsDataPrototype");
-            Dictionary<object, object> shipData = shipDataProto.Data.ValueOrDefault<Dictionary<object, object>>("scFFShipsData", null);
-            if (shipData != null)
+            if (shipDataProto != null)
             {
-                foreach (var item in (Dictionary<object, object>)shipData)
+                Dictionary<object, object> shipData = shipDataProto.Data.ValueOrDefault<Dictionary<object, object>>("scFFShipsData", null);
+                if (shipData != null)
                 {
-                    searched++;
-                    var item2 = (GomLib.GomObjectData)item.Value;
-                    object icon1_string;
-                    object icon2_string;
-                    item2.Dictionary.TryGetValue("scFFShipHullIcon", out icon1_string);
-                    item2.Dictionary.TryGetValue("scFFShipIcon", out icon2_string); 
-                    if (icon1_string != null)
+                    foreach (var item in (Dictionary<object, object>)shipData)
                     {
-                        fileNames.Add("/resources/gfx/icons/" + icon1_string + ".dds");
-                        fileNames.Add("/resources/gfx/textures/" + icon1_string + ".dds");                        
+                        searched++;
+                        var item2 = (GomLib.GomObjectData)item.Value;
+                        object icon1_string;
+                        object icon2_string;
+                        item2.Dictionary.TryGetValue("scFFShipHullIcon", out icon1_string);
+                        item2.Dictionary.TryGetValue("scFFShipIcon", out icon2_string);
+                        if (icon1_string != null)
+                        {
+                            fileNames.Add("/resources/gfx/icons/" + icon1_string + ".dds");
+                            fileNames.Add("/resources/gfx/textures/" + icon1_string + ".dds");
+                        }
+                        if (icon2_string != null)
+                        {
+                            fileNames.Add("/resources/gfx/icons/" + icon2_string + ".dds");
+                            fileNames.Add("/resources/gfx/textures/" + icon2_string + ".dds");
+                        }
                     }
-                    if (icon2_string != null)
-                    {
-                        fileNames.Add("/resources/gfx/icons/" + icon2_string + ".dds");
-                        fileNames.Add("/resources/gfx/textures/" + icon2_string + ".dds");                        
-                    }                    
+                    shipData.Clear();
                 }
-                shipData.Clear();
+                shipDataProto.Unload();
             }
-            shipDataProto.Unload();
 
             GomLib.GomObject shipColorOptionProto = currentDom.GetObject("scFFColorOptionMasterPrototype");
-            Dictionary<object, object> shipColors = shipColorOptionProto.Data.ValueOrDefault<Dictionary<object, object>>("scFFComponentColorUIData", null);
-            if (shipColors != null)
+            if (shipColorOptionProto != null)
             {
-                foreach (var item in (Dictionary<object, object>)shipColors)
+                Dictionary<object, object> shipColors = shipColorOptionProto.Data.ValueOrDefault<Dictionary<object, object>>("scFFComponentColorUIData", null);
+                if (shipColors != null)
                 {
-                    searched++;
-                    var item2 = (GomLib.GomObjectData)item.Value;
-                    object icon_string;
-                    item2.Dictionary.TryGetValue("scFFComponentColorIcon", out icon_string);
-                    if (icon_string != null)
+                    foreach (var item in (Dictionary<object, object>)shipColors)
                     {
-                        fileNames.Add("/resources/gfx/icons/" + icon_string + ".dds");
-                        fileNames.Add("/resources/gfx/textures/" + icon_string + ".dds");                        
+                        searched++;
+                        var item2 = (GomLib.GomObjectData)item.Value;
+                        object icon_string;
+                        item2.Dictionary.TryGetValue("scFFComponentColorIcon", out icon_string);
+                        if (icon_string != null)
+                        {
+                            fileNames.Add("/resources/gfx/icons/" + icon_string + ".dds");
+                            fileNames.Add("/resources/gfx/textures/" + icon_string + ".dds");
+                        }
                     }
+                    shipColors.Clear();
                 }
-                shipColors.Clear();
-            }
-            shipColorOptionProto.Unload();            
+                shipColorOptionProto.Unload();
+            }         
 
             GomLib.GomObject scffCrewProto = currentDom.GetObject("scffCrewPrototype");
-            Dictionary<object, object> shipCrew = scffCrewProto.Data.ValueOrDefault<Dictionary<object, object>>("scFFShipsCrewAndPatternData", null);
-            if (shipCrew != null)
+            if (scffCrewProto != null)
             {
-                foreach (var item in (Dictionary<object, object>)shipCrew)
+                Dictionary<object, object> shipCrew = scffCrewProto.Data.ValueOrDefault<Dictionary<object, object>>("scFFShipsCrewAndPatternData", null);
+                if (shipCrew != null)
                 {
-                    searched++;
-                    var item2 = (GomLib.GomObjectData)item.Value;
-                    object icon_string;
-                    item2.Dictionary.TryGetValue("scFFCrewIcon", out icon_string);
-                    if (icon_string != null)
+                    foreach (var item in (Dictionary<object, object>)shipCrew)
                     {
-                        fileNames.Add("/resources/gfx/icons/" + icon_string + ".dds");
-                        fileNames.Add("/resources/gfx/textures/" + icon_string + ".dds");                        
+                        searched++;
+                        var item2 = (GomLib.GomObjectData)item.Value;
+                        object icon_string;
+                        item2.Dictionary.TryGetValue("scFFCrewIcon", out icon_string);
+                        if (icon_string != null)
+                        {
+                            fileNames.Add("/resources/gfx/icons/" + icon_string + ".dds");
+                            fileNames.Add("/resources/gfx/textures/" + icon_string + ".dds");
+                        }
                     }
+                    shipCrew.Clear();
                 }
-                shipCrew.Clear();
+                scffCrewProto.Unload();
             }
-            scffCrewProto.Unload();
             
             GomLib.GomObject mtxStore = currentDom.GetObject("mtxStorefrontInfoPrototype");
-            Dictionary<object, object> mtxItems = mtxStore.Data.ValueOrDefault<Dictionary<object, object>>("mtxStorefrontData", null);
-            if (mtxItems != null)
+            if (mtxStore != null)
             {
-                foreach (var item in (Dictionary<object, object>)mtxItems)
+                Dictionary<object, object> mtxItems = mtxStore.Data.ValueOrDefault<Dictionary<object, object>>("mtxStorefrontData", null);
+                if (mtxItems != null)
                 {
-                    searched++;
-                    var item2 = (GomLib.GomObjectData)item.Value;
-                    object icon_string;
-                    item2.Dictionary.TryGetValue("mtxStorefrontIcon", out icon_string);
-                    if (icon_string != null)
+                    foreach (var item in (Dictionary<object, object>)mtxItems)
                     {
-                        string icon = icon_string.ToString().ToLower();
-                        fileNames.Add("/resources/gfx/icons/" + icon + ".dds");
-                        fileNames.Add("/resources/gfx/mtxstore/" + icon + "_120x120.dds");
-                        fileNames.Add("/resources/gfx/mtxstore/" + icon + "_260x400.dds");
-                        fileNames.Add("/resources/gfx/mtxstore/" + icon + "_260x260.dds");
-                        fileNames.Add("/resources/gfx/mtxstore/" + icon + "_328x160.dds");
-                        fileNames.Add("/resources/gfx/mtxstore/" + icon + "_400x400.dds");                        
+                        searched++;
+                        var item2 = (GomLib.GomObjectData)item.Value;
+                        object icon_string;
+                        item2.Dictionary.TryGetValue("mtxStorefrontIcon", out icon_string);
+                        if (icon_string != null)
+                        {
+                            string icon = icon_string.ToString().ToLower();
+                            fileNames.Add("/resources/gfx/icons/" + icon + ".dds");
+                            fileNames.Add("/resources/gfx/mtxstore/" + icon + "_120x120.dds");
+                            fileNames.Add("/resources/gfx/mtxstore/" + icon + "_260x400.dds");
+                            fileNames.Add("/resources/gfx/mtxstore/" + icon + "_260x260.dds");
+                            fileNames.Add("/resources/gfx/mtxstore/" + icon + "_328x160.dds");
+                            fileNames.Add("/resources/gfx/mtxstore/" + icon + "_400x400.dds");
+                        }
                     }
+                    mtxItems.Clear();
                 }
-                mtxItems.Clear();
+                mtxStore.Unload();
             }
-            mtxStore.Unload();
 
             GomLib.GomObject colCategoriesProto = currentDom.GetObject("colCollectionCategoriesPrototype");
-            Dictionary<object, object> colCats = colCategoriesProto.Data.ValueOrDefault<Dictionary<object, object>>("colCollectionCategoryData", null);
-            if (colCats != null)
+            if (colCategoriesProto != null)
             {
-                foreach (var item in (Dictionary<object, object>)colCats)
+                Dictionary<object, object> colCats = colCategoriesProto.Data.ValueOrDefault<Dictionary<object, object>>("colCollectionCategoryData", null);
+                if (colCats != null)
                 {
-                    searched++;
-                    var item2 = (GomLib.GomObjectData)item.Value;
-                    object icon_string;
-                    item2.Dictionary.TryGetValue("colCollectionCategoryIcon", out icon_string);
-                    if (icon_string != null)
+                    foreach (var item in (Dictionary<object, object>)colCats)
                     {
-                        string icon = icon_string.ToString().ToLower();
-                        fileNames.Add("/resources/gfx/icons/" + icon + ".dds");
-                        fileNames.Add("/resources/gfx/mtxstore/" + icon + "_120x120.dds");
-                        fileNames.Add("/resources/gfx/mtxstore/" + icon + "_260x400.dds");
-                        fileNames.Add("/resources/gfx/mtxstore/" + icon + "_260x260.dds");
-                        fileNames.Add("/resources/gfx/mtxstore/" + icon + "_328x160.dds");
-                        fileNames.Add("/resources/gfx/mtxstore/" + icon + "_400x400.dds");                        
+                        searched++;
+                        var item2 = (GomLib.GomObjectData)item.Value;
+                        object icon_string;
+                        item2.Dictionary.TryGetValue("colCollectionCategoryIcon", out icon_string);
+                        if (icon_string != null)
+                        {
+                            string icon = icon_string.ToString().ToLower();
+                            fileNames.Add("/resources/gfx/icons/" + icon + ".dds");
+                            fileNames.Add("/resources/gfx/mtxstore/" + icon + "_120x120.dds");
+                            fileNames.Add("/resources/gfx/mtxstore/" + icon + "_260x400.dds");
+                            fileNames.Add("/resources/gfx/mtxstore/" + icon + "_260x260.dds");
+                            fileNames.Add("/resources/gfx/mtxstore/" + icon + "_328x160.dds");
+                            fileNames.Add("/resources/gfx/mtxstore/" + icon + "_400x400.dds");
+                        }
                     }
+                    colCats.Clear();
                 }
-                colCats.Clear();
+                colCategoriesProto.Unload();
             }
-            colCategoriesProto.Unload();
 
             GomLib.GomObject colCollectionItemsProto = currentDom.GetObject("colCollectionItemsPrototype");
-            Dictionary<object, object> colItems = colCollectionItemsProto.Data.ValueOrDefault<Dictionary<object, object>>("colCollectionItemsData", null);
-            if (colItems != null)
+            if (colCollectionItemsProto != null)
             {
-                foreach (var item in (Dictionary<object, object>)colItems)
+                Dictionary<object, object> colItems = colCollectionItemsProto.Data.ValueOrDefault<Dictionary<object, object>>("colCollectionItemsData", null);
+                if (colItems != null)
                 {
-                    searched++;
-                    var item2 = (GomLib.GomObjectData)item.Value;
-                    object icon_string;
-                    item2.Dictionary.TryGetValue("colCollectionIcon", out icon_string);
-                    if (icon_string != null)
+                    foreach (var item in (Dictionary<object, object>)colItems)
                     {
-                        string icon = icon_string.ToString().ToLower();
-                        fileNames.Add("/resources/gfx/icons/" + icon + ".dds");
-                        fileNames.Add("/resources/gfx/mtxstore/" + icon + "_120x120.dds");
-                        fileNames.Add("/resources/gfx/mtxstore/" + icon + "_260x400.dds");
-                        fileNames.Add("/resources/gfx/mtxstore/" + icon + "_260x260.dds");
-                        fileNames.Add("/resources/gfx/mtxstore/" + icon + "_328x160.dds");
-                        fileNames.Add("/resources/gfx/mtxstore/" + icon + "_400x400.dds");                        
+                        searched++;
+                        var item2 = (GomLib.GomObjectData)item.Value;
+                        object icon_string;
+                        item2.Dictionary.TryGetValue("colCollectionIcon", out icon_string);
+                        if (icon_string != null)
+                        {
+                            string icon = icon_string.ToString().ToLower();
+                            fileNames.Add("/resources/gfx/icons/" + icon + ".dds");
+                            fileNames.Add("/resources/gfx/mtxstore/" + icon + "_120x120.dds");
+                            fileNames.Add("/resources/gfx/mtxstore/" + icon + "_260x400.dds");
+                            fileNames.Add("/resources/gfx/mtxstore/" + icon + "_260x260.dds");
+                            fileNames.Add("/resources/gfx/mtxstore/" + icon + "_328x160.dds");
+                            fileNames.Add("/resources/gfx/mtxstore/" + icon + "_400x400.dds");
+                        }
                     }
+                    colItems.Clear();
                 }
-                colItems.Clear();
+                colCollectionItemsProto.Unload();
             }
-            colCollectionItemsProto.Unload();
 
             GomLib.GomObject achCategoriesTable_Proto = currentDom.GetObject("achCategoriesTable_Prototype");
-            Dictionary<object, object> achCategories = achCategoriesTable_Proto.Data.ValueOrDefault<Dictionary<object, object>>("achCategoriesData", null);
-            if (achCategories != null)
+            if (achCategoriesTable_Proto != null)
             {
-                foreach (var item in (Dictionary<object, object>)achCategories)
+                Dictionary<object, object> achCategories = achCategoriesTable_Proto.Data.ValueOrDefault<Dictionary<object, object>>("achCategoriesData", null);
+                if (achCategories != null)
                 {
-                    searched++;
-                    var item2 = (GomLib.GomObjectData)item.Value;
-                    object icon_string1;
-                    object icon_string2;
-                    item2.Dictionary.TryGetValue("achCategoriesIcon", out icon_string1);
-                    if (icon_string1 != null)
+                    foreach (var item in (Dictionary<object, object>)achCategories)
                     {
-                        string icon = icon_string1.ToString().ToLower();
-                        fileNames.Add("/resources/gfx/icons/" + icon + ".dds");
+                        searched++;
+                        var item2 = (GomLib.GomObjectData)item.Value;
+                        object icon_string1;
+                        object icon_string2;
+                        item2.Dictionary.TryGetValue("achCategoriesIcon", out icon_string1);
+                        if (icon_string1 != null)
+                        {
+                            string icon = icon_string1.ToString().ToLower();
+                            fileNames.Add("/resources/gfx/icons/" + icon + ".dds");
+                        }
+                        item2.Dictionary.TryGetValue("achCategoriesCodexIcon", out icon_string2);
+                        if (icon_string2 != null)
+                        {
+                            string icon = icon_string2.ToString().ToLower();
+                            fileNames.Add("/resources/gfx/codex/" + icon + ".dds");
+                        }
                     }
-                    item2.Dictionary.TryGetValue("achCategoriesCodexIcon", out icon_string2);
-                    if (icon_string2 != null)
-                    {
-                        string icon = icon_string2.ToString().ToLower();
-                        fileNames.Add("/resources/gfx/codex/" + icon + ".dds");
-                    }
+                    achCategories.Clear();
                 }
-                achCategories.Clear();
+                achCategoriesTable_Proto.Unload();
             }
-            achCategoriesTable_Proto.Unload();
         } 
 
         public void WriteFile(bool outputAllDirs = false)
