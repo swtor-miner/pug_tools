@@ -69,10 +69,6 @@
     <Reference Include="DevILNet">
       <HintPath>..\DevILNet\bin\x64\Debug\DevILNet.dll</HintPath>
     </Reference>
-    <Reference Include="HashDictionary, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\TorArchive\bin\x64\Debug\HashDictionary.dll</HintPath>
-    </Reference>
     <Reference Include="MongoDB.Bson, Version=2.3.0.157, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MongoDB.Bson.2.3.0\lib\net45\MongoDB.Bson.dll</HintPath>
       <Private>True</Private>
@@ -93,6 +89,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -143,10 +140,22 @@
       <Project>{a147d4d8-1ea1-4bda-a388-ab843b037307}</Project>
       <Name>GomLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HashDictionary\HashDictionary.csproj">
+      <Project>{7d3858a9-1902-46b0-a121-c8b2f18806ed}</Project>
+      <Name>HashDictionary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TorArchive\TorLib.csproj">
       <Project>{f59df2f2-4e69-41e5-b63b-6d4abf2ca6e1}</Project>
       <Name>TorLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="patches.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="u_import.php">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -12,6 +12,9 @@ using Newtonsoft.Json;
 using System.IO.Compression;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Xml.Linq;
+using System.Diagnostics;
+using System.Drawing.Drawing2D;
 
 namespace ConsoleTools
 {
@@ -20,6 +23,7 @@ namespace ConsoleTools
         public static string patch;
         public static string patchDir;
         public static string outputDir;
+        public static bool processAll;
         public static DataObjectModel dom;
         public static MongoClient _client;
         public static IMongoDatabase _database;
@@ -33,23 +37,58 @@ namespace ConsoleTools
             { "Classes", "classspec"},
             { "CodexEntries", "codex"},
             { "Collections", "collection"},
+            { "Companions", "companion"},
             { "Conquests", "conquest"},
             { "Conversations", "conversation"},
             { "Decorations", "decoration"},
+            { "Encounters", "encounter" },
             { "Ships", "gsf"},
             { "Items", "item"},
+            //{ "ItemAppearances", "ipp" },
             { "Quests", "mission"},
             { "MtxStoreFronts", "mtx"},
             { "NewCompanions", "newcompanion"},
             { "Npcs", "npc"},
+            //{ "NpcAppearances", "npp" },
+            { "Placeables", "object"},
             { "Schematics", "schematic"},
             { "SetBonuses", "setbonus"},
+            { "Spawners", "spawner" },
             { "Strongholds", "stronghold"},
             { "Talents", "talent"}
         };
-        
+
+        static void OutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
+        {
+            //* Do your stuff with the output (write to console/log/StringBuilder)
+            Console.WriteLine(outLine.Data);
+
+        }
+
+        public static void ProbeCache()
+        {
+            TorLib.Assets assets = new TorLib.Assets("I:\\swtor\\5.0\\assets\\");
+            assets.Load(false);
+            if (assets != null)
+            {
+                dom = new DataObjectModel(assets);
+            }
+
+                using (FileStream fs = File.Open("I:\\swtor\\5.0\\swtor\\DiskCacheArena", FileMode.Open))
+            {
+                using (GomBinaryReader br = new GomBinaryReader(fs, dom))
+                {
+                    //br.BaseStream.Position = 1007427584;
+                    //var bytes = br.ReadBytes(129032);Offset: 872,456,192, Length: 16,384
+                    dom.ReadAllItems(br, 872456192);
+                }
+            }
+                
+        }
+
         static void Main(string[] args)
         {
+            //ProbeCache();
             if(args == null)
             {
                 Console.WriteLine("Missing Arguments");
@@ -57,75 +96,306 @@ namespace ConsoleTools
             }
             else
             {
-                _client = new MongoClient("mongodb://127.0.0.1:5151");
+                //_client = new MongoClient("mongodb://127.0.0.1:5151"); //mongotunnel
+                MongoClientSettings settings = new MongoClientSettings();
+                settings.WaitQueueSize = int.MaxValue;
+                settings.WaitQueueTimeout = new TimeSpan(0, 2, 0);
+                //settings.Server = new MongoServerAddress("127.0.0.1", 27017);
+                settings.Server = new MongoServerAddress("127.0.0.1", 5151);
+                _client = new MongoClient(settings); //local mongodb
                 _database = _client.GetDatabase("torc_db");
 
                 Console.WriteLine(String.Join(", ", args));
                 if(args.Count() == 0)
                 {
-                    args = new string[]{ "5.0", "I:\\swtor\\", "J:\\swtor_db\\processed\\"};
+                    args = new string[]{ "5.4PTS3", "e:\\swtor_db\\patches\\", "J:\\swtor_db\\processed\\", "false"};
                 }
                 patch = args[0];
                 patchDir = args[1];
                 outputDir = String.Format("{0}{1}\\", args[2], patch);
+                bool.TryParse(args[3], out processAll);
 
-                TorLib.Assets assets = TorLib.AssetHandler.Instance.getCurrentAssets(String.Format("{0}{1}\\Assets\\", patchDir, patch));
-                if (assets != null)
+                if (processAll)
                 {
-                    dom = new DataObjectModel(assets);
-                    dom.version = patch;
+                    var patches = System.Xml.Linq.XDocument.Load(@"pts.xml"); //@"patches.xml");
+                    var nodes = patches.Element("patches").Elements("patch");
+                    //HashSet<string> filenames = new HashSet<string>();
+                    //string[] langs = { "en-us", "fr-fr", "de-de"};
+                    //string[] gameObjects = {
+                    //    "Achievement",
+                    //    "Ability",
+                    //    "Codex",
+                    //    "Item",
+                    //    "Companion" ,
+                    //    "Npc" ,
+                    //    "Mission",
+                    //    "Talent",
+                    //    "Schematic",
+                    //    "Collections" ,
+                    //    "MtxStoreFronts",
+                    //};
+                    //using (var compressStream = new MemoryStream())
+                    //{
+                    //    //create the zip in memory
+                    //    using (var zipArchive = new ZipArchive(compressStream, ZipArchiveMode.Create, true))
+                    //    {
+                    //        foreach (var node in nodes.Reverse())
+                    //        {
+                    //            patch = node.Attribute("version").Value;
+                    //            string filename = "";
+                    //            Console.WriteLine(patch);
+                    //            foreach (var type in gameObjects) {
+                    //                foreach (var lang in langs)
+                    //                {
+                    //                    filename = String.Format("{0}{1}\\tooltips\\{2}tips({3}).zip", args[2], patch, type, lang);
+                    //                    if (!File.Exists(filename))
+                    //                        continue;
+                    //                    using (ZipArchive oldArchive = System.IO.Compression.ZipFile.OpenRead(filename)) {
+                    //                        foreach(var entry in oldArchive.Entries)
+                    //                        {
+                    //                            if (filenames.Contains(entry.FullName)) continue;
+                    //                            filenames.Add(entry.FullName);
+                    //                            var newEntry = zipArchive.CreateEntry(entry.FullName, CompressionLevel.Optimal);
+                    //                            using (var str = newEntry.Open())
+                    //                            using (var ostr = entry.Open()) {
+                    //                                ostr.CopyTo(str);
+                    //                            }
+                    //                        }
+                    //                    }
+                    //                }
+                    //            }
+                    //            filename = String.Format("{0}{1}\\newIcons.zip", args[2], patch);
+                    //            if (!File.Exists(filename))
+                    //                continue;
+                    //            using (ZipArchive oldArchive = System.IO.Compression.ZipFile.OpenRead(filename))
+                    //            {
+                    //                foreach (var entry in oldArchive.Entries)
+                    //                {
+                    //                    if (filenames.Contains(entry.FullName)) continue;
+                    //                    filenames.Add(entry.FullName);
+                    //                    var newEntry = zipArchive.CreateEntry(entry.FullName, CompressionLevel.Optimal);
+                    //                    using (var str = newEntry.Open())
+                    //                    using (var ostr = entry.Open())
+                    //                    {
+                    //                        ostr.CopyTo(str);
+                    //                    }
+                    //                }
+                    //            }
+                    foreach (var node in nodes)
+                    {
+                        patch = node.Attribute("version").Value;
+                        if (node.Attribute("processed") != null)
+                        {
+                            Console.WriteLine(String.Format("Skipping {0}", patch));
+                            continue;
+                        }
+                        Console.Write(String.Format("Starting {0}", patch));
+                        outputDir = String.Format("{0}{1}\\", args[2], patch);
+                        var start = DateTime.Now;
 
-                    //DateTime time = new DateTime(1601, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
-                    //time = time.AddSeconds(13176086400000 / 1000).ToLocalTime();
-                    //Console.WriteLine(time);
-                    //Console.ReadLine();
-                    Console.WriteLine("Loading Assets");
-                    dom.Load();
-                    Smart.Link(dom, Console.WriteLine);
+                        //if (Int32.Parse(patch) < 175)
+                        //    continue;
+                        //FindFile(String.Format("\\resources\\world\\areas\\{0}\\area.dat", 4611686303442284043), String.Format("{0}{1}\\Assets\\", patchDir, patch), patch);
+                        
+                        //_client = new MongoClient("mongodb://127.0.0.1:27017"); //local mongodb
+                        //_database = _client.GetDatabase("torc_db");
 
-                    getObjects("class.pc.advanced", "AdvancedClasses");
-                    getPrototypeObjects("Conquests", "wevConquestInfosPrototype", "wevConquestTable");
-                    getObjects("abl.", "Abilities");
-                    if (dom.GetObjectsStartingWith("pkg.abilities").Count > 0)
-                        getObjects("pkg.abilities", "AbilityPackages");
-                    else
-                        getObjects("apn.", "AbilityPackages");
-                    getObjects("ach.", "Achievements");
-                    getObjects("apt.", "Strongholds");
-                    getObjects("spn.", "Spawners");
-                    getPrototypeObjects("Areas", "mapAreasDataProto", "mapAreasDataObjectList"); // getAreas();
-                    getObjects("cdx.", "CodexEntries");
-                    getObjects("class.", "Classes");
-                    getObjects("cnv.", "Conversations");
-                    getObjects("dec.", "Decorations");
-                    getObjects("eff.", "Effects");
-                    getObjects("itm.", "Items");
-                    getObjects("npc.", "Npcs");
-                    getObjects("qst.", "Quests");
-                    getObjects("schem.", "Schematics");
-                    getPrototypeObjects("SetBonuses", "itmSetBonusesPrototype", "itmSetBonuses");
-                    getObjects("tal.", "Talents");
-                    getPrototypeObjects("Collections", "colCollectionItemsPrototype", "colCollectionItemsData");
+                        FileStream ostrm;
+                        StreamWriter writer;
+                        TextWriter oldOut = Console.Out;
+                        try
+                        {
+                            var filename = String.Format("{0}console_tools.log", outputDir);
+                            if (!System.IO.Directory.Exists(outputDir)) { System.IO.Directory.CreateDirectory(outputDir); }
+                            ostrm = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.Write);
+                            writer = new StreamWriter(ostrm);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine("Cannot open Redirect.txt for writing");
+                            Console.WriteLine(e.Message);
+                            return;
+                        }
+                        Console.SetOut(writer);
+                        Console.WriteLine(start.ToString());
 
-                    TorLib.HashDictionaryInstance.Instance.Unload();
-                    TorLib.HashDictionaryInstance.Instance.Load();
-                    TorLib.HashDictionaryInstance.Instance.dictionary.CreateHelpers();
-                    getObjects("nco.", "NewCompanions");
-                    getPrototypeObjects("Companions", "chrCompanionInfo_Prototype", "chrCompanionInfoData");
-                    getPrototypeObjects("MtxStoreFronts", "mtxStorefrontInfoPrototype", "mtxStorefrontData");
+                        ProcessAssets(String.Format("{0}{1}\\Assets\\", patchDir, patch));
 
-                    //Reload hash dict.
-                    TorLib.HashDictionaryInstance.Instance.Unload();
-                    TorLib.HashDictionaryInstance.Instance.Load();
-                    TorLib.HashDictionaryInstance.Instance.dictionary.CreateHelpers();
-                    getPrototypeObjects("Ships", "scFFShipsDataPrototype", "scFFShipsData");
-                    getIcons();
+                        using (Process deltaProcess = new Process())
+                        {
+                            //Maybe this shouldn't be hard coded? Could do this in memory instead to.
+                            deltaProcess.StartInfo.FileName = "php.exe";
+
+                            deltaProcess.StartInfo.CreateNoWindow = false;
+                            deltaProcess.StartInfo.UseShellExecute = false;
+                            deltaProcess.StartInfo.RedirectStandardOutput = true;
+                            deltaProcess.StartInfo.RedirectStandardError = true;
+                            deltaProcess.StartInfo.WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                            deltaProcess.StartInfo.Arguments = String.Format("{0} {1}", "u_import.php", outputDir);
+                            deltaProcess.Start();
+                            string output = deltaProcess.StandardOutput.ReadToEnd();
+                            Console.WriteLine(output);
+                            deltaProcess.WaitForExit();
+                        }
+                        //Console.SetOut(oldOut);
+                        using (Process dumpProcess = new Process())
+                        {
+                            //Maybe this shouldn't be hard coded? Could do this in memory instead to.
+                            dumpProcess.StartInfo.FileName = "mongodump.exe";
+
+                            dumpProcess.StartInfo.CreateNoWindow = false;
+                            dumpProcess.StartInfo.UseShellExecute = false;
+                            dumpProcess.StartInfo.RedirectStandardOutput = true;
+                            dumpProcess.StartInfo.RedirectStandardError = true;
+                            dumpProcess.StartInfo.WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                            dumpProcess.StartInfo.Arguments = String.Format("--gzip --out {0}backup\\", outputDir);
+                            dumpProcess.OutputDataReceived += new DataReceivedEventHandler(OutputHandler);
+                            dumpProcess.ErrorDataReceived += new DataReceivedEventHandler(OutputHandler);
+                            dumpProcess.Start();
+                            dumpProcess.BeginOutputReadLine();
+                            dumpProcess.BeginErrorReadLine();
+                            dumpProcess.WaitForExit();
+                        }
+                        //Console.SetOut(writer);
+                        var end = DateTime.Now;
+                        var span = end - start;
+                        Console.WriteLine(String.Format("Processed in {0} seconds", Math.Round(span.TotalSeconds, 2)));
+                        Console.WriteLine(end.ToString());
+                        node.Add(new XAttribute("processed", true));
+                        using (System.IO.StreamWriter file2 = new System.IO.StreamWriter(@"patches.xml"))
+                        {
+                            patches.Save(file2, SaveOptions.None);
+                        }
+                        Console.SetOut(oldOut);
+                        Console.WriteLine(" - Finished");
+                        writer.Close();
+                        ostrm.Close();
+                    }
+                    //    }
+                    //    outputDir = args[2];
+                    //    compressStream.Position = 0;
+                    //    WriteFile(compressStream, "fulltips.zip");
+                    //}
                 }
                 else
-                    Console.WriteLine("Assets not found.");
+                {
+                    ProcessAssets(String.Format("{0}{1}\\Assets\\", patchDir, patch));
+                }
             }
             Console.WriteLine("Finished.");
-            Console.ReadLine();
+            //Console.ReadLine();
+        }
+
+        private static bool FindFile(string fileName, string assetsLocation, string patch)
+        {
+            bool found = false;
+            dom = null;
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            TorLib.Assets assets = new TorLib.Assets(assetsLocation);
+            assets.Load(false);
+            if (assets != null)
+            {
+                dom = new DataObjectModel(assets);
+                var datFile = dom._assets.FindFile(fileName);
+                if (datFile != null)
+                    Console.WriteLine(patch + " - " + datFile.FileInfo.Checksum);
+                dom.Unload();
+                dom._assets.Dispose();
+                dom.Dispose();
+                RequiredFiles = new HashSet<string>();
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
+            return found;
+        }
+
+        private static void ProcessAssets(string assetsLocation)
+        {
+            dom = null;
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            TorLib.Assets assets = new TorLib.Assets(assetsLocation);
+            assets.Load(false);
+            if (assets != null)
+            {
+                dom = new DataObjectModel(assets);
+                dom.version = patch;
+
+                //time = time.AddSeconds(13126665600000 / 1000).ToLocalTime();
+                //Console.WriteLine(time);
+
+                //DateTime time = new DateTime(1601, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+                //DateTime local = DateTime.Now;
+                //var span = local - time.ToLocalTime();
+                //Console.WriteLine(span.TotalMilliseconds);
+
+                //var cal = System.Xml.Linq.XDocument.Load("J:\\swtor_db\\processed\\5.0P7\\GOM\\Removed\\qstActivityHighlightCalendarPrototype.xml");
+                //var nodes = cal.Element("None").Element("IList").Elements("Node");
+                //using (var file = new System.IO.StreamWriter("c:\\swtor\\2\\calendar.txt"))
+                //{
+                //    foreach (var node in nodes)
+                //    {
+                //        DateTime time = new DateTime(1601, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+                //        time = time.AddSeconds(UInt64.Parse(node.Attribute("Id").Value) / 1000).ToLocalTime();
+                //        file.WriteLine(String.Format("{0}|{1}", time, node.Value));
+                //    }
+                //}
+
+                //Console.ReadLine();
+                Console.WriteLine("Loading Assets");
+                dom.Load();
+                Smart.Link(dom, Console.WriteLine);
+                getObjects("class.pc.advanced", "AdvancedClasses");
+                getObjects("abl.", "Abilities");
+                if (dom.GetObjectsStartingWith("pkg.abilities").Count > 0)
+                    getObjects("pkg.abilities", "AbilityPackages");
+                else
+                    getObjects("apn.", "AbilityPackages");
+                getObjects("ach.", "Achievements");
+                getPrototypeObjects("Conquests", "wevConquestInfosPrototype", "wevConquestTable");
+                getPrototypeObjects("Areas", "mapAreasDataProto", "mapAreasDataObjectList"); // getAreas();
+                getObjects("mpn.", "MapNotes");
+                getObjects("cdx.", "CodexEntries");
+                getObjects("class.", "Classes");
+                getPrototypeObjects("Collections", "colCollectionItemsPrototype", "colCollectionItemsData");
+                getObjects("cnv.", "Conversations");
+                getObjects("dec.", "Decorations");
+                //getObjects("eff.", "Effects");
+                //getObjects("enc.", "Encounters");
+                getObjects("itm.", "Items");
+                //getObjects("ipp.", "ItemAppearances");
+                getObjects("npc.", "Npcs");
+                //getObjects("npp.", "NpcAppearances");
+                getObjects("qst.", "Quests");
+                getObjects("schem.", "Schematics");
+                getPrototypeObjects("SetBonuses", "itmSetBonusesPrototype", "itmSetBonuses");
+                //getObjects("spn.", "Spawners");
+                getObjects("apt.", "Strongholds");
+                getObjects("tal.", "Talents");
+                getObjects("nco.", "NewCompanions");
+                getPrototypeObjects("Companions", "chrCompanionInfo_Prototype", "chrCompanionInfoData");
+                getPrototypeObjects("MtxStoreFronts", "mtxStorefrontInfoPrototype", "mtxStorefrontData");
+
+                //Reload hash dict.
+                //TorLib.HashDictionaryInstance.Instance.Unload();
+                //TorLib.HashDictionaryInstance.Instance.Load();
+                //TorLib.HashDictionaryInstance.Instance.dictionary.CreateHelpers();
+                getPrototypeObjects("Ships", "scFFShipsDataPrototype", "scFFShipsData");
+                getObjects("plc.", "Placeables");
+                getReqFiles();
+                getIcons();
+                TorLib.HashDictionaryInstance.Instance.dictionary.SaveHashList();
+                TorLib.HashDictionaryInstance.Instance.Unload();
+                dom.Unload();
+                dom._assets.Dispose();
+                dom.Dispose();
+                RequiredFiles = new HashSet<string>();
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
+            else
+                Console.WriteLine("Assets not found.");
         }
 
         #region File Functions
@@ -187,6 +457,7 @@ namespace ConsoleTools
                     System.IO.File.Delete(filepath);
         }
         #endregion
+        public static HashSet<string> RequiredFiles = new HashSet<string>();
         #region Processing Functions
         public static void getObjects(string prefix, string elementName)
         {
@@ -216,6 +487,70 @@ namespace ConsoleTools
             Console.Write(String.Format("Getting {0} ", xmlRoot));
             FullyProcessProcessProtoData(xmlRoot, prototype, dataTable);
         }
+        public static void getReqFiles()
+        {
+            Console.Write(String.Format("Getting {0} ", "Icons"));
+            //return;
+            string file = "reqFiles.zip";
+            if (RequiredFiles.Count() == 0)
+                return;
+            WriteFile("", file, false);
+            ProgressBar progress = null;
+            if (!processAll)
+                progress = new ProgressBar();
+            int i = 0;
+            int count = RequiredFiles.Count;
+            using (var compressStream = new MemoryStream())
+            {
+                //create the zip in memory
+                using (var zipArchive = new ZipArchive(compressStream, ZipArchiveMode.Create, true))
+                {
+                    foreach (var t in RequiredFiles)
+                    {
+                        i++;
+                        if (!processAll)
+                            progress.Report((double)i / count);
+                        TorLib.File f = dom._assets.FindFile(t);
+                        if (f == null) continue;
+                        switch (t.Substring(t.Length - 3)) {
+                            case "dds":
+                                IconParamter[] parms = new IconParamter[0];
+                                using (MemoryStream iconStream = GetIcon(t, f, false, 90L, parms))
+                                {
+                                    if (iconStream != null)
+                                    {
+                                        ZipArchiveEntry iconEntry = zipArchive.CreateEntry(String.Format("{0}.jpg", t.Substring(1, t.Length - 5)), CompressionLevel.Fastest);
+                                        using (var a = iconEntry.Open())
+                                            iconStream.WriteTo(a);
+                                    }
+                                }
+
+                                using (MemoryStream iconStream = GetIcon(t, f, true, 95L, parms))
+                                {
+                                    if (iconStream != null)
+                                    {
+                                        ZipArchiveEntry iconEntry = zipArchive.CreateEntry(String.Format("{0}_thumb.jpg", t.Substring(1, t.Length - 5)), CompressionLevel.Fastest);
+                                        using (var a = iconEntry.Open())
+                                            iconStream.WriteTo(a);
+                                    }
+                                }
+                                break;
+                            default:
+                                using (MemoryStream memStream = (MemoryStream)f.OpenCopyInMemory())
+                                {
+                                    ZipArchiveEntry fileEntry = zipArchive.CreateEntry(t, CompressionLevel.Fastest);
+                                    using (var a = fileEntry.Open())
+                                        memStream.WriteTo(a);
+                                }
+                                break;
+                        }
+
+                    }
+                }
+                compressStream.Position = 0;
+                WriteFile(compressStream, file);
+            }
+        }
         public static void getIcons()
         {
             Console.Write(String.Format("Getting {0} ", "Icons"));
@@ -225,6 +560,12 @@ namespace ConsoleTools
             //try
             //{
                 var libs = dom._assets.libraries.Where(x => x.Name.Contains("gfx_assets"));
+                if (libs == null || libs.Count() == 0)
+                {
+                    libs = dom._assets.libraries.Where(x => x.Name.Contains("main_gfx"));
+                    if (libs == null || libs.Count() == 0)
+                        return;
+                }
                 var archive = libs.First().archives.First();
                 List<TorLib.HashFileInfo> iconsToOutput = new List<TorLib.HashFileInfo>();
                 foreach(var file in archive.Value.files)
@@ -282,75 +623,94 @@ namespace ConsoleTools
             List<GomLib.Models.Tooltip> iList = new List<GomLib.Models.Tooltip>();
             bool frLoaded = dom._assets.loadedFileGroups.Contains("fr-fr");
             bool deLoaded = dom._assets.loadedFileGroups.Contains("de-de");
-            using (var progress = new ProgressBar())
+            ProgressBar progress = null;
+            if (!processAll)
+                progress = new ProgressBar();
+            string db_table;
+            DBLookup.TryGetValue(xmlRoot, out db_table);
+            Dictionary<ulong, uint> current_hashes = new Dictionary<ulong, uint>();
+            IMongoCollection<BsonDocument> collection = null;
+            if (db_table != null)
             {
-                string db_table;
-                DBLookup.TryGetValue(xmlRoot, out db_table);
-                Dictionary<ulong, uint> current_hashes = new Dictionary<ulong, uint>();
-                if (db_table != null)
+                var filter = new BsonDocument("name", db_table);
+                //filter by collection name
+                var collections = _database.ListCollections(new ListCollectionsOptions { Filter = filter });
+                //check for existence
+                if ((collections.ToList()).Any())
                 {
-                    var filter = new BsonDocument("name", db_table);
-                    //filter by collection name
-                    var collections = _database.ListCollections(new ListCollectionsOptions { Filter = filter });
-                    //check for existence
-                    if ((collections.ToList()).Any())
-                    {
-                        IMongoCollection<BsonDocument> collection = _database.GetCollection<BsonDocument>(db_table);
+                    collection = _database.GetCollection<BsonDocument>(db_table);
 
-                        var cursor = collection.Find(Builders<BsonDocument>.Filter.Empty);
-                        var fields = Builders<BsonDocument>.Projection.Include("Id").Include("hash");
-                        var result = cursor.Project(fields).ToList();
-                        current_hashes = result.ToDictionary(x => UInt64.Parse(x["Id"].AsString), x => UInt32.Parse(x["hash"].AsString));
-                    }
+                    var cursor = collection.Find(Builders<BsonDocument>.Filter.Empty);
+                    var fields = Builders<BsonDocument>.Projection.Include("Id").Include("hash");
+                    var result = cursor.Project(fields).ToList();
+                    current_hashes = result.ToDictionary(x => UInt64.Parse(x["Id"].AsString), x => UInt32.Parse(x["hash"].AsString));
                 }
-                foreach (var curObject in curItmList)
-                {
+            }
+            foreach (var curObject in curItmList)
+            {
+                if(!processAll)
                     progress.Report((double)i / count);
 
-                    if (e % 1000 == 1)
-                    {
-                        found_items = true;
-                        WriteFile(txtFile.ToString(), filename, true);
-                        txtFile.Clear();
-                        e = 0;
-                    }
+                if (e >= 1000)
+                {
+                    found_items = true;
+                    WriteFile(txtFile.ToString(), filename, true);
+                    txtFile.Clear();
+                    e = 0;
+                }
 
-                    var obj = GameObject.Load(curObject, classOverride);
-                    if (obj != null && obj.Id != 0) //apparently if the loader passes null back, sometimes data comes, too.....
+                var obj = GameObject.Load(curObject, classOverride);
+                curObject.Unload();
+                if (obj != null && obj.Id != 0) //apparently if the loader passes null back, sometimes data comes, too.....
+                {
+                    if(collection != null)
                     {
-                        string jsonString = obj.ToJSON();
-                        uint hash = jsonHasher.Hash(Encoding.ASCII.GetBytes(jsonString));
-                        uint oldhash;
-                        if(current_hashes.TryGetValue(obj.Id, out oldhash))
+                        var filter = Builders<BsonDocument>.Filter.Eq("Base62Id", obj.Base62Id);
+                        var update = Builders<BsonDocument>.Update
+                            .Set("last_seen", patch);
+                        var result = collection.UpdateOneAsync(filter, update);
+                    }
+                    string jsonString = obj.ToJSON();
+                    uint hash = jsonHasher.Hash(Encoding.ASCII.GetBytes(jsonString));
+                    uint oldhash;
+                    if(current_hashes.TryGetValue(obj.Id, out oldhash))
+                    {
+                        if(hash != oldhash)
                         {
-                            if(hash != oldhash)
-                            {
-                                // The MongoDB c# Driver is so fucking awful that we're going to output the json for php insertion.
-                                // Because fucking trying to deserialized uint64s using a deserializer that doesn't support them, and won't just make them strings
-                                txtFile.Append(String.Format("{0},{1},{2}{3}", obj.Base62Id, hash, jsonString, Environment.NewLine)); //Append it with a newline to the output.
-                                e++; ie++;
-                                Tooltip t = new Tooltip(obj);
-                                if (t.IsImplemented())
-                                    iList.Add(t);
-                            }
-                            //else //do nothing
-                        }
-                        else // new
-                        {
+                            // The MongoDB c# Driver is so fucking awful that we're going to output the json for php insertion.
+                            // Because fucking trying to deserialized uint64s using a deserializer that doesn't support them, and won't just make them strings
                             txtFile.Append(String.Format("{0},{1},{2}{3}", obj.Base62Id, hash, jsonString, Environment.NewLine)); //Append it with a newline to the output.
-                            Tooltip t = new Tooltip(obj);
                             e++; ie++;
+                            Tooltip t = new Tooltip(obj);
                             if (t.IsImplemented())
                                 iList.Add(t);
                         }
+                        else
+                        {
+                            obj = null;
+                        }
                     }
-                    i++;
+                    else // new
+                    {
+                        txtFile.Append(String.Format("{0},{1},{2}{3}", obj.Base62Id, hash, jsonString, Environment.NewLine)); //Append it with a newline to the output.
+                        Tooltip t = new Tooltip(obj);
+                        e++; ie++;
+                        if (t.IsImplemented())
+                            iList.Add(t);
+                    }
                 }
-                WriteFile(txtFile.ToString(), filename, true);
-                txtFile.Clear();
-                if (e != 0)
-                    found_items = true;
+                i++;
             }
+            WriteFile(txtFile.ToString(), filename, true);
+            txtFile.Clear();
+            if (ie != 0)
+            {
+                Console.WriteLine(String.Format(" ({0})", ie));
+                found_items = true;
+            }
+            if (!processAll)
+                progress.Dispose();
+
             if (!found_items)
                 DeleteEmptyFile(filename, 0);
             curItmList = null;
@@ -369,27 +729,34 @@ namespace ConsoleTools
                 {"tal.", "Talent"},
                 {"sche", "Schematic"},
             };
+            //return;
             if (iList.Count > 0)
             {
-                using (var progress = new ProgressBar())
-                {
-                    string gameObj;
-                    gameObjects.TryGetValue(iList.First().Fqn.Substring(0,4), out gameObj);
-                    if (!String.IsNullOrWhiteSpace(gameObj)) {
-                        Console.Write(String.Format(" - Generating Tooltips. ({0})", ie));
+                if (!processAll)
+                    progress = new ProgressBar();
+                
+                string gameObj;
+                gameObjects.TryGetValue(iList.First().Fqn.Substring(0,4), out gameObj);
+                if (!String.IsNullOrWhiteSpace(gameObj)) {
+                    Console.Write(String.Format(" - Generating Tooltips. ({0})", ie));
+                    if (!processAll)
                         progress.Report(0);
-                        CreatCompressedTooltipOutput(gameObj, iList, "en-us");
+                    CreatCompressedTooltipOutput(gameObj, iList, "en-us");
+                    if (!processAll)
                         progress.Report(.3333);
-                        if (frLoaded)
-                            CreatCompressedTooltipOutput(gameObj, iList, "fr-fr");
+                    if (frLoaded)
+                        CreatCompressedTooltipOutput(gameObj, iList, "fr-fr");
+                    if (!processAll)
                         progress.Report(.6666);
-                        if (deLoaded)
-                            CreatCompressedTooltipOutput(gameObj, iList, "de-de");
-                        Console.Write(" - Done.");
-                    }
-                    else
-                        Console.Write(String.Format(" - Done. ({0})", ie));
+                    if (deLoaded)
+                        CreatCompressedTooltipOutput(gameObj, iList, "de-de");
+                    Console.Write(" - Done.");
                 }
+                else
+                    Console.Write(String.Format(" - Done. ({0})", ie));
+                if(!processAll)
+                    progress.Dispose();
+                
             }
             
             Console.WriteLine();
@@ -409,10 +776,25 @@ namespace ConsoleTools
 
             short e = 0;
             int ie = 0;
+            int ies = 0;
             string n = Environment.NewLine;
             var txtFile = new StringBuilder();
             string filename = String.Format("\\json\\Full{0}.json", xmlRoot);
             WriteFile(String.Format("{0}{1}", patch, n), filename, false);
+            bool has_second_output = false;
+            StringBuilder secondFile = null;
+            string secondFilename = null;
+            string second_db_table = "";
+            switch (xmlRoot)
+            {
+                case "Areas":
+                    has_second_output = true;
+                    secondFile = new StringBuilder();
+                    secondFilename = "\\json\\FullRooms.json";
+                    WriteFile(String.Format("{0}{1}", patch, n), secondFilename, false);
+                    second_db_table = "room";
+                    break;
+            }
             HashTableHashing.MurmurHash2Unsafe jsonHasher = new HashTableHashing.MurmurHash2Unsafe();
 
             int i = 0;
@@ -422,80 +804,183 @@ namespace ConsoleTools
             List<GomLib.Models.Tooltip> iList = new List<GomLib.Models.Tooltip>();
             bool frLoaded = dom._assets.loadedFileGroups.Contains("fr-fr");
             bool deLoaded = dom._assets.loadedFileGroups.Contains("de-de");
-            using (var progress = new ProgressBar())
+            ProgressBar progress = null;
+            if (!processAll)
+                progress = new ProgressBar();
+            string db_table;
+            DBLookup.TryGetValue(xmlRoot, out db_table);
+            Dictionary<long, uint> current_hashes = new Dictionary<long, uint>();
+            IMongoCollection<BsonDocument> collection = null;
+            IMongoCollection<BsonDocument> second_collection = null;
+            Dictionary<long, uint> second_hashes = new Dictionary<long, uint>();
+            if (db_table != null)
             {
-                string db_table;
-                DBLookup.TryGetValue(xmlRoot, out db_table);
-                Dictionary<long, uint> current_hashes = new Dictionary<long, uint>();
-                if (db_table != null)
+                var filter = new BsonDocument("name", db_table);
+                //filter by collection name
+                var collections = _database.ListCollections(new ListCollectionsOptions { Filter = filter });
+                //check for existence
+                if ((collections.ToList()).Any())
                 {
-                    var filter = new BsonDocument("name", db_table);
-                    //filter by collection name
-                    var collections = _database.ListCollections(new ListCollectionsOptions { Filter = filter });
-                    //check for existence
-                    if ((collections.ToList()).Any())
-                    {
-                        IMongoCollection<BsonDocument> collection = _database.GetCollection<BsonDocument>(db_table);
+                    collection = _database.GetCollection<BsonDocument>(db_table);
 
-                        var cursor = collection.Find(Builders<BsonDocument>.Filter.Empty);
-                        var fields = Builders<BsonDocument>.Projection.Include("Id").Include("hash");
-                        var result = cursor.Project(fields).ToList();
-                        current_hashes = result.ToDictionary(
-                            x => Int64.Parse(x["Id"].AsString),
-                            x => UInt32.Parse(
-                                (x.Contains("hash") ? x["hash"].AsString : "0")));
-                    }
+                    var cursor = collection.Find(Builders<BsonDocument>.Filter.Empty);
+                    var fields = Builders<BsonDocument>.Projection.Include("Id").Include("hash");
+                    var result = cursor.Project(fields).ToList();
+                    current_hashes = result.ToDictionary(
+                        x => Int64.Parse(x["Id"].AsString),
+                        x => UInt32.Parse(
+                            (x.Contains("hash") ? x["hash"].AsString : "0")));
                 }
-                foreach (var id in curIds)
+            }
+            if (second_db_table != null)
+            {
+                var filter = new BsonDocument("name", second_db_table);
+                //filter by collection name
+                var collections = _database.ListCollections(new ListCollectionsOptions { Filter = filter });
+                //check for existence
+                if ((collections.ToList()).Any())
                 {
+                    second_collection = _database.GetCollection<BsonDocument>(second_db_table);
+
+                    var cursor = collection.Find(Builders<BsonDocument>.Filter.Empty);
+                    var fields = Builders<BsonDocument>.Projection.Include("Id").Include("hash");
+                    var result = cursor.Project(fields).ToList();
+                    second_hashes = result.ToDictionary(
+                        x => Int64.Parse(x["Id"].AsString),
+                        x => UInt32.Parse(
+                            (x.Contains("hash") ? x["hash"].AsString : "0")));
+                }
+            }
+            foreach (var id in curIds)
+            {
+                if(!processAll)
                     progress.Report((double)i / count);
 
-                    if (e % 1000 == 1)
-                    {
-                        found_items = true;
-                        WriteFile(txtFile.ToString(), filename, true);
-                        txtFile.Clear();
-                        e = 0;
-                    }
+                if (e % 1000 == 1)
+                {
+                    found_items = true;
+                    WriteFile(txtFile.ToString(), filename, true);
+                    txtFile.Clear();
+                    e = 0;
+                }
 
-                    object curData;
-                    currentDataProto.TryGetValue(id, out curData);
-                    GomLib.Models.PseudoGameObject curObj = PseudoGameObject.Load(xmlRoot, dom, id, curData);
-                    string jsonString = curObj.ToJSON();
-                    uint hash = jsonHasher.Hash(Encoding.ASCII.GetBytes(jsonString));
-                    uint oldhash;
-                    if (current_hashes.TryGetValue(curObj.Id, out oldhash))
+                object curData;
+                currentDataProto.TryGetValue(id, out curData);
+                GomLib.Models.PseudoGameObject curObj = PseudoGameObject.Load(xmlRoot, dom, id, curData);
+                if (collection != null)
+                {
+                    var filter = Builders<BsonDocument>.Filter.Eq("Base62Id", curObj.Base62Id);
+                    var update = Builders<BsonDocument>.Update
+                        .Set("last_seen", patch);
+                    var result = collection.UpdateOneAsync(filter, update);
+                }
+                string jsonString = curObj.ToJSON();
+                uint hash = jsonHasher.Hash(Encoding.ASCII.GetBytes(jsonString));
+                uint oldhash;
+                if (current_hashes.TryGetValue(curObj.Id, out oldhash))
+                {
+                    if (hash != oldhash)
                     {
-                        if (hash != oldhash)
-                        {
-                            // The MongoDB c# Driver is so fucking awful that we're going to output the json for php insertion.
-                            // Because fucking trying to deserialized uint64s using a deserializer that doesn't support them, and won't just make them strings
-                            txtFile.Append(String.Format("{0},{1},{2}{3}", curObj.Base62Id, hash, jsonString, Environment.NewLine)); //Append it with a newline to the output.
-                            e++; ie++;
-                            Tooltip t = new Tooltip(curObj);
-                            if (t.IsImplemented())
-                                iList.Add(t);
-                        }
-                        //else //do nothing
-                    }
-                    else // new
-                    {
+                        // The MongoDB c# Driver is so fucking awful that we're going to output the json for php insertion.
+                        // Because fucking trying to deserialized uint64s using a deserializer that doesn't support them, and won't just make them strings
                         txtFile.Append(String.Format("{0},{1},{2}{3}", curObj.Base62Id, hash, jsonString, Environment.NewLine)); //Append it with a newline to the output.
-                        Tooltip t = new Tooltip(curObj);
                         e++; ie++;
+                        Tooltip t = new Tooltip(curObj);
                         if (t.IsImplemented())
                             iList.Add(t);
+                        if (curObj.RequiredFiles != null)
+                            RequiredFiles.UnionWith(curObj.RequiredFiles);
                     }
-                    i++;
+                    //else //do nothing
                 }
-                WriteFile(txtFile.ToString(), filename, true);
-                txtFile.Clear();
-                if (e != 0)
-                    found_items = true;
+                else // new
+                {
+                    txtFile.Append(String.Format("{0},{1},{2}{3}", curObj.Base62Id, hash, jsonString, Environment.NewLine)); //Append it with a newline to the output.
+                    Tooltip t = new Tooltip(curObj);
+                    e++; ie++;
+                    if (t.IsImplemented())
+                        iList.Add(t);
+                    if (curObj.RequiredFiles != null)
+                        RequiredFiles.UnionWith(curObj.RequiredFiles);
+                }
+                if (has_second_output && curObj != null)
+                {
+                    IEnumerable<PseudoGameObject> second_objects = new List<PseudoGameObject>();
+                    switch (xmlRoot)
+                    {
+                        case "Areas":
+                            if(((Area)curObj).AreaDat != null)
+                                second_objects = ((Area)curObj).AreaDat.Rooms.Values.Cast<PseudoGameObject>();
+                            break;
+                    }
+                    foreach (var obj in second_objects)
+                    {
+                        if (second_collection != null)
+                        {
+                            var filter = Builders<BsonDocument>.Filter.Eq("Base62Id", obj.Base62Id);
+                            var update = Builders<BsonDocument>.Update
+                                .Set("last_seen", patch);
+                            var result = second_collection.UpdateOneAsync(filter, update);
+                        }
+                        jsonString = obj.ToJSON();
+                        hash = jsonHasher.Hash(Encoding.ASCII.GetBytes(jsonString));
+                        uint second_oldhash;
+                        if (current_hashes.TryGetValue(obj.Id, out second_oldhash))
+                        {
+                            if (hash != second_oldhash)
+                            {
+                                // The MongoDB c# Driver is so fucking awful that we're going to output the json for php insertion.
+                                // Because fucking trying to deserialized uint64s using a deserializer that doesn't support them, and won't just make them strings
+                                secondFile.Append(String.Format("{0},{1},{2}{3}", obj.Base62Id, hash, jsonString, Environment.NewLine)); //Append it with a newline to the output.
+                                ies++;
+                                Tooltip t = new Tooltip(obj);
+                                if (t.IsImplemented())
+                                    iList.Add(t);
+                                if (obj.RequiredFiles != null)
+                                    RequiredFiles.UnionWith(obj.RequiredFiles);
+                            }
+                            //else //do nothing
+                        }
+                        else // new
+                        {
+                            secondFile.Append(String.Format("{0},{1},{2}{3}", obj.Base62Id, hash, jsonString, Environment.NewLine)); //Append it with a newline to the output.
+                            Tooltip t = new Tooltip(obj);
+                            ies++;
+                            if (t.IsImplemented())
+                                iList.Add(t);
+                            if (obj.RequiredFiles != null)
+                                RequiredFiles.UnionWith(obj.RequiredFiles);
+                        }
+                    }
+                }
+                i++;
             }
+            WriteFile(txtFile.ToString(), filename, true);
+            txtFile.Clear();
+            if (ie != 0)
+            {
+                Console.WriteLine(String.Format(" ({0})", ie));
+                found_items = true;
+            }
+            if (has_second_output)
+            {
+                WriteFile(secondFile.ToString(), secondFilename, true);
+                secondFile.Clear();
+                if (ies != 0)
+                {
+                    Console.WriteLine(String.Format(" ({0})", ies));
+                    CreateGzip(secondFilename);
+                }
+                else
+                    DeleteEmptyFile(secondFilename, 0);
+            }
+            if (!processAll)
+                progress.Dispose();
+
             if (!found_items)
                 DeleteEmptyFile(filename, 0);
-            currentDataObject.Unload();
+            if(currentDataObject != null)
+                currentDataObject.Unload();
             curIds = null;
             GC.Collect();
             CreateGzip(filename);
@@ -503,29 +988,37 @@ namespace ConsoleTools
             {
                 { "GomLib.Models.Collection", "Collections" },
                 { "GomLib.Models.MtxStorefrontEntry", "MtxStoreFronts" },
+                { "GomLib.Models.Area", "Areas" },
             };
             if (iList.Count > 0)
             {
-                using (var progress = new ProgressBar())
+                if (!processAll)
+                    progress = new ProgressBar();
+                
+                string gameObj;
+                protoGameObjects.TryGetValue(iList.First().pObj.GetType().ToString(), out gameObj);
+                if (!String.IsNullOrWhiteSpace(gameObj))
                 {
-                    string gameObj;
-                    protoGameObjects.TryGetValue(iList.First().pObj.GetType().ToString(), out gameObj);
-                    if (!String.IsNullOrWhiteSpace(gameObj))
-                    {
-                        Console.Write(String.Format(" - Generating Tooltips. ({0})", ie));
+                    Console.Write(String.Format(" - Generating Tooltips. ({0})", ie));
+                    if (!processAll)
                         progress.Report(0);
-                        CreatCompressedTooltipOutput(gameObj, iList, "en-us");
+                    CreatCompressedTooltipOutput(gameObj, iList, "en-us");
+                    if (!processAll)
                         progress.Report(.3333);
-                        if (frLoaded)
-                            CreatCompressedTooltipOutput(gameObj, iList, "fr-fr");
+                    if (frLoaded)
+                        CreatCompressedTooltipOutput(gameObj, iList, "fr-fr");
+                    if (!processAll)
                         progress.Report(.6666);
-                        if (deLoaded)
-                            CreatCompressedTooltipOutput(gameObj, iList, "de-de");
-                        Console.Write(" - Done.");
-                    }
-                    else
-                        Console.Write(String.Format(" - Done. ({0})", ie));
+                    if (deLoaded)
+                        CreatCompressedTooltipOutput(gameObj, iList, "de-de");
+                    Console.Write(" - Done.");
+
+                    if (!processAll)
+                        progress = new ProgressBar();
                 }
+                else
+                    Console.Write(String.Format(" - Done. ({0})", ie));
+
             }
 
             Console.WriteLine();
@@ -794,6 +1287,7 @@ namespace ConsoleTools
 
         public static void CreatCompressedTooltipOutput(string xmlRoot, IEnumerable<GomLib.Models.Tooltip> itmList, string language)
         {
+            //return;
             string file = String.Format("tooltips\\{0}tips({1}).zip", xmlRoot, language);
             WriteFile("", file, false);
             HashSet<string> iconNames = new HashSet<string>();
@@ -998,7 +1492,10 @@ namespace ConsoleTools
         }
         public static void CreatCompressedIconOutput(IEnumerable<TorLib.HashFileInfo> iconList)
         {
+            //return;
             string file = "newIcons.zip";
+            if (iconList.Count() == 0)
+                return;
             WriteFile("", file, false);
             using (var compressStream = new MemoryStream())
             {
@@ -1042,6 +1539,10 @@ namespace ConsoleTools
 
         private static MemoryStream GetIcon(string filename, TorLib.File file, bool generateThumb, params IconParamter[] encodingParams)
         {
+            return GetIcon(filename, file, generateThumb, 90L, encodingParams);
+        }
+        private static MemoryStream GetIcon(string filename, TorLib.File file, bool generateThumb, long qual, params IconParamter[] encodingParams)
+        {
             if (file == null) return null;
             /*using (*/
             MemoryStream outputStream = new MemoryStream();//)
@@ -1055,12 +1556,12 @@ namespace ConsoleTools
             ImageCodecInfo encoder;
             if (encodingParams.Contains(IconParamter.PngFormat))
             {
-                myparams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 90L);
+                myparams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, qual);
                 encoder = GetEncoder(ImageFormat.Png);
             }
             else
             {
-                myparams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 90L);
+                myparams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, qual);
                 encoder = GetEncoder(ImageFormat.Jpeg);
             }
 
@@ -1120,7 +1621,8 @@ namespace ConsoleTools
                         System.Drawing.Bitmap iconBM = new System.Drawing.Bitmap(taco);
                         if (generateThumb)
                         {
-                            Bitmap resized = new Bitmap(iconBM, new System.Drawing.Size(iconBM.Width / 4, iconBM.Height / 4));
+                            //Bitmap resized = new Bitmap(iconBM, new System.Drawing.Size(iconBM.Width / 4, iconBM.Height / 4));
+                            Bitmap resized = ResizeImage(iconBM, iconBM.Width / 4, iconBM.Height / 4);
                             resized.Save(outputStream, encoder, myparams);
                         }
                         else
@@ -1165,7 +1667,39 @@ namespace ConsoleTools
         }
         public enum IconParamter
         {
-            PngFormat,
+            PngFormat
+        }
+
+        /// <summary>
+        /// Resize the image to the specified width and height.
+        /// </summary>
+        /// <param name="image">The image to resize.</param>
+        /// <param name="width">The width to resize to.</param>
+        /// <param name="height">The height to resize to.</param>
+        /// <returns>The resized image.</returns>
+        public static Bitmap ResizeImage(Image image, int width, int height)
+        {
+            var destRect = new Rectangle(0, 0, width, height);
+            var destImage = new Bitmap(width, height);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (var graphics = Graphics.FromImage(destImage))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using (var wrapMode = new ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+
+            return destImage;
         }
         #endregion
     }
