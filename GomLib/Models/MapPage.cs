@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
@@ -13,8 +14,20 @@ namespace GomLib.Models
         public Area Area { get; set; }
         public long Guid { get; set; }
         public long SId { get; set; }
+        [JsonIgnore]
+        public string _MapNameB62Id { get; set; }
+        public string MapNameB62Id
+        {
+            get
+            {
+                if (_MapNameB62Id == null)
+                    _MapNameB62Id = SId.ToMaskedBase62();
+                return _MapNameB62Id;
+            }
+        }
         public string MapName { get; set; }
         public string Name { get; set; }
+        public Dictionary<string, string> LocalizedName { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         public MapPage Parent { get; set; }
         public long ParentId { get; set; }

@@ -165,6 +165,8 @@ namespace GomLib.Models
                         return ((Collection)pObj).GetHTML().ToString(SaveOptions.DisableFormatting);
                     case "GomLib.Models.MtxStorefrontEntry":
                         return ((MtxStorefrontEntry)pObj).GetHTML().ToString(SaveOptions.DisableFormatting);
+                    case "GomLib.Models.Area":
+                        return ((Area)pObj).GetHTML().ToString(SaveOptions.DisableFormatting);
                     default:
                         break;
                 }
@@ -2444,6 +2446,36 @@ namespace GomLib.Models
                 XElement inner = new XElement("div",
                     XClass("torctip_tooltip torctip_collection"),
                     new XAttribute("style", String.Format("background-image:url(https://www.torcommunity.com/db/mtxstore/{0}_260x260.jpg);", icon)),
+                    new XElement("H2",
+                        XClass("torctip_white torctip_2l_elipsis"),
+                        name
+                    )
+                );
+                tooltip.Add(inner);
+            }
+
+            return tooltip;
+        }
+
+        #endregion
+        #region area
+        public static XElement GetHTML(this Area itm)
+        {
+            if (Tooltip.TooltipNameMap.Count == 0)
+            {
+                LoadNameMap(itm._dom);
+            }
+            if (itm.Id == 0) return new XElement("div", "Not Found");
+
+            XElement tooltip = new XElement("div", new XAttribute("class", "torctip_wrapper"));
+
+            if (itm != null)
+            {
+                string name = "";
+                if (itm.LocalizedName != null)
+                    itm.LocalizedName.TryGetValue(Tooltip.language, out name);
+                XElement inner = new XElement("div",
+                    XClass("torctip_tooltip torctip_area"),
                     new XElement("H2",
                         XClass("torctip_white torctip_2l_elipsis"),
                         name

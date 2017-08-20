@@ -39,6 +39,7 @@ namespace GomLib
         {
             LinkAbilityPackages(dom, MessageDelegate);
             LinkAchievements(dom, MessageDelegate);
+            LinkAreas(dom, MessageDelegate);
             LinkCodex(dom, MessageDelegate);
             LinkConversations(dom, MessageDelegate);
             LinkDecorations(dom, MessageDelegate);
@@ -161,6 +162,64 @@ namespace GomLib
                     }
                 }
                 node.Unload();
+            }
+        }
+        public static void LinkAreas(DataObjectModel dom, Action<string> MessageDelegate)
+        {
+            MessageDelegate("Smart-linking areas...");//Load ach
+            GomObject proto = dom.GetObject("mapAreasDataProto");
+            if (proto == null)
+                return;
+            var table = proto.Data.ValueOrDefault<Dictionary<object, object>>("mapAreasDataObjectList", null);
+            if (table == null)
+                return;
+            proto.Unload();
+            foreach (var areaId in table.Keys)
+            {
+                string mapNotePath = String.Format("/resources/world/areas/{0}/mapnotes.not", areaId);
+                var file = dom._assets.FindFile(mapNotePath);
+                if (file == null)
+                    continue;
+                string xml = "";
+                using (var reader = new StreamReader(file.OpenCopyInMemory()))
+                {
+                    xml = reader.ReadToEnd();
+                }
+                xml = xml.Replace("&lt;", "<").Replace("&gt;", ">").Replace("&amp;lt;", "<").Replace("&amp;gt;", ">").Replace("&amp;apos;", "'").Replace("\0", "");
+                XDocument notes = XDocument.Parse(xml);
+                var elements = notes.Root.Element("e").Element("v").Elements();
+                var count = elements.Count();
+                for (int i = 0; i < count; i = i + 2)
+                {
+                    var key = elements.ElementAt(i).Value;
+                    ulong k;
+                    ulong.TryParse(key, out k);
+                    var value = elements.ElementAt(i + 1);
+                    var node = value.Element("node");
+                    if (node != null)
+                    {
+                        foreach (var f in node.Elements())
+                        {
+                            var attrib = f.Attribute("name");
+                            if (!f.HasAttributes || attrib == null)
+                                continue;
+                            if (attrib.Value == "mpnTemplateFQN")
+                            {
+                                string fqn = f.Value.Replace("\\server\\mpn\\", "mpn.").Replace(".mpn", "").Replace("\\", ".");
+                                var objId = dom.GetObjectId(fqn);
+                                if (objId != 0)
+                                {
+                                    dom.AddCrossLink(objId, "usedByArea", (ulong)areaId);//any node
+                                    dom.AddProtoCrossLink(proto.Id, (ulong)areaId, "usesMpn", objId);//any node
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
             }
         }
         public static void LinkCodex(DataObjectModel dom, Action<string> MessageDelegate)
@@ -696,6 +755,16 @@ namespace GomLib
                                 {
                                     foreach (object task in qstTasks)
                                     {
+                                        var mapNoteList = ((GomObjectData)task).ValueOrDefault<List<object>>("qstTaskMapNoteList", null);
+                                        if (mapNoteList != null)
+                                        {
+                                            foreach (string mpnFqn in mapNoteList)
+                                            {
+                                                ulong mpnId = dom.GetObjectId(mpnFqn);
+                                                dom.AddCrossLink(mpnId, "mpnQuest", node.Id);
+                                                dom.AddCrossLink(node.Id, "QuestMpns", mpnId);
+                                            }
+                                        }
                                         bonusMissions = ((GomObjectData)task).ValueOrDefault<List<object>>("qstBonusMissions", null);
                                         if (bonusMissions != null)
                                         {

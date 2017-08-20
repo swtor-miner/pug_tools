@@ -47,6 +47,7 @@ namespace GomLib
         //public byte[] FirstBytes { get; set; }
 
         public Dictionary<string, SortedSet<ulong>> References { get; set; }
+        public Dictionary<ulong, Dictionary<string, SortedSet<ulong>>> ProtoReferences { get; set; }
         public Dictionary<ulong, string> FullReferences { get; set; }
 
         public override void Link(DataObjectModel dom)

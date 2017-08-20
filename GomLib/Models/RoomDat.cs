@@ -13,10 +13,19 @@ namespace GomLib.Models
         {
             Area = area;
             Room = room;
-            Id = area.Id + id;
+            Id = (long)((area.AreaId << 8) + (ulong)id);
+            AreaId = area.AreaId;
         }
         [JsonConverter(typeof(ULongConverter))]
         public ulong AreaId { get; set; }
+        [JsonConverter(typeof(ULongConverter))]
+        public string AreaB62Id
+        {
+            get
+            {
+                return AreaId.ToMaskedBase62();
+            }
+        }
         [JsonIgnore]
         public AreaDat Area { get; set; }
 

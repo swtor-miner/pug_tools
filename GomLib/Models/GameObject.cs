@@ -141,6 +141,7 @@ namespace GomLib.Models
                 case "nco.": return gomItm._dom.newCompanionLoader.Load(gomItm);
                 case "spn.": return gomItm._dom.spawnerLoader.Load(gomItm);
                 case "plc.": return gomItm._dom.placeableLoader.Load(gomItm);
+                case "mpn.": return gomItm._dom.mapNoteLoader.Load(gomItm);
                 default:
                     return null;
             }
@@ -204,7 +205,28 @@ namespace GomLib.Models
         public string ProtoDataTable { get; set; } //which prototype field contains the object
         [Newtonsoft.Json.JsonIgnore]
         public DataObjectModel _dom { get; set; }
-        
+        [Newtonsoft.Json.JsonIgnore]
+        public Dictionary<string, SortedSet<ulong>> References { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        public Dictionary<string, List<string>> _B62References { get; set; }
+        public Dictionary<string, List<string>> B62References
+        {
+            get
+            {
+                if (_B62References == null)
+                {
+                    if (References != null)
+                    {
+                        _B62References = References.ToDictionary(x => x.Key, x => x.Value.Select(y => y.ToMaskedBase62()).ToList());
+                    }
+                }
+                return _B62References;
+            }
+        }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public HashSet<string> RequiredFiles;
+
         public string ToJSON()
         {
             JsonSerializerSettings settings = new JsonSerializerSettings();

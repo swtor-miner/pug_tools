@@ -169,6 +169,8 @@
     <Compile Include="Models\Appearances.cs" />
     <Compile Include="Models\AssetInstance.cs" />
     <Compile Include="Models\Effect.cs" />
+    <Compile Include="Models\MapNoteData.cs" />
+    <Compile Include="Models\WonkavatorPackage.cs" />
     <Compile Include="Models\RoomDat.cs" />
     <Compile Include="Models\AreaDat.cs" />
     <Compile Include="Models\CodexCatByFaction.cs" />

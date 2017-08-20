@@ -56,6 +56,17 @@ namespace GomLib.Models
         [JsonIgnore]
         public List<Npc> TaskNpcs { get; set; }
 
+        [JsonIgnore]
+        public List<string> MapNoteFqnList { get; set; }
+        public List<string> MapNoteB62Ids
+        {
+            get
+            {
+                if (MapNoteFqnList == null) return new List<string>();
+                return MapNoteFqnList.Select(x => _dom.GetObjectId(x).ToMaskedBase62()).ToList();
+            }
+        }
+
         [Newtonsoft.Json.JsonIgnore]
         public List<Quest> BonusMissions
         {
@@ -83,6 +94,7 @@ namespace GomLib.Models
             int hash = Id.GetHashCode();
             if (String != null) { hash ^= String.GetHashCode(); }
             if (Hook != null) { hash ^= Hook.GetHashCode(); }
+            if(MapNoteFqnList != null) foreach(var mpn in MapNoteFqnList) { hash ^= mpn.GetHashCode(); }
             hash ^= ShowTracking.GetHashCode();
             hash ^= ShowCount.GetHashCode();
             hash ^= CountMax.GetHashCode();

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GomLib.Models;
+using System.Xml.Linq;
+using System.IO;
 
 namespace GomLib.ModelLoader
 {
@@ -52,6 +54,7 @@ namespace GomLib.ModelLoader
                 strTable = _dom.stringTable.Find("str.sys.worldmap");
             }
             area._dom = _dom;
+
             IDictionary<string, object> objAsDict = obj.Dictionary;
             //if (objAsDict.ContainsKey("mapAreasDataDisplayNameId") && objAsDict.ContainsKey("mapAreasDataDefaultZoneName"))
             //{
@@ -61,6 +64,12 @@ namespace GomLib.ModelLoader
             area.Name = strTable.GetText(area.DisplayNameId, "MapArea." + area.DisplayNameId);
             area.LocalizedName = strTable.GetLocalizedText(area.DisplayNameId, "MapArea." + area.DisplayNameId);
             area.AreaId = obj.ValueOrDefault<ulong>("mapAreasDataAreaId", 0);
+
+            var proto = _dom.GetObjectNoLoad("mapAreasDataProto");
+            if (proto != null && proto.ProtoReferences != null) {
+                if (proto.ProtoReferences.ContainsKey(area.AreaId))
+                    area.References = proto.ProtoReferences[area.AreaId];
+            }
             area.Id = (long)area.AreaId; //(long)(area.AreaId >> 32);
             if (area.Id == 0)
                 area.Id = (long)area.AreaId;
@@ -71,23 +80,24 @@ namespace GomLib.ModelLoader
             if (mapDataObj != null)
             {
                 LoadMapdata(area, mapDataObj);
-            }
-            else
-            {
-                Console.WriteLine("No MapData for " + area.Name + " [" + area.AreaId + "]");
-                return area;
-            }
 
-            area.FowGroupStringIds = new Dictionary<ulong, long>();
-            var mapDataContainerFowGroupList = mapDataObj.Data.ValueOrDefault<Dictionary<object, object>>("mapDataContainerFowGroupList", null);
-            if(mapDataContainerFowGroupList != null)
-            {
-                foreach(var kvp in mapDataContainerFowGroupList)
+                area.FowGroupStringIds = new Dictionary<ulong, long>();
+                var mapDataContainerFowGroupList = mapDataObj.Data.ValueOrDefault<Dictionary<object, object>>("mapDataContainerFowGroupList", null);
+                if (mapDataContainerFowGroupList != null)
                 {
-                    ulong fowId = (ulong)(kvp.Key);
-                    long stringId = ((GomObjectData)kvp.Value).ValueOrDefault<long>("mapFowGroupGUID"); //"str.sys.worldmap"
-                    area.FowGroupStringIds.Add(fowId, stringId);
+                    foreach (var kvp in mapDataContainerFowGroupList)
+                    {
+                        ulong fowId = (ulong)(kvp.Key);
+                        long stringId = ((GomObjectData)kvp.Value).ValueOrDefault<long>("mapFowGroupGUID"); //"str.sys.worldmap"
+                        area.FowGroupStringIds.Add(fowId, stringId);
+                    }
                 }
+            }
+            string mapNotePath = String.Format("/resources/world/areas/{0}/mapnotes.not", area.AreaId);
+            var mapNoteObj = _dom._assets.FindFile(mapNotePath);
+            if (mapNoteObj != null)
+            {
+                LoadMapNotes(area, mapNoteObj);
             }
 
             //area.Assets = LoadAssets(area.AreaId);
@@ -99,6 +109,38 @@ namespace GomLib.ModelLoader
             }*/
 
             return area;
+        }
+
+        private void LoadMapNotes(Models.Area area, TorLib.File file)
+        {
+            string xml = "";
+            using (var reader = new StreamReader(file.OpenCopyInMemory()))
+            {
+                xml = reader.ReadToEnd();
+            }
+            xml = xml.Replace("&lt;", "<").Replace("&gt;", ">").Replace("&amp;lt;", "<").Replace("&amp;gt;", ">").Replace("&amp;apos;", "'").Replace("\0", "");
+            XDocument notes = XDocument.Parse(xml);
+            var elements = notes.Root.Element("e").Element("v").Elements();
+            Dictionary<ulong, MapNoteData> mapNotes = new Dictionary<ulong, MapNoteData>();
+            var count = elements.Count();
+            for (int i = 0; i < count; i = i + 2)
+            {
+                var key = elements.ElementAt(i).Value;
+                ulong k;
+                ulong.TryParse(key, out k);
+                var value = elements.ElementAt(i+1);
+                var node = value.Element("node");
+                if (node != null)
+                {
+                    MapNoteData mpn = new MapNoteData(area._dom).Load(node);
+                    mapNotes.Add(k, mpn);
+                }
+                else
+                {
+                    continue;
+                }
+            }
+            area.MapNotes = mapNotes;
         }
 
         private void LoadMapdata(Models.Area area, GomObject obj)
@@ -152,9 +194,17 @@ namespace GomLib.ModelLoader
                     string mapImagePath = String.Format("/resources/world/areas/{0}/{1}_r.dds", area.AreaId, page.MapName);
                     page.HasImage = _dom._assets.HasFile(mapImagePath);
 
+                    if (page.HasImage)
+                    {
+                        if (page.Area.RequiredFiles == null)
+                            page.Area.RequiredFiles = new HashSet<string>();
+                        page.Area.RequiredFiles.Add(mapImagePath);
+                    }
+
                     _dom._assets.icons.AddMap(area.AreaId, page.MapName);
 
                     page.Name = strTable.GetText(page.Guid, "MapPage." + page.MapName);
+                    page.LocalizedName = strTable.GetLocalizedText(page.Guid, "MapPage." + page.MapName);
 
                     page.ExplorationId = Int64.Parse(mapPage.ValueOrDefault<object>("mapExplorationId", 0).ToString());
                     page.mapFowRadius = mapPage.ValueOrDefault<float>("mapFowRadius", 0f);

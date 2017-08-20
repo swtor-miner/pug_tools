@@ -278,6 +278,17 @@ namespace GomLib
         }
 
         /// <summary>
+        /// Convert a Hashset of ulong values to a Base62 string List
+        /// </summary>
+        /// <param name="original">ulong</param>
+        /// <returns>Base62 string</returns>
+        public static List<string> ToMaskedBase62(this HashSet<ulong> ids)
+        {
+            if (ids == null || ids.Count == 0) return null;
+            return ids.Select(x => x.ToMaskedBase62()).ToList();
+        }
+
+        /// <summary>
         /// Convert a byte array
         /// </summary>
         /// <param name="original">Byte array</param>

@@ -21,10 +21,13 @@ namespace GomLib.Models
         public string ZoneName { get; set; }
 
         public List<MapPage> MapPages { get; set; }
+        public Dictionary<ulong, MapNoteData> MapNotes { get; set; }
 
+        [JsonIgnore]
         public Dictionary<ulong, long> FowGroupStringIds { get; set; }
-
+        [JsonIgnore]
         internal Dictionary<ulong, Dictionary<string, string>> _FowGroupLocalizedStrings { get; set; }
+        [JsonIgnore]
         public Dictionary<ulong, Dictionary<string, string>> FowGroupLocalizedStrings { get
             {
                 if (_FowGroupLocalizedStrings == null)
@@ -44,8 +47,10 @@ namespace GomLib.Models
                 return _FowGroupLocalizedStrings;
             }
         }
+        [JsonIgnore]
         private bool sortedByVolume = false;
 
+        [JsonIgnore]
         public Dictionary<ulong, string> Assets { get; set; }//old
         public AreaDat AreaDat { get; set; } //new
 
@@ -76,6 +81,7 @@ namespace GomLib.Models
             hash ^= AreaId.GetHashCode();
             if (ZoneName != null) hash ^= ZoneName.GetHashCode();
             if (MapPages != null) foreach (var x in MapPages) { hash ^= x.GetHashCode(); }
+            if (MapNotes != null) foreach (var x in MapNotes) { hash ^= x.Key.GetHashCode(); hash ^= x.Value.GetHashCode(); }
             hash ^= sortedByVolume.GetHashCode();
             if (Assets != null) foreach (var x in Assets) { hash ^= x.GetHashCode(); }
 

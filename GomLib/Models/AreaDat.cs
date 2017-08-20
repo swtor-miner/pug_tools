@@ -69,8 +69,8 @@ namespace GomLib.Models
                 int i = 0;
                 foreach (var room in RoomNames)
                 {
-                    _Rooms.Add(room, _dom.roomDatLoader.Load(room, i, this));
                     i++;
+                    _Rooms.Add(room, _dom.roomDatLoader.Load(room, i, this));
                 }
             }
         }

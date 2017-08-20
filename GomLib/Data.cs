@@ -23,6 +23,7 @@ namespace GomLib
         public SchematicVariationsPrototype schematicVariationsPrototype;
         public ShieldPerLevel shieldPerLevel;
         public QuestDifficulty questDifficulty;
+        public HuntingRadius huntingRadius;
 
         [Newtonsoft.Json.JsonIgnore]
         private DataObjectModel _dom;
@@ -42,6 +43,7 @@ namespace GomLib
             schematicVariationsPrototype = new SchematicVariationsPrototype(_dom);
             shieldPerLevel = new ShieldPerLevel(_dom);
             questDifficulty = new QuestDifficulty(_dom);
+            huntingRadius = new HuntingRadius(_dom);
         }
 
         public void Dispose()
@@ -66,6 +68,7 @@ namespace GomLib
                 if (schematicVariationsPrototype != null) schematicVariationsPrototype.Dispose();
                 if (shieldPerLevel != null) shieldPerLevel.Dispose();
                 if (questDifficulty != null) questDifficulty.Dispose();
+                if (huntingRadius != null) huntingRadius.Dispose();
             }
             disposed = true;
         }
@@ -87,6 +90,7 @@ namespace GomLib
             modificationNames = null;
             schematicVariationsPrototype = null;
             shieldPerLevel = null;
+            huntingRadius = null;
         }
     }
 }

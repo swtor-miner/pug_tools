@@ -196,7 +196,8 @@ namespace GomLib
                 UnNamedMap.Clear();
                 UnNamedMap = null;
                 BucketFiles.Clear();
-                data.Dispose();
+                if (data != null)
+                    data.Dispose();
             }
             disposed = true;
         }
@@ -393,6 +394,17 @@ namespace GomLib
                 if (!testNode.References.ContainsKey(type)) testNode.References.Add(type, new SortedSet<ulong>());
                 testNode.References[type].UnionWith(reference);
                 testNode.References[type].Remove(id); //remove self references
+            }
+        }
+        public void AddProtoCrossLink(ulong protoId, ulong id, string type, ulong reference)
+        {
+            GomObject testNode = this.GetObjectNoLoad(protoId);
+            if (testNode != null)
+            {
+                if (testNode.ProtoReferences == null) testNode.ProtoReferences = new Dictionary<ulong, Dictionary<string, SortedSet<ulong>>>();
+                if (!testNode.ProtoReferences.ContainsKey(id)) testNode.ProtoReferences.Add(id, new Dictionary<string, SortedSet<ulong>>());
+                if (!testNode.ProtoReferences[id].ContainsKey(type)) testNode.ProtoReferences[id].Add(type, new SortedSet<ulong>());
+                if (!testNode.ProtoReferences[id][type].Contains(reference)) testNode.ProtoReferences[id][type].Add(reference);
             }
         }
 
@@ -617,7 +629,7 @@ namespace GomLib
             }
         }
 
-        private void ReadAllItems(GomBinaryReader br, long offset)
+        public void ReadAllItems(GomBinaryReader br, long offset)
         {
             
             while (true)

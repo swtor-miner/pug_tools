@@ -28,6 +28,9 @@ namespace GomLib.ModelLoader
             task.Id = (int)obj.ValueOrDefault<long>("qstTaskId", 0);
             task._dom = _dom;
 
+            var qstTaskMapNoteList = obj.ValueOrDefault<List<object>>("qstTaskMapNoteList", null);
+            if (qstTaskMapNoteList != null)
+                task.MapNoteFqnList = qstTaskMapNoteList.Cast<string>().ToList();
             var bonusMissions = (List<object>)obj.ValueOrDefault<List<object>>("qstBonusMissions", null);
             task.BonusMissionsIds = _dom.questLoader.LoadBonusMissions(bonusMissions);
 
