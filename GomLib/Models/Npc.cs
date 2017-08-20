@@ -41,6 +41,26 @@ namespace GomLib.Models
                 return "";
             }
         }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public HashSet<ulong> AbilityPackageIdList { get; set; }
+        public List<string> _AbilityPackageB62IdList { get; set; }
+        public List<string> AbilityPackageB62IdList
+        {
+            get
+            {
+                if (_AbilityPackageB62IdList == null)
+                {
+                    if (AbilityPackageIdList != null)
+                    {
+                        AbilityPackageIdList.Add(ClassSpec.AbilityPackageId);
+                        _AbilityPackageB62IdList = AbilityPackageIdList.ToMaskedBase62();
+                    }
+                }
+                return _AbilityPackageB62IdList;
+            }
+        }
+
         [Newtonsoft.Json.JsonIgnore]
         public ClassSpec ClassSpec { get; set; }
         public int MinLevel { get; set; }
@@ -163,6 +183,7 @@ namespace GomLib.Models
             int hash = Name.GetHashCode();
             if (Title != null) { hash ^= Title.GetHashCode(); }
             hash ^= ClassSpec.Id.GetHashCode();
+            if (AbilityPackageIdList != null) foreach (var apn in AbilityPackageIdList) hash ^= apn.GetHashCode();
             hash ^= MinLevel.GetHashCode();
             hash ^= MaxLevel.GetHashCode();
             hash ^= Faction.GetHashCode();
@@ -389,6 +410,7 @@ namespace GomLib.Models
                     };
             }
         }
+
         public override XElement ToXElement(bool verbose)
         {
             if (NodeId == 0) return null;

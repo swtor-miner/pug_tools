@@ -261,6 +261,12 @@ namespace GomLib.ModelLoader
                 string sionsodn = "";
             }
 
+            if (obj.Data.ContainsKey("npcApnList"))
+            {
+                npc.AbilityPackageIdList = new HashSet<ulong>();
+                npc.AbilityPackageIdList.UnionWith(obj.Data.ValueOrDefault<List<object>>("npcApnList", new List<object>()).Select(x => (ulong)x));
+            }
+
             npc.CodexId = obj.Data.ValueOrDefault<ulong>("npcCodexSpec", 0);
             /*if (cdxNodeId > 0)
             {
