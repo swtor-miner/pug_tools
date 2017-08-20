@@ -168,7 +168,9 @@ namespace GomLib.ModelLoader
             var areaList = _dom.GetObject("mapAreasDataProto").Data.Get<Dictionary<object, object>>("mapAreasDataObjectList");
             StringTable strTable = _dom.stringTable.Find("str.sys.worldmap");
 
-            var invBonusList = _dom.GetObject("sysAreaInfoTablePrototype").Data.Get<Dictionary<object, object>>("sysAreaBonusNameIdList");
+            var sysAreaInfoTablePrototype = _dom.GetObject("sysAreaInfoTablePrototype");
+            var areaFactionRestriction = sysAreaInfoTablePrototype.Data.Get<Dictionary<object, object>>("sysAreaFactionRestriction");
+            var invBonusList = sysAreaInfoTablePrototype.Data.Get<Dictionary<object, object>>("sysAreaBonusNameIdList");
             StringTable conqStrTable = _dom.stringTable.Find("str.gui.planetaryconquest");
 
             foreach(var kvp in destDataDict)
@@ -186,6 +188,12 @@ namespace GomLib.ModelLoader
                         plt.InvasionBonusId = (long)ibId;
                         plt.InvasionBonus = conqStrTable.GetText((long)ibId, "str.gui.planetaryconquest");
                         plt.LocalizedInvasionBonus = conqStrTable.GetLocalizedText((long)ibId, "str.gui.planetaryconquest");
+                    }
+                    object factId;
+                    areaFactionRestriction.TryGetValue(plt.Id, out factId);
+                    if(factId != null)
+                    {
+                        plt.Faction = _dom.factionData.ToFaction((long)factId);
                     }
 
                     tempDict.Add((ulong)subKvp.Key, plt);
@@ -285,10 +293,7 @@ namespace GomLib.ModelLoader
 
                         foreach (KeyValuePair<object, object> multiplierKvp in objMultiplierDict)
                         {
-                            KeyValuePair<long, float> multiplierConverted = new KeyValuePair<long, float>
-                                ((long)multiplierKvp.Key, (float)multiplierKvp.Value);
-
-                            objective.PlanetIDMultiplyerList.Add(multiplierConverted);
+                            objective.PlanetIDMultiplyerList.Add((long)multiplierKvp.Key, (float)multiplierKvp.Value);
                         }
 
                         package.Objectives.Add(objective);

@@ -8314,4 +8314,6 @@
   <gom_type Id="4611686294700360002" name ="spnWeightIdTable" desc=""/>
   <gom_type Id="4611686080104478192" name ="spnTotalWeightValue" desc=""/>
   <gom_type Id="4611686029875809984" name ="spnFqnMap" desc=""/>
+  <!-- npc -->
+  <gom_type Id="4611686356790457000" name="npcApnList" desc=""/>
 </gom_types>

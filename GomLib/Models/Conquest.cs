@@ -20,6 +20,14 @@ namespace GomLib.Models
         public string Description { get; set; }
         public Dictionary<string, string> LocalizedDescription { get; set; }
         public string Icon { get; set; }
+        public string HashedIcon
+        {
+            get
+            {
+                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/codex/{0}.dds", this.Icon));
+                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+            }
+        }
         [JsonConverter(typeof(LongConverter))]
         public long ParticipateGoal { get; set; }
         [JsonIgnore]
@@ -29,9 +37,37 @@ namespace GomLib.Models
         public List<long> OneTimeObjectiveIdList { get; set; }
         public List<ConquestObjectivePackage> OneTimeObjectivesList { get; set; }
         public string DesignName { get; set; }
+        [JsonIgnore]
         public Dictionary<ulong, bool> ActivePlanets { get; set; }
+        internal Dictionary<string, bool> _ActivePlanetsB62 { get; set; }
+        public Dictionary<string, bool> ActivePlanetsB62
+        {
+            get
+            {
+                if (_ActivePlanetsB62 == null && ActivePlanets != null)
+                {
+                    _ActivePlanetsB62 = ActivePlanets.ToDictionary(x => (x.Key).ToMaskedBase62(), x => x.Value);
+                }
+                return _ActivePlanetsB62;
+            }
+        }
+        [JsonIgnore]
         public Dictionary<ulong, Planet> ActivePlanetObjects { get; set; }
+        internal Dictionary<string, Planet> _ActivePlanetObjectsB62 { get; set; }
+        public Dictionary<string, Planet> ActivePlanetObjectsB62
+        {
+            get
+            {
+                if (_ActivePlanetObjectsB62 == null && ActivePlanetObjects != null)
+                {
+                    _ActivePlanetObjectsB62 = ActivePlanetObjects.ToDictionary(x => (x.Key).ToMaskedBase62(), x => x.Value);
+                }
+                return _ActivePlanetObjectsB62;
+            }
+        }
+        [JsonIgnore]
         public List<Planet> RepublicActivePlanets { get; set; }
+        [JsonIgnore]
         public List<Planet> ImperialActivePlanets { get; set; }
         public List<ConquestData> ActiveData { get; set; }
 
@@ -393,10 +429,32 @@ namespace GomLib.Models
     {
         [JsonConverter(typeof(ULongConverter))]
         public ulong AchievementID;
+        public string AchievementB62Id
+        {
+            get
+            {
+                return ((ulong)AchievementID).ToMaskedBase62();
+            }
+        }
+        [Newtonsoft.Json.JsonIgnore]
         public Achievement AchievementObj;
 
-        public List<KeyValuePair<long, float>> PlanetIDMultiplyerList = new List<KeyValuePair<long, float>>();
-        
+        [Newtonsoft.Json.JsonIgnore]
+        public Dictionary<long, float> PlanetIDMultiplyerList = new Dictionary<long, float>();
+        [Newtonsoft.Json.JsonIgnore]
+        internal Dictionary<string, float> _PlanetIDMultiplyerB62List { get; set; }
+        public Dictionary<string, float> PlanetIDMultiplyerB62List
+        {
+            get
+            {
+                if (_PlanetIDMultiplyerB62List == null && PlanetIDMultiplyerList != null)
+                {
+                    _PlanetIDMultiplyerB62List = PlanetIDMultiplyerList.ToDictionary(x => ((ulong)x.Key).ToMaskedBase62(), x => x.Value);
+                }
+                return _PlanetIDMultiplyerB62List;
+            }
+        }
+
         //public Dictionary<Achievement, Dictionary<Planet, float>> ObjectiveList { get; set; }
 
         public override int GetHashCode()
@@ -437,8 +495,8 @@ namespace GomLib.Models
 
             for(int i=0; i<this.PlanetIDMultiplyerList.Count; i++)
             {
-                KeyValuePair<long, float> thisPlanetMulti = this.PlanetIDMultiplyerList[i];
-                KeyValuePair<long, float> itmPlanetMulti = itm.PlanetIDMultiplyerList[i];
+                KeyValuePair<long, float> thisPlanetMulti = this.PlanetIDMultiplyerList.ElementAt(i);
+                KeyValuePair<long, float> itmPlanetMulti = itm.PlanetIDMultiplyerList.ElementAt(i);
                 if (thisPlanetMulti.Key != itmPlanetMulti.Key || thisPlanetMulti.Value != itmPlanetMulti.Value)
                     return false;
             }
@@ -536,13 +594,31 @@ namespace GomLib.Models
         public string Description { get; set; }
         public Dictionary<string, string> LocalizedDescription { get; set; }
         public string Icon { get; set; }
+        public string HashedIcon
+        {
+            get
+            {
+                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/codex/{0}.dds", this.Icon));
+                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+            }
+        }
+        [JsonIgnore]
         public Dictionary<ulong, object> ExitList { get; set; }
         public ulong PrimaryAreaId { get; set; }
         public long TransportCost { get; set; }
         public long OrbtSupportCost { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
         public ulong OrbtSupportAblId { get; set; }
+        public string OrbtSupportAblB62Id
+        {
+            get
+            {
+                return ((ulong)OrbtSupportAblId).ToMaskedBase62();
+            }
+        }
         [Newtonsoft.Json.JsonIgnore]
         internal Ability _OrbtSupportAbility { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
         public Ability OrbtSupportAbility
         {
             get
@@ -557,6 +633,7 @@ namespace GomLib.Models
         public Dictionary<string, string> LocalizedInvasionBonus { get; set; }
         public string InvasionBonus { get; set; }
         public long InvasionBonusId { get; set; }
+        public DetailedFaction Faction { get; set; }
 
         public override int GetHashCode()
         {
@@ -679,7 +756,15 @@ namespace GomLib.Models
             ProtoDataTable = "wevConquestsInfoTable";
         }
 
+        [Newtonsoft.Json.JsonIgnore]
         public ulong GuildQstId { get; set; }
+        public string GuildQstB62Id
+        {
+            get
+            {
+                return ((ulong)GuildQstId).ToMaskedBase62();
+            }
+        }
         [Newtonsoft.Json.JsonIgnore]
         internal Quest _GuildQst { get; set; }
         [Newtonsoft.Json.JsonIgnore]
@@ -694,7 +779,15 @@ namespace GomLib.Models
                 return _GuildQst;
             }
         }
+        [Newtonsoft.Json.JsonIgnore]
         public ulong PersonalQstId { get; set; }
+        public string PersonalQstB62Id
+        {
+            get
+            {
+                return ((ulong)PersonalQstId).ToMaskedBase62();
+            }
+        }
         [Newtonsoft.Json.JsonIgnore]
         internal Quest _PersonalQst { get; set; }
         [Newtonsoft.Json.JsonIgnore]
