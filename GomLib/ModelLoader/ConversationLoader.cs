@@ -18,6 +18,7 @@ namespace GomLib.ModelLoader
         Dictionary<long, KeyValuePair<int, Dictionary<string, string>>> localizedReactionDataByID = new Dictionary<long, KeyValuePair<int, Dictionary<string, string>>>();
 
         Dictionary<long, Npc> companionShortNameMap;
+        Conversation GenericLines = null;
 
         private DataObjectModel _dom;
 
@@ -32,6 +33,7 @@ namespace GomLib.ModelLoader
             idMap = new Dictionary<ulong, Conversation>();
             nameMap = new Dictionary<string, Conversation>();
             companionShortNameMap = new Dictionary<long, Npc>();
+            GenericLines = null;
         }
 
         public string ClassName
@@ -184,10 +186,10 @@ namespace GomLib.ModelLoader
                 if (dialogNode.stb != null)
                     if (cnv.stb == null)
                         cnv.stb = dialogNode.stb;
-                    else if (cnv.stb != dialogNode.stb)
-                    {
-                        throw new IndexOutOfRangeException();
-                    }
+                //else if (cnv.stb != dialogNode.stb && dialogNode.stb != "str.cnv.misc.generic_lines")
+                //{
+                //    throw new IndexOutOfRangeException();
+                //}
                 cnv.DialogNodes.Add(dialogNode);
                 cnv.NodeLookup[dialogNode.NodeId] = dialogNode;
                 cnv.QuestStarted.AddRange(dialogNode.QuestsGranted);
@@ -290,6 +292,7 @@ namespace GomLib.ModelLoader
             result.ChoiceDisabledForHolocom = data.ValueOrDefault<bool>("cnvIsVoteWinDisabledForHolocom", false);
             result.AbortsConversation = data.ValueOrDefault<bool>("cnvAbortConversation", false);
             result.IsPlayerNode = data.ValueOrDefault<bool>("cnvIsPcNode", false);
+            result.GenericNodeNumber = data.ValueOrDefault<long>("cnvGenericNodeNumber", 0);
             result.cnvAlienVOFQN = data.ValueOrDefault<string>("cnvAlienVOConvoFQN", string.Empty);
             result.cnvAlienVONode = data.ValueOrDefault<long>("cnvAlienVONodeNumber", -1);
 
@@ -427,6 +430,23 @@ namespace GomLib.ModelLoader
                 result.Text = _dom.stringTable.TryGetString(cnv.Fqn, txtData);
                 result.LocalizedText = _dom.stringTable.TryGetLocalizedStrings(cnv.Fqn, txtData);
                 result.LocalizedOptionText = _dom.stringTable.TryGetLocalizedOptionStrings(cnv.Fqn, txtData);
+            }
+
+            if (result.GenericNodeNumber != 0)
+            {
+                if (GenericLines == null)
+                    GenericLines = _dom.conversationLoader.Load("cnv.misc.generic_lines");
+                if (GenericLines != null)
+                {
+                    DialogNode d;
+                    if (GenericLines.NodeLookup.TryGetValue(result.GenericNodeNumber, out d))
+                    {
+                        result.stb = d.stb;
+                        result.Text = d.Text;
+                        result.LocalizedText = d.LocalizedText;
+                        //result.LocalizedOptionText = d.LocalizedOptionText;
+                    }
+                }
             }
 
             result.ChildIds = new List<int>();

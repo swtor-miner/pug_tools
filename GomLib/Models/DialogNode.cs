@@ -90,6 +90,7 @@ namespace GomLib.Models
         public List<DialogNode> ChildNodes { get; set; }
 
         public string stb { get; set; }
+        public long GenericNodeNumber { get; set; }
 
         public override int GetHashCode()
         {

@@ -109,6 +109,7 @@ namespace GomLib.ModelLoader
             }
             cmp.ConversationMultiplier = (float)obj.Dictionary["chrCompanionInfo_affectionMultiplier"];
             cmp.IsGenderMale = (bool)obj.Dictionary.ContainsKey("chrCompanionInfo_gender_male");
+            cmp.AppearanceClassId = obj.ValueOrDefault<ulong>("chrCompanionInfo_appearance_class", 0);
             cmp.Classes = new ClassSpecList();
 
 
