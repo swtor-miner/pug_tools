@@ -134,10 +134,13 @@ namespace GomLib.ModelLoader
             LoadRequiredClasses(qst, obj);
 
             qst.NameId = questGuid + 0x58;
-            var nameLookup = (GomObjectData)textMap[qst.NameId];
-            //qst.Name = _dom.stringTable.TryGetString(qst.Fqn, nameLookup);
-            qst.LocalizedName = _dom.stringTable.TryGetLocalizedStrings(qst.Fqn, nameLookup);
-            Normalize.Dictionary(qst.LocalizedName, qst.Fqn);
+            if (textMap != null)
+            {
+                var nameLookup = (GomObjectData)textMap[qst.NameId];
+                //qst.Name = _dom.stringTable.TryGetString(qst.Fqn, nameLookup);
+                qst.LocalizedName = _dom.stringTable.TryGetLocalizedStrings(qst.Fqn, nameLookup);
+            }
+            qst.LocalizedName = Normalize.Dictionary(qst.LocalizedName, qst.Fqn);
             qst.Name = qst.LocalizedName["enMale"];
 
             /*            List<string> strings2 = new List<string>();

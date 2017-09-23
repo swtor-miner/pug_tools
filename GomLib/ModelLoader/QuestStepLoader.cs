@@ -47,7 +47,7 @@ namespace GomLib.ModelLoader
             var stringIds = (List<object>)obj.ValueOrDefault<List<object>>("qstStepJournalEntryStringIdList", null);
             var strings = new List<string>();
             var localizedStrings = new Dictionary<string, List<string>>();
-            if (stringIds != null)
+            if (stringIds != null && branch.Quest.TextLookup != null)
             {
                 var txtLookup = branch.Quest.TextLookup;
                 foreach (var strId in stringIds)

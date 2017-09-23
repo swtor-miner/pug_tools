@@ -42,7 +42,7 @@ namespace GomLib.ModelLoader
             long.TryParse(obj.ValueOrDefault<string>("qstTaskStringid", null), out stringId);
 
             var txtLookup = step.Branch.Quest.TextLookup;
-            if (txtLookup.ContainsKey(stringId))
+            if (txtLookup != null && txtLookup.ContainsKey(stringId))
             {
                 task.String = _dom.stringTable.TryGetString(step.Branch.Quest.Fqn, (GomObjectData)txtLookup[stringId]);
                 task.LocalizedString = _dom.stringTable.TryGetLocalizedStrings(step.Branch.Quest.Fqn, (GomObjectData)txtLookup[stringId]);
