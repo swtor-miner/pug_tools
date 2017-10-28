@@ -161,7 +161,7 @@ namespace FileFormats
                     string value = node["value"].InnerText.Replace("\\", "/");
                     if (semantic == "DiffuseMap")
                     {                        
-                        diffuseDDS = "/resources/" + value.Replace("\\", "/") + ".dds";
+                        diffuseDDS = ("/resources/" + value.Replace("\\", "/") + ".dds").Replace("//", "/");
                         var diffuseFile = currentAssets.FindFile(diffuseDDS);
                         if (diffuseFile != null && device != null)
                         {
@@ -184,8 +184,8 @@ namespace FileFormats
                         }
                     }
                     else if (semantic == "RotationMap1")
-                    {                        
-                        rotationDDS = "/resources/" + value + ".dds";
+                    {
+                        rotationDDS = ("/resources/" + value + ".dds").Replace("//", "/");
                         var rotationFile = currentAssets.FindFile(rotationDDS);
                         if (rotationFile != null && device != null)
                         {
@@ -196,8 +196,8 @@ namespace FileFormats
                         }
                     }
                     else if (semantic == "GlossMap")
-                    {                        
-                        glossDDS = "/resources/" + value + ".dds";
+                    {
+                        glossDDS = ("/resources/" + value + ".dds").Replace("//", "/");
                         var glossFile = currentAssets.FindFile(glossDDS);
                         if (glossFile != null && device != null)
                         {
@@ -215,7 +215,7 @@ namespace FileFormats
                     {                        
                         if (semantic == "PaletteMap")
                         {
-                            paletteDDS = "/resources/" + value + ".dds";
+                            paletteDDS = ("/resources/" + value + ".dds").Replace("//", "/");
                             var paletteFile = currentAssets.FindFile(paletteDDS);
                             if (paletteFile != null && device != null)
                             {
@@ -226,15 +226,15 @@ namespace FileFormats
                             }
                         }
                         else if (semantic == "PaletteMaskMap")
-                        {                            
-                            paletteMaskDDS = "/resources/" + value + ".dds";
+                        {
+                            paletteMaskDDS = ("/resources/" + value + ".dds").Replace("//", "/");
                             var paletteMaskFile = currentAssets.FindFile(paletteMaskDDS);
                             if (paletteMaskFile != null && device != null)
                             {
                                 var paletteMaskStream = paletteMaskFile.OpenCopyInMemory();
                                 MemoryStream paletteMaskMS = new MemoryStream();
                                 paletteMaskStream.CopyTo(paletteMaskMS);
-                                paletteMaskSRV = ShaderResourceView.FromMemory(device, paletteMaskMS.ToArray());                                
+                                paletteMaskSRV = ShaderResourceView.FromMemory(device, paletteMaskMS.ToArray());
                             }
                         }
                         else if (semantic == "palette1")
@@ -268,7 +268,7 @@ namespace FileFormats
                     {
                         if (semantic == "ComplexionMap")
                         {
-                            complexionDDS = "/resources/" + value + ".dds";
+                            complexionDDS = ("/resources/" + value + ".dds").Replace("//", "/");
                             var complexionFile = currentAssets.FindFile(complexionDDS);
                             if (complexionFile != null && device != null)
                             {
@@ -280,7 +280,7 @@ namespace FileFormats
                         }
                         else if (semantic == "FacepaintMap")
                         {
-                            facepaintDDS = "/resources/" + value + ".dds";
+                            facepaintDDS = ("/resources/" + value + ".dds").Replace("//", "/");
                             var facepaintFile = currentAssets.FindFile(facepaintDDS);
                             if (facepaintFile != null && device != null)
                             {
@@ -292,7 +292,7 @@ namespace FileFormats
                         }
                         else if (semantic == "AgeMap")
                         {
-                            ageDDS = "/resources/" + value + ".dds";
+                            ageDDS = ("/resources/" + value + ".dds").Replace("//", "/");
                             var ageFile = currentAssets.FindFile(ageDDS);
                             if (ageFile != null && device != null)
                             {
