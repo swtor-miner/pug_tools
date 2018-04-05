@@ -70,6 +70,8 @@ namespace GomLib.Models
         [JsonIgnore]
         public List<Planet> ImperialActivePlanets { get; set; }
         public List<ConquestData> ActiveData { get; set; }
+        public List<DateTime> NewActiveData { get; set; }
+        public Dictionary<string, List<Achievement>> NewObjectivesList { get; internal set; }
 
         public override int GetHashCode()
         {
@@ -392,6 +394,18 @@ namespace GomLib.Models
                 }
                 stronghold.Add(activeData);
             }
+            if (NewActiveData != null)
+            {
+
+                XElement activeData = new XElement("Schedule", new XAttribute("Num", NewActiveData.Count));
+                for (int i = 0; i < NewActiveData.Count; i++)
+                {
+                    var actDat = new XElement("Date", String.Format("{0} EST", NewActiveData[i].ToString()));
+                    actDat.SetAttributeValue("Id", i);
+                    activeData.Add(actDat);
+                }
+                stronghold.Add(activeData);
+            }
 
             XElement repPlanets = new XElement("RepublicActivePlanets", new XAttribute("Num", RepublicActivePlanets.Count));
             foreach (var planet in RepublicActivePlanets)
@@ -405,19 +419,40 @@ namespace GomLib.Models
                 impPlanets.Add(planet.ToXElement(verbose));
             }
             stronghold.Add(impPlanets);
-            XElement rptObjectives = new XElement("RepeatableObjectivesList", new XAttribute("Num", RepeatableObjectivesList.Count));
-            foreach (var conquestObj in RepeatableObjectivesList)
-            {
-                rptObjectives.Add(conquestObj.ToXElement(verbose));
-            }
-            stronghold.Add(rptObjectives);
 
-            XElement oneTObjectives = new XElement("OneTimeObjectivesList", new XAttribute("Num", OneTimeObjectivesList.Count));
-            foreach (var conquestObj in OneTimeObjectivesList)
+            if (RepeatableObjectivesList.Count > 0)
             {
-                oneTObjectives.Add(conquestObj.ToXElement(verbose));
+                XElement rptObjectives = new XElement("RepeatableObjectivesList", new XAttribute("Num", RepeatableObjectivesList.Count));
+                foreach (var conquestObj in RepeatableObjectivesList)
+                {
+                    rptObjectives.Add(conquestObj.ToXElement(verbose));
+                }
+                stronghold.Add(rptObjectives);
             }
-            stronghold.Add(oneTObjectives);
+
+            if (OneTimeObjectivesList.Count > 0)
+            {
+                XElement oneTObjectives = new XElement("OneTimeObjectivesList", new XAttribute("Num", OneTimeObjectivesList.Count));
+                foreach (var conquestObj in OneTimeObjectivesList)
+                {
+                    oneTObjectives.Add(conquestObj.ToXElement(verbose));
+                }
+                stronghold.Add(oneTObjectives);
+            }
+            if (NewObjectivesList.Count > 0)
+            {
+                XElement Objectives = new XElement("ObjectivesList", new XAttribute("Num", OneTimeObjectivesList.Count));
+                foreach (var conquestObj in NewObjectivesList)
+                {
+                    XElement oneTObjectives = new XElement(conquestObj.Key, new XAttribute("Num", conquestObj.Value.Count));
+                    foreach (var achObj in conquestObj.Value)
+                    {
+                        oneTObjectives.Add(achObj.ToXElement(false));
+                    }
+                    Objectives.Add(oneTObjectives);
+                }
+                stronghold.Add(Objectives);
+            }
 
             stronghold.Add(new XElement("ParticipateGoal", ParticipateGoal));
 
@@ -635,6 +670,30 @@ namespace GomLib.Models
         public long InvasionBonusId { get; set; }
         public DetailedFaction Faction { get; set; }
 
+        [Newtonsoft.Json.JsonIgnore]
+        public ulong ConquestGuildQuestId { get; set; }
+        public string ConquestGuildQuestB62Id
+        {
+            get
+            {
+                return ((ulong)ConquestGuildQuestId).ToMaskedBase62();
+            }
+        }
+        [Newtonsoft.Json.JsonIgnore]
+        internal Quest _ConquestGuildQuest { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        public Quest ConquestGuildQuest
+        {
+            get
+            {
+                if (_ConquestGuildQuest == null)
+                {
+                    _ConquestGuildQuest = _dom.questLoader.Load(ConquestGuildQuestId);
+                }
+                return _ConquestGuildQuest;
+            }
+        }
+
         public override int GetHashCode()
         {
             int hash = Id.GetHashCode();
@@ -731,13 +790,13 @@ namespace GomLib.Models
             if (verbose)
             {
                 room.Element("Name").Add(new XAttribute("Id", NameId));
-                room.Add(new XElement("Description", Description, new XAttribute("Id", DescId)),
-                    new XElement("DataminingNote", "Fuel Cost to transport your Flagship includes the selected exit's fuel cost as well."),
+                room.Add(//new XElement("Description", Description, new XAttribute("Id", DescId)),
+                    //new XElement("DataminingNote", "Fuel Cost to transport your Flagship includes the selected exit's fuel cost as well."),
                     new XElement("OrbitalSupportCost", OrbtSupportCost),
-                    new XElement("OrbitalSupportAbility", OrbtSupportAbility.ToXElement(false)),
-                    new XElement("FuelCost", TransportCost),
-                    new XElement("Icon", Icon),
-                    new XElement("PrimaryAreaId", PrimaryAreaId)
+                    //new XElement("OrbitalSupportAbility", OrbtSupportAbility.ToXElement(false)),
+                    new XElement("FuelCost", TransportCost)
+                    //new XElement("Icon", Icon),
+                    //new XElement("PrimaryAreaId", PrimaryAreaId)
                     //new XElement("PrimaryAreaFuelCost", ExitList[PrimaryAreaId]
                     );
             }

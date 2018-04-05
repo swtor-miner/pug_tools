@@ -8316,4 +8316,44 @@
   <gom_type Id="4611686029875809984" name ="spnFqnMap" desc=""/>
   <!-- npc -->
   <gom_type Id="4611686356790457000" name="npcApnList" desc=""/>
+
+  <!-- cnqConquestInfoPrototype -->
+  <gom_type Id="4611686358423647000" name="cnqConquestTable" desc="List of Conquests indexed by long" />
+  <!-- cnqConquestInfoPrototype - Conquests -->
+  <gom_type Id="4611686308547244012" name="cnqConquestDesignName" desc="String with the Design Name for this event" />
+  <gom_type Id="4611686308547244013" name="cnqConquestNameId" desc="String id of Conquest name, looked up in str.gui.planetaryconquest" />
+  <gom_type Id="4611686308547244014" name="cnqConquestDescId" desc="String id of Conquest description, looked up in str.gui.planetaryconquest" />
+  <gom_type Id="4611686308547244015" name="cnqConquestIcon" desc="String id of Conquest name, looked up in str.gui.planetaryconquest" />
+  <gom_type Id="4611686308547244016" name="cnqConquestParticipateGoal" desc="long 25000 to 45000 - participation goal?" />
+  <gom_type Id="4611686308592734041" name="cnqConquestObjectivesList" desc="List of ulong ids looked up in cnqAchGroupPrototype" />
+  <gom_type Id="4611686308600494000" name="cnqConquestActivePlanets" desc="GOM Field ID " />
+  <gom_type Id="4611686308601624001" name="cnqConquestId" desc="" />
+  <gom_type Id="4611686308747924000" name="cnqConquestUnknownList" desc="" />
+  <gom_type Id="4611686308751924000" name="cnqConquestQuestId" desc="" />
+  <!-- cnqAchGroupPrototype -->
+  <gom_type Id="4611686308547244011" name="cnqAchGroupTable" desc="A dictionary indexed by long values found in cnqConquestInfoPrototype" />
+  <!-- cnqAchGroupPrototype - cnqAchGroupTable 
+        - Each long Id references a list of Achievement Ids which are keys to a dictionary of Planets GOM Field Ids a Conquest Point multipler-->
+
+  <!-- cnqSchedulePrototype -->
+  <gom_type Id="4611686308569184005" name="cnqScheduleTable" desc="" />
+  <gom_type Id="4611686308569184003" name="cnqScheduleConquestId" desc="" />
+  <gom_type Id="4611686308601624000" name="cnqScheduleStartOrderId" desc="" />
+
+  <!-- cnqPlanetInfoPrototype -->
+  <gom_type Id="4611686308547244010" name="cnqPlanetInfoTable" desc="" />
+  <gom_type Id="4611686308547244005" name="cnqPlanetDesignName" desc="" />
+  <gom_type Id="4611686308547244006" name="cnqPlanetId" desc="" />
+  <gom_type Id="4611686308547244008" name="cnqPlanetSize" desc="" />
+  <gom_type Id="4611686308547244009" name="cnqPlanetQuestId" desc="" />
+  <gom_type Id="4611686358685167000" name="cnqPlanetIcon" desc="" />
+  
+  <!-- cnqConquestInfoPrototype
+  <gom_type Id="4611686358423647000" name="cnqConquestsInfoTable" desc="A list of Conquest Ids, reward quests, start order id, and start time" />
+  <gom_type Id="4611686301864194008" name="cnqConquestOrderLookupTable" desc="A dictionary of actual starting order for Conquest Events indexed by their start order ids" />
+  <gom_type Id="4611686301864194002" name="cnqConquestsId" desc="Id of the Conquest Event" />
+  <gom_type Id="4611686301864194003" name="cnqConquestsGuildQstId" desc="Id of the Guild Quest Reward for the Conquest Event" />
+  <gom_type Id="4611686301864194004" name="cnqConquestsPersonalQstId" desc="Id of the Personal Quest Reward for the Conquest Event" />
+  <gom_type Id="4611686301864194009" name="cnqConquestsStartOrderId" desc="Start Order Id of the Conquest Event" />
+  <gom_type Id="4611687128170250008" name="cnqConquestsStartTime" desc="Unix timestamp in milliseconds + 369 years of when the Conquest Event starts" /> -->
 </gom_types>

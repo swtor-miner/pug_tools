@@ -269,6 +269,25 @@ namespace tor_tools
                 currentDataProto = currentDataObject.Data.Get<Dictionary<object, object>>(dataTable);
                 currentDataObject.Unload();
             }
+            else //check replaced prototype
+            {
+                Dictionary<string, KeyValuePair<string, string>> replacedProtos = new Dictionary<string, KeyValuePair<string, string>>
+                    {
+                        { "wevConquestInfosPrototype", new KeyValuePair<string, string>("cnqConquestInfoPrototype","cnqConquestTable") }
+                    };
+                KeyValuePair<string, string> protkey;
+                if (replacedProtos.TryGetValue(prototype, out protkey))
+                {
+                    prototype = protkey.Key;
+                    dataTable = protkey.Value;
+                    currentDataObject = currentDom.GetObject(prototype);
+                    if (currentDataObject != null) //fix to ensure old game assets don't throw exceptions.
+                    {
+                        currentDataProto = currentDataObject.Data.Get<Dictionary<object, object>>(dataTable);
+                        currentDataObject.Unload();
+                    }
+                }
+            }
 
             var curIds = currentDataProto.Keys;
             Dictionary<string, List<GomLib.Models.PseudoGameObject>> ObjectLists = new Dictionary<string, List<GomLib.Models.PseudoGameObject>>();

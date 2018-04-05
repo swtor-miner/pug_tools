@@ -22,11 +22,13 @@ namespace GomLib.ModelLoader
             PlanetList = null;
             ObjectiveList = null;
             ActiveConquestData = null;
+            NewActiveConquestData = null;
         }
 
         private Dictionary<string, Dictionary<ulong, Planet>> PlanetList;
         private Dictionary<long, ConquestObjectivePackage> ObjectiveList;
         private Dictionary<long, List<ConquestData>> ActiveConquestData;
+        private Dictionary<long, List<DateTime>> NewActiveConquestData;
 
         public Models.PseudoGameObject CreateObject()
         {
@@ -34,26 +36,6 @@ namespace GomLib.ModelLoader
         }
 
         private HashSet<string> fields = new HashSet<string>() {
-            "decPrevObjRotationX",
-            "decPrevObjRotationY",
-            "decNameId",
-            "decUseItemName",
-            "decUnlockingItemId",
-            "decDecorationId",
-            "decPlcState",
-            "decDefaultAnimation",
-            "decMaxUnlockLimit",
-            "decUnknownUnlockLimit",
-            "decUniquePerLegacy",
-            "decFactionPlacementRestriction",
-            "decCategoryNameId",
-            "decSubCategoryNameId",
-            "decHookList",
-            "decPrevCamHeightOff",
-            "decPrevCamDisOff",
-            "decRequiredAbilityType",
-            "decRequiresAbilityUnlocked",
-            "decGuildPurchaseCost"
             };
 
         public Conquest Load(Models.PseudoGameObject obj, long id, GomObjectData gom)
@@ -87,18 +69,30 @@ namespace GomLib.ModelLoader
             ActiveConquestData.TryGetValue(id, out cD);
             cnq.ActiveData = cD;
 
+            List<DateTime> dT;
+            NewActiveConquestData.TryGetValue(id, out dT);
+            cnq.NewActiveData = dT;
+
             var nameTable = _dom.stringTable.Find("str.gui.planetaryconquest");
 
             cnq.NameId = gom.ValueOrDefault<long>("wevConquestNameId", 0);
+            if(cnq.NameId == 0)
+                cnq.NameId = gom.ValueOrDefault<long>("cnqConquestNameId", 0);
             cnq.Name = nameTable.GetText(cnq.NameId, "str.gui.planetaryconquest");
             cnq.LocalizedName = nameTable.GetLocalizedText(cnq.NameId, "str.gui.planetaryconquest");
 
             cnq.DescId = gom.ValueOrDefault<long>("wevConquestDescId", 0);
+            if (cnq.DescId == 0)
+                cnq.DescId = gom.ValueOrDefault<long>("cnqConquestDescId", 0);
             cnq.Description = nameTable.GetText(cnq.DescId, "str.gui.planetaryconquest");
             cnq.LocalizedDescription = nameTable.GetLocalizedText(cnq.DescId, "str.gui.planetaryconquest");
 
             cnq.Icon = gom.ValueOrDefault<string>("wevConquestIcon", "");
+            if(cnq.Icon == "")
+                cnq.Icon = gom.ValueOrDefault<string>("cnqConquestIcon", "");
             cnq.ParticipateGoal = gom.ValueOrDefault<long>("wevConquestParticipateGoal", 0);
+            if(cnq.ParticipateGoal == 0)
+                cnq.ParticipateGoal = gom.ValueOrDefault<long>("cnqConquestParticipateGoal", 0);
             cnq.RepeatableObjectivesIdList = gom.ValueOrDefault<List<object>>("wevConquestRepeatableObjectivesList", new List<object>()).ConvertAll(x => (long)x).ToList();
             cnq.RepeatableObjectivesList = new List<ConquestObjectivePackage>();
             foreach (var key in cnq.RepeatableObjectivesIdList)
@@ -121,9 +115,34 @@ namespace GomLib.ModelLoader
                 //else
                     //throw new IndexOutOfRangeException();
             }
-            cnq.DesignName = gom.ValueOrDefault<string>("wevConquestDesignName", "");
-            cnq.ActivePlanets = gom.ValueOrDefault<Dictionary<object, object>>("wevConquestActivePlanets", new Dictionary<object, object>()).ToDictionary(x => (ulong)x.Key, x => (bool)x.Value);
+            var newObjectiveIdList = gom.ValueOrDefault<Dictionary<object, object>>("cnqConquestObjectivesList", new Dictionary<object, object>());
+            cnq.NewObjectivesList = new Dictionary<string, List<Achievement>>();
+            foreach (var kvp in newObjectiveIdList)
+            {
+                var xid = (long)((ulong)kvp.Key);
 
+                ulong achID = (ulong)kvp.Key;
+                Achievement achObj = _dom.achievementLoader.Load(achID);
+                if (achObj != null)
+                {
+                    string type = kvp.Value.ToString().Replace("cnqConquestAchievementType_", "");
+                    if (!cnq.NewObjectivesList.ContainsKey(type))
+                        cnq.NewObjectivesList.Add(type, new List<Achievement>());
+                    cnq.NewObjectivesList[type].Add(achObj);
+                }
+                //else
+                //throw new IndexOutOfRangeException();
+            }
+
+            cnq.DesignName = gom.ValueOrDefault<string>("wevConquestDesignName", "");
+            if(cnq.DesignName == "")
+                cnq.DesignName = gom.ValueOrDefault<string>("cnqConquestDesignName", "");
+            cnq.ActivePlanets = gom.ValueOrDefault<Dictionary<object, object>>("wevConquestActivePlanets", new Dictionary<object, object>()).ToDictionary(x => (ulong)x.Key, x => (bool)x.Value);
+            //if (cnq.ActivePlanets.Count == 0)
+            //{
+            //    gom.ValueOrDefault<Dictionary<object, object>>("cnqConquestActivePlanets", null);
+            //    cnq.ActivePlanets = gom.ValueOrDefault<Dictionary<object, object>>("cnqConquestActivePlanets", new Dictionary<object, object>()).ToDictionary(x => (ulong)x.Key, x => (bool)x.Value);
+            //}
             cnq.RepublicActivePlanets = new List<Planet>();
             cnq.ImperialActivePlanets = new List<Planet>();
             cnq.ActivePlanetObjects = new Dictionary<ulong, Planet>();
@@ -145,7 +164,36 @@ namespace GomLib.ModelLoader
                         cnq.ActivePlanetObjects.Add(plt.Id, plt);
                 }
             }
+            //new planets
+            var newActivePlanets = gom.ValueOrDefault<Dictionary<object, object>>("cnqConquestActivePlanets", new Dictionary<object, object>());
+            foreach (var nap in newActivePlanets)
+            {
+                GomObjectData g = nap.Value as GomObjectData;
+                ulong cnqPlanetId = (ulong)nap.Key;
+                string cnqPlanetDesignName = g.ValueOrDefault<string>("cnqPlanetDesignName", "");
+                //ulong cnqPlanetId = gom.ValueOrDefault<ulong>("cnqPlanetId", 0);
+                string cnqPlanetSize = g.ValueOrDefault<object>("cnqPlanetSize", new object()).ToString().Replace("cnqPlanetSize_", "");
+                ulong cnqPlanetQuestId = g.ValueOrDefault<ulong>("cnqPlanetQuestId", 0);
+                string cnqPlanetIcon = g.ValueOrDefault<string>("cnqPlanetIcon", "");
 
+                Planet plt;
+                PlanetList["Republic"].TryGetValue(cnqPlanetId, out plt);
+                if (plt != null)
+                {
+                    plt.ConquestGuildQuestId = cnqPlanetQuestId;
+                    cnq.RepublicActivePlanets.Add(plt);
+                    if (!cnq.ActivePlanetObjects.ContainsKey(plt.Id))
+                        cnq.ActivePlanetObjects.Add(plt.Id, plt);
+                }
+                PlanetList["Imperial"].TryGetValue(cnqPlanetId, out plt);
+                if (plt != null)
+                {
+                    plt.ConquestGuildQuestId = cnqPlanetQuestId;
+                    cnq.ImperialActivePlanets.Add(plt);
+                    if (!cnq.ActivePlanetObjects.ContainsKey(plt.Id))
+                        cnq.ActivePlanetObjects.Add(plt.Id, plt);
+                }
+            }
             return cnq;
         }
 
@@ -263,10 +311,49 @@ namespace GomLib.ModelLoader
 
         public void LoadObjectives()
         {
+            bool newFormat = false;
             GomObject achProto = _dom.GetObject("wevConquestAchListPrototype");
             if (achProto == null)
             {
+                achProto = _dom.GetObject("cnqAchGroupPrototype");
+                newFormat = true;
+            }
+            if (achProto == null)
+            {
                 ObjectiveList = new Dictionary<long, ConquestObjectivePackage>();
+                return;
+            }
+
+            if (newFormat)
+            {
+                var achList = achProto.Data.Get<Dictionary<object, object>>("cnqAchGroupTable");
+                ObjectiveList = new Dictionary<long, ConquestObjectivePackage>();
+
+                foreach (var kvp in achList)
+                {
+                    ConquestObjectivePackage package = new ConquestObjectivePackage();
+                    package.Id = (long)kvp.Key;
+
+                    //Key is ulong, achievement node ID.
+                    //Value is dictionary, ulong planet id key, float key.
+                    List<object> objectiveDict = kvp.Value as List<object>;
+                    foreach (object objectiveKvp in objectiveDict)
+                    {
+                        ulong achID = (ulong)objectiveKvp;
+                        Achievement achObj = _dom.achievementLoader.Load(achID);
+                        if (achObj != null)
+                        {
+                            ConquestObjective objective = new ConquestObjective();
+                            objective.AchievementID = achID;
+                            objective.AchievementObj = achObj;
+
+                            package.Objectives.Add(objective);
+                        }
+                    }
+
+                    ObjectiveList.Add(package.Id, package);
+                }
+                achProto.Unload();
                 return;
             }
 
@@ -321,10 +408,38 @@ namespace GomLib.ModelLoader
         {
             GomObject achProto = _dom.GetObject("wevConquestsPrototype");
             ActiveConquestData = new Dictionary<long, List<ConquestData>>();
-
+            NewActiveConquestData = new Dictionary<long, List<DateTime>>();
+            
             if (achProto == null)
-                return;
+            {
+                achProto = _dom.GetObject("cnqSchedulePrototype");
+                if (achProto == null)
+                    return; //no conquest at all
+                var cnqLst = achProto.Data.ValueOrDefault<List<object>>("cnqScheduleTable", new List<object>());
+                foreach (var entry in cnqLst)
+                {
+                    //ConquestData entryData = new ConquestData();
+                    //entryData._dom = _dom;
 
+                    GomObjectData gomEnt = entry as GomObjectData;
+                    var entryDataId = gomEnt.ValueOrDefault<long>("cnqScheduleConquestId", 0);
+                    //entryData.GuildQstId = gomEnt.ValueOrDefault<ulong>("wevConquestsGuildQstId", 0);
+                    //entryData.PersonalQstId = gomEnt.ValueOrDefault<ulong>("wevConquestsPersonalQstId", 0);
+                    var entryDataOrderId = (int)gomEnt.ValueOrDefault<long>("cnqScheduleStartOrderId", 0);
+                    //entryData.RawStartTime = Convert.ToInt64(gomEnt.ValueOrDefault<object>("wevConquestsStartTime", 0));
+
+                    DateTime time = new DateTime(2017, 10, 10, 18, 0, 0, 0, System.DateTimeKind.Utc);
+                    time = time.AddDays((entryDataOrderId - 1001) * 7).ToLocalTime();
+                    var startTime = time;
+                    if (!NewActiveConquestData.ContainsKey(entryDataId))
+                        NewActiveConquestData.Add(entryDataId, new List<DateTime>());
+                    NewActiveConquestData[entryDataId].Add(startTime);
+                }
+                achProto.Unload();
+
+                return;
+            }
+            
             var cnqList = achProto.Data.Get<List<object>>("wevConquestsInfoTable");
             var cnqDict = achProto.Data.Get<Dictionary<object, object>>("wevConquestOrderLookupTable");
 
