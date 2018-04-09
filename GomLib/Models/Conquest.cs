@@ -71,7 +71,30 @@ namespace GomLib.Models
         public List<Planet> ImperialActivePlanets { get; set; }
         public List<ConquestData> ActiveData { get; set; }
         public List<DateTime> NewActiveData { get; set; }
-        public Dictionary<string, List<Achievement>> NewObjectivesList { get; internal set; }
+        [JsonIgnore]
+        public Dictionary<string, List<ulong>> NewObjectivesList { get; internal set; }
+        internal Dictionary<string, List<string>> _NewObjectivesB62 { get; set; }
+        public Dictionary<string, List<string>> NewObjectivesB62
+        {
+            get
+            {
+                if (_NewObjectivesB62 == null && NewObjectivesList != null)
+                {
+                    _NewObjectivesB62 = NewObjectivesList.ToDictionary(x=> x.Key, x => (x.Value).ToMaskedBase62());
+                }
+                return _NewObjectivesB62;
+            }
+        }
+
+        [JsonIgnore]
+        public ulong QuestId { get; internal set; }
+        public string QuestB62
+        {
+            get
+            {
+                return QuestId.ToMaskedBase62();
+            }
+        }
 
         public override int GetHashCode()
         {
@@ -447,7 +470,7 @@ namespace GomLib.Models
                     XElement oneTObjectives = new XElement(conquestObj.Key, new XAttribute("Num", conquestObj.Value.Count));
                     foreach (var achObj in conquestObj.Value)
                     {
-                        oneTObjectives.Add(achObj.ToXElement(false));
+                        //oneTObjectives.Add(achObj.ToXElement(false));
                     }
                     Objectives.Add(oneTObjectives);
                 }
@@ -693,6 +716,8 @@ namespace GomLib.Models
                 return _ConquestGuildQuest;
             }
         }
+
+        public string Size { get; internal set; }
 
         public override int GetHashCode()
         {

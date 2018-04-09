@@ -116,20 +116,20 @@ namespace GomLib.ModelLoader
                     //throw new IndexOutOfRangeException();
             }
             var newObjectiveIdList = gom.ValueOrDefault<Dictionary<object, object>>("cnqConquestObjectivesList", new Dictionary<object, object>());
-            cnq.NewObjectivesList = new Dictionary<string, List<Achievement>>();
+            cnq.NewObjectivesList = new Dictionary<string, List<ulong>>();
             foreach (var kvp in newObjectiveIdList)
             {
                 var xid = (long)((ulong)kvp.Key);
 
                 ulong achID = (ulong)kvp.Key;
-                Achievement achObj = _dom.achievementLoader.Load(achID);
-                if (achObj != null)
-                {
+                //Achievement achObj = _dom.achievementLoader.Load(achID);
+                //if (achObj != null)
+                //{
                     string type = kvp.Value.ToString().Replace("cnqConquestAchievementType_", "");
                     if (!cnq.NewObjectivesList.ContainsKey(type))
-                        cnq.NewObjectivesList.Add(type, new List<Achievement>());
-                    cnq.NewObjectivesList[type].Add(achObj);
-                }
+                        cnq.NewObjectivesList.Add(type, new List<ulong>());
+                cnq.NewObjectivesList[type].Add(achID);// achObj);
+                //}
                 //else
                 //throw new IndexOutOfRangeException();
             }
@@ -181,6 +181,7 @@ namespace GomLib.ModelLoader
                 if (plt != null)
                 {
                     plt.ConquestGuildQuestId = cnqPlanetQuestId;
+                    plt.Size = cnqPlanetSize;
                     cnq.RepublicActivePlanets.Add(plt);
                     if (!cnq.ActivePlanetObjects.ContainsKey(plt.Id))
                         cnq.ActivePlanetObjects.Add(plt.Id, plt);
@@ -189,11 +190,14 @@ namespace GomLib.ModelLoader
                 if (plt != null)
                 {
                     plt.ConquestGuildQuestId = cnqPlanetQuestId;
+                    plt.Size = cnqPlanetSize;
                     cnq.ImperialActivePlanets.Add(plt);
                     if (!cnq.ActivePlanetObjects.ContainsKey(plt.Id))
                         cnq.ActivePlanetObjects.Add(plt.Id, plt);
                 }
             }
+            cnq.QuestId = gom.ValueOrDefault<ulong>("cnqConquestQuestId", 0);
+            
             return cnq;
         }
 
