@@ -22,7 +22,8 @@ namespace GomLib.Models
         Explored = 12,
         POI = 13,
         Wonkavator = 14,
-        PvpPoi = 15
+        PvpPoi = 15,
+        Conditional = 16
     }
 
     public static class MapNoteConditionExtensions
@@ -48,6 +49,7 @@ namespace GomLib.Models
                 case "POI": return MapNoteCondition.POI;
                 case "Wonkavator": return MapNoteCondition.Wonkavator;
                 case "PvpPoi": return MapNoteCondition.PvpPoi;
+                case "Conditional": return MapNoteCondition.Conditional;
                 default: throw new InvalidOperationException("Unknown MapNoteCondition: " + str);
             }
         }

@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
-    public class MapNote : GameObject
+    public class MapNote : GameObject, IEquatable<MapNote>
     {
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
@@ -34,15 +34,65 @@ namespace GomLib.Models
             result ^= Condition.GetHashCode();
             result ^= HuntingRadius.GetHashCode();
             result ^= BonusHuntingRadius.GetHashCode();
-            result ^= MapLink.GetHashCode();
+            if(MapLink != null)
+                result ^= MapLink.GetHashCode();
             //result ^= WonkaPackageId.GetHashCode();
             //result ^= WonkaDestinationId.GetHashCode();
-            result ^= Faction.GetHashCode();
+            if (Faction != null)
+                result ^= Faction.GetHashCode();
             return result;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+
+            if (ReferenceEquals(this, obj)) return true;
+
+            MapNote itm = obj as MapNote;
+            if (itm == null) return false;
+
+            return Equals(itm);
+        }
+
+        public bool Equals(MapNote itm)
+        {
+            if (itm == null) return false;
+
+            if (ReferenceEquals(this, itm)) return true;
+
+            if (this.Icon != itm.Icon)
+                return false;
+            if (this.Id != itm.Id)
+                return false;
+
+            var dComp = new DictionaryComparer<string, string>();
+            if (!dComp.Equals(this.LocalizedName, itm.LocalizedName))
+                return false;
+
+            if (this.Name != itm.Name)
+                return false;
+            if (this.Condition != itm.Condition)
+                return false;
+            if (this.HuntingRadius != itm.HuntingRadius)
+                return false;
+            if (this.BonusHuntingRadius != itm.BonusHuntingRadius)
+                return false;
+            if (this.AssetID != itm.AssetID)
+                return false;
+            if (this.MapLink != null)
+            {
+                if (!this.MapLink.Equals(itm.MapLink))
+                    return false;
+            }
+            else if (itm.MapLink != null)
+                return false;
+
+            return true;
         }
     }
 
-    public class MapLink
+    public class MapLink : IEquatable<MapLink>
     {
         public MapLink(ulong a, long m, long s)
         {
@@ -95,8 +145,24 @@ namespace GomLib.Models
         {
             int result = AreaId.GetHashCode();
             result ^= MapNameSId.GetHashCode();
-            result ^= MapNameSId.GetHashCode();
+            result ^= SubmapNameSId.GetHashCode();
             return result;
+        }
+
+        public bool Equals(MapLink itm)
+        {
+            if (itm == null) return false;
+
+            if (ReferenceEquals(this, itm)) return true;
+
+            if (this.AreaId != itm.AreaId)
+                return false;
+            if (this.MapNameSId != itm.MapNameSId)
+                return false;
+            if (this.SubmapNameSId != itm.SubmapNameSId)
+                return false;
+
+            return true;
         }
     }
 }

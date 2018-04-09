@@ -182,7 +182,7 @@ namespace GomLib.Models
         }
     }
 
-    public class DetailedFaction : PseudoGameObject
+    public class DetailedFaction : PseudoGameObject, IEquatable<DetailedFaction>
     {
         public string RepublicReaction { get; set; }
         public string ImperialReaction { get; set; }
@@ -194,5 +194,72 @@ namespace GomLib.Models
         public long FactionId { get { return Id; } }
         public string FactionString { get; set; }
         public List<long> OpposingFactionIds { get; set; }
+
+        public override int GetHashCode()
+        {
+            int result = NameId.GetHashCode();
+            result ^= RepublicReaction.GetHashCode();
+            result ^= ImperialReaction.GetHashCode();
+            if(Name != null)
+                result ^= Name.GetHashCode();
+            if (LocalizedName != null) foreach (var x in LocalizedName) { result ^= x.GetHashCode(); }
+            if (DefendedFactionIds != null)
+            {
+                DefendedFactionIds.Sort();
+                foreach (var x in DefendedFactionIds) { result ^= x.GetHashCode(); }
+            }
+            result ^= FactionId.GetHashCode();
+            result ^= FactionString.GetHashCode();
+            if (OpposingFactionIds != null)
+            {
+                OpposingFactionIds.Sort();
+                foreach (var x in OpposingFactionIds) { result ^= x.GetHashCode(); }
+            }
+
+            return result;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+
+            if (ReferenceEquals(this, obj)) return true;
+
+            DetailedFaction itm = obj as DetailedFaction;
+            if (itm == null) return false;
+
+            return Equals(itm);
+        }
+
+        public bool Equals(DetailedFaction itm)
+        {
+            if (itm == null) return false;
+
+            if (ReferenceEquals(this, itm)) return true;
+
+            if (this.RepublicReaction != itm.RepublicReaction)
+                return false;
+            if (this.Id != itm.Id)
+                return false;
+
+            var dComp = new DictionaryComparer<string, string>();
+            if (!dComp.Equals(this.LocalizedName, itm.LocalizedName))
+                return false;
+
+            if (this.Name != itm.Name)
+                return false;
+            if (this.NameId != itm.NameId)
+                return false;
+            if (this.FactionId != itm.FactionId)
+                return false;
+            if (this.FactionString != itm.FactionString)
+                return false;
+            if (this.OpposingFactionIds != itm.OpposingFactionIds)
+                return false;
+            if (this.DefendedFactionIds != itm.DefendedFactionIds)
+                return false;
+
+            return true;
+        }
     }
 }
