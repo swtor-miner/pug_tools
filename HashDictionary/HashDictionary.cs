@@ -492,13 +492,24 @@ namespace nsHashDictionary
                 using (BinaryWriter br = new BinaryWriter(fs))
                 {
                     br.Write(0x32736168); //magic has2
-                    br.Write((short)ArchiveList.Count);
+                    /*br.Write((short)ArchiveList.Count);
                     foreach(var arc in ArchiveList)
                     {
                         br.Write(arc.Key);
                         //br.Write((short)arc.Value.Length);
                         br.Write(arc.Value);
+                    }*/
+                    br.Write((short)hashList.Count);
+                    Dictionary<string, short> reverseHashList = new Dictionary<string, short>();
+                    foreach (var arc in hashList)
+                    {
+                        short id = (short)hashList.IndexOfKey(arc.Key);
+                        br.Write(id);
+                        //br.Write((short)arc.Value.Length);
+                        br.Write(arc.Key);
+                        reverseHashList.Add(arc.Key, id);
                     }
+                    
                     SortedList<long, HashData> subHashList;
 
                     for (int j = 0; j < hashList.Count; j++)
@@ -510,7 +521,8 @@ namespace nsHashDictionary
                             br.Write((uint)(subHashList.Keys[i] & 0xFFFFFFFF)); //sh
                             br.Write(subHashList.Values[i].crc); //crc
                             short id;
-                            if (ArchiveReverseList.TryGetValue(subHashList.Values[i].archiveName, out id))
+                            //if (ArchiveReverseList.TryGetValue(subHashList.Values[i].archiveName, out id))
+                            if (reverseHashList.TryGetValue(subHashList.Values[i].archiveName, out id))
                                 br.Write(id); //archive id
                             else
                             {
