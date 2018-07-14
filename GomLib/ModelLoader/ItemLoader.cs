@@ -203,6 +203,19 @@ namespace GomLib.ModelLoader
             itm.Icon = gom.Data.ValueOrDefault<string>("itmIcon", String.Empty);
             _dom._assets.icons.Add(itm.Icon);
 
+            //string itmModifierSetID = gom.Data.ValueOrDefault<string>("itmModifierSetID", null);
+            //if (!String.IsNullOrWhiteSpace(itmModifierSetID))
+            //{
+            //    long mId;
+            //    Int64.TryParse(itmModifierSetID.Split('#').Last(), out mId);
+            //    if(mId!= 0)
+            //    {
+            //        Dictionary<string, object> dict;
+            //        _dom.data.itemModifierPackageTablePrototype.TableData.TryGetValue(mId, out dict);
+
+            //    }
+            //}
+
             if (gom.Data.ValueOrDefault<bool>("itmHasAppearanceSlot", false) || gom.Data.ValueOrDefault<ulong>("itmAppearanceSpec", 0) != 0)
             {
                 Dictionary<object, object> itmAppearanceSpecByPlayerClass = gom.Data.ValueOrDefault<Dictionary<object, object>>("itmAppearanceSpecByPlayerClass", null);
@@ -236,6 +249,15 @@ namespace GomLib.ModelLoader
                             DupeAppReferences(itm, itemAppearance, "similarBaseModel");
                             DupeAppReferences(itm, itemAppearance, "similarAppearance");
                             DupeAppReferences(itm, itemAppearance, "npcSporting", "npcWearingAppearance");
+                            ScriptEnum appearanceSlotType = itemAppearance.Data.ValueOrDefault<ScriptEnum>("appAppearanceSlotType", null);
+                            if (appearanceSlotType != null)
+                            {
+                                if (appearanceSlotType.ToString() == "appSlotChest")
+                                {
+                                    var ipp = _dom.appearanceLoader.LoadIpp(itemAppearance);
+                                    itm.RepublicAttachedFX = ipp.GetAttachedFX();
+                                }
+                            }
                         }
                         if (classNameLookup[(ulong)appearancePair.Key] == "Smuggler")
                         {
@@ -246,6 +268,15 @@ namespace GomLib.ModelLoader
                             DupeAppReferences(itm, itemAppearance, "similarBaseModel");
                             DupeAppReferences(itm, itemAppearance, "similarAppearance");
                             DupeAppReferences(itm, itemAppearance, "npcSporting", "npcWearingAppearance");
+                            ScriptEnum appearanceSlotType = itemAppearance.Data.ValueOrDefault<ScriptEnum>("appAppearanceSlotType", null);
+                            if (appearanceSlotType != null)
+                            {
+                                if (appearanceSlotType.ToString() == "appSlotChest")
+                                {
+                                    var ipp = _dom.appearanceLoader.LoadIpp(itemAppearance);
+                                    itm.ImperialAttachedFX = ipp.GetAttachedFX();
+                                }
+                            }
                         }
                         itemAppearance.Unload();
                     }
@@ -265,6 +296,16 @@ namespace GomLib.ModelLoader
                             DupeAppReferences(itm, itemAppearance, "similarBaseModel");
                             DupeAppReferences(itm, itemAppearance, "similarAppearance");
                             DupeAppReferences(itm, itemAppearance, "npcSporting", "npcWearingAppearance");
+                            ScriptEnum appearanceSlotType = itemAppearance.Data.ValueOrDefault<ScriptEnum>("appAppearanceSlotType", null);
+                            if (appearanceSlotType != null)
+                            {
+                                if (appearanceSlotType.ToString() == "appSlotChest")
+                                {
+                                    var ipp = _dom.appearanceLoader.LoadIpp(itemAppearance);
+                                    itm.ImperialAttachedFX = ipp.GetAttachedFX();
+                                    itm.RepublicAttachedFX = itm.ImperialAttachedFX;
+                                }
+                            }
                             itemAppearance.Unload();
                         }
                     }

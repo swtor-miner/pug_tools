@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace GomLib.Models
 {
@@ -153,6 +154,7 @@ namespace GomLib.Models
         public string DisplayName { get; set; }
         public string Icon { get; set; }
         public string Mount { get; set; } //"The mounting string that the GUI uses to link and item to a mounting point on an image"
+        [JsonConverter(typeof(ScriptEnumConverter))]
         public ScriptEnum ModType { get; set; }
         public bool IsArmorMod { get; set; }
         public bool IsDestroyed { get; set; }

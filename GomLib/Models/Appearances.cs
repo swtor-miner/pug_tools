@@ -305,6 +305,91 @@ namespace GomLib.Models
         //        return null;
         //    }
         //}
+        public HashSet<string> GetAttachedFX()
+        {
+            HashSet<string> ret = new HashSet<string>();
+            if (this.IPP != null)
+            {
+                string a = "";
+                foreach(var mod in this.IPP.AttachedModels)
+                {
+                    string btmod = mod.Replace("[bt]", "bmn");
+                    var file = _dom._assets.FindFile("/resources" + btmod);
+                    if(file != null)
+                    {
+                        using (System.IO.BinaryReader br = new System.IO.BinaryReader(file.OpenCopyInMemory()))
+                        {
+                            ulong header = br.ReadUInt32();
+
+                            if (header.ToString("X") != "42574147")
+                            {
+                                //Console.WriteLine("Invalid header" + header.ToString());
+                                continue;
+                            }
+                            else
+                            {
+                                //Console.WriteLine("Valid header");
+
+                                var version_major = br.ReadUInt32();
+                                var version_minor = br.ReadUInt32();
+                                uint offsetBNRY = br.ReadUInt32();
+
+                                //Move to 0x10
+                                br.BaseStream.Seek(0x10, System.IO.SeekOrigin.Begin);
+                                //fs.Position = 0x10;
+
+                                var num50Offsets = br.ReadUInt32();
+                                var gr2_type = br.ReadUInt32();
+                                var numMeshes = br.ReadUInt16();
+                                var numMaterials = br.ReadUInt16();
+                                var numBones = br.ReadUInt16();
+                                var numAttach = br.ReadUInt16();
+                                
+                                //Move to 0x50
+                                br.BaseStream.Seek(0x50, System.IO.SeekOrigin.Begin);
+                                //fs.Position = 0x50;
+
+                                var offset50offset = br.ReadUInt32();
+                                var offsetMeshHeader = br.ReadUInt32();
+                                var offsetMaterialName = br.ReadUInt32();
+                                var offsetBoneStruct = br.ReadUInt32();
+                                var offsetAttach = br.ReadUInt32();
+                                
+                                if (numAttach > 0)
+                                {
+                                    br.BaseStream.Seek(offsetAttach, System.IO.SeekOrigin.Begin);
+                                    //fs.Position = this.offsetAttach;
+                                    for (int intCount = 0; intCount < numAttach; intCount++)
+                                    {
+                                        var offsetAttachName = br.ReadUInt32();
+                                        var offsetAttachBoneName = br.ReadUInt32();
+
+                                        //var attachName = FileFormats.File_Helpers.ReadString(br, offsetAttachName);
+                                        long original_position = br.BaseStream.Position;
+                                        br.BaseStream.Seek(offsetAttachName, System.IO.SeekOrigin.Begin);
+                                        //fs.Position = offset;
+
+                                        List<byte> strBytes = new List<byte>();
+                                        int b;
+                                        while ((b = br.ReadByte()) != 0x00)
+                                            strBytes.Add((byte)b);
+
+                                        br.BaseStream.Seek(original_position + 16*4, System.IO.SeekOrigin.Begin); // skip matrix
+                                        //fs.Position = original_position;
+                                        var attachName = Encoding.ASCII.GetString(strBytes.ToArray());
+                                        ret.Add(attachName);
+                                        //var boneName = File_Helpers.ReadString(br, offsetAttachBoneName)
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+                
+            return ret;
+        }
         public override int GetHashCode()
         {
             int hash = Id.GetHashCode();

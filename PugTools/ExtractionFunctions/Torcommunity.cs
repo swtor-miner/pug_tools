@@ -40,7 +40,7 @@ namespace tor_tools
         public void getTorc()
         {
             Clearlist2();
-
+            findValue();
             //temp
 
             //var newLines = File.ReadAllLines("i:\\new.txt");
@@ -91,6 +91,92 @@ namespace tor_tools
                 progressUpdate(i, count);
                 WriteFile(String.Join(Environment.NewLine, Environment.NewLine + gom.Value.Name + " (" + gom.Value.Id + ")", String.Join(Environment.NewLine, gom.Value.SubCategories.Select(x => "  " + x.Value.Name + " (" + x.Value.Id + ")").ToList())), "aucCats.txt", true);
                 i++;
+            }
+        }
+
+        public void findValue()
+        {
+            ClearProgress();
+            LoadData();
+            var gomList = currentDom.GetObjectsStartingWith("");
+            var count = gomList.Count();
+            int i = 0;
+            WriteFile("", "nodes.txt", false);
+            foreach (var gom in gomList)
+            {
+                progressUpdate(i, count);
+                if (gom.Data != null)
+                {
+                    foreach (var obj in gom.Data.Dictionary)
+                    {
+                        NewMethod(obj.Key, gom.Name);
+                        NewMethod(obj.Value, gom.Name);
+                    }
+                }
+                gom.Unload();
+                i++;
+            }
+        }
+
+        private static void NewMethod(object obj, string name)
+        {
+            if (obj != null) {
+                string type = obj.GetType().ToString();
+                switch (type)
+                {
+                    case "System.Int32":
+                        if ((int)obj == 3495)
+                        {
+                            WriteFile(name + Environment.NewLine, "nodes.txt", true);
+                        }
+                        break;
+                    case "System.Int64":
+                        if ((long)obj == -2305757236622194221 || (long)obj == 3495)
+                        {
+                            WriteFile(name + Environment.NewLine, "nodes.txt", true);
+                        }
+                        break;
+                    case "System.Collections.Generic.List`1[System.Int64]":
+                    case "GomLib.GomObject":
+                        if (((GomObject)obj).Data != null)
+                        {
+                            foreach (var o in ((GomObject)obj).Data.Dictionary)
+                            {
+                                NewMethod(o.Key, name);
+                                NewMethod(o.Value, name);
+                            }
+                        }
+                        break;
+                    case "GomLib.GomObjectData":
+                        foreach (var ob in ((GomObjectData)obj).Dictionary)
+                        {
+                            NewMethod(ob.Value, name);
+                        }
+                        break;
+                    case "System.Collections.Generic.List`1[System.Object]":
+                        foreach (var ob in ((List<object>)obj))
+                        {
+                            NewMethod(ob, name);
+                        }
+                        break;
+                    case "System.Collections.Generic.Dictionary`2[System.Object,System.Object]":
+                        foreach (var ob in ((Dictionary<object, object>)obj))
+                        {
+                            NewMethod(ob.Key, name);
+                            NewMethod(ob.Value, name);
+                        }
+                        break;
+                    case "GomLib.DomClass":
+                    case "System.UInt64":
+                    case "System.Collections.Generic.List`1[System.Single]":
+                    case "GomLib.ScriptEnum":
+                    case "System.Boolean":
+                    case "System.String":
+                    case "System.Single":
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
@@ -225,6 +311,7 @@ namespace tor_tools
 
         public void outputTables()
         {
+            findValue();
             ClearProgress();
             LoadData();
 

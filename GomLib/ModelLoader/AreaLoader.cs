@@ -157,6 +157,10 @@ namespace GomLib.ModelLoader
                     page.Area = area;
                     page.Guid = mapPage.ValueOrDefault<long>("mapPageGUID", 0);
                     page.Id = (int)(page.Guid & 0x7FFFFFFF);
+                    if(page.Id == 40003)
+                    {
+                        string sdf = "";
+                    }
                     var minCoord = mapPage.ValueOrDefault<List<float>>("mapPageMinCoord", null);
                     if (minCoord != null)
                     {
@@ -204,6 +208,18 @@ namespace GomLib.ModelLoader
                     _dom._assets.icons.AddMap(area.AreaId, page.MapName);
 
                     page.Name = strTable.GetText(page.Guid, "MapPage." + page.MapName);
+                    //if (String.IsNullOrWhiteSpace(page.Name))
+                    //{
+                    //    string sdfin = "";
+                    //    if (mapPage.Dictionary.ContainsKey("locTextRetrieverMap"))
+                    //    {
+                    //        var descLookupData = (GomObjectData)(mapPage.Get<Dictionary<object, object>>("locTextRetrieverMap")[-2761358831308646330]);
+                    //        var stringId = descLookupData.Get<long>("strLocalizedTextRetrieverStringID");
+                    //        var bucket = descLookupData.Get<string>("strLocalizedTextRetrieverBucket");
+                    //        var checkname = strTable.GetText(stringId, bucket);
+                    //        string sdf = "";
+                    //    }
+                    //}
                     page.LocalizedName = strTable.GetLocalizedText(page.Guid, "MapPage." + page.MapName);
 
                     page.ExplorationId = Int64.Parse(mapPage.ValueOrDefault<object>("mapExplorationId", 0).ToString());

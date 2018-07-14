@@ -49,6 +49,7 @@ namespace GomLib.ModelLoader
                 componentAppearanceLookup = _dom.GetObject("scFFComponentAppearanceDataPrototype").Data.Get<Dictionary<object, object>>("scFFComponentAppearanceData");
             }
 
+            cmp._dom = obj._dom;
             cmp.Fqn = obj.Name;
             cmp.Id = obj.Data.Get<ulong>("conEntitySpec");
             //var container = DataObjectModel.GetObject(cmp.NodeId);
@@ -65,6 +66,7 @@ namespace GomLib.ModelLoader
 
             cmp.NameId = obj.Data.ValueOrDefault<long>("scFFComponentName", 0);
             cmp.Name = _dom.stringTable.TryGetString("str.spvp.components", cmp.NameId);
+            cmp.LocalizedName = _dom.stringTable.TryGetLocalizedStrings("str.spvp.components", cmp.NameId);
 
             cmp.ControllerNodeId = obj.Data.ValueOrDefault<ulong>("scFFController", 0);
             cmp.StatsList = new Dictionary<string, float>();
@@ -145,6 +147,7 @@ namespace GomLib.ModelLoader
 
             cmp.DescriptionId = obj.Data.ValueOrDefault<long>("scFFComponentDescription", 0);
             cmp.Description = _dom.stringTable.TryGetString("str.spvp.components", cmp.DescriptionId);
+            cmp.LocalizedDescription = _dom.stringTable.TryGetLocalizedStrings("str.spvp.components", cmp.DescriptionId);
 
             cmp.CostLookupId = obj.Data.ValueOrDefault<ulong>("scFFComponentCostId", 0); //ex. 16140964519275703828
             cmp.Cost = -1;

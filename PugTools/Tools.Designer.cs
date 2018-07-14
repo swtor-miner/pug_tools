@@ -67,9 +67,11 @@
             this.CrossLinkDomCheckBox = new System.Windows.Forms.CheckBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.gbxPath = new System.Windows.Forms.GroupBox();
+            this.SmartLinkDomCheckBox = new System.Windows.Forms.CheckBox();
             this.btnUnloadAllData = new System.Windows.Forms.Button();
             this.gbxLogs = new System.Windows.Forms.GroupBox();
             this.gbxTools = new System.Windows.Forms.GroupBox();
+            this.file_button = new System.Windows.Forms.Button();
             this.btnNodeBrowser = new System.Windows.Forms.Button();
             this.btnWorldBrowser = new System.Windows.Forms.Button();
             this.btnModelBrowser = new System.Windows.Forms.Button();
@@ -79,7 +81,6 @@
             this.gbxExtract = new System.Windows.Forms.GroupBox();
             this.comboBoxExtractTypes = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.SmartLinkDomCheckBox = new System.Windows.Forms.CheckBox();
             this.gbxFormat.SuspendLayout();
             this.gbxDB.SuspendLayout();
             this.gbxFQN.SuspendLayout();
@@ -501,6 +502,17 @@
             this.gbxPath.TabStop = false;
             this.gbxPath.Text = "Path Information";
             // 
+            // SmartLinkDomCheckBox
+            // 
+            this.SmartLinkDomCheckBox.AutoSize = true;
+            this.SmartLinkDomCheckBox.Cursor = System.Windows.Forms.Cursors.Default;
+            this.SmartLinkDomCheckBox.Location = new System.Drawing.Point(468, 65);
+            this.SmartLinkDomCheckBox.Name = "SmartLinkDomCheckBox";
+            this.SmartLinkDomCheckBox.Size = new System.Drawing.Size(74, 17);
+            this.SmartLinkDomCheckBox.TabIndex = 47;
+            this.SmartLinkDomCheckBox.Text = "Smart-Lnk";
+            this.SmartLinkDomCheckBox.UseVisualStyleBackColor = true;
+            // 
             // btnUnloadAllData
             // 
             this.btnUnloadAllData.Location = new System.Drawing.Point(491, 12);
@@ -525,6 +537,7 @@
             // 
             // gbxTools
             // 
+            this.gbxTools.Controls.Add(this.file_button);
             this.gbxTools.Controls.Add(this.btnNodeBrowser);
             this.gbxTools.Controls.Add(this.btnWorldBrowser);
             this.gbxTools.Controls.Add(this.btnModelBrowser);
@@ -536,6 +549,16 @@
             this.gbxTools.TabIndex = 34;
             this.gbxTools.TabStop = false;
             this.gbxTools.Text = "Tools";
+            // 
+            // file_button
+            // 
+            this.file_button.Location = new System.Drawing.Point(119, 77);
+            this.file_button.Name = "file_button";
+            this.file_button.Size = new System.Drawing.Size(108, 23);
+            this.file_button.TabIndex = 51;
+            this.file_button.Text = "File Compare";
+            this.file_button.UseVisualStyleBackColor = true;
+            this.file_button.Click += new System.EventHandler(this.file_button_Click);
             // 
             // btnNodeBrowser
             // 
@@ -621,17 +644,6 @@
             this.label6.TabIndex = 29;
             this.label6.Text = "Click and select what you want from the dialog window. The default is to dump eve" +
     "rything.";
-            // 
-            // SmartLinkDomCheckBox
-            // 
-            this.SmartLinkDomCheckBox.AutoSize = true;
-            this.SmartLinkDomCheckBox.Cursor = System.Windows.Forms.Cursors.Default;
-            this.SmartLinkDomCheckBox.Location = new System.Drawing.Point(468, 65);
-            this.SmartLinkDomCheckBox.Name = "SmartLinkDomCheckBox";
-            this.SmartLinkDomCheckBox.Size = new System.Drawing.Size(74, 17);
-            this.SmartLinkDomCheckBox.TabIndex = 47;
-            this.SmartLinkDomCheckBox.Text = "Smart-Lnk";
-            this.SmartLinkDomCheckBox.UseVisualStyleBackColor = true;
             // 
             // Tools
             // 
@@ -721,6 +733,7 @@
         private System.Windows.Forms.ComboBox comboBoxExtractTypes;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.CheckBox SmartLinkDomCheckBox;
+        private System.Windows.Forms.Button file_button;
     }
 }
 

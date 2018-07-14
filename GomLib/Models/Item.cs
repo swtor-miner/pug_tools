@@ -1488,6 +1488,54 @@ namespace GomLib.Models
             }
         }
 
+        public bool HasRocketFX { get; set; }
+        public bool ImperialRocketFX { get; set; }
+        [JsonIgnore]
+        public HashSet<string> _ImperialAttachedFX { get; set; }
+        public HashSet<string> ImperialAttachedFX
+        {
+            get
+            {
+                return _ImperialAttachedFX;
+            }
+            set
+            {
+                _ImperialAttachedFX = value;
+                foreach (var str in value)
+                {
+                    if (str.StartsWith("vfx_jetpackthrust"))
+                    {
+                        ImperialRocketFX = true;
+                        HasRocketFX = true;
+                        break;
+                    }
+                }
+            }
+        }
+        public bool RepublicRocketFX { get; set; }
+        [JsonIgnore]
+        public HashSet<string> _RepublicAttachedFX { get; set; }
+        public HashSet<string> RepublicAttachedFX
+        {
+            get
+            {
+                return _RepublicAttachedFX;
+            }
+            set
+            {
+                _RepublicAttachedFX = value;
+                foreach (var str in value)
+                {
+                    if (str.StartsWith("vfx_jetpackthrust"))
+                    {
+                        RepublicRocketFX = true;
+                        HasRocketFX = true;
+                        break;
+                    }
+                }
+            }
+        }
+
         public override XElement ToXElement(bool verbose)
         {
             XElement item = new XElement("Item",
@@ -1597,8 +1645,10 @@ namespace GomLib.Models
                 item.Add(new XElement("ShieldSpec", ShieldSpec),
                     new XElement("Slots", Slots),
                     new XElement("SubCategory", SubCategory),
+                    (this.AuctionCategory != null) ? new XElement("AuctionCat", AuctionCategory.Name) : new XElement("AuctionCat"),
+                    (this.AuctionSubCategory != null) ? new XElement("AuctionSubCat", AuctionSubCategory.Name) : new XElement("AuctionSubCat"),
                     //new XElement("TreasurePackageSpec", TreasurePackageSpec,
-                        //new XAttribute("Id", TreasurePackageId)),
+                    //new XAttribute("Id", TreasurePackageId)),
                     new XElement("TypeBitSet", TypeBitSet),
                     /*   new XAttribute("Id", TypeBitSet),
                        ((GomLib.Models.ItemTypeFlags)(object)TypeBitSet)

@@ -28,6 +28,7 @@ namespace GomLib.Models
         public ulong damagedPackageNodeId { get; set; }
         public Dictionary<string, ulong> DefaultLoadout { get; set; }
         public string Description { get; set; }
+        public Dictionary<string, string> LocalizedDescription { get; set; }
         [JsonConverter(typeof(LongConverter))]
         public long DescriptionId { get; set; }
         [JsonConverter(typeof(ULongConverter))]
@@ -55,6 +56,7 @@ namespace GomLib.Models
         //public string Name { get; set; }
         [JsonConverter(typeof(LongConverter))]
         public long NameId { get; set; }
+        public Dictionary<string, string> LocalizedName { get; set; }
         public List<scFFPattern> PatternOptions { get; set; }
         public string ShipIcon { get; set; }
         public Dictionary<string, float> Stats { get; set; }
@@ -287,15 +289,15 @@ namespace GomLib.Models
                     shipContainer.Add(patternOptions);
                 }
                 XElement stats = new XElement("Stats");
-                //if (Stats != null)
-                //{
-                //    //stats.Add("[ " + string.Join("; ", Stats.Select(x => currentDom.statD.ToStat(x.Key) + ", " + x.Value).ToArray()) + "; ]");
-                //    stats.Add(Stats.Select(x => new XElement("Stat", new XAttribute("Id", _dom.statData.ToStat(x.Key)), x.Value)));
-                //    if (!verbose)
-                //    {
-                //        stats.Elements().Where(x => x.Attribute("Id").Value.Contains("4611") || x.Attribute("Id").Value.Contains("OBSOLETE")).Remove();
-                //    }
-                //}
+                if (Stats != null)
+                {
+                    //stats.Add("[ " + string.Join("; ", Stats.Select(x => currentDom.statD.ToStat(x.Key) + ", " + x.Value).ToArray()) + "; ]");
+                    stats.Add(Stats.Select(x => new XElement("Stat", new XAttribute("Id", ((_dom.statData.ToStat(x.Key)) ?? new DetailedStat()).DisplayName ?? x.Key), x.Value)));
+                    if (!verbose)
+                    {
+                        stats.Elements().Where(x => x.Attribute("Id").Value.Contains("4611") || x.Attribute("Id").Value.Contains("OBSOLETE")).Remove();
+                    }
+                }
                 shipContainer.Add(stats);
                 shipContainer.Add(ContainerToXElement(MajorComponentSlots, ComponentMap, "MajorSlot", DefaultLoadout, verbose).Elements());
                 shipContainer.Add(ContainerToXElement(MinorComponentSlots, ComponentMap, "MinorSlot", DefaultLoadout, verbose).Elements());

@@ -29,5 +29,9 @@ namespace FileFormats
             this.unknown6 = br.ReadSingle();
             this.boneName = File_Helpers.ReadString(br, this.offsetName);
         }
+        public override string ToString()
+        {
+            return this.boneName;
+        }
     }
 }

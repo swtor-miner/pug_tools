@@ -180,6 +180,7 @@ namespace GomLib.ModelLoader
 
             shp.DescriptionId = obj.ValueOrDefault<long>("scFFShipDescription", 0); //str.spvp.ships.stb ex. 3282759468450093
             shp.Description = _dom.stringTable.TryGetString("str.spvp.ships", shp.DescriptionId);
+            shp.LocalizedDescription = _dom.stringTable.TryGetLocalizedStrings("str.spvp.ships", shp.DescriptionId);
 
             long patternDefinition = obj.ValueOrDefault<long>("scFFPatternId", 0);  //scFFPatternsDefinitionPrototype - Pattern Definition Lookup
             object shipPatMap = new object();
@@ -225,6 +226,7 @@ namespace GomLib.ModelLoader
 
             shp.NameId = obj.Get<long>("scFFShipName"); //str.spvp.ships.stb ex. 3282759468450057
             shp.Name = _dom.stringTable.TryGetString("str.spvp.ships", shp.NameId);
+            shp.LocalizedName = _dom.stringTable.TryGetLocalizedStrings("str.spvp.ships", shp.NameId);
 
             ulong interdictionDriveEppNodeId = obj.ValueOrDefault<ulong>("scFFAfterBurnerEpp", 0); //ex. 16140995633020982770 (Node epp.space_combat.freeflight.imperial.fighter_afterburner)
 

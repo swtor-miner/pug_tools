@@ -470,7 +470,7 @@ namespace GomLib.Models
                     XElement oneTObjectives = new XElement(conquestObj.Key, new XAttribute("Num", conquestObj.Value.Count));
                     foreach (var achObj in conquestObj.Value)
                     {
-                        //oneTObjectives.Add(achObj.ToXElement(false));
+                        oneTObjectives.Add(((_dom.GetObject(achObj) != null) ?_dom.achievementLoader.Load(achObj) : new GameObject()).ToXElement(false));
                     }
                     Objectives.Add(oneTObjectives);
                 }

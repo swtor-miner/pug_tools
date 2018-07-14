@@ -658,6 +658,36 @@ namespace GomLib
             return _types.Any(t => t == objectType);
         }
     }
+    public class ScriptEnumConverter : JsonConverter
+    {
+        private readonly Type[] _types;
+
+        public ScriptEnumConverter()
+        {
+            _types = new Type[] { typeof(ScriptEnum) };
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            JValue o = new JValue(value.ToString());
+            o.WriteTo(writer);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            throw new NotImplementedException("Unnecessary because CanRead is false. The type will skip the converter.");
+        }
+
+        public override bool CanRead
+        {
+            get { return false; }
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return _types.Any(t => t == objectType);
+        }
+    }
     #endregion
     public static class Normalize
     {

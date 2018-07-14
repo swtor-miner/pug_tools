@@ -83,7 +83,8 @@ namespace tor_tools
                 "Set Bonuses",
                 "Codex Category Totals",
                 "Schematic Variations",
-				"BuildBnkIdDict"
+				"BuildBnkIdDict",
+                "Dulfy"
             });
             comboBoxExtractTypes.SelectedIndex = 0;
             cbxExtractFormat.SelectedIndex = 0;
@@ -425,6 +426,10 @@ namespace tor_tools
                     //obj = new GomLib.Models.ItemAppearance();
                     obj = (GomLib.Models.ItemAppearance)dom.appearanceLoader.Load(gObject);
                     break;
+                case "npp.":
+                    //obj = new GomLib.Models.ItemAppearance();
+                    obj = (GomLib.Models.NpcAppearance)dom.appearanceLoader.LoadNpp(gObject);
+                    break;
                 case "dec.":
                     obj = new GomLib.Models.Decoration();
                     dom.decorationLoader.Load(obj, gObject);
@@ -673,8 +678,9 @@ namespace tor_tools
                     if (extensions.Contains("IPP"))
                     {
                         DisableButtons();
-                        addtolist("Getting Item Appearances.");
+                        addtolist("Getting Appearances.");
                         getObjects("ipp.", "ItemAppearances");
+                        getObjects("npp.", "NpcAppearances");
                         //getItemApps();
                     }
                     if (extensions.Contains("SCHVARI"))
@@ -758,6 +764,7 @@ namespace tor_tools
             addtolist("Verifying GameObject Hashes");
             Dictionary<string, bool> gameObjects = new Dictionary<string, bool>
             {
+                {"mpn.", true },
                 {"ach.", true},
                 {"abl.", true},
                 {"apn.", true},
@@ -773,7 +780,8 @@ namespace tor_tools
                 {"apc.", true},
                 {"class.",true},
                 {"ipp.",true},
-                {"npp.",true}
+                {"npp.",true},
+                
             };
             for(int f = 0; f < gameObjects.Count; f++)
             {
@@ -1073,6 +1081,8 @@ namespace tor_tools
                 return false;
             }
         }
+
+        
     }
 
     public static class DocumentExtensions

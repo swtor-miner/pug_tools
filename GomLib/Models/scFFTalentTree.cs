@@ -11,7 +11,6 @@ namespace GomLib.Models
         [JsonIgnore]
         public Ability Ability { get; set; }
         public string AbilityB62Id { get { if(Ability != null) return Ability.Id.ToMaskedBase62(); return null; } }
-        [Newtonsoft.Json.JsonIgnore]
         public Dictionary<int, Dictionary<int, List<object>>> Tree { get; set; }
 
         public override bool Equals(object obj)

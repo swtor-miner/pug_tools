@@ -1830,6 +1830,7 @@ namespace tor_tools
                     dt.Rows.Add(new string[] { "# Bones", mesh.numBones.NullSafeToString() });
                     dt.Rows.Add(new string[] { "# Pieces", mesh.numPieces.NullSafeToString() });
                     dt.Rows.Add(new string[] { "# Vertices", mesh.numVerts.NullSafeToString() });
+                    dt.Rows.Add(new string[] { "Bones", string.Join(", ", mesh.meshBones).NullSafeToString() });
                 }
                 else if (tag.dynObject is GR2_Bone_Skeleton)
                 {

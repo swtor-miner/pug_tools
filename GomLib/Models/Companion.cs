@@ -38,7 +38,19 @@ namespace GomLib.Models
             }
         }
         public bool IsGenderMale { get; set; }
+        [JsonIgnore]
+        public ulong AppearanceClassId { get; set; }
+        public string AppearanceClassB62Id
+        {
+            get
+            {
+                if (AppearanceClassId != 0)
+                    return AppearanceClassId.ToMaskedBase62();
+                return null;
+            }
+        }
         public bool IsRomanceable { get; set; }
+
         public Dictionary<string, string> LocalizedDescription { get; set; }
         //public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }

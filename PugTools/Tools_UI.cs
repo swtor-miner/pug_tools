@@ -18,6 +18,7 @@ using System.IO;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using GomLib;
+using nsHashDictionary;
 
 namespace tor_tools
 {
@@ -190,7 +191,8 @@ namespace tor_tools
 						break;
                     case "BuildBnkIdDict": t = new ThreadStart(BuildBnkIdDict);
                         break;
-                        
+                    case "Dulfy": t = new ThreadStart(getDisciplineCalcData);
+                        break;
                 }
                 if (t != null)
                 {
@@ -373,6 +375,55 @@ namespace tor_tools
             bool usePTS = this.usePTSAssets.Checked;
             Form WorldBrowser = new WorldBrowser(this.textBoxAssetsFolder.Text, usePTS);
             WorldBrowser.Show();
+        }
+
+        private void file_button_Click(object sender, EventArgs e)
+        {
+            LoadData();
+
+            var hashdata = TorLib.HashDictionaryInstance.Instance;
+            hashdata.Load();
+            HashSet<string> current = GetFilenameHashset(currentAssets);
+            HashSet<string> previous = GetFilenameHashset(previousAssets);
+            var sorted = current.Except(previous).ToList();
+            sorted.Sort();
+            WriteFile(String.Join(Environment.NewLine, sorted), "newFiles.txt", false);
+
+            EnableButtons();
+        }
+        private HashSet<string> GetFilenameHashset(TorLib.Assets assets)
+        {
+            HashSet<string> ret = new HashSet<string>();
+            foreach (var lib in assets.libraries)
+            {
+                string path = lib.Location;
+                if (!lib.Loaded)
+                    lib.Load();
+                if (lib.archives.Count > 0)
+                {
+                    foreach (var arch in lib.archives)
+                    {
+                        foreach (var file in arch.Value.files)
+                        {
+                            TorLib.HashFileInfo hashInfo = new TorLib.HashFileInfo(file.FileInfo.ph, file.FileInfo.sh, file);
+
+                            if (hashInfo.IsNamed)
+                            {
+                                if (hashInfo.FileName == "metadata.bin" || hashInfo.FileName == "ft.sig" || hashInfo.FileName == "groupmanifest.bin")
+                                {
+                                    continue;
+                                }
+                                ret.Add(hashInfo.Directory + "/" + hashInfo.FileName);
+                            }
+                            else
+                            {
+                                ret.Add(hashInfo.Directory + "/" + hashInfo.Extension + "/" + hashInfo.FileName + "." + hashInfo.Extension);
+                            }
+                        }
+                    }
+                }
+            }
+            return ret;
         }
 
         #region Saved Config Events
