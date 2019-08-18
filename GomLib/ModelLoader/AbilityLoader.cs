@@ -800,31 +800,38 @@ namespace GomLib.ModelLoader
             else
             {
                 var tokEff = _dom.GetObject((ulong)abilityEffectList[tokEffIndex]);
-                if (tokSubEffIndex < 1)
+                if (tokEff == null)
                 {
-                    duration = (float)((ulong)tokEff.Data.ValueOrDefault<ulong>("effDuration", 0)) / 1000;
+                    duration = 0;
                 }
                 else
                 {
-                    var tokSubEffInitializers = ((GomObjectData)tokEff.Data.Get<List<object>>("effSubEffects")[tokSubEffIndex - 1]).Get<List<object>>("effInitializers");
-                    foreach (GomObjectData effInit in tokSubEffInitializers)
+                    if (tokSubEffIndex < 1)
                     {
-                        if (effInit.Get<object>("effInitializerName").ToString() == "effInitializer_SetDuration")
+                        duration = (float)((ulong)tokEff.Data.ValueOrDefault<ulong>("effDuration", 0)) / 1000;
+                    }
+                    else
+                    {
+                        var tokSubEffInitializers = ((GomObjectData)tokEff.Data.Get<List<object>>("effSubEffects")[tokSubEffIndex - 1]).Get<List<object>>("effInitializers");
+                        foreach (GomObjectData effInit in tokSubEffInitializers)
                         {
-                            var durationMap = effInit.Get<Dictionary<object, object>>("effTimeIntervalParams");
-                            foreach (var durKvp in durationMap)
+                            if (effInit.Get<object>("effInitializerName").ToString() == "effInitializer_SetDuration")
                             {
-                                if (((ScriptEnum)durKvp.Key).Value == 0xA2)
+                                var durationMap = effInit.Get<Dictionary<object, object>>("effTimeIntervalParams");
+                                foreach (var durKvp in durationMap)
                                 {
-                                    duration = (float)durKvp.Value / 1000;
-                                    break;
+                                    if (((ScriptEnum)durKvp.Key).Value == 0xA2)
+                                    {
+                                        duration = (float)durKvp.Value / 1000;
+                                        break;
+                                    }
                                 }
+                                break;
                             }
-                            break;
                         }
                     }
+                    tokEff.Unload();
                 }
-                tokEff.Unload();
             }
 
             return String.Format("duration,{0}", duration);

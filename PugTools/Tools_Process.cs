@@ -878,7 +878,7 @@ namespace tor_tools
             string filename = String.Format("{0}{1}", prefix, ".txt");
             WriteFile("", filename, false);
             var count = itmList.Count();
-            Dictionary<int, string> conqOrder = null;
+            Dictionary<long, string> conqOrder = null;
             if (prefix.Contains("Conquest"))
             {
                 WriteFile("", "ConquestSCSV.txt", false);
@@ -904,11 +904,16 @@ namespace tor_tools
                 if (prefix.Contains("Conquest"))
                 {
                     if (conqOrder == null)
-                        conqOrder = new Dictionary<int, string>();
+                        conqOrder = new Dictionary<long, string>();
                     if (((GomLib.Models.Conquest)itm).ActiveData != null)
                         foreach (var actDat in ((GomLib.Models.Conquest)itm).ActiveData)
                         {
                             conqOrder.Add(actDat.ActualOrderNum, String.Format("{0}: {1} EST - {2}", actDat.ActualOrderNum, actDat.StartTime.ToString(), ((GomLib.Models.Conquest)itm).Name));
+                        }
+                    else if (((GomLib.Models.Conquest)itm).NewActiveData != null)
+                        foreach (var actDat in ((GomLib.Models.Conquest)itm).NewActiveData)
+                        {
+                            conqOrder.Add(actDat.Ticks, String.Format("{0} EST - {1}  ", actDat.ToString(), ((GomLib.Models.Conquest)itm).Name));
                         }
                     WriteFile(((GomLib.Models.Conquest)itm).ConquestToSCSV(), "ConquestSCSV.txt", true);
                 }

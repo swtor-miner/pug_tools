@@ -215,22 +215,31 @@ namespace GomLib.Models
 
         public override string ToString(bool verbose)
         {
+            string dailyObjectives = "";
             string objectives = "";
-            //if (RepeatableObjectivesList != null)
-              //  objectives = ObjectivesToText(ActivePlanets, RepeatableObjectivesList);
-            //else
-                objectives = "";
-            string secondObjectives = "";
-            //if (OneTimeObjectivesList != null)
-                //secondObjectives = ObjectivesToText(ActivePlanets, OneTimeObjectivesList);
-            //else
-                secondObjectives = "";
+            string oneTimeObjectives = "";
+            //if (NewObjectivesList != null)
+            //{
+            //    if(NewObjectivesList.ContainsKey(""))
+            //        dailyObjectives = String.Join(Environment.NewLine, RepeatableObjectivesList.Select(x => x.Name).ToList());
+            //    if (NewObjectivesList.ContainsKey(""))
+            //        objectives = String.Join(Environment.NewLine, RepeatableObjectivesList.Select(x => x.Name).ToList());
+            //    if (NewObjectivesList.ContainsKey(""))
+            //        oneTimeObjectives = String.Join(Environment.NewLine, OneTimeObjectivesList.Select(x => x.Name).ToList());
+            //}
             string conquestDates = "Event Order/Start Time: None Listed!";
             if (ActiveData != null)
             {
                 var data = String.Join(
                     Environment.NewLine,
                     ActiveData.OrderBy(x => x.ActualOrderNum).Select(x => String.Format("Event Order/Start Time: {0} - {1} EST", x.ActualOrderNum, x.StartTime.ToString())));
+                conquestDates = data;
+            }
+            else if (NewActiveData != null)
+            {
+                var data = String.Join(
+                    Environment.NewLine,
+                    NewActiveData.OrderBy(x => x.Ticks).Select(x => String.Format("Start Time: {0} EST", x.ToString())));
                 conquestDates = data;
             }
             //WriteFile(String.Join(Environment.NewLine, Name, conquestDates, Environment.NewLine), "conquestPost.txt", true);
@@ -241,8 +250,9 @@ namespace GomLib.Models
                 String.Format("Personal Goal: {0}", ParticipateGoal),
                 String.Format("Republic Active Planets: {0}", String.Join(" - ", RepublicActivePlanets.Select(x => x.Name).ToList())),
                 String.Format("Imperial Active Planets: {0}", String.Join(" - ", ImperialActivePlanets.Select(x => x.Name).ToList())),
+                String.Format("Daily Repeatable Objectives List: {0}  {1}", Environment.NewLine, dailyObjectives),
                 String.Format("Repeatable Objectives List: {0}  {1}", Environment.NewLine, objectives),
-                String.Format("One Time Objectives List: {0}  {1}", Environment.NewLine, secondObjectives),
+                String.Format("One Time Objectives List: {0}  {1}", Environment.NewLine, oneTimeObjectives),
                 Environment.NewLine
                 );
         }

@@ -12,7 +12,8 @@ namespace GomLib.Models
         Equip = 2,
         Pickup = 3,
         Use = 4,
-        Legacy = 5
+        Legacy = 5,
+        LegacyOnEquip = 6
     }
 
     public static class ItemBindingRuleExtensions
@@ -34,6 +35,7 @@ namespace GomLib.Models
                 case "itmBindOnPickup": return ItemBindingRule.Pickup;
                 case "itmBindOnLegacy": return ItemBindingRule.Legacy;
                 case "itmBindOnUse": return ItemBindingRule.Use;
+                case "itmBindOnLegacyOnEquip":return ItemBindingRule.LegacyOnEquip; //fix this later
                 default: throw new InvalidOperationException("Unknown BindingRule: " + str);
             }
         }

@@ -33,7 +33,7 @@ namespace tor_tools
             SmartLinkDecorations(dom);
             SmartLinkEncounters(dom);
             SmartLinkItems(dom);
-            SmartLinkItemAppearances(dom);
+            SmartLinkAppearances(dom);
             SmartLinkNpcs(dom);
             SmartLinkPhases(dom);
             SmartLinkPlaceables(dom);
@@ -272,20 +272,38 @@ namespace tor_tools
                 node.Unload();
             }
         }
-        private void SmartLinkItemAppearances(DataObjectModel dom)
+        private void SmartLinkAppearances(DataObjectModel dom)
         {
             List<GomObject> nodeList;
+            Dictionary<long, List<ulong>> appList = new Dictionary<long, List<ulong>>();
+            Dictionary<object, List<ulong>> matchList = new Dictionary<object, List<ulong>>();
+            #region IPP
             addtolist2("Smart-linking item apperances...");//Load items
             nodeList = dom.GetObjectsStartingWith("ipp.");
-            Dictionary<long, List<ulong>> appList = new Dictionary<long, List<ulong>>();
             foreach (GomObject node in nodeList)
             {
                 long modelId = node.Data.ValueOrDefault<long>("appAppearanceSlotModelID", 0L);
-                if(!appList.ContainsKey(modelId))
+                if (modelId == 0L) continue;
+                long materialIndex = node.Data.ValueOrDefault<long>("appAppearanceSlotMaterialIndex", 0L);
+                List<object> attachments = node.Data.ValueOrDefault<List<object>>("appAppearanceSlotAttachments", null);
+                string attachString = "";
+                if (attachments != null)
                 {
-                    appList.Add(modelId, new List<ulong>());
+                    attachments.Sort();
+                    attachString = String.Join(".", attachments);
                 }
+                var anon = new
+                {
+                    Model = modelId,
+                    Material = materialIndex,
+                    Attachments = attachString,
+                };
+                if (!appList.ContainsKey(modelId))
+                    appList.Add(modelId, new List<ulong>());
+                if (!matchList.ContainsKey(anon))
+                    matchList.Add(anon, new List<ulong>());
                 appList[modelId].Add(node.Id);
+                matchList[anon].Add(node.Id);
                 node.Unload();
             }
             foreach (List<ulong> apps in appList.Values)
@@ -296,28 +314,103 @@ namespace tor_tools
                     for (int e = 0; e < apps.Count; e++)
                     {
                         if (i == e) continue;
-                        dom.AddCrossLink(apps[e], "similarAppearance", apps[i]);
+                        dom.AddCrossLink(apps[e], "similarBaseModel", apps[i]);
                         
-                        GomObject ipp = dom.GetObject(apps[e]);
-                        if (ipp.References.ContainsKey("givenByItem"))
-                        {
-                            var similar = ipp.References["givenByItem"];
-                            similarItemIds.UnionWith(similar);
-                        }
+                        //GomObject ipp = dom.GetObject(apps[e]);
+                        //if (ipp.References.ContainsKey("givenByItem"))
+                        //{
+                        //    var similar = ipp.References["givenByItem"];
+                        //    similarItemIds.UnionWith(similar);
+                        //}
                     }
-                    List<ulong> similarList = similarItemIds.ToList();
-                    for (int g = 0; g < similarList.Count; g++)
+                    //List<ulong> similarList = similarItemIds.ToList();
+                    //for (int g = 0; g < similarList.Count; g++)
+                    //{
+                    //    for (int h = 0; h < similarList.Count; h++)
+                    //    {
+                    //        if (g == h) continue;
+                    //        dom.AddCrossLink(similarList[h], "similarAppearance", similarList[g]);
+                    //    }
+                    //}
+                }
+            }
+
+            foreach (List<ulong> match in matchList.Values)
+            {
+                for (int i = 0; i < match.Count; i++)
+                {
+                    HashSet<ulong> similarItemIds = new HashSet<ulong>();
+                    for (int e = 0; e < match.Count; e++)
                     {
-                        for (int h = 0; h < similarList.Count; h++)
+                        if (i == e) continue;
+                        dom.AddCrossLink(match[e], "similarAppearance", match[i]);
+                    }
+                }
+            }
+            #endregion
+            #region NPP
+            addtolist2("Smart-linking npc apperances...");//Load items
+            nodeList = dom.GetObjectsStartingWith("npp.");
+            //Dictionary<string, Dictionary<object, List<ulong>>> npcMatchList = new Dictionary<string, Dictionary<object, List<ulong>>>();
+            foreach (GomObject node in nodeList)
+            {
+                Dictionary<object, object> slotMap = node.Data.ValueOrDefault<Dictionary<object, object>>("nppAppearanceSlotMap_ForPrototype", null);
+                foreach (var slot in slotMap) {
+                    var slotName = (slot.Key as ScriptEnum).ToString();
+                    var slotData = slot.Value as GomObjectData;
+                    if (slotData == null) continue;
+                    long modelId = node.Data.ValueOrDefault<long>("appAppearanceSlotModelID", 0L);
+                    if (modelId == 0L) continue;
+                    long materialIndex = node.Data.ValueOrDefault<long>("appAppearanceSlotMaterialIndex", 0L);
+                    List<object> attachments = node.Data.ValueOrDefault<List<object>>("appAppearanceSlotAttachments", null);
+                    string attachString = "";
+                    if (attachments != null)
+                    {
+                        attachments.Sort();
+                        attachString = String.Join(".", attachments);
+                    }
+                    var anon = new
+                    {
+                        Model = modelId,
+                        Material = materialIndex,
+                        Attachments = attachString,
+                    };
+                    //Dictionary<object, List<ulong>> l;
+                    //if (!npcMatchList.TryGetValue(slotName, out l))
+                    //    npcMatchList.Add(slotName, new Dictionary<object, List<ulong>>());
+                    //if (!l.ContainsKey(anon))
+                    //    npcMatchList[slotName].Add(anon, new List<ulong>());
+                    //npcMatchList[slotName][anon].Add(node.Id);
+
+                    List<ulong> items;
+                    if(matchList.TryGetValue(anon, out items))
+                    {
+                        string refName = String.Format("{0}SimilarItems", slotName);
+                        foreach (ulong item in items)
                         {
-                            if (g == h) continue;
-                            dom.AddCrossLink(similarList[h], "similarAppearance", similarList[g]);
+                            dom.AddCrossLink(item, "npcWearingAppearance", node.Id);
+                            dom.AddCrossLink(node.Id, refName, item);
                         }
                     }
                 }
-                
-                
+                //foreach (KeyValuePair<string, Dictionary<object, List<ulong>>> matches in npcMatchList)
+                //{
+                //    foreach (KeyValuePair<object, List<ulong>> match in matches.Value)
+                //    {
+                //        for (int i = 0; i < match.Value.Count; i++)
+                //        {
+                //            HashSet<ulong> similarItemIds = new HashSet<ulong>();
+                //            for (int e = 0; e < match.Value.Count; e++)
+                //            {
+                //                if (i == e) continue;
+                //                dom.AddCrossLink(match.Value[e], "similarAppearance", match.Value[i]);
+                //            }
+                //        }
+                //    }
+                //}
+                node.Unload();
             }
+            #endregion
         }
         private void SmartLinkNpcs(DataObjectModel dom)
         {
@@ -497,13 +590,20 @@ namespace tor_tools
             if (proto != null)
             {
                 Dictionary<object, object> table;
-                if (proto.Data.ContainsKey(""))
+                if (proto.Data.ContainsKey("qstRewardsNewInfoData"))
                 {
-                    table = proto.Data.Get<Dictionary<object, object>>("qstRewardsInfoData");
+                    table = proto.Data.ValueOrDefault<Dictionary<object, object>>("qstRewardsNewInfoData", null);
+                    if (proto.Data.ContainsKey("qstRewardsInfoData"))
+                    {
+                        foreach(var kvp in table = proto.Data.ValueOrDefault<Dictionary<object, object>>("qstRewardsInfoData", new Dictionary<object, object>()))
+                        {
+                            table.Add(kvp.Key, kvp.Value);
+                        }
+                    }
                 }
                 else
                 {
-                    table = proto.Data.Get<Dictionary<object, object>>("qstRewardsNewInfoData");
+                    table = proto.Data.ValueOrDefault<Dictionary<object, object>>("qstRewardsInfoData", null);
                 }
                 if (table != null)
                 {
@@ -512,7 +612,8 @@ namespace tor_tools
                         foreach (GomObjectData rewardcontainer in ((List<object>)node.Value))
                         {
                             GomObjectData reward = rewardcontainer.ValueOrDefault<GomObjectData>("qstRewardData", null);
-                            if (reward == null) continue;
+                            if (reward == null)
+                                reward = rewardcontainer;
                             ulong itemId = reward.ValueOrDefault<ulong>("qstRewardItemId", 0);
                             if (itemId == 0) continue;
                             dom.AddCrossLink(itemId, "rewardFrom", (ulong)node.Key);//qst node

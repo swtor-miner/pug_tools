@@ -72,7 +72,8 @@ namespace GomLib.Models
         EquipSpaceShipAbilityOffense = 62,
         EquipSpaceShipAbilitySystems = 63,
         Any = 64,
-        QuestTracker = 65
+        QuestTracker = 65,
+        EquipHumanTactical = 66
     }
 
     public static class SlotTypeExtensions
@@ -155,6 +156,7 @@ namespace GomLib.Models
                 case "conSlotEquipSpaceShipAbilitySystems": return SlotType.EquipSpaceShipAbilitySystems;
                 case "conSlotAny": return SlotType.Any;
                 case "conSlotQuestTracker": return SlotType.QuestTracker;
+                case "conSlotEquipHumanTactical": return SlotType.EquipHumanTactical; //fix this later
                 case "<None>":
                     return SlotType.Invalid;
                 default: throw new InvalidOperationException("Invalid SlotType: " + str);

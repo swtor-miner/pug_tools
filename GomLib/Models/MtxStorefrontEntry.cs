@@ -31,10 +31,11 @@ namespace GomLib.Models
                 if (LoadedItemList != null)
                     return LoadedItemList;
                 LoadedItemList = new List<Item>();
-                foreach (var item in ItemIdsList)
-                {
-                    LoadedItemList.Add(_dom.itemLoader.Load(item));
-                }
+                if(ItemIdsList != null)
+                    foreach (var item in ItemIdsList)
+                    {
+                        LoadedItemList.Add(_dom.itemLoader.Load(item));
+                    }
                 return LoadedItemList;
             }
         }

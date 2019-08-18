@@ -765,7 +765,7 @@ namespace GomLib.Models
                 string repString = GetLocalizedText(836131348283738, Tooltip.language, "Requires {1} standing with {0}");
                 tooltip.Add(new XElement("div",
                     XClass("torctip_main"),
-                    String.Format(repString, itm.LocalizedRequiredReputationLevelName[Tooltip.language], itm.LocalizedRepFactionName[Tooltip.language]) //"Requires {1} standing with {0}"
+                    String.Format(repString, (itm.LocalizedRequiredReputationLevelName != null) ? itm.LocalizedRequiredReputationLevelName[Tooltip.language]: "unknown", itm.LocalizedRepFactionName[Tooltip.language]) //"Requires {1} standing with {0}"
                     ));
             }
             //decoration before abilities
