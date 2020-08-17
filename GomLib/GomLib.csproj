@@ -1,0 +1,307 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A147D4D8-1EA1-4BDA-A388-AB843B037307}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GomLib</RootNamespace>
+    <AssemblyName>GomLib</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\</OutputPath>
+    <PlatformTarget>x64</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <DebugType>pdbonly</DebugType>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\</OutputPath>
+    <PlatformTarget>x64</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Assemblies\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.8.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Assemblies\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Assemblies\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AMI.cs" />
+    <Compile Include="AMIEntry.cs" />
+    <Compile Include="DomAssociation.cs" />
+    <Compile Include="DomClass.cs" />
+    <Compile Include="DomEnum.cs" />
+    <Compile Include="DomField.cs" />
+    <Compile Include="DomHandler.cs" />
+    <Compile Include="DomType.cs" />
+    <Compile Include="DomTypeLoaders\FileInstanceLoader.cs" />
+    <Compile Include="ModelLoader\AreaDatLoader.cs" />
+    <Compile Include="ModelLoader\EffectLoader.cs" />
+    <Compile Include="ModelLoader\SpawnerLoader.cs" />
+    <Compile Include="ModelLoader\RoomDatLoader.cs" />
+    <Compile Include="Gom.cs" />
+    <Compile Include="GomBinaryReader.cs" />
+    <Compile Include="DataObjectModel.cs" />
+    <Compile Include="GomObject.cs" />
+    <Compile Include="GomObjectData.cs" />
+    <Compile Include="GomType.cs" />
+    <Compile Include="GomTypeLoader.cs" />
+    <Compile Include="GomTypeLoaders\BooleanLoader.cs" />
+    <Compile Include="GomTypeLoaders\EmbeddedClassLoader.cs" />
+    <Compile Include="GomTypeLoaders\ClassRefLoader.cs" />
+    <Compile Include="GomTypeLoaders\EnumLoader.cs" />
+    <Compile Include="GomTypeLoaders\FloatLoader.cs" />
+    <Compile Include="GomTypeLoaders\IGomTypeLoader.cs" />
+    <Compile Include="GomTypeLoaders\IntegerLoader.cs" />
+    <Compile Include="GomTypeLoaders\ListLoader.cs" />
+    <Compile Include="GomTypeLoaders\MapLoader.cs" />
+    <Compile Include="GomTypeLoaders\ScriptLoader.cs" />
+    <Compile Include="GomTypeLoaders\StringLoader.cs" />
+    <Compile Include="GomTypeLoaders\TimeLoader.cs" />
+    <Compile Include="GomTypeLoaders\TimerLoader.cs" />
+    <Compile Include="GomTypeLoaders\TimeSpanLoader.cs" />
+    <Compile Include="GomTypeLoaders\UInt64Loader.cs" />
+    <Compile Include="GomTypeLoaders\VectorLoader.cs" />
+    <Compile Include="GomTypes\Boolean.cs" />
+    <Compile Include="GomTypes\ClassRef.cs" />
+    <Compile Include="GomTypes\Enum.cs" />
+    <Compile Include="GomTypes\Float.cs" />
+    <Compile Include="GomTypes\EmbeddedClass.cs" />
+    <Compile Include="GomTypes\Integer.cs" />
+    <Compile Include="GomTypes\List.cs" />
+    <Compile Include="GomTypes\Map.cs" />
+    <Compile Include="GomTypes\Script.cs" />
+    <Compile Include="GomTypes\String.cs" />
+    <Compile Include="GomTypes\Time.cs" />
+    <Compile Include="GomTypes\Timer.cs" />
+    <Compile Include="GomTypes\TimeSpan.cs" />
+    <Compile Include="GomTypes\UInt64.cs" />
+    <Compile Include="GomTypes\Vector.cs" />
+    <Compile Include="ModelLoader\AbilityLoader.cs" />
+    <Compile Include="ModelLoader\AbilityPackageLoader.cs" />
+    <Compile Include="ModelLoader\AchievementCategoryLoader.cs" />
+    <Compile Include="ModelLoader\AchievementLoader.cs" />
+    <Compile Include="ModelLoader\AdvancedClassLoader.cs" />
+    <Compile Include="ModelLoader\AreaLoader.cs" />
+    <Compile Include="ModelLoader\ClassSpecLoader.cs" />
+    <Compile Include="ModelLoader\CodexCatByFactionLoader.cs" />
+    <Compile Include="ModelLoader\CodexLoader.cs" />
+    <Compile Include="ModelLoader\CollectionLoader.cs" />
+    <Compile Include="ModelLoader\CompanionLoader.cs" />
+    <Compile Include="ModelLoader\ConversationLoader.cs" />
+    <Compile Include="ModelLoader\AppearanceLoader.cs" />
+    <Compile Include="ModelLoader\ConquestLoader.cs" />
+    <Compile Include="ModelLoader\DisciplineLoader.cs" />
+    <Compile Include="ModelLoader\LegacyTitleLoader.cs" />
+    <Compile Include="ModelLoader\PlayerTitleLoader.cs" />
+    <Compile Include="ModelLoader\ReputationGroupLoader.cs" />
+    <Compile Include="ModelLoader\ReputationRankLoader.cs" />
+    <Compile Include="ModelLoader\SchematicVariationLoader.cs" />
+    <Compile Include="ModelLoader\SetBonusLoader.cs" />
+    <Compile Include="ModelLoader\StrongholdLoader.cs" />
+    <Compile Include="ModelLoader\DecorationLoader.cs" />
+    <Compile Include="ModelLoader\MtxStorefrontEntryLoader.cs" />
+    <Compile Include="ModelLoader\EncounterLoader.cs" />
+    <Compile Include="ModelLoader\IModelLoader.cs" />
+    <Compile Include="ModelLoader\ItemLoader.cs" />
+    <Compile Include="ModelLoader\MapNoteLoader.cs" />
+    <Compile Include="ModelLoader\NpcLoader.cs" />
+    <Compile Include="ModelLoader\_EmptyLoader.cs" />
+    <Compile Include="Models\AchievementCategory.cs" />
+    <Compile Include="Models\Appearances.cs" />
+    <Compile Include="Models\AssetInstance.cs" />
+    <Compile Include="Models\Effect.cs" />
+    <Compile Include="Models\MapNoteData.cs" />
+    <Compile Include="Models\WonkavatorPackage.cs" />
+    <Compile Include="Models\RoomDat.cs" />
+    <Compile Include="Models\AreaDat.cs" />
+    <Compile Include="Models\CodexCatByFaction.cs" />
+    <Compile Include="Models\Conquest.cs" />
+    <Compile Include="Models\LegacyTitle.cs" />
+    <Compile Include="Models\PlayerTitle.cs" />
+    <Compile Include="Models\ReputationGroup.cs" />
+    <Compile Include="Models\ReputationRank.cs" />
+    <Compile Include="Models\SchematicVariation.cs" />
+    <Compile Include="Models\SetBonusEntry.cs" />
+    <Compile Include="Models\Alignment.cs" />
+    <Compile Include="Models\GroupFinder.cs" />
+    <Compile Include="Models\Social.cs" />
+    <Compile Include="Models\Tooltip.cs" />
+    <Compile Include="Models\Discipline.cs" />
+    <Compile Include="Models\Stronghold.cs" />
+    <Compile Include="Models\Decoration.cs" />
+    <Compile Include="Models\NpcVisualData.cs" />
+    <Compile Include="ModelLoader\PackageAbilityLoader.cs" />
+    <Compile Include="ModelLoader\PlaceableLoader.cs" />
+    <Compile Include="ModelLoader\QuestBranchLoader.cs" />
+    <Compile Include="ModelLoader\QuestLoader.cs" />
+    <Compile Include="ModelLoader\QuestStepLoader.cs" />
+    <Compile Include="ModelLoader\QuestTaskLoader.cs" />
+    <Compile Include="ModelLoader\scFFComponentLoader.cs" />
+    <Compile Include="ModelLoader\scFFColorOptionLoader.cs" />
+    <Compile Include="ModelLoader\scFFPatternLoader.cs" />
+    <Compile Include="ModelLoader\SchematicLoader.cs" />
+    <Compile Include="ModelLoader\scFFShipLoader.cs" />
+    <Compile Include="Models\Collection.cs" />
+    <Compile Include="Models\QuestItem.cs" />
+    <Compile Include="Models\MtxStorefrontEntry.cs" />
+    <Compile Include="Models\scFFComponent.cs" />
+    <Compile Include="Models\scFFColorOption.cs" />
+    <Compile Include="Models\scFFPattern.cs" />
+    <Compile Include="Models\scFFTalentTree.cs" />
+    <Compile Include="ModelLoader\TalentLoader.cs" />
+    <Compile Include="Models\Ability.cs" />
+    <Compile Include="Models\AbilityPackage.cs" />
+    <Compile Include="Models\Achievement.cs" />
+    <Compile Include="Models\AdvancedClass.cs" />
+    <Compile Include="Models\AppearanceColor.cs" />
+    <Compile Include="Models\ApType.cs" />
+    <Compile Include="Models\Area.cs" />
+    <Compile Include="Models\ArmorSpec.cs" />
+    <Compile Include="Models\AuctionCategory.cs" />
+    <Compile Include="Models\AuctionHouseNetwork.cs" />
+    <Compile Include="Models\ClassSpec.cs" />
+    <Compile Include="Models\Codex.cs" />
+    <Compile Include="Models\Companion.cs" />
+    <Compile Include="Models\CompanionAffectionRank.cs" />
+    <Compile Include="Models\CompanionGiftInterest.cs" />
+    <Compile Include="Models\CompanionProfessionModifier.cs" />
+    <Compile Include="Models\Conversation.cs" />
+    <Compile Include="Models\ConversationAlignment.cs" />
+    <Compile Include="Models\ItemDamageType.cs" />
+    <Compile Include="Models\CrewSkill.cs" />
+    <Compile Include="Models\DialogNode.cs" />
+    <Compile Include="Models\DifficultyLevel.cs" />
+    <Compile Include="Models\Encounter.cs" />
+    <Compile Include="Models\EnhancementCategory.cs" />
+    <Compile Include="Models\EnhancementStationType.cs" />
+    <Compile Include="Models\EnhancementSubCategory.cs" />
+    <Compile Include="Models\EnhancementType.cs" />
+    <Compile Include="Models\Faction.cs" />
+    <Compile Include="Models\GameObject.cs" />
+    <Compile Include="Models\Gender.cs" />
+    <Compile Include="Models\GiftInterest.cs" />
+    <Compile Include="Models\GiftRank.cs" />
+    <Compile Include="Models\GiftType.cs" />
+    <Compile Include="Models\HuntingRadius.cs" />
+    <Compile Include="Models\HydraScript.cs" />
+    <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\ItemBindingRule.cs" />
+    <Compile Include="Models\ItemCategory.cs" />
+    <Compile Include="Models\ItemEnhancement.cs" />
+    <Compile Include="Models\ItemPlotType.cs" />
+    <Compile Include="Models\ItemQuality.cs" />
+    <Compile Include="Models\ItemStat.cs" />
+    <Compile Include="Models\ItemTypeFlags.cs" />
+    <Compile Include="Models\LootTable.cs" />
+    <Compile Include="Models\MapMarker.cs" />
+    <Compile Include="Models\MapMarkerIcon.cs" />
+    <Compile Include="Models\MapNote.cs" />
+    <Compile Include="Models\MapNoteCondition.cs" />
+    <Compile Include="Models\MapNoteIcon.cs" />
+    <Compile Include="Models\MapPage.cs" />
+    <Compile Include="Models\ModifierSet.cs" />
+    <Compile Include="Models\Npc.cs" />
+    <Compile Include="Models\PackageAbility.cs" />
+    <Compile Include="Models\Placeable.cs" />
+    <Compile Include="Models\PlaceableCategory.cs" />
+    <Compile Include="Models\Profession.cs" />
+    <Compile Include="Models\ProfessionCategory.cs" />
+    <Compile Include="Models\ProfessionSubtype.cs" />
+    <Compile Include="Models\Quest.cs" />
+    <Compile Include="Models\QuestBranch.cs" />
+    <Compile Include="Models\QuestCategory.cs" />
+    <Compile Include="Models\QuestCredits.cs" />
+    <Compile Include="Models\QuestDifficulty.cs" />
+    <Compile Include="Models\QuestRepeatInterval.cs" />
+    <Compile Include="Models\QuestStep.cs" />
+    <Compile Include="Models\QuestTask.cs" />
+    <Compile Include="Models\Schematic.cs" />
+    <Compile Include="Models\SchematicResearchChance.cs" />
+    <Compile Include="Models\scFFShip.cs" />
+    <Compile Include="Models\ShieldSpec.cs" />
+    <Compile Include="Models\SlotType.cs" />
+    <Compile Include="Models\Spawner.cs" />
+    <Compile Include="Models\SpawnerType.cs" />
+    <Compile Include="Models\Stat.cs" />
+    <Compile Include="Models\Talent.cs" />
+    <Compile Include="Models\TargetRule.cs" />
+    <Compile Include="Models\Toughness.cs" />
+    <Compile Include="Models\Vendor.cs" />
+    <Compile Include="Models\WeaponSpec.cs" />
+    <Compile Include="Models\Workstation.cs" />
+    <Compile Include="Models\_Empty.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScriptEnum.cs" />
+    <Compile Include="ScriptObjectReader.cs" />
+    <Compile Include="Smart_Link.cs" />
+    <Compile Include="SQLHelpers.cs" />
+    <Compile Include="StringTable.cs" />
+    <Compile Include="StringTableEntry.cs" />
+    <Compile Include="Tables\AbilityDamageTable.cs" />
+    <Compile Include="Tables\ArmorPerLevel.cs" />
+    <Compile Include="Data.cs" />
+    <Compile Include="Tables\ModificationNames.cs" />
+    <Compile Include="Tables\SchematicVariationsPrototype.cs" />
+    <Compile Include="Tables\ItemModifierPackageTablePrototype.cs" />
+    <Compile Include="Tables\ItemBudget.cs" />
+    <Compile Include="Tables\ItemRating.cs" />
+    <Compile Include="Tables\ShieldPerLevel.cs" />
+    <Compile Include="Tables\WeaponPerLevel.cs" />
+    <Compile Include="TypedValue.cs" />
+    <Compile Include="DomTypeLoaders\AssociationLoader.cs" />
+    <Compile Include="DomTypeLoaders\ClassLoader.cs" />
+    <Compile Include="DomTypeLoaders\DomTypes.cs" />
+    <Compile Include="DomTypeLoaders\EnumLoader.cs" />
+    <Compile Include="DomTypeLoaders\FieldLoader.cs" />
+    <Compile Include="DomTypeLoaders\IDomTypeLoader.cs" />
+    <Compile Include="DomTypeLoaders\LoaderHelper.cs" />
+    <Compile Include="DomTypeLoaders\InstanceLoader.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TorLib\TorLib.csproj">
+      <Project>{F59DF2F2-4E69-41E5-B63B-6D4ABF2CA6E1}</Project>
+      <Name>TorLib</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
