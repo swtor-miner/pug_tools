@@ -35,7 +35,7 @@ namespace FileFormats
         public List<GR2_Attachment> attachments = new List<GR2_Attachment>();
         public List<GR2> attachedModels = new List<GR2>();
 
-        public GR2_Material materialOverride;
+        // public GR2_Material materialOverride;
 
         public Matrix positionMatrix;
         public Matrix scaleMatrix;

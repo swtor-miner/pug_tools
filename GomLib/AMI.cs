@@ -89,7 +89,6 @@ namespace GomLib
                 };
                 var entries = ami.Data.Get<Dictionary<object, object>>("appModelDetails");
                 table.data = new Dictionary<long, AMIEntry>();
-                //Console.WriteLine(table.Fqn);
                 foreach (var entry in entries)
                 {
                     AMIEntry ame = new AMIEntry();

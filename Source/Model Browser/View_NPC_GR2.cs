@@ -2,26 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.IO;
-using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Xml;
 using SlimDX;
 using SlimDX.Direct3D11;
-using SlimDX.D3DCompiler;
 using SlimDX.DXGI;
 using Buffer = SlimDX.Direct3D11.Buffer;
-using ShaderResourceView = SlimDX.Direct3D11.ShaderResourceView;
 using SlimDX_Framework;
 using SlimDX_Framework.Camera;
 using SlimDX_Framework.FX;
 using SlimDX_Framework.Vertex;
 using FileFormats;
 using GomLib;
-using GomLib.Models;
 
 namespace tor_tools
 {
@@ -56,12 +49,12 @@ namespace tor_tools
         private Vector3 cameraPos;
 
         private List<PosNormalTexTan> vertices = new List<PosNormalTexTan>();
-        private readonly List<FileFormats.GR2_Mesh_Vertex_Index> indexes = new List<FileFormats.GR2_Mesh_Vertex_Index>();
+        private readonly List<GR2_Mesh_Vertex_Index> indexes = new List<GR2_Mesh_Vertex_Index>();
         private readonly List<ushort> indexList = new List<ushort>();
 
         bool makeScreenshot = false;
 
-        private GR2 focus = new GR2();
+        GR2 focus = new GR2();
 
         public string selectedModel = "";
 
@@ -99,9 +92,9 @@ namespace tor_tools
 
         public void Clear()
         {
-            if (this.models != null)
+            if (models != null)
             {
-                foreach (var model in this.models)
+                foreach (var model in models)
                 {
                     foreach (var mesh in model.Value.meshes)
                     {
@@ -147,54 +140,74 @@ namespace tor_tools
                     }
                     model.Value.Dispose();
                 }
-                this.models.Clear();
+                models.Clear();
             }
-            this.resources.Clear();
-            this.vertices.Clear();
-            this.indexes.Clear();
-            this.indexList.Clear();
+            resources.Clear();
+            vertices.Clear();
+            indexes.Clear();
+            indexList.Clear();
         }
 
         public void LoadModel(Dictionary<string, GR2> models, Dictionary<string, object> resources, string fqn, string type = "")
         {
-            this.activeTech = _fx.Light1Tech;
+            activeTech = _fx.Light1Tech;
+
             this.fqn = fqn;
-            if (type == "nppTypeHumanoid")
-                focus = models["appSlotLeg"];
-            else if (type == "nppTypeCreature")
-                focus = models["appSlotCreature"];
-            else
-                focus = models.First().Value;
+
+            switch (type)
+            {
+                case "dyn":
+                    focus = models.First().Value;
+                    break;
+                case "itm":
+                    focus = models.First().Value;
+                    break;
+                case "mnt":
+                    models.TryGetValue("appSlotCreature", out focus);
+                    if (focus == null) focus = models.First().Value;
+                    break;
+                case "nppTypeHumanoid":
+                    focus = models.ContainsKey("appSlotLeg") ? models["appSlotLeg"] : models.Last().Value;
+                    break;
+                case "nppTypeCreature":
+                    focus = models.ContainsKey("appSlotCreature") ? models["appSlotCreature"] : models.Last().Value;
+                    break;
+                default:
+                    focus = models.First().Value;
+                    break;
+            }
 
             if (models != null)
                 this.models = models;
             if (resources != null)
                 this.resources = resources;
 
-            this.globalBoxMin = new Vector3(focus.global_box.minX, focus.global_box.minY, focus.global_box.minZ);
-            Vector4 tempMin = Vector3.Transform(this.globalBoxMin, focus.GetTransform());
-            this.globalBoxMin = new Vector3(tempMin.X, tempMin.Y, tempMin.Z);
-            this.globalBoxMax = new Vector3(focus.global_box.maxX, focus.global_box.maxY, focus.global_box.maxZ);
-            Vector4 tempMax = Vector3.Transform(this.globalBoxMax, focus.GetTransform());
-            this.globalBoxMax = new Vector3(tempMax.X, tempMax.Y, tempMax.Z);
-            this.globalBoxCenter = globalBoxMin + (globalBoxMax - globalBoxMin) / 2;
-            this.cameraPos = new Vector3(globalBoxCenter.X * 2.5f, globalBoxCenter.Y * 2.5f, (Math.Max(Math.Max(globalBoxMax.X, globalBoxMax.Y), globalBoxMax.Z) * 2.5f /*+ 1.0f*/));
+            globalBoxMin = new Vector3(focus.global_box.minX, focus.global_box.minY, focus.global_box.minZ);
+            Vector4 tempMin = Vector3.Transform(globalBoxMin, focus.GetTransform());
+            globalBoxMin = new Vector3(tempMin.X, tempMin.Y, tempMin.Z);
 
-            this._useFpsCamera = false;
-            this._cam.Reset();
-            this._cam.Position = cameraPos;
+            globalBoxMax = new Vector3(focus.global_box.maxX, focus.global_box.maxY, focus.global_box.maxZ);
+            Vector4 tempMax = Vector3.Transform(globalBoxMax, focus.GetTransform());
+            globalBoxMax = new Vector3(tempMax.X, tempMax.Y, tempMax.Z);
 
-            this._cam2.Reset();
-            this._cam2.Position = cameraPos;
-            this._cam2.LookAt(cameraPos, globalBoxCenter, Vector3.UnitY);
+            globalBoxCenter = globalBoxMin + (globalBoxMax - globalBoxMin) / 2;
+            cameraPos = new Vector3(globalBoxCenter.X * 2.5f, globalBoxCenter.Y * 2.5f, Math.Max(Math.Max(globalBoxMax.X, globalBoxMax.Y), globalBoxMax.Z) * 2.5f);
+
+            _useFpsCamera = false;
+            _cam.Reset();
+            _cam.Position = cameraPos;
+
+            _cam2.Reset();
+            _cam2.Position = cameraPos;
+            _cam2.LookAt(cameraPos, globalBoxCenter, Vector3.UnitY);
 
             foreach (var model in models)
             {
-                if (model.Value.numMaterials > 0)
+                if (model.Value.materials.Count > 0)
                 {
-                    foreach (GR2_Material mat in model.Value.materials)
+                    foreach (GR2_Material material in model.Value.materials)
                     {
-                        mat.ParseMAT(Device);
+                        material.ParseMAT(Device);
                     }
                 }
 
@@ -202,19 +215,14 @@ namespace tor_tools
                 {
                     foreach (var attachModel in model.Value.attachedModels)
                     {
-                        if (attachModel.numMaterials > 0)
+                        if (attachModel.materials.Count > 0)
                         {
-                            foreach (GR2_Material attachMat in attachModel.materials)
+                            foreach (GR2_Material attachMaterial in attachModel.materials)
                             {
-                                attachMat.ParseMAT(Device, model.Value.materials);
+                                attachMaterial.ParseMAT(Device, model.Value.materials);
                             }
                         }
                     }
-                }
-
-                if (model.Value.materialOverride != null)
-                {
-                    model.Value.materialOverride.ParseMAT(Device);
                 }
             }
 
@@ -222,29 +230,35 @@ namespace tor_tools
             {
                 foreach (var model in models)
                 {
-                    if (model.Value.numMaterials > 0)
+                    if (model.Value.materials.Count > 0)
                     {
-                        foreach (GR2_Material mat in model.Value.materials)
+                        foreach (GR2_Material material in model.Value.materials)
                         {
-                            if (mat.derived == "HairC")
+                            if (material.derived == "HairC")
                             {
                                 if (resources.Keys.Contains("appSlotHairColor"))
-                                    mat.SetDynamicColor((GomObject)resources["appSlotHairColor"]);
-                            }
-                            if (mat.derived == "SkinB")
-                            {
-                                if (resources.Keys.Contains("appSlotFacePaint"))
-                                    mat.SetFacepaintMap(Device, (string)resources["appSlotFacePaint"]);
-                                if (resources.Keys.Contains("appSlotComplexion"))
-                                    mat.SetComplexionMap(Device, (string)resources["appSlotComplexion"]);
-                                if (resources.Keys.Contains("appSlotSkinColor"))
-                                    mat.SetDynamicColor((GomObject)resources["appSlotSkinColor"], 1);
+                                    material.SetDynamicColor((GomObject)resources["appSlotHairColor"]);
                             }
 
-                            if (mat.derived == "Eye")
+                            if (material.derived == "SkinB")
+                            {
+                                if (model.Value.filename.Contains("head_"))
+                                {
+                                    if (resources.Keys.Contains("appSlotFacePaint"))
+                                        material.SetFacepaintMap(Device, (string)resources["appSlotFacePaint"]);
+
+                                    if (resources.Keys.Contains("appSlotComplexion"))
+                                        material.SetComplexionMap(Device, (string)resources["appSlotComplexion"]);
+                                }
+
+                                if (resources.Keys.Contains("appSlotSkinColor"))
+                                    material.SetDynamicColor((GomObject)resources["appSlotSkinColor"], 1);
+                            }
+
+                            if (material.derived == "Eye")
                             {
                                 if (resources.Keys.Contains("appSlotEyeColor"))
-                                    mat.SetDynamicColor((GomObject)resources["appSlotEyeColor"]);
+                                    material.SetDynamicColor((GomObject)resources["appSlotEyeColor"]);
                             }
                         }
                     }
@@ -253,60 +267,40 @@ namespace tor_tools
                     {
                         foreach (var attachModel in model.Value.attachedModels)
                         {
-                            if (attachModel.numMaterials > 0)
+                            if (attachModel.materials.Count > 0)
                             {
-                                foreach (GR2_Material attachMat in attachModel.materials)
+                                foreach (GR2_Material attachMaterial in attachModel.materials)
                                 {
-                                    if (attachMat.derived == "HairC")
+                                    if (attachMaterial.derived == "HairC")
                                     {
                                         if (resources.Keys.Contains("appSlotHairColor"))
-                                            attachMat.SetDynamicColor((GomObject)resources["appSlotHairColor"]);
+                                            attachMaterial.SetDynamicColor((GomObject)resources["appSlotHairColor"]);
                                     }
-                                    if (attachMat.derived == "SkinB")
+                                    if (attachMaterial.derived == "SkinB")
                                     {
+                                        if (model.Value.filename.Contains("head_"))
+                                        {
+                                            if (resources.Keys.Contains("appSlotFacePaint"))
+                                                attachMaterial.SetFacepaintMap(Device, (string)resources["appSlotFacePaint"]);
+
+                                            if (resources.Keys.Contains("appSlotComplexion"))
+                                                attachMaterial.SetComplexionMap(Device, (string)resources["appSlotComplexion"]);
+                                        }
+
                                         if (resources.Keys.Contains("appSlotSkinColor"))
-                                            attachMat.SetDynamicColor((GomObject)resources["appSlotSkinColor"], 1);
-                                        if (resources.Keys.Contains("appSlotFacePaint"))
-                                            attachMat.SetFacepaintMap(Device, (string)resources["appSlotFacePaint"]);
-                                        if (resources.Keys.Contains("appSlotComplexion"))
-                                            attachMat.SetComplexionMap(Device, (string)resources["appSlotComplexion"]);
+                                            attachMaterial.SetDynamicColor((GomObject)resources["appSlotSkinColor"], 1);
                                     }
 
-                                    if (attachMat.derived == "Eye")
+                                    if (attachMaterial.derived == "Eye")
                                     {
                                         if (resources.Keys.Contains("appSlotEyeColor"))
-                                            attachMat.SetDynamicColor((GomObject)resources["appSlotEyeColor"]);
+                                            attachMaterial.SetDynamicColor((GomObject)resources["appSlotEyeColor"]);
                                     }
                                 }
                             }
                         }
                     }
-
-                    if (model.Value.materialOverride != null)
-                    {
-                        if (model.Value.materialOverride.derived == "HairC")
-                        {
-                            if (resources.Keys.Contains("appSlotHairColor"))
-                                model.Value.materialOverride.SetDynamicColor((GomObject)resources["appSlotHairColor"]);
-                        }
-                        if (model.Value.materialOverride.derived == "SkinB")
-                        {
-                            if (resources.Keys.Contains("appSlotSkinColor"))
-                                model.Value.materialOverride.SetDynamicColor((GomObject)resources["appSlotSkinColor"], 1);
-                            if (resources.Keys.Contains("appSlotFacePaint"))
-                                model.Value.materialOverride.SetFacepaintMap(Device, (string)resources["appSlotFacePaint"]);
-                            if (resources.Keys.Contains("appSlotComplexion"))
-                                model.Value.materialOverride.SetComplexionMap(Device, (string)resources["appSlotComplexion"]);
-                        }
-
-                        if (model.Value.materialOverride.derived == "Eye")
-                        {
-                            if (resources.Keys.Contains("appSlotEyeColor"))
-                                model.Value.materialOverride.SetDynamicColor((GomObject)resources["appSlotEyeColor"]);
-                        }
-                    }
                 }
-
             }
 
             BuildGeometry();
@@ -403,14 +397,14 @@ namespace tor_tools
                 {
                     if (_useFpsCamera)
                     {
-                        this._cam.Reset();
-                        this._cam.Position = cameraPos;
+                        _cam.Reset();
+                        _cam.Position = cameraPos;
                     }
                     else
                     {
-                        this._cam2.Reset();
-                        this._cam2.Position = cameraPos;
-                        this._cam2.LookAt(cameraPos, globalBoxCenter, Vector3.UnitY);
+                        _cam2.Reset();
+                        _cam2.Position = cameraPos;
+                        _cam2.LookAt(cameraPos, globalBoxCenter, Vector3.UnitY);
                     }
                 }
 
@@ -516,16 +510,12 @@ namespace tor_tools
             if (_useFpsCamera)
             {
                 _cam.UpdateViewMatrix();
-                _ = _cam.View;
-                _ = _cam.Proj;
                 viewProj = _cam.ViewProj;
                 _fx.SetEyePosW(_cam.Position);
             }
             else
             {
                 _cam2.UpdateViewMatrix();
-                _ = _cam2.View;
-                _ = _cam2.Proj;
                 viewProj = _cam2.ViewProj;
                 _fx.SetEyePosW(_cam2.Position);
             }
@@ -607,17 +597,17 @@ namespace tor_tools
                         continue;
 
                     int pieceCount = 0;
-                    foreach (FileFormats.GR2_Mesh_Piece piece in mesh.meshPieces)
+                    foreach (GR2_Mesh_Piece piece in mesh.meshPieces)
                     {
                         ImmediateContext.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(mesh.meshVertBuff, PosNormalTexTan.Stride, 0));
                         ImmediateContext.InputAssembler.SetIndexBuffer(mesh.meshIdxBuff, Format.R16_UInt, 0);
 
                         if (model.Value.filename.Contains("head_"))
                         {
-                            if (model.Value.numMaterials > 0)
+                            if (model.Value.materials.Count > 0)
                             {
-                                if (model.Value.materialOverride != null && pieceCount > 0)
-                                    SetMaterial(model.Value.materialOverride);
+                                if (model.Value.materials.Count == 2 && pieceCount > 0)
+                                    SetMaterial(model.Value.materials[1]);
                                 else
                                     SetMaterial(model.Value.materials[0]);
                             }
@@ -633,12 +623,12 @@ namespace tor_tools
                             {
                                 if (model.Value.materials.Count > 0)
                                 {
-                                    GR2_Material selectedMat;
-                                    if (model.Value.materialOverride != null)
-                                        selectedMat = model.Value.materialOverride;
+                                    GR2_Material selectedMaterial;
+                                    if (model.Value.materials.Count == 2 && pieceCount > 0)
+                                        selectedMaterial = model.Value.materials[1];
                                     else
-                                        selectedMat = model.Value.materials[0];
-                                    SetMaterial(selectedMat);
+                                        selectedMaterial = model.Value.materials[0];
+                                    SetMaterial(selectedMaterial);
                                 }
                             }
                         }
@@ -654,12 +644,15 @@ namespace tor_tools
                 {
                     foreach (var attachModel in model.Value.attachedModels)
                     {
+                        if (attachModel.enabled == false)
+                            continue;
+
                         foreach (var attachMesh in attachModel.meshes)
                         {
                             if (attachMesh.meshName.Contains("collision"))
                                 continue;
 
-                            foreach (FileFormats.GR2_Mesh_Piece attachPiece in attachMesh.meshPieces)
+                            foreach (GR2_Mesh_Piece attachPiece in attachMesh.meshPieces)
                             {
                                 ImmediateContext.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(attachMesh.meshVertBuff, PosNormalTexTan.Stride, 0));
                                 ImmediateContext.InputAssembler.SetIndexBuffer(attachMesh.meshIdxBuff, Format.R16_UInt, 0);
@@ -680,7 +673,7 @@ namespace tor_tools
 
             if (makeScreenshot)
             {
-                this.MakeScreenshot(ImageFileFormat.Jpg);
+                MakeScreenshot(ImageFileFormat.Jpg);
                 makeScreenshot = false;
             }
 
@@ -782,7 +775,7 @@ namespace tor_tools
             if (e.Button == MouseButtons.Left)
             {
                 var dy = MathF.ToRadians(0.4f * (e.Y - _lastMousePos.Y));
-                var dx = -(MathF.ToRadians(0.4f * (e.X - _lastMousePos.X)));
+                var dx = -MathF.ToRadians(0.4f * (e.X - _lastMousePos.X));
                 if (_useFpsCamera)
                 {
                     _cam.Pitch(-dy);
@@ -817,9 +810,9 @@ namespace tor_tools
             _lastMousePos = e.Location;
         }
 
-        protected override void OnMouseWheel(object sender, MouseEventArgs e)
+        protected override void OnMouseWheel(object sender, MouseEventArgs evnt)
         {
-            int zoom = -(e.Delta) * SystemInformation.MouseWheelScrollLines / 120;
+            int zoom = -evnt.Delta * SystemInformation.MouseWheelScrollLines / 120;
 
             if (!_useFpsCamera)
             {
@@ -851,7 +844,6 @@ namespace tor_tools
                     if (mesh.meshName.Contains("collision"))
                         continue;
 
-
                     foreach (var vertex in mesh.meshVerts)
                     {
                         Vector3 pos = new Vector3(vertex.X, vertex.Y, vertex.Z);
@@ -860,24 +852,26 @@ namespace tor_tools
                         Vector3 tan = new Vector3(vertex.tanX, vertex.tanY, vertex.tanZ);
                         vertices.Add(new PosNormalTexTan(pos, norm, texC, tan));
                     }
+
                     var vbd = new BufferDescription(PosNormalTexTan.Stride * vertices.Count, ResourceUsage.Immutable, BindFlags.VertexBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
                     mesh.meshVertBuff = new Buffer(Device, new DataStream(vertices.ToArray(), false, false), vbd);
-
 
                     ushort[] indexArray = mesh.meshVertIndex.Select(GR2_Mesh_Vertex_Index => GR2_Mesh_Vertex_Index.index).ToArray();
                     var ibd = new BufferDescription(sizeof(ushort) * indexArray.Count(), ResourceUsage.Immutable, BindFlags.IndexBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
                     mesh.meshIdxBuff = new Buffer(Device, new DataStream(indexArray, false, false), ibd);
                 }
 
-                if (model.Value.attachedModels.Count() > 0)
+                if (model.Value.attachedModels.Count > 0)
                 {
                     foreach (var attachModel in model.Value.attachedModels)
                     {
                         foreach (var attachMesh in attachModel.meshes)
                         {
                             vertices = new List<PosNormalTexTan>();
+
                             if (attachMesh.meshName.Contains("collision"))
                                 continue;
+
                             foreach (var vertex in attachMesh.meshVerts)
                             {
                                 Vector3 pos = new Vector3(vertex.X, vertex.Y, vertex.Z);
@@ -886,9 +880,9 @@ namespace tor_tools
                                 Vector3 tan = new Vector3(vertex.tanX, vertex.tanY, vertex.tanZ);
                                 vertices.Add(new PosNormalTexTan(pos, norm, texC, tan));
                             }
+
                             var vbd = new BufferDescription(PosNormalTexTan.Stride * vertices.Count, ResourceUsage.Immutable, BindFlags.VertexBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
                             attachMesh.meshVertBuff = new Buffer(Device, new DataStream(vertices.ToArray(), false, false), vbd);
-
 
                             ushort[] indexArray = attachMesh.meshVertIndex.Select(GR2_Mesh_Vertex_Index => GR2_Mesh_Vertex_Index.index).ToArray();
                             var ibd = new BufferDescription(sizeof(ushort) * indexArray.Count(), ResourceUsage.Immutable, BindFlags.IndexBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30320.27
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PugTools", "PugTools\PugTools.csproj", "{C6399BF7-80CB-4A2E-8A84-3751A5E6E674}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PugTools", "Source\PugTools.csproj", "{C6399BF7-80CB-4A2E-8A84-3751A5E6E674}"
 	ProjectSection(ProjectDependencies) = postProject
 		{18FEDA0C-D147-4286-B39A-01204808106A} = {18FEDA0C-D147-4286-B39A-01204808106A}
 		{26C5F25F-B450-4CAF-AD8B-B8D11AE73457} = {26C5F25F-B450-4CAF-AD8B-B8D11AE73457}

@@ -7,8 +7,9 @@ GomLib/Bin/
 GomLib/obj/
 HashDictionary/Bin/
 HashDictionary/obj/
+ObjectListView/Bin/
 ObjectListView/obj/
-PugTools/obj/
+Source/obj/
 SlimDXFramework/Bin/
 SlimDXFramework/obj/
 TorLib/Bin/

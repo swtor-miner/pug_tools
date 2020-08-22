@@ -49,19 +49,15 @@ namespace GomLib
 
         public KeyValuePair<string, string> GetMaterial(long id)
         {
-            KeyValuePair<string, string> material;
-
             if (MaterialList == null)
                 return new KeyValuePair<string, string>("", "");
-            if (!MaterialList.TryGetValue(id, out Dictionary<long, string> matDict))
-                _ = new KeyValuePair<string, string>("", "");
+            if (!MaterialList.TryGetValue(id, out Dictionary<long, string> matDict)) { }
+
             if (matDict == null)
                 return new KeyValuePair<string, string>("", "");
-            if (matDict.ContainsKey(-1))
-                material = new KeyValuePair<string, string>(matDict[0], matDict[-1]);
             else
-                material = new KeyValuePair<string, string>(matDict[0], matDict[0]);
-            return material;
+                return new KeyValuePair<string, string>(matDict[0], matDict.ContainsKey(-1) ? matDict[-1] : matDict.ContainsKey(1) ? matDict[1] : "");
+
         }
 
         public void Load(GomObjectData data)

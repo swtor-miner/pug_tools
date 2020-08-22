@@ -147,7 +147,6 @@ namespace SlimDX_Framework.FX
             _alphaClipValue = FX.GetVariableByName("gAlphaClipValue").AsVector();
             _polyIgnore = FX.GetVariableByName("gPolyIgnore").AsVector();
 
-
             //_shadowTransform = FX.GetVariableByName("gShadowTransform").AsMatrix();
             //_ssaoMap = FX.GetVariableByName("gSsaoMap").AsResource();
 

@@ -89,7 +89,7 @@
   <ItemGroup>
     <Content Include="AssimpNet.dll" />
     <Content Include="SlimDX.dll" />
-    <Content Include="SlimDX.pdb" />
+    <!--<Content Include="SlimDX.pdb" />-->
     <Content Include="SpriteTextRenderer.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

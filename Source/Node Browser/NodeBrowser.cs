@@ -325,16 +325,6 @@ namespace tor_tools
                             if (fieldLookup == null)
                             {
                                 this.currentDom.DomTypeMap.TryGetValue(id, out DomType fieldLookup2);
-                                if (fieldLookup2 != null)
-                                {
-                                    /*if (this.currentDom.UnNamedMap.ContainsKey(id))
-                                    {
-                                        Console.WriteLine("found value");
-                                    }else{
-                                    
-                                        Console.WriteLine("not found");
-                                    } */
-                                }
                             }
                         }
                         catch (Exception) { }

@@ -4828,6 +4828,7 @@
     <gom_type Id="4611686053415631374" name="chrProfessionsQueuedCompanions" desc="" />
     <gom_type Id="4611686053532031202" name="scCriticalHitLevel" desc="the kind of critical hit displayed by a ship. Zero means none" />
     <gom_type Id="4611686053532031203" name="scShipEnvironmentFXQueue" desc="queue of extra appearances triggered on ships" />
+    <gom_type Id="4611686053541831192" name="npcHasVisualData" desc="" />
     <gom_type Id="4611686053557231192" name="npcTemplateVisualDataCharSpec" desc="" />
     <gom_type Id="4611686053557231194" name="npcTemplateVisualDataScaleAdjustment" desc="" />
     <gom_type Id="4611686053557231200" name="npcTemplateVisualDataWeight" desc="" />
@@ -5669,9 +5670,9 @@
     <gom_type Id="4611686068023431251" name="cnvRewardForceAmount" desc="Amount of force to award" />
     <gom_type Id="4611686068023431252" name="qstRewardsPerLevelData" desc="Maps reward amounds ('low','high', etc.) and quest levels to the actual amount value" />
     <gom_type Id="4611686068023431253" name="cnvRewardAffectionRewards" desc="Maps companion names to affection awards" />
-	<gom_type Id="4611686303712724004" name="cnvRewardAffectionRewardsList" desc="List of classes containing compananion reactions data including New Companion Object FQN ID and reaction ID." />
-	<gom_type Id="4611686303712724001" name="cnvRewardAffectionRewardNCOID" desc="ID for the New Companion Object FQN" />
-	<gom_type Id="4611686303712724002" name="cnvRewardAffectionRewardID" desc="ID for the reaction reward." />
+	  <gom_type Id="4611686303712724004" name="cnvRewardAffectionRewardsList" desc="List of classes containing compananion reactions data including New Companion Object FQN ID and reaction ID." />
+	  <gom_type Id="4611686303712724001" name="cnvRewardAffectionRewardNCOID" desc="ID for the New Companion Object FQN" />
+	  <gom_type Id="4611686303712724002" name="cnvRewardAffectionRewardID" desc="ID for the reaction reward." />
     <gom_type Id="4611686068023431254" name="chrCompanionTableNameList" desc="List of companion simple names for a player class" />
     <gom_type Id="4611686068023431255" name="qstRewardsAffectionPrototypeHandle" desc="Prototype for per level data on affection rewards" />
     <gom_type Id="4611686068023431256" name="cnvRewardCredits" desc="Amount of credits to award" />
@@ -6091,6 +6092,7 @@
     <gom_type Id="4611686085434354793" name="guiDialogID" desc="A float value returned from actionscript to reference dialogs for updates and removal." />
     <gom_type Id="4611686085463654791" name="svyEnabled" desc="" />
     <gom_type Id="4611686085469954791" name="chrNpcIsHolocom" desc="boolean that describes whether a NPC is holocom relevant or not" />
+    <gom_type Id="4611686085471154791" name="npcUnknownBodyType" desc="" />
     <gom_type Id="4611686085478155191" name="scLastPositionSentTime" desc="The last time we uploaded our position to the server" />
     <gom_type Id="4611686085479255192" name="aisAvailability" desc="Area instance availability for travel" />
     <gom_type Id="4611686085479255193" name="aisNumberOfFriends" desc="Number of friends in instance" />
@@ -7329,6 +7331,8 @@
     <gom_type Id="4611686332081110000" name="chrLegacyLevel" desc="Cached copy of the player's legacy level, which can be seen by anyone looking at this player." />
     <gom_type Id="4611686332081110001" name="chrLegacyXp" desc="Cached copy of the player's legacy xp, which can be seen by anyone looking at this player." />
     <gom_type Id="4611686332081110002" name="chrLegacySurname" desc="Cached copy of the player's legacy surname, which can be seen by anyone looking at this player." />
+    <gom_type Id="4611686332150310000" name="strLocalizedTextRetrieverFloatList" desc="" />
+    <gom_type Id="4611686332150310001" name="strLocalizedTextRetrieverStringList" desc="" />
     <gom_type Id="4611686332315960095" name="chrPlayerCharacterMovementTetherAnchorPosition" desc="Anchor point to limit player movement" />
     <gom_type Id="4611686333055220000" name="mpnBreadcrumbMaxPathDist" desc="Optimization: Longest path found so far, so we can ignore all other paths that are longer than this one." />
     <gom_type Id="4611686333055220001" name="mpnShowBreadcrumbFullPathLogs" desc="Do we want the optimized path spam, or unoptimized full path spam" />
@@ -8119,6 +8123,7 @@
   <gom_type Id="4611686062713031205" name="plcHydra" desc="" />
 
   <!-- Npc npc.-->
+  <gom_type Id="4611686304402214000" name="npcLootTables" desc="" />
   <gom_type Id="4611686061871131192" name="npcTrainerPackages" desc="" />
   
   <!-- ahItemSlotCategoriesPrototype -->
