@@ -1,8 +1,8 @@
 .vscode/
 BeWindowsFormsHexBox/Bin/
 BeWindowsFormsHexBox/obj/
-DevILNet/obj/
 DevILNet/Bin/
+DevILNet/obj/
 GomLib/Bin/
 GomLib/obj/
 HashDictionary/Bin/
@@ -15,3 +15,4 @@ SlimDXFramework/obj/
 TorLib/Bin/
 TorLib/obj/
 *.pdb
+*.log
