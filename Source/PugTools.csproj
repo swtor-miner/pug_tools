@@ -266,26 +266,13 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Tools\HelperFunctions.cs" />
-    <Compile Include="World Browser\View_Area.cs" />
-    <Compile Include="World Browser\WorldBrowser.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="World Browser\WorldBrowser.Designer.cs">
-      <DependentUpon>WorldBrowser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="World Browser\WorldBrowserHelp.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="World Browser\WorldBrowserHelp.Designer.cs">
-      <DependentUpon>WorldBrowserHelp.cs</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Asset Browser\Icons\COMPUTER.ICO" />
     <Content Include="Asset Browser\Icons\Folder.ico" />
     <Content Include="Asset Browser\Icons\loading.gif" />
     <Content Include="Asset Browser\Icons\textdoc.ico" />
-    <Content Include="Asset Browser\Viewer Functions\GR2 Classes\GR2.fx">
+    <Content Include="Shaders\GR2.fx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Node Browser\custom_node_sorting.xml">
@@ -361,12 +348,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Transparent.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="World Browser\WorldBrowser.resx">
-      <DependentUpon>WorldBrowser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="World Browser\WorldBrowserHelp.resx">
-      <DependentUpon>WorldBrowserHelp.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -446,16 +427,16 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="TorLib">
       <HintPath>..\TorLib\Bin\TorLib.dll</HintPath>
     </Reference>

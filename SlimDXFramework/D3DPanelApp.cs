@@ -5,7 +5,6 @@ using FeatureLevel = SlimDX.Direct3D11.FeatureLevel;
 
 namespace SlimDX_Framework
 {
-    using System.Drawing;
     using System.Linq;
     using System.Threading;
     using System.Windows.Forms;
@@ -15,11 +14,8 @@ namespace SlimDX_Framework
     using SlimDX;
     using SlimDX.DXGI;
 
-    using SpriteTextRenderer;
-
     using Buffer = SlimDX.Direct3D11.Buffer;
     using Device = Device;
-    using Debug = System.Diagnostics.Debug;
 
     public class D3DPanelApp : DisposableClass
     {
@@ -144,8 +140,8 @@ namespace SlimDX_Framework
                         ScanlineOrdering = DisplayModeScanlineOrdering.Unspecified,
                         Scaling = DisplayModeScaling.Unspecified
                     },
-                    //SampleDescription = new SampleDescription(1, 0),
-                    SampleDescription = (Enable4XMsaa && Device.FeatureLevel >= FeatureLevel.Level_10_1 ? new SampleDescription(4, Msaa4XQuality - 1) : new SampleDescription(1, 0)),
+                    // SampleDescription = new SampleDescription(1, 0),
+                    SampleDescription = Enable4XMsaa && Device.FeatureLevel >= FeatureLevel.Level_10_1 ? new SampleDescription(4, Msaa4XQuality - 1) : new SampleDescription(1, 0),
                     Usage = Usage.RenderTargetOutput,
                     BufferCount = 1,
                     OutputHandle = Window.Controls.Find(RenderPanelName, true).First().Handle,
@@ -262,8 +258,8 @@ namespace SlimDX_Framework
                 MipLevels = 1,
                 ArraySize = 1,
                 Format = Format.D24_UNorm_S8_UInt,
-                //SampleDescription = new SampleDescription(1, 0),
-                SampleDescription = (Enable4XMsaa && Device.FeatureLevel >= FeatureLevel.Level_10_1 ? new SampleDescription(4, Msaa4XQuality - 1) : new SampleDescription(1, 0)),
+                // SampleDescription = new SampleDescription(1, 0),
+                SampleDescription = Enable4XMsaa && Device.FeatureLevel >= FeatureLevel.Level_10_1 ? new SampleDescription(4, Msaa4XQuality - 1) : new SampleDescription(1, 0),
                 Usage = ResourceUsage.Default,
                 BindFlags = BindFlags.DepthStencil,
                 CpuAccessFlags = CpuAccessFlags.None,
@@ -293,13 +289,13 @@ namespace SlimDX_Framework
 
         public virtual void StopRender()
         {
-            this._running = false;
+            _running = false;
         }
 
         public virtual void StartRender()
         {
-            this._running = true;
-            this.Run();
+            _running = true;
+            Run();
         }
 
         public void Run()
@@ -319,16 +315,16 @@ namespace SlimDX_Framework
                     Thread.Sleep(100);
                 }
             }
-            //Dispose();
+            // Dispose();
         }
 
         public void SetSize(int height, int width)
         {
             if (Device != null)
             {
-                this.ClientHeight = height;
-                this.ClientWidth = width;
-                this._resize = true;
+                ClientHeight = height;
+                ClientWidth = width;
+                _resize = true;
             }
         }
     }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.IO;
 using Buffer = SlimDX.Direct3D11.Buffer;
 
@@ -63,20 +59,20 @@ namespace FileFormats
         */
         public GR2_Mesh(BinaryReader br)
         {
-            this.offsetMeshName = br.ReadUInt32();
-            this.bitFlag1 = br.ReadSingle();
-            this.numPieces = br.ReadUInt16();
-            this.numBones = br.ReadUInt16();
-            this.bitFlag2 = br.ReadUInt16();
-            this.vertexSize = br.ReadUInt16();
-            this.numVerts = br.ReadUInt32();
-            this.numVertIndex = br.ReadUInt32();
-            this.offsetMeshVerts = br.ReadUInt32();
-            this.offsetMeshPieces = br.ReadUInt32();
-            this.offsetMeshVertIndex = br.ReadUInt32();
-            this.offsetMeshBones = br.ReadUInt32();
+            offsetMeshName = br.ReadUInt32();
+            bitFlag1 = br.ReadSingle();
+            numPieces = br.ReadUInt16();
+            numBones = br.ReadUInt16();
+            bitFlag2 = br.ReadUInt16();
+            vertexSize = br.ReadUInt16();
+            numVerts = br.ReadUInt32();
+            numVertIndex = br.ReadUInt32();
+            offsetMeshVerts = br.ReadUInt32();
+            offsetMeshPieces = br.ReadUInt32();
+            offsetMeshVertIndex = br.ReadUInt32();
+            offsetMeshBones = br.ReadUInt32();
 
-            this.meshName = File_Helpers.ReadString(br, this.offsetMeshName);
+            meshName = File_Helpers.ReadString(br, offsetMeshName);
         }
     }
 }

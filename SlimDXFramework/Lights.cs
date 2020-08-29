@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.InteropServices;
 using SlimDX;
 
-namespace SlimDX_Framework {
+namespace SlimDX_Framework
+{
     [StructLayout(LayoutKind.Sequential)]
-    public struct DirectionalLight {
+    public struct DirectionalLight
+    {
         public Color4 Ambient;
         public Color4 Diffuse;
         public Color4 Specular;
@@ -18,17 +15,21 @@ namespace SlimDX_Framework {
         public static int Stride = Marshal.SizeOf(typeof(DirectionalLight));
     }
     [StructLayout(LayoutKind.Sequential)]
-    public struct PointLight {
+    public struct PointLight
+    {
         public Color4 Ambient;
         public Color4 Diffuse;
         public Color4 Specular;
         public Vector3 Position;
-        public float Range;
         public Vector3 Attenuation;
+        public float Range;
         public float Pad;
+
+        public static int Stride = Marshal.SizeOf(typeof(PointLight));
     }
     [StructLayout(LayoutKind.Sequential)]
-    public struct SpotLight {
+    public struct SpotLight
+    {
         public Color4 Ambient;
         public Color4 Diffuse;
         public Color4 Specular;
@@ -38,9 +39,12 @@ namespace SlimDX_Framework {
         public float Spot;
         public Vector3 Attenuation;
         public float Pad;
+
+        public static int Stride = Marshal.SizeOf(typeof(SpotLight));
     }
     [StructLayout(LayoutKind.Sequential)]
-    public struct Material {
+    public struct Material
+    {
         public Color4 Ambient;
         public Color4 Diffuse;
         public Color4 Specular;

@@ -343,9 +343,9 @@ namespace tor_tools
                         }
 
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
-                        Console.WriteLine("exception - " + e.ToString());
+                        Console.WriteLine("exception - " + ex.ToString());
                     }
                 }
             }

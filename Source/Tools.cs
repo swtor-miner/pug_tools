@@ -203,8 +203,6 @@ namespace tor_tools
 
         #endregion
 
-        /* code moved to Tools_Process.cs */
-
         #region Search Box Functions
 
         public void GetFqn(string itemid)
@@ -303,73 +301,10 @@ namespace tor_tools
             Addtolist(root.Element("Achievements").Elements("Achievement").Count() + " matching Achievements found.");
             Addtolist(root.Element("Conversations").Elements("Conversation").Count() + " matching Conversations found.");
 
-            //This entire function is getting rewritten now that the individual extractors support added/changed elements via the new radio button.
-            /*var itemsList = itmList.Where(fqn => fqn.Name.StartsWith("itm.") && !fqn.Name.StartsWith("itm.test.") && !fqn.Name.StartsWith("itm.npc."));
-            addtolist("Geting all the Items");
-            root.Add(ItemDataFromFqnListAsXElement(itemsList, chkBuildCompare.Checked));
-            itemsList = null;
-            Clearlist();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-
-            var abilityList = itmList.Where(fqn => fqn.Name.StartsWith("abl.") && !fqn.Name.Contains("/"));
-            addtolist("Geting all the Abilities");
-            root.Add(AbilityDataFromFqnListAsXElement(abilityList, chkBuildCompare.Checked));
-            abilityList = null;
-            Clearlist();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-
-
-            var codexList = itmList.Where(fqn => fqn.Name.StartsWith("cdx."));
-            addtolist("Geting all the Codices");
-            root.Add(CodexDataFromFqnListAsXElement(codexList, chkBuildCompare.Checked));
-            codexList = null;
-            Clearlist();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-
-            var npcList = itmList.Where(fqn => fqn.Name.StartsWith("npc."));
-            addtolist("Geting all the Npcs");
-            root.Add(NpcDataFromFqnListAsXElement(npcList, chkBuildCompare.Checked));
-            npcList = null;
-            Clearlist();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-
-            var questList = itmList.Where(fqn => fqn.Name.StartsWith("qst."));
-            addtolist("Geting all the Quests");
-            root.Add(QuestDataFromFqnListAsXElement(questList, chkBuildCompare.Checked));
-            questList = null;
-            Clearlist();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-
-            var talentList = itmList.Where(fqn => fqn.Name.StartsWith("tal."));
-            addtolist("Geting all the Talents");
-            root.Add(TalentDataFromFqnListAsXElement(talentList, chkBuildCompare.Checked));
-            talentList = null;
-            Clearlist();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-
-            var achievementList = itmList.Where(fqn => fqn.Name.StartsWith("ach."));
-            addtolist("Geting all the Achievements");
-            root.Add(AchievementDataFromFqnListAsXElement(achievementList, chkBuildCompare.Checked));
-            achievementList = null;
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-
-            var conversationList = itmList.Where(fqn => fqn.Name.StartsWith("cnv."));
-            addtolist("Geting all the Conversations");
-            root.Add(ConversationDataFromFqnListAsXElement(conversationList, chkBuildCompare.Checked));
-            achievementList = null;*/
             Clearlist2();
         }
 
         #endregion
-
-        /* code moved to Tools_Process.cs */
 
         #region Misc Functions
 
@@ -651,10 +586,10 @@ namespace tor_tools
                 }
                 Addtolist("Completed extraction of all supported objects.");
                 //}
-                //catch (Exception e)
+                //catch (Exception ex)
                 //{
                 //    //do something here
-                //    MessageBox.Show(String.Format("An error occured while loading data. ({0})", e.HResult));
+                //    MessageBox.Show(String.Format("An error occured while loading data. ({0})", ex.HResult));
                 //}
             }
             GC.Collect();
@@ -856,14 +791,7 @@ namespace tor_tools
             {
                 Clearlist();
                 Addtolist("Unloading Data Object Model.");
-                //currentDom.Unload();
                 Loaded = false;
-                /*currentAssets.Unload();
-                if (previousAssets != null)
-                {
-                    previousDom.Unload();
-                    previousAssets.Unload();
-                }*/
                 currentAssets = null;
                 currentDom = null;
                 previousAssets = null;

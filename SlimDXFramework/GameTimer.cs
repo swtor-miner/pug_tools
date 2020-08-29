@@ -1,9 +1,9 @@
-﻿namespace SlimDX_Framework {
-    using System;
+﻿namespace SlimDX_Framework
+{
     using System.Diagnostics;
-    using System.Threading;
 
-    public class GameTimer {
+    public class GameTimer
+    {
         private readonly double _secondsPerCount;
         private double _deltaTime;
 
@@ -15,7 +15,8 @@
 
         private bool _stopped;
 
-        public GameTimer() {
+        public GameTimer()
+        {
             _secondsPerCount = 0.0;
             _deltaTime = -1.0;
             _baseTime = 0;
@@ -29,21 +30,28 @@
 
         }
 
-        public float TotalTime {
-            get {
-                if (_stopped) {
-                    return (float)(((_stopTime - _pausedTime) - _baseTime) * _secondsPerCount);
-                } else {
-                    return (float)(((_currTime - _pausedTime) - _baseTime) * _secondsPerCount);
+        public float TotalTime
+        {
+            get
+            {
+                if (_stopped)
+                {
+                    return (float)((_stopTime - _pausedTime - _baseTime) * _secondsPerCount);
+                }
+                else
+                {
+                    return (float)((_currTime - _pausedTime - _baseTime) * _secondsPerCount);
                 }
             }
         }
-        public float DeltaTime {
+        public float DeltaTime
+        {
             get { return (float)_deltaTime; }
         }
         public float FrameTime { get; set; }
 
-        public void Reset() {
+        public void Reset()
+        {
             var curTime = Stopwatch.GetTimestamp();
             _baseTime = curTime;
             _prevTime = curTime;
@@ -51,38 +59,45 @@
             _stopped = false;
         }
 
-        public void Start() {
+        public void Start()
+        {
             var startTime = Stopwatch.GetTimestamp();
-            if (_stopped) {
-                _pausedTime += (startTime - _stopTime);
+            if (_stopped)
+            {
+                _pausedTime += startTime - _stopTime;
                 _prevTime = startTime;
                 _stopTime = 0;
                 _stopped = false;
             }
         }
 
-        public void Stop() {
-            if (!_stopped) {
+        public void Stop()
+        {
+            if (!_stopped)
+            {
                 var curTime = Stopwatch.GetTimestamp();
                 _stopTime = curTime;
                 _stopped = true;
             }
         }
 
-        public void Tick() {
-            if (_stopped) {
+        public void Tick()
+        {
+            if (_stopped)
+            {
                 _deltaTime = 0.0;
                 return;
             }
-            //while (_deltaTime < FrameTime) {
-                var curTime = Stopwatch.GetTimestamp();
-                _currTime = curTime;
+            // while (_deltaTime < FrameTime) {
+            var curTime = Stopwatch.GetTimestamp();
+            _currTime = curTime;
 
-                _deltaTime = (_currTime - _prevTime) * _secondsPerCount;
-                //Thread.Sleep(0);
-            //}
+            _deltaTime = (_currTime - _prevTime) * _secondsPerCount;
+            // Thread.Sleep(0);
+            // }
             _prevTime = _currTime;
-            if (_deltaTime < 0.0) {
+            if (_deltaTime < 0.0)
+            {
                 _deltaTime = 0.0;
             }
         }

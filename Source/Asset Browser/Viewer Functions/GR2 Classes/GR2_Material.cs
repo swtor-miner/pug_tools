@@ -15,50 +15,43 @@ namespace FileFormats
 {
     public class GR2_Material
     {
-        public uint offsetMaterialName = 0;
-        public string materialName = "";
-
-        public string derived;
-        public string polytype;
-
-        public string diffuseDDS;
-        public string rotationDDS;
-        public string glossDDS;
-
-        public ShaderResourceView diffuseSRV;
-        public ShaderResourceView rotationSRV;
-        public ShaderResourceView glossSRV;
-
-        public ShaderResourceView paletteSRV;
-        public ShaderResourceView paletteMaskSRV;
-
-        public string complexionDDS;
-        public string facepaintDDS;
         public string ageDDS;
-
-        public ShaderResourceView complexionSRV;
-        public ShaderResourceView facepaintSRV;
         public ShaderResourceView ageSRV;
-
-        public string palette1XML;
-        public string palette2XML;
+        public bool alphaClip;
+        public float alphaTestValue;
+        public string alphaMode = "";
+        public string complexionDDS;
+        public ShaderResourceView complexionSRV;
+        public string derived;
+        public string diffuseDDS;
+        public ShaderResourceView diffuseSRV;
+        public string facepaintDDS;
+        public ShaderResourceView facepaintSRV;
+        public Vector4 flushTone;
+        public float fleshBrightness;
+        public string glossDDS;
+        public ShaderResourceView glossSRV;
+        public bool isTwoSided;
+        public string materialName = "";
+        public uint offsetMaterialName = 0;
         public string paletteDDS;
+        public ShaderResourceView paletteSRV;
         public string paletteMaskDDS;
+        public ShaderResourceView paletteMaskSRV;
         public Vector4 palette1;
         public Vector4 palette2;
-        public Vector4 palette1Spec;
-        public Vector4 palette2Spec;
         public Vector4 palette1MetSpec;
+        public Vector4 palette1Spec;
+        public string palette1XML;
         public Vector4 palette2MetSpec;
-
-        public Vector4 flushTone;
-        public Vector2 fleshBrightness;
-
-        public bool useEmissive;
-        public bool alphaClip;
-        public float alphaClipValue;
-
+        public Vector4 palette2Spec;
+        public string palette2XML;
         public bool parsed;
+        public string polytype;
+        public string rotationDDS;
+        public ShaderResourceView rotationSRV;
+        public bool useEmissive;
+
 
         public GR2_Material(string materialName)
         {
@@ -67,13 +60,13 @@ namespace FileFormats
 
         public GR2_Material(BinaryReader br)
         {
-            this.offsetMaterialName = br.ReadUInt32();
-            this.materialName = File_Helpers.ReadString(br, this.offsetMaterialName);
+            offsetMaterialName = br.ReadUInt32();
+            materialName = File_Helpers.ReadString(br, offsetMaterialName);
         }
 
         public void ParseMAT(Device device, List<GR2_Material> parentMaterials = null)
         {
-            string materialFileName = "/resources/art/shaders/materials/" + this.materialName + ".mat";
+            string materialFileName = "/resources/art/shaders/materials/" + materialName + ".mat";
             // _ = FileId.FromFilePath(materialFileName);
             Assets currentAssets = AssetHandler.Instance.GetCurrentAssets();
             try
@@ -93,9 +86,9 @@ namespace FileFormats
                         float bright = float.Parse(palette1XML_Doc.DocumentElement.SelectSingleNode("/Palette/Brightness").InnerText);
                         float saturation = float.Parse(palette1XML_Doc.DocumentElement.SelectSingleNode("/Palette/Saturation").InnerText);
                         float contrast = float.Parse(palette1XML_Doc.DocumentElement.SelectSingleNode("/Palette/Contrast").InnerText);
-                        this.palette1 = new Vector4(hue, saturation, bright, contrast);
-                        this.palette1MetSpec = metSpec;
-                        this.palette1Spec = spec;
+                        palette1 = new Vector4(hue, saturation, bright, contrast);
+                        palette1MetSpec = metSpec;
+                        palette1Spec = spec;
                     }
                 }
 
@@ -114,9 +107,9 @@ namespace FileFormats
                         float bright = float.Parse(palette2XML_Doc.DocumentElement.SelectSingleNode("/Palette/Brightness").InnerText);
                         float saturation = float.Parse(palette2XML_Doc.DocumentElement.SelectSingleNode("/Palette/Saturation").InnerText);
                         float contrast = float.Parse(palette2XML_Doc.DocumentElement.SelectSingleNode("/Palette/Contrast").InnerText);
-                        this.palette2 = new Vector4(hue, saturation, bright, contrast);
-                        this.palette2MetSpec = metSpec;
-                        this.palette2Spec = spec;
+                        palette2 = new Vector4(hue, saturation, bright, contrast);
+                        palette2MetSpec = metSpec;
+                        palette2Spec = spec;
 
                     }
                 }
@@ -143,15 +136,20 @@ namespace FileFormats
                 material.Load(materialStream);
 
                 string matType = material.SelectSingleNode("/Material/Derived").InnerText;
-                this.polytype = material.SelectSingleNode("/Material/PolyType").InnerText;
+                polytype = material.SelectSingleNode("/Material/PolyType").InnerText;
 
                 derived = matType;
                 string alphaMode = material.SelectSingleNode("/Material/AlphaMode").InnerText;
                 string alphaTestValue = material.SelectSingleNode("/Material/AlphaTestValue").InnerText;
 
                 if (alphaMode != "None")
-                    this.alphaClip = true;
-                this.alphaClipValue = float.Parse(alphaTestValue);
+                {
+                    alphaClip = true;
+                    this.alphaMode = alphaMode;
+                }
+                this.alphaTestValue = float.Parse(alphaTestValue);
+
+                isTwoSided = material.SelectSingleNode("/Material/IsTwoSided").InnerText == "True";
 
                 XmlNodeList nodeList = material.SelectNodes("/Material/input");
                 foreach (XmlNode node in nodeList)
@@ -209,7 +207,7 @@ namespace FileFormats
                     }
                     else if (semantic == "UsesEmissive")
                     {
-                        this.useEmissive = Convert.ToBoolean(value);
+                        useEmissive = Convert.ToBoolean(value);
                     }
                     if (matType == "Garment" || matType == "GarmentScrolling" || matType == "SkinB" || matType == "HairC" || matType == "Eye")
                     {
@@ -240,28 +238,28 @@ namespace FileFormats
                         else if (semantic == "palette1")
                         {
                             if (palette1 == new Vector4())
-                                palette1 = FileFormats.File_Helpers.StringToVec4(value);
+                                palette1 = File_Helpers.StringToVec4(value);
                         }
                         else if (semantic == "palette2")
                         {
                             if (palette2 == new Vector4())
-                                palette2 = FileFormats.File_Helpers.StringToVec4(value);
+                                palette2 = File_Helpers.StringToVec4(value);
                         }
                         else if (semantic == "palette1Specular")
                         {
-                            palette1Spec = FileFormats.File_Helpers.StringToVec4(value);
+                            palette1Spec = File_Helpers.StringToVec4(value);
                         }
                         else if (semantic == "palette2Specular")
                         {
-                            palette2Spec = FileFormats.File_Helpers.StringToVec4(value);
+                            palette2Spec = File_Helpers.StringToVec4(value);
                         }
                         else if (semantic == "palette1MetallicSpecular")
                         {
-                            palette1MetSpec = FileFormats.File_Helpers.StringToVec4(value);
+                            palette1MetSpec = File_Helpers.StringToVec4(value);
                         }
                         else if (semantic == "palette2MetallicSpecular")
                         {
-                            palette2MetSpec = FileFormats.File_Helpers.StringToVec4(value);
+                            palette2MetSpec = File_Helpers.StringToVec4(value);
                         }
                     }
                     if (matType == "SkinB")
@@ -305,26 +303,26 @@ namespace FileFormats
                         else if (semantic == "FlushTone")
                         {
                             if (flushTone == new Vector4())
-                                flushTone = FileFormats.File_Helpers.StringToVec4(value);
+                                flushTone = File_Helpers.StringToVec4(value);
                         }
                         else if (semantic == "FleshBrightness")
                         {
-                            if (fleshBrightness == new Vector2())
-                                fleshBrightness = new Vector2(float.Parse(value), 0);
+                            if (fleshBrightness == 0)
+                                fleshBrightness = float.Parse(value);
                         }
                     }
                 }
 
-                if (this.palette1.X == 0 && this.palette1.Y == 0.5 && this.palette1.Z == 0 && this.palette1.W == 1 && parentMaterials != null)
+                if (palette1.X == 0 && palette1.Y == 0.5 && palette1.Z == 0 && palette1.W == 1 && parentMaterials != null)
                 {
                     if (parentMaterials[0] != null)
                     {
-                        this.palette1 = parentMaterials[0].palette1;
-                        this.palette1MetSpec = parentMaterials[0].palette1MetSpec;
-                        this.palette1Spec = parentMaterials[0].palette1Spec;
-                        this.palette2 = parentMaterials[0].palette2;
-                        this.palette2MetSpec = parentMaterials[0].palette2MetSpec;
-                        this.palette2Spec = parentMaterials[0].palette2Spec;
+                        palette1 = parentMaterials[0].palette1;
+                        palette1MetSpec = parentMaterials[0].palette1MetSpec;
+                        palette1Spec = parentMaterials[0].palette1Spec;
+                        palette2 = parentMaterials[0].palette2;
+                        palette2MetSpec = parentMaterials[0].palette2MetSpec;
+                        palette2Spec = parentMaterials[0].palette2Spec;
                     }
                 }
             }
@@ -340,15 +338,15 @@ namespace FileFormats
                     diffuseSRV = ShaderResourceView.FromMemory(device, diffuseMS.ToArray());
                 }
             }
-            this.parsed = true;
+            parsed = true;
         }
 
         public void SetDynamicColor(GomObject dynObj, int paletteNum = 0)
         {
             float hue = dynObj.Data.ValueOrDefault<float>("appPaletteHue", 0);
-            float saturation = dynObj.Data.ValueOrDefault<float>("appPaletteSaturation", 0.5f);
+            float saturation = dynObj.Data.ValueOrDefault("appPaletteSaturation", 0.5f);
             float brightness = dynObj.Data.ValueOrDefault<float>("appPaletteBrightness", 0);
-            float contrast = dynObj.Data.ValueOrDefault<float>("appPaletteContrast", 1.0f);
+            float contrast = dynObj.Data.ValueOrDefault("appPaletteContrast", 1.0f);
             Vector4 palette = new Vector4(hue, saturation, brightness, contrast);
             GomObjectData specData = (GomObjectData)dynObj.Data.Dictionary["appPaletteSpecular"];
             Vector4 specular = new Vector4((float)specData.Dictionary["r"], (float)specData.Dictionary["g"], (float)specData.Dictionary["b"], (float)specData.Dictionary["a"]);
@@ -359,52 +357,52 @@ namespace FileFormats
             {
                 if (paletteNum == 1)
                 {
-                    this.palette1 = palette;
-                    this.palette1MetSpec = metallicSpecular;
-                    this.palette1Spec = specular;
+                    palette1 = palette;
+                    palette1MetSpec = metallicSpecular;
+                    palette1Spec = specular;
                 }
 
                 if (paletteNum == 2)
                 {
-                    this.palette2 = palette;
-                    this.palette2MetSpec = metallicSpecular;
-                    this.palette2Spec = specular;
+                    palette2 = palette;
+                    palette2MetSpec = metallicSpecular;
+                    palette2Spec = specular;
                 }
             }
             else
             {
-                this.palette1 = palette;
-                this.palette1MetSpec = metallicSpecular;
-                this.palette1Spec = specular;
-                this.palette2 = palette;
-                this.palette2MetSpec = metallicSpecular;
-                this.palette2Spec = specular;
+                palette1 = palette;
+                palette1MetSpec = metallicSpecular;
+                palette1Spec = specular;
+                palette2 = palette;
+                palette2MetSpec = metallicSpecular;
+                palette2Spec = specular;
             }
         }
 
         public void SetFacepaintMap(Device device, string facepaintPath)
         {
-            this.facepaintDDS = "/resources" + facepaintPath;
+            facepaintDDS = "/resources" + facepaintPath;
             var facepaintFile = AssetHandler.Instance.GetCurrentAssets().FindFile(facepaintDDS);
             if (facepaintFile != null && device != null)
             {
                 var facepaintStream = facepaintFile.OpenCopyInMemory();
                 MemoryStream facepaintMS = new MemoryStream();
                 facepaintStream.CopyTo(facepaintMS);
-                this.facepaintSRV = ShaderResourceView.FromMemory(device, facepaintMS.ToArray());
+                facepaintSRV = ShaderResourceView.FromMemory(device, facepaintMS.ToArray());
             }
         }
 
         public void SetComplexionMap(Device device, string complexionPath)
         {
-            this.complexionDDS = "/resources" + complexionPath;
+            complexionDDS = "/resources" + complexionPath;
             var complexionFile = AssetHandler.Instance.GetCurrentAssets().FindFile(complexionDDS);
             if (complexionFile != null && device != null)
             {
                 var complexionStream = complexionFile.OpenCopyInMemory();
                 MemoryStream complexionMS = new MemoryStream();
                 complexionStream.CopyTo(complexionMS);
-                this.complexionSRV = ShaderResourceView.FromMemory(device, complexionMS.ToArray());
+                complexionSRV = ShaderResourceView.FromMemory(device, complexionMS.ToArray());
             }
         }
     }

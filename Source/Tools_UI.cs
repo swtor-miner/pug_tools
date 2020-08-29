@@ -126,9 +126,6 @@ namespace tor_tools
                     return;
                 }
                 if (!System.IO.Directory.Exists(Config.ExtractPath + prefix)) { System.IO.Directory.CreateDirectory(Config.ExtractPath + prefix); }
-                /*ThreadStart t = new ThreadStart(getAll);
-                Thread oGetItems = new Thread(t);
-                oGetItems.Start();*/
                 ThreadStart t = null;
                 switch (selected)
                 {
@@ -433,12 +430,12 @@ namespace tor_tools
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
         }
 
-        private void BtnWorldBrowser_Click(object sender, EventArgs e)
-        {
-            bool usePTS = this.usePTSAssets.Checked;
-            Form WorldBrowser = new WorldBrowser(this.textBoxAssetsFolder.Text, usePTS);
-            WorldBrowser.Show();
-        }
+        // private void BtnWorldBrowser_Click(object sender, EventArgs e)
+        // {
+        //     bool usePTS = this.usePTSAssets.Checked;
+        //     Form WorldBrowser = new WorldBrowser(this.textBoxAssetsFolder.Text, usePTS);
+        //     WorldBrowser.Show();
+        // }
 
         private void File_button_Click(object sender, EventArgs e)
         {

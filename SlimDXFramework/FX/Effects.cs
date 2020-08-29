@@ -1,8 +1,6 @@
 ﻿namespace SlimDX_Framework.FX
 {
     using System;
-    using System.IO;
-    using System.Text;
 
     using SlimDX.Direct3D11;
 
@@ -12,7 +10,7 @@
         {
             try
             {
-                GR2_FX = new GR2_Effect(device, "Asset Browser\\Viewer Functions\\GR2 Classes\\GR2.fx");
+                GR2_FX = new GR2_Effect(device, "Shaders\\GR2.fx");
             }
             catch (Exception ex)
             {

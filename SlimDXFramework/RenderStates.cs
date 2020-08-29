@@ -1,24 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SlimDX.Direct3D11;
+﻿using SlimDX.Direct3D11;
 
 using Debug = System.Diagnostics.Debug;
 
-namespace SlimDX_Framework {
-    public enum RenderOptions {
+namespace SlimDX_Framework
+{
+    public enum RenderOptions
+    {
         Lighting,
         Textures,
         TexturesAndFog
     }
 
-    public static class RenderStates {
-        public static void InitAll(Device device) {
+    public static class RenderStates
+    {
+        public static void InitAll(Device device)
+        {
             Debug.Assert(device != null);
-            
-            var wfDesc = new RasterizerStateDescription {
+
+            var wfDesc = new RasterizerStateDescription
+            {
                 FillMode = FillMode.Wireframe,
                 CullMode = CullMode.Back,
                 IsFrontCounterclockwise = false,
@@ -37,11 +37,12 @@ namespace SlimDX_Framework {
                 IsFrontCounterclockwise = true,
                 IsMultisampleEnabled = false,
                 IsScissorEnabled = false,
-                SlopeScaledDepthBias = 0.0f     
+                SlopeScaledDepthBias = 0.0f
             };
             WireframeNoneRS = RasterizerState.FromDescription(device, wfNoneDesc);
 
-            var noCullDesc = new RasterizerStateDescription {
+            var noCullDesc = new RasterizerStateDescription
+            {
                 FillMode = FillMode.Solid,
                 CullMode = CullMode.None,
                 IsFrontCounterclockwise = false,
@@ -49,7 +50,8 @@ namespace SlimDX_Framework {
             };
             NoCullRS = RasterizerState.FromDescription(device, noCullDesc);
 
-            var cullClockwiseDesc = new RasterizerStateDescription {
+            var cullClockwiseDesc = new RasterizerStateDescription
+            {
                 FillMode = FillMode.Solid,
                 CullMode = CullMode.Front,
                 IsFrontCounterclockwise = true,
@@ -66,13 +68,44 @@ namespace SlimDX_Framework {
                 IsAntialiasedLineEnabled = false,
                 IsDepthClipEnabled = false,
                 IsFrontCounterclockwise = true,
-                IsMultisampleEnabled = true,                
+                IsMultisampleEnabled = true,
                 IsScissorEnabled = false,
-                SlopeScaledDepthBias = 0.0f         
+                SlopeScaledDepthBias = 0.0f
             };
             CullClockwiseNoneRS = RasterizerState.FromDescription(device, cullClockwiseNoneDesc);
 
-            var atcDesc = new BlendStateDescription {
+            var twoSided = new RasterizerStateDescription
+            {
+                CullMode = CullMode.None,
+                DepthBias = 0,
+                DepthBiasClamp = 0.0f,
+                FillMode = FillMode.Solid,
+                IsAntialiasedLineEnabled = false,
+                IsDepthClipEnabled = false,
+                IsFrontCounterclockwise = true,
+                IsMultisampleEnabled = true,
+                IsScissorEnabled = false,
+                SlopeScaledDepthBias = 0.0f
+            };
+            TwoSidedRS = RasterizerState.FromDescription(device, twoSided);
+
+            var oneSided = new RasterizerStateDescription
+            {
+                CullMode = CullMode.Back,
+                DepthBias = 0,
+                DepthBiasClamp = 0.0f,
+                FillMode = FillMode.Solid,
+                IsAntialiasedLineEnabled = false,
+                IsDepthClipEnabled = false,
+                IsFrontCounterclockwise = true,
+                IsMultisampleEnabled = true,
+                IsScissorEnabled = false,
+                SlopeScaledDepthBias = 0.0f
+            };
+            OneSidedRS = RasterizerState.FromDescription(device, oneSided);
+
+            var atcDesc = new BlendStateDescription
+            {
                 AlphaToCoverageEnable = true,
                 IndependentBlendEnable = false,
             };
@@ -80,7 +113,8 @@ namespace SlimDX_Framework {
             atcDesc.RenderTargets[0].RenderTargetWriteMask = ColorWriteMaskFlags.All;
             AlphaToCoverageBS = BlendState.FromDescription(device, atcDesc);
 
-            var transDesc = new BlendStateDescription {
+            var transDesc = new BlendStateDescription
+            {
                 AlphaToCoverageEnable = true,
                 IndependentBlendEnable = false
             };
@@ -95,7 +129,8 @@ namespace SlimDX_Framework {
 
             TransparentBS = BlendState.FromDescription(device, transDesc);
 
-            var noRenderTargetWritesDesc = new BlendStateDescription {
+            var noRenderTargetWritesDesc = new BlendStateDescription
+            {
                 AlphaToCoverageEnable = false,
                 IndependentBlendEnable = false
             };
@@ -110,20 +145,23 @@ namespace SlimDX_Framework {
 
             NoRenderTargetWritesBS = BlendState.FromDescription(device, noRenderTargetWritesDesc);
 
-            var mirrorDesc = new DepthStencilStateDescription {
+            var mirrorDesc = new DepthStencilStateDescription
+            {
                 IsDepthEnabled = true,
                 DepthWriteMask = DepthWriteMask.Zero,
                 DepthComparison = Comparison.Less,
                 IsStencilEnabled = true,
                 StencilReadMask = 0xff,
-                StencilWriteMask = 0xff, 
-                FrontFace = new DepthStencilOperationDescription {
+                StencilWriteMask = 0xff,
+                FrontFace = new DepthStencilOperationDescription
+                {
                     FailOperation = StencilOperation.Keep,
                     DepthFailOperation = StencilOperation.Keep,
                     PassOperation = StencilOperation.Replace,
                     Comparison = Comparison.Always
                 },
-                BackFace = new DepthStencilOperationDescription {
+                BackFace = new DepthStencilOperationDescription
+                {
                     FailOperation = StencilOperation.Keep,
                     DepthFailOperation = StencilOperation.Keep,
                     PassOperation = StencilOperation.Replace,
@@ -133,20 +171,23 @@ namespace SlimDX_Framework {
 
             MarkMirrorDSS = DepthStencilState.FromDescription(device, mirrorDesc);
 
-            var drawReflectionDesc = new DepthStencilStateDescription {
+            var drawReflectionDesc = new DepthStencilStateDescription
+            {
                 IsDepthEnabled = true,
                 DepthWriteMask = DepthWriteMask.All,
                 DepthComparison = Comparison.Less,
                 IsStencilEnabled = true,
                 StencilReadMask = 0xff,
                 StencilWriteMask = 0xff,
-                FrontFace = new DepthStencilOperationDescription {
+                FrontFace = new DepthStencilOperationDescription
+                {
                     FailOperation = StencilOperation.Keep,
                     DepthFailOperation = StencilOperation.Keep,
                     PassOperation = StencilOperation.Keep,
                     Comparison = Comparison.Equal
                 },
-                BackFace = new DepthStencilOperationDescription {
+                BackFace = new DepthStencilOperationDescription
+                {
                     FailOperation = StencilOperation.Keep,
                     DepthFailOperation = StencilOperation.Keep,
                     PassOperation = StencilOperation.Keep,
@@ -155,20 +196,23 @@ namespace SlimDX_Framework {
             };
             DrawReflectionDSS = DepthStencilState.FromDescription(device, drawReflectionDesc);
 
-            var noDoubleBlendDesc = new DepthStencilStateDescription {
+            var noDoubleBlendDesc = new DepthStencilStateDescription
+            {
                 IsDepthEnabled = true,
                 DepthWriteMask = DepthWriteMask.All,
                 DepthComparison = Comparison.Less,
                 IsStencilEnabled = true,
                 StencilReadMask = 0xff,
                 StencilWriteMask = 0xff,
-                FrontFace = new DepthStencilOperationDescription {
+                FrontFace = new DepthStencilOperationDescription
+                {
                     FailOperation = StencilOperation.Keep,
                     DepthFailOperation = StencilOperation.Keep,
                     PassOperation = StencilOperation.Increment,
                     Comparison = Comparison.Equal
                 },
-                BackFace = new DepthStencilOperationDescription {
+                BackFace = new DepthStencilOperationDescription
+                {
                     FailOperation = StencilOperation.Keep,
                     DepthFailOperation = StencilOperation.Keep,
                     PassOperation = StencilOperation.Increment,
@@ -177,7 +221,8 @@ namespace SlimDX_Framework {
             };
             NoDoubleBlendDSS = DepthStencilState.FromDescription(device, noDoubleBlendDesc);
 
-            var lessEqualDesc = new DepthStencilStateDescription {
+            var lessEqualDesc = new DepthStencilStateDescription
+            {
                 IsDepthEnabled = true,
                 DepthWriteMask = DepthWriteMask.All,
                 DepthComparison = Comparison.LessEqual,
@@ -185,22 +230,25 @@ namespace SlimDX_Framework {
             };
             LessEqualDSS = DepthStencilState.FromDescription(device, lessEqualDesc);
 
-            var equalsDesc = new DepthStencilStateDescription() {
+            var equalsDesc = new DepthStencilStateDescription()
+            {
                 IsDepthEnabled = true,
                 DepthWriteMask = DepthWriteMask.Zero,
                 DepthComparison = Comparison.LessEqual,
-                
+
             };
             EqualsDSS = DepthStencilState.FromDescription(device, equalsDesc);
 
-            var noDepthDesc = new DepthStencilStateDescription() {
+            var noDepthDesc = new DepthStencilStateDescription()
+            {
                 IsDepthEnabled = false,
                 DepthComparison = Comparison.Always,
                 DepthWriteMask = DepthWriteMask.Zero
             };
             NoDepthDSS = DepthStencilState.FromDescription(device, noDepthDesc);
         }
-        public static void DestroyAll() {
+        public static void DestroyAll()
+        {
             var rasterizerState = WireframeRS;
             Util.ReleaseCom(ref rasterizerState);
             var rasterizerStateNone = WireframeNoneRS;
@@ -211,6 +259,10 @@ namespace SlimDX_Framework {
             Util.ReleaseCom(ref cullClockwiseRS);
             var cullClockwiseNoneRS = CullClockwiseNoneRS;
             Util.ReleaseCom(ref cullClockwiseNoneRS);
+            var twoSided = TwoSidedRS;
+            Util.ReleaseCom(ref twoSided);
+            var oneSided = OneSidedRS;
+            Util.ReleaseCom(ref oneSided);
             var alphaToCoverageBS = AlphaToCoverageBS;
             Util.ReleaseCom(ref alphaToCoverageBS);
             var transparentBS = TransparentBS;
@@ -235,6 +287,8 @@ namespace SlimDX_Framework {
         public static RasterizerState NoCullRS { get; private set; }
         public static RasterizerState CullClockwiseRS { get; private set; }
         public static RasterizerState CullClockwiseNoneRS { get; private set; }
+        public static RasterizerState TwoSidedRS { get; private set; }
+        public static RasterizerState OneSidedRS { get; private set; }
         public static RasterizerState WireframeNoneRS { get; private set; }
 
         public static BlendState AlphaToCoverageBS { get; private set; }

@@ -42,6 +42,7 @@ namespace tor_tools
         private Stream inputStream;
         private MemoryStream memStream;
         private XmlDocument xmlDoc;
+        // private View_GR2 panelRender;
         private View_GR2 panelRender;
         public bool _closing = false;
         private Thread render;
@@ -347,7 +348,7 @@ namespace tor_tools
         // private async Task LoadObject(TorLib.File file)
         private void LoadObject(TorLib.File file)
         {
-            this.inputStream = file.OpenCopyInMemory();
+            inputStream = file.OpenCopyInMemory();
             return;
         }
 
@@ -957,9 +958,53 @@ namespace tor_tools
             }
             else
             {
-                BinaryReader br = new BinaryReader(this.inputStream);
+                BinaryReader br = new BinaryReader(inputStream);
                 FileFormats.GR2 gr2_model = new FileFormats.GR2(br, fileName);
                 //panelRender.Init();
+
+                if (gr2_model.materials.Count == 0)
+                {
+                    foreach (FileFormats.GR2_Mesh mesh in gr2_model.meshes)
+                    {
+                        if (mesh.meshName.Contains("collision"))
+                            continue;
+                        else
+                            gr2_model.numMaterials = mesh.numPieces;
+                    }
+
+                    if (gr2_model.numMaterials == 1)
+                        gr2_model.materials = new List<FileFormats.GR2_Material>
+                            {
+                                new FileFormats.GR2_Material("all_test_grey_128")
+                            };
+
+                    if (gr2_model.numMaterials == 2)
+                    {
+                        gr2_model.materials = new List<FileFormats.GR2_Material>
+                            {
+                                new FileFormats.GR2_Material("all_test_grey_128"),
+                                new FileFormats.GR2_Material("defaultMirror")
+                            };
+                    }
+                }
+
+                if (gr2_model.materials.Count > 0)
+                {
+                    if (gr2_model.materials[0].materialName == "default")
+                        gr2_model.materials[0] = new FileFormats.GR2_Material("all_test_grey_128");
+
+                    // if (gr2_model.materials.Count > 1)
+                    //     if (gr2_model.materials[1].materialName == "defaultMirror")
+                    //         gr2_model.materials[1] = new GR2_Material("defaultMirror");
+                }
+
+                Dictionary<string, FileFormats.GR2> models = new Dictionary<string, FileFormats.GR2>
+                {
+                    { fileName, gr2_model }
+                };
+
+                Dictionary<string, object> resources = new Dictionary<string, object>();
+
                 panelRender.LoadModel(gr2_model);
                 render = new Thread(panelRender.StartRender)
                 {

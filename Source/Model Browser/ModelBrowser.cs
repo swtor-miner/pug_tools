@@ -18,16 +18,22 @@ namespace tor_tools
 {
     public partial class ModelBrowser : Form
     {
+        private class TestRule
+        {
+            public string slot = "";
+            public string archetype = "";
+            public string attachmentName = "";
+            public List<string> tags = new List<string>();
+        }
+
         public bool _closing = false;
         private readonly Dictionary<string, NodeAsset> assetDict = new Dictionary<string, NodeAsset>();
         public Assets currentAssets;
         private DataObjectModel currentDom;
         private readonly Dictionary<string, NodeAsset> dataviewDict = new Dictionary<string, NodeAsset>();
-        private readonly List<string> helmetClosed = new List<string>()
-                {
-                    "helmet", "gemask24", "gemask08", "gemask08suv", "gemask10", "swmask02", "swmask04", "gemask07",
-                    "gemask28", "gemask33", "jwmask03", "jwmask05", "gehathair01"
-                };
+        private readonly List<TestRule> testRules = new List<TestRule>();
+        public Dictionary<string, List<string>> tagExclusions = new Dictionary<string, List<string>>();
+        public Dictionary<string, List<string>> testGroups = new Dictionary<string, List<string>>();
         public List<ItemAppearance> items = new List<ItemAppearance>();
         Dictionary<object, object> mntMountInfoTable = new Dictionary<object, object>();
         public Dictionary<string, GR2> models = new Dictionary<string, GR2>();
@@ -37,19 +43,11 @@ namespace tor_tools
         private DataObjectModel previousDom;
         private Thread render;
         public Dictionary<string, object> resources = new Dictionary<string, object>();
-        private readonly List<string> tagExclusion = new List<string>()
-                {
-                    "abyssin", "anomid", "aqualish", "arcona", "bith", "bothan", "chagrian", "daichyura",
-                    "devaronian", "duros", "gammorean", "gand", "gormak", "gran", "houk", "ishitib", "kaleesh",
-                    "keldor", "kitonak", "klatooinian", "krex", "krexorn", "kubaz", "moncalamari", "nautolan",
-                    "nikto", "ongree", "rakata", "rodian", "selkath", "snivvian", "sullustan", "togruta",
-                    "trandoshan", "weequay"
-                };
-        Dictionary<object, object> weaponAppearance = new Dictionary<object, object>();
+        private Dictionary<object, object> weaponAppearance = new Dictionary<object, object>();
 
         public ModelBrowser(string assetLocation, bool usePTS,
-            string previousAssetLocation, bool previousUsePTS,
-            bool loadprevious)
+        string previousAssetLocation, bool previousUsePTS,
+        bool loadprevious)
         {
             InitializeComponent();
 
@@ -143,7 +141,7 @@ namespace tor_tools
                 if (item.Name.Contains("."))
                 {
                     string[] temp = item.Name.Split('.');
-                    parent = String.Join(".", temp.Take(temp.Length - 1));
+                    parent = string.Join(".", temp.Take(temp.Length - 1));
                     display = display.Replace(parent, string.Empty).Replace(".", string.Empty);
 
                     if (item.Name.StartsWith("itm."))
@@ -188,7 +186,7 @@ namespace tor_tools
                 if (item.Name.Contains("."))
                 {
                     string[] temp = item.Name.Split('.');
-                    parent = String.Join(".", temp.Take(temp.Length - 1));
+                    parent = string.Join(".", temp.Take(temp.Length - 1));
                     display = display.Replace(parent, string.Empty).Replace(".", string.Empty);
                     parent = "new." + parent;
 
@@ -227,7 +225,7 @@ namespace tor_tools
                 if (spec.ToString().Contains("."))
                 {
                     string[] temp = spec.ToString().Split('.');
-                    parent = String.Join(".", temp.Take(temp.Length - 1));
+                    parent = string.Join(".", temp.Take(temp.Length - 1));
                     display = display.Replace(parent, "").Replace(".", "");
                     nodeDirs.Add(parent);
                 }
@@ -382,16 +380,18 @@ namespace tor_tools
                     assetDict.Add(dir.ToString(), asset);
             }
 
-            mntMountInfoTable.Clear();
-            mntMountInfoTable = null;
+            // mntMountInfoTable.Clear();
+            // mntMountInfoTable = null;
+
+            ParseTestRules();
 
             toolStripStatusLabel1.Text = "Loading Tree View Items ...";
 
             Refresh();
 
-            Func<NodeAsset, string> getId = (x => x.Id);
-            Func<NodeAsset, string> getParentId = (x => x.parentId);
-            Func<NodeAsset, string> getDisplayName = (x => x.displayName);
+            string getId(NodeAsset x) => x.Id;
+            string getParentId(NodeAsset x) => x.parentId;
+            string getDisplayName(NodeAsset x) => x.displayName;
 
             treeViewList.SuspendLayout();
             treeViewList.BeginUpdate();
@@ -443,6 +443,88 @@ namespace tor_tools
             treeViewList.Enabled = true;
             tvfDataViewer.Enabled = true;
             dgvDataViewer.Enabled = true;
+        }
+
+        private void ParseTestRules()
+        {
+            var file = currentAssets.FindFile("/resources/art/dynamic/testrules.rul");
+
+            if (file != null)
+            {
+                XmlDocument xmlDoc = new XmlDocument();
+                xmlDoc.Load(file.OpenCopyInMemory());
+
+                XmlNodeList ruleList = xmlDoc.SelectNodes("/Rules/Rule");
+                XmlNodeList exclusionList = xmlDoc.SelectNodes("/Rules/TagExclusion");
+                XmlNodeList groupList = xmlDoc.SelectNodes("/Rules/Group");
+
+                foreach (XmlNode rule in ruleList)
+                {
+                    string slot = rule.Attributes.GetNamedItem("Slot").InnerText;
+                    slot = slot == "facehair" ? "FaceHair" : char.ToUpper(slot[0]) + slot.Substring(1);
+
+                    string archetype = "";
+                    string attachmentName = "";
+
+                    if (rule.Attributes.GetNamedItem("Archetype") != null)
+                        archetype = rule.Attributes.GetNamedItem("Archetype").InnerText;
+                    if (rule.Attributes.GetNamedItem("AttachmentName") != null)
+                        attachmentName = rule.Attributes.GetNamedItem("AttachmentName").InnerText;
+
+                    List<string> tags = new List<string>();
+
+                    foreach (string tag in rule.Attributes.GetNamedItem("Tags").InnerText.Replace(" ", "").Split(','))
+                        tags.Add(tag);
+
+                    TestRule testRule = new TestRule
+                    {
+                        slot = slot,
+                        archetype = archetype,
+                        attachmentName = attachmentName,
+                        tags = tags
+                    };
+
+                    testRules.Add(testRule);
+                }
+
+                foreach (XmlNode tagExclusion in exclusionList)
+                {
+                    string excludedTag = tagExclusion.Attributes.GetNamedItem("ExcludedTag").InnerText;
+
+                    List<string> tags = new List<string>();
+
+                    foreach (string tagEx in tagExclusion.Attributes.GetNamedItem("Tags").InnerText.Replace(" ", "").Split(','))
+                    {
+                        XmlNode group = xmlDoc.SelectSingleNode("/Rules/Group[@Name='" + tagEx + "']");
+
+                        if (group != null)
+                            foreach (string tag in group.Attributes.GetNamedItem("Tags").InnerText.Replace(" ", "").Split(','))
+                                tags.Add(tag);
+                        else
+                            tags.Add(tagEx);
+                    }
+
+                    tags = tags.Distinct().ToList();
+
+                    tagExclusions.Add(excludedTag, tags);
+                }
+
+                foreach (XmlNode group in groupList)
+                {
+                    string name = group.Attributes.GetNamedItem("Name").InnerText;
+
+                    List<string> tags = new List<string>();
+
+                    foreach (string tag in group.Attributes.GetNamedItem("Tags").InnerText.Replace(" ", "").Split(','))
+                        tags.Add(tag);
+
+                    // Because BW are incompetent or whatev.
+                    if (name == "rubberheadshands")
+                        tags.Add("rakata");
+
+                    testGroups.Add(name, tags);
+                }
+            }
         }
 
         private async void TreeViewList_AfterSelect(object sender, TreeViewEventArgs treeViewEvent)
@@ -531,9 +613,9 @@ namespace tor_tools
                                         MessageBox.Show("ERROR: Cannot load model! \r\nVisual List Missing", "Missing Visual List Spec");
                                     toolStripStatusLabel1.Text = "DYN Loaded";
                                 }
-                                catch (Exception excep)
+                                catch (Exception ex)
                                 {
-                                    MessageBox.Show(excep.Message.ToString() + "\r\n" + excep.InnerException.ToString() + "\r\n" + excep.StackTrace.ToString(), "Error");
+                                    MessageBox.Show(ex.Message.ToString() + "\r\n" + ex.InnerException.ToString() + "\r\n" + ex.StackTrace.ToString(), "Error");
                                 }
                                 break;
                         }
@@ -542,9 +624,9 @@ namespace tor_tools
                         treeViewList.Enabled = true;
                         toolStripProgressBar1.Visible = false;
                     }
-                    catch (Exception excep)
+                    catch (Exception ex)
                     {
-                        MessageBox.Show("Could not load NPC \r\n" + excep.ToString());
+                        MessageBox.Show("Could not load NPC \r\n" + ex.ToString());
                         toolStripStatusLabel1.Text = "NPC Load Error";
                         toolStripProgressBar1.Visible = false;
                         treeViewList.Enabled = true;
@@ -561,9 +643,9 @@ namespace tor_tools
                             Refresh();
                             await Task.Run(() => PreviewMNT_GR2(obj));
                         }
-                        catch (Exception excep)
+                        catch (Exception ex)
                         {
-                            MessageBox.Show(excep.Message.ToString() + "\r\n" + excep.InnerException.ToString() + "\r\n" + excep.StackTrace.ToString(), "Error");
+                            MessageBox.Show(ex.Message.ToString() + "\r\n" + ex.InnerException.ToString() + "\r\n" + ex.StackTrace.ToString(), "Error");
                         }
                     }
 
@@ -606,7 +688,7 @@ namespace tor_tools
                             if (gr2_attach.numMaterials > 0)
                             {
                                 if (!dataviewDict.ContainsKey("/models/" + model.Key + "/attached/" + gr2_attach.filename + "/materials"))
-                                    dataviewDict.Add("/models/" + model.Key + "/attached/" + gr2_attach.filename + "/materials", new NodeAsset("/models/" + model.Key + "/attached/" + gr2_attach.filename + "/materials", "/models/" + model.Key + "/attached/" + gr2_attach.filename, "Materials", (GomObject)null));
+                                    dataviewDict.Add("/models/" + model.Key + "/attached/" + gr2_attach.filename + "/materials", new NodeAsset("/models/" + model.Key + "/attached/" + gr2_attach.filename + "/materials", "/models/" + model.Key + "/attached/" + gr2_attach.filename, "Materials", null));
                                 foreach (var material in gr2_attach.materials)
                                 {
                                     GR2_Material gr2_material = material;
@@ -619,7 +701,7 @@ namespace tor_tools
                             if (gr2_attach.numMeshes > 0)
                             {
                                 if (!dataviewDict.ContainsKey("/models/" + model.Key + "/attached/" + gr2_attach.filename + "/meshes"))
-                                    dataviewDict.Add("/models/" + model.Key + "/attached/" + gr2_attach.filename + "/meshes", new NodeAsset("/models/" + model.Key + "/attached/" + gr2_attach.filename + "/meshes", "/models/" + model.Key + "/attached/" + gr2_attach.filename, "Meshes", (GomObject)null));
+                                    dataviewDict.Add("/models/" + model.Key + "/attached/" + gr2_attach.filename + "/meshes", new NodeAsset("/models/" + model.Key + "/attached/" + gr2_attach.filename + "/meshes", "/models/" + model.Key + "/attached/" + gr2_attach.filename, "Meshes", null));
                                 foreach (var mesh in gr2_attach.meshes)
                                 {
                                     GR2_Mesh gr2_mesh = mesh;
@@ -682,9 +764,9 @@ namespace tor_tools
                 }
             }
 
-            Func<NodeAsset, string> getId = (x => x.Id);
-            Func<NodeAsset, string> getParentId = (x => x.parentId);
-            Func<NodeAsset, string> getDisplayName = (x => x.displayName);
+            string getId(NodeAsset x) => x.Id;
+            string getParentId(NodeAsset x) => x.parentId;
+            string getDisplayName(NodeAsset x) => x.displayName;
             tvfDataViewer.SuspendLayout();
             tvfDataViewer.BeginUpdate();
             tvfDataViewer.LoadItems<NodeAsset>(dataviewDict, getId, getParentId, getDisplayName);
@@ -697,7 +779,7 @@ namespace tor_tools
         }
 
 #pragma warning disable CS1998, CS4014
-        private async Task PreviewGR2(HashFileInfo hashInfo)
+        public async Task PreviewGR2(HashFileInfo hashInfo)
         {
             if (InvokeRequired)
             {
@@ -722,7 +804,7 @@ namespace tor_tools
                     {
                         foreach (GR2_Mesh mesh in gr2_model.meshes)
                         {
-                            if (mesh.meshName == "generated_collision")
+                            if (mesh.meshName.Contains("collision"))
                                 continue;
                             else
                                 gr2_model.numMaterials = mesh.numPieces;
@@ -777,42 +859,817 @@ namespace tor_tools
             {
                 ParseNpcData(npcData);
 
-                // --------------------------------------------------------------------------------------
-                // HACK: Until I can figure out how to parse and use /resources/art/dynamic/testrules.rul
-                // --------------------------------------------------------------------------------------
-                if (models.ContainsKey("appSlotHead"))
-                    if (tagExclusion.Any(x => models["appSlotHead"].filename.Contains(x)))
-                    {
-                        // Hide Head Gear
-                        if (models.ContainsKey("appSlotFace"))
-                            models["appSlotFace"].enabled = false;
+                // ====================================================================================================
+                // Override Rules for appSlots, following "rules" parsed from /resources/art/dynamic/testrules.rul
+                // TODO: Refactor this, simplify and improve efficiency.
+                // ====================================================================================================
 
-                        // Hide Hood
-                        if (models.ContainsKey("appSlotChest"))
-                            if (models["appSlotChest"].attachedModels.Count > 0)
-                                foreach (var attach in models["appSlotChest"].attachedModels)
+                foreach (TestRule testRule in testRules)
+                {
+                    var appSlot = "appSlot" + testRule.slot;
+
+                    // Hair Rule
+                    if (testRule.slot == "Hair" && testRule.attachmentName == "" && models.ContainsKey(appSlot))
+                    {
+                        var rule = testRule;
+                        var model = models[appSlot];
+
+                        bool excluded = false;
+
+                        // Check for exclusions first
+                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
+                        {
+                            // There are exclusions for one or more of the rule tags
+                            foreach (string tag in rule.tags)
+                            {
+                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
                                 {
-                                    if (attach.filename.Contains("hoodup"))
-                                        attach.enabled = false;
+                                    // Face model filename contains an exclusion tag
+                                    excluded = true;
                                 }
+                            }
+                        }
+
+                        // Check if hair model should be disabled
+                        if (!excluded && models.ContainsKey("appSlotFace"))
+                        {
+                            if (rule.tags.Any(x => models["appSlotFace"].filename.Contains(x)))
+                            {
+                                // Face model filename contains a rule tag
+                                model.enabled = false;
+                            }
+                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
+                            {
+                                // Face model filename didn't contain any rule tags, let's check if it contains a group tag
+                                foreach (string tag in rule.tags)
+                                {
+                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotFace"].filename.Contains(x)))
+                                    {
+                                        // Face model filename contains a group tag
+                                        model.enabled = false;
+                                    }
+                                }
+                            }
+                        }
+                        else if (!excluded && models.ContainsKey("appSlotChest"))
+                        {
+                            // Hood is an attachment so we have to dig a bit deeper!
+                            if (models["appSlotChest"].attachedModels.Any(x => x.filename.Contains("hoodup")))
+                            {
+                                var attach = models["appSlotChest"].attachedModels.Where(x => x.filename.Contains("hoodup")).FirstOrDefault();
+
+                                if (rule.tags.Any(x => attach.filename.Contains(x)))
+                                {
+                                    // Hood model filename contains a rule tag
+                                    model.enabled = false;
+                                }
+                                else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
+                                {
+                                    // Hood mode filename didn't contain any rule tags, let's check if it contains a group tag
+                                    foreach (string tag in rule.tags)
+                                    {
+                                        if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => attach.filename.Contains(x)))
+                                        {
+                                            // Hood model filename contains a group tag
+                                            model.enabled = false;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
 
-                // Hides Hair with full Helmets
-                if (models.ContainsKey("appSlotFace"))
-                    if (helmetClosed.Any(x => models["appSlotFace"].filename.Contains(x)))
-                        if (models.ContainsKey("appSlotHair"))
-                            models["appSlotHair"].enabled = false;
+                    // Face Hair Rule
+                    if (testRule.slot == "FaceHair" && testRule.attachmentName == "" && models.ContainsKey(appSlot))
+                    {
+                        var rule = testRule;
+                        var model = models[appSlot];
 
-                // Hides Hair with Hood Up
-                if (models.ContainsKey("appSlotChest"))
-                    if (models["appSlotChest"].attachedModels.Count > 0)
-                        foreach (var attach in models["appSlotChest"].attachedModels)
+                        bool excluded = false;
+
+                        // Check for exclusions first
+                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
                         {
-                            if (attach.filename.Contains("hoodup"))
-                                if (models.ContainsKey("appSlotHair"))
-                                    models["appSlotHair"].enabled = false;
+                            // There are exclusions for one or more of the rule tags
+                            foreach (string tag in rule.tags)
+                            {
+                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
+                                {
+                                    // Face model filename contains an exclusion tag
+                                    excluded = true;
+                                }
+                            }
                         }
-                // End HACK ------------------------------------------------------------------------------
+
+                        // Check if face hair model should be disabled
+                        if (!excluded && models.ContainsKey("appSlotHead"))
+                        {
+                            if (rule.tags.Any(x => models["appSlotHead"].filename.Contains(x)))
+                            {
+                                // Head model filename contains a tag rule
+                                model.enabled = false;
+                            }
+                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
+                            {
+                                // Head model filename didn't contain any rule tags, let's check if it contains a group tag
+                                foreach (string tag in rule.tags)
+                                {
+                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotHead"].filename.Contains(x)))
+                                    {
+                                        // Head model filename contains a group tag
+                                        model.enabled = false;
+                                    }
+                                }
+                            }
+                        }
+                        else if (!excluded && models.ContainsKey("appSlotFace"))
+                        {
+                            if (rule.tags.Any(x => models["appSlotFace"].filename.Contains(x)))
+                            {
+                                // Face model filename contains a tag rule
+                                model.enabled = false;
+                            }
+                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
+                            {
+                                // Face model filename didn't contain any rule tags, let's check if it contains a group tag
+                                foreach (string tag in rule.tags)
+                                {
+                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotFace"].filename.Contains(x)))
+                                    {
+                                        // Face model filename contains a group tag
+                                        model.enabled = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Face Hair (Chops) Rule
+                    if (testRule.slot == "FaceHair" && testRule.attachmentName == "chops" && models.ContainsKey(appSlot))
+                    {
+                        var rule = testRule;
+                        var model = models[appSlot];
+
+                        bool excluded = false;
+
+                        // Check for exclusions first
+                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
+                        {
+                            // There are exclusions for one or more of the rule tags
+                            foreach (string tag in rule.tags)
+                            {
+                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
+                                {
+                                    // Face model filename contains an exclusion tag
+                                    excluded = true;
+                                }
+                            }
+                        }
+
+                        // Check if face hair model should be disabled
+                        if (!excluded && models.ContainsKey("appSlotHead"))
+                        {
+                            if (rule.tags.Any(x => models["appSlotHead"].filename.Contains(x)))
+                            {
+                                // Head model filename contains a tag rule
+                                model.enabled = false;
+                            }
+                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
+                            {
+                                // Head model filename didn't contain any rule tags, let's check if it contains a group tag
+                                foreach (string tag in rule.tags)
+                                {
+                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotHead"].filename.Contains(x)))
+                                    {
+                                        // Head model filename contains a group tag
+                                        model.enabled = false;
+                                    }
+                                }
+                            }
+                        }
+                        else if (!excluded && models.ContainsKey("appSlotFace"))
+                        {
+                            if (rule.tags.Any(x => models["appSlotFace"].filename.Contains(x)))
+                            {
+                                // Face model filename contains a tag rule
+                                model.enabled = false;
+                            }
+                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
+                            {
+                                // Face model filename didn't contain any rule tags, let's check if it contains a group tag
+                                foreach (string tag in rule.tags)
+                                {
+                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotFace"].filename.Contains(x)))
+                                    {
+                                        // Face model filename contains a group tag
+                                        model.enabled = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Face Hair (Mustache) Rule
+                    if (testRule.slot == "FaceHair" && testRule.attachmentName == "mustache" && models.ContainsKey(appSlot))
+                    {
+                        var rule = testRule;
+                        var model = models[appSlot];
+
+                        bool excluded = false;
+
+                        // Check for exclusions first
+                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
+                        {
+                            // There are exclusions for one or more of the rule tags
+                            foreach (string tag in rule.tags)
+                            {
+                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
+                                {
+                                    // Face model filename contains an exclusion tag
+                                    excluded = true;
+                                }
+                            }
+                        }
+
+                        // Check if face hair model should be disabled
+                        if (!excluded && models.ContainsKey("appSlotHead"))
+                        {
+                            if (rule.tags.Any(x => models["appSlotHead"].filename.Contains(x)))
+                            {
+                                // Head model filename contains a tag rule
+                                model.enabled = false;
+                            }
+                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
+                            {
+                                // Head model filename didn't contain any rule tags, let's check if it contains a group tag
+                                foreach (string tag in rule.tags)
+                                {
+                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotHead"].filename.Contains(x)))
+                                    {
+                                        // Head model filename contains a group tag
+                                        model.enabled = false;
+                                    }
+                                }
+                            }
+                        }
+                        else if (!excluded && models.ContainsKey("appSlotFace"))
+                        {
+                            if (rule.tags.Any(x => models["appSlotFace"].filename.Contains(x)))
+                            {
+                                // Face model filename contains a tag rule
+                                model.enabled = false;
+                            }
+                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
+                            {
+                                // Face model filename didn't contain any rule tags, let's check if it contains a group tag
+                                foreach (string tag in rule.tags)
+                                {
+                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotFace"].filename.Contains(x)))
+                                    {
+                                        // Face model filename contains a group tag
+                                        model.enabled = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Fair Hair (Goatee) Rule
+                    if (testRule.slot == "FaceHair" && testRule.attachmentName == "goatee" && models.ContainsKey(appSlot))
+                    {
+                        var rule = testRule;
+                        var model = models[appSlot];
+
+                        bool excluded = false;
+
+                        // Check for exclusions first
+                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
+                        {
+                            // There are exclusions for one or more of the rule tags
+                            foreach (string tag in rule.tags)
+                            {
+                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
+                                {
+                                    // Face model filename contains an exclusion tag
+                                    excluded = true;
+                                }
+                            }
+                        }
+
+                        // Check if face hair model should be disabled
+                        if (!excluded && models.ContainsKey("appSlotHead"))
+                        {
+                            if (rule.tags.Any(x => models["appSlotHead"].filename.Contains(x)))
+                            {
+                                // Head model filename contains a tag rule
+                                model.enabled = false;
+                            }
+                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
+                            {
+                                // Head model filename didn't contain any rule tags, let's check if it contains a group tag
+                                foreach (string tag in rule.tags)
+                                {
+                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotHead"].filename.Contains(x)))
+                                    {
+                                        // Head model filename contains a group tag
+                                        model.enabled = false;
+                                    }
+                                }
+                            }
+                        }
+                        else if (!excluded && models.ContainsKey("appSlotFace"))
+                        {
+                            if (rule.tags.Any(x => models["appSlotFace"].filename.Contains(x)))
+                            {
+                                // Face model filename contains a tag rule
+                                model.enabled = false;
+                            }
+                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
+                            {
+                                // Face model filename didn't contain any rule tags, let's check if it contains a group tag
+                                foreach (string tag in rule.tags)
+                                {
+                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotFace"].filename.Contains(x)))
+                                    {
+                                        // Face model filename contains a group tag
+                                        model.enabled = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Face Hair (Miralukan) Rule
+                    if (testRule.slot == "FaceHair" && testRule.archetype == "miralukan" && models.ContainsKey(appSlot))
+                    {
+                        var rule = testRule;
+                        var model = models[appSlot];
+
+                        bool excluded = false;
+
+                        // Check for exclusions first
+                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
+                        {
+                            // There are exclusions for one or more of the rule tags
+                            foreach (string tag in rule.tags)
+                            {
+                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
+                                {
+                                    // Face model filename contains an exclusion tag
+                                    excluded = true;
+                                }
+                            }
+                        }
+
+                        // Check if face hair model should be disabled
+                        if (!excluded && models.ContainsKey("appSlotHead"))
+                        {
+                            if (rule.tags.Any(x => models["appSlotHead"].filename.Contains(x)))
+                            {
+                                // Head model filename contains a tag rule
+                                model.enabled = false;
+                            }
+                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
+                            {
+                                // Head model filename didn't contain any rule tags, let's check if it contains a group tag
+                                foreach (string tag in rule.tags)
+                                {
+                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotHead"].filename.Contains(x)))
+                                    {
+                                        // Head model filename contains a group tag
+                                        model.enabled = false;
+                                    }
+                                }
+                            }
+                        }
+                        else if (!excluded && models.ContainsKey("appSlotFace"))
+                        {
+                            if (rule.tags.Any(x => models["appSlotFace"].filename.Contains(x)))
+                            {
+                                // Face model filename contains a tag rule
+                                model.enabled = false;
+                            }
+                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
+                            {
+                                // Face model filename didn't contain any rule tags, let's check if it contains a group tag
+                                foreach (string tag in rule.tags)
+                                {
+                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotFace"].filename.Contains(x)))
+                                    {
+                                        // Face model filename contains a group tag
+                                        model.enabled = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Head Rule
+                    if (testRule.slot == "Head" && testRule.attachmentName == "" && models.ContainsKey(appSlot))
+                    {
+                        var rule = testRule;
+                        var model = models[appSlot];
+
+                        bool excluded = false;
+
+                        // Check for exclusions first
+                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
+                        {
+                            // There are exclusions for one or more of the rule tags
+                            foreach (string tag in rule.tags)
+                            {
+                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
+                                {
+                                    // Face model filename contains an exclusion tag
+                                    excluded = true;
+                                }
+                            }
+                        }
+
+                        // Check if head model should be disabled
+                        if (!excluded && models.ContainsKey("appSlotFace"))
+                        {
+                            if (rule.tags.Any(x => models["appSlotFace"].filename.Contains(x)))
+                            {
+                                // Face model filename contains a tag rule
+                                model.enabled = false;
+                            }
+                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
+                            {
+                                // Face model filename didn't contain any rule tags, let's check if it contains a group tag
+                                foreach (string tag in rule.tags)
+                                {
+                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotFace"].filename.Contains(x)))
+                                    {
+                                        // Face model filename contains a group tag
+                                        model.enabled = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Chest Attachments (Hoods) Rule
+                    if (testRule.slot == "Chest" && testRule.attachmentName == "hoodup" && models.ContainsKey(appSlot))
+                    {
+                        var rule = testRule;
+                        var model = models[appSlot];
+
+                        // Hood is an attachment so we have to dig a bit deeper!
+                        if (rule.attachmentName == "hoodup" && model.attachedModels.Any(x => x.filename.Contains("hoodup")))
+                        {
+                            var attach = model.attachedModels.Where(x => x.filename.Contains("hoodup")).FirstOrDefault();
+
+                            bool excluded = false;
+
+                            // Check for exclusions first
+                            if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
+                            {
+                                // There are exclusions for one or more of the rule tags
+                                foreach (string tag in rule.tags)
+                                {
+                                    if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => attach.filename.Contains(x)))
+                                    {
+                                        // Hood model filename contains an exclusion tag
+                                        excluded = true;
+                                    }
+                                }
+                            }
+
+                            // Check if hood attachment model should be disabled
+                            if (!excluded && models.ContainsKey("appSlotHead")) // First we check by head model
+                            {
+                                if (rule.tags.Any(x => models["appSlotHead"].filename.Contains(x)))
+                                {
+                                    // Head model filename contains a rule tag
+                                    attach.enabled = false;
+                                }
+                                else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
+                                {
+                                    // Head model filename didn't contain a rule tag, let's check if it contains a group tag
+                                    foreach (string tag in rule.tags)
+                                    {
+                                        if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotHead"].filename.Contains(x)))
+                                        {
+                                            // Head model filename contains a group tag
+                                            attach.enabled = false;
+                                        }
+                                    }
+                                }
+                            }
+                            else if (!excluded && models.ContainsKey("appSlotFace"))
+                            {
+                                if (rule.tags.Any(x => models["appSlotFace"].filename.Contains(x)))
+                                {
+                                    // Face model filename contains a rule tag
+                                    attach.enabled = false;
+                                }
+                                else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
+                                {
+                                    // Face model filename didn't contain a rule tag, let's check if it contains a group tag
+                                    foreach (string tag in rule.tags)
+                                    {
+                                        if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotFace"].filename.Contains(x)))
+                                        {
+                                            // Face model filename contains a group tag
+                                            attach.enabled = false;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Boot Attachments Rule
+                    if (testRule.slot == "Boot" && testRule.attachmentName == "bootattachments" && models.ContainsKey(appSlot))
+                    {
+                        var rule = testRule;
+                        var model = models[appSlot];
+
+                        bool excluded = false;
+
+                        // Check for exclusions first
+                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
+                        {
+                            // There are exclusions for one or more of the rule tags
+                            foreach (string tag in rule.tags)
+                            {
+                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
+                                {
+                                    // Face model filename contains an exclusion tag
+                                    excluded = true;
+                                }
+                            }
+                        }
+
+                        // Check if boot attachment models should be disabled
+                        if (!excluded && models.ContainsKey("appSlotLeg"))
+                        {
+                            if (rule.tags.Any(x => models["appSlotLeg"].filename.Contains(x)))
+                            {
+                                // Leg model filename contains a rule tag
+                                foreach (GR2 attach in model.attachedModels)
+                                {
+                                    attach.enabled = false;
+                                }
+                            }
+                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
+                            {
+                                // Leg model filename didn't contain any rule tags, let's check if it contains a group tag
+                                foreach (string tag in rule.tags)
+                                {
+                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotLeg"].filename.Contains(x)))
+                                    {
+                                        // Leg model filename contains a group tag
+                                        foreach (GR2 attach in model.attachedModels)
+                                        {
+                                            attach.enabled = false;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Hand Attachments Rule
+                    if (testRule.slot == "Hand" && testRule.attachmentName == "handattachments" && models.ContainsKey(appSlot))
+                    {
+                        var rule = testRule;
+                        var model = models[appSlot];
+
+                        bool excluded = false;
+
+                        // Check for exclusions first
+                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
+                        {
+                            // There are exclusions for one or more of the rule tags
+                            foreach (string tag in rule.tags)
+                            {
+                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
+                                {
+                                    // Face model filename contains an exclusion tag
+                                    excluded = true;
+                                }
+                            }
+                        }
+
+                        // Check if hand attachment models should be disabled
+                        if (!excluded && models.ContainsKey("appSlotChest"))
+                        {
+                            if (rule.tags.Any(x => models["appSlotChest"].filename.Contains(x)))
+                            {
+                                // Chest model filename contains a rule tag
+                                foreach (GR2 attach in model.attachedModels)
+                                {
+                                    attach.enabled = false;
+                                }
+                            }
+                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
+                            {
+                                // Chest model filename didn't contain any rule tags, let's check if it contains a group tag
+                                foreach (string tag in rule.tags)
+                                {
+                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotChest"].filename.Contains(x)))
+                                    {
+                                        // Chest model filename contains a group tag
+                                        foreach (GR2 attach in model.attachedModels)
+                                        {
+                                            attach.enabled = false;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Waist Attachments Rule
+                    if (testRule.slot == "Waist" && testRule.attachmentName == "back" && models.ContainsKey(appSlot))
+                    {
+                        var rule = testRule;
+                        var model = models[appSlot];
+
+                        bool excluded = false;
+
+                        // Check for exclusions first
+                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
+                        {
+                            // There are exclusions for one or more of the rule tags
+                            foreach (string tag in rule.tags)
+                            {
+                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
+                                {
+                                    // Face model filename contains an exclusion tag
+                                    excluded = true;
+                                }
+                            }
+                        }
+
+                        // Check if waist attachment models should be disabled
+                        if (!excluded && models.ContainsKey("appSlotChest"))
+                        {
+                            if (rule.tags.Any(x => models["appSlotChest"].filename.Contains(x)))
+                            {
+                                // Chest model filename contains a rule tag
+                                foreach (GR2 attach in model.attachedModels)
+                                {
+                                    attach.enabled = false;
+                                }
+                            }
+                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
+                            {
+                                // Chest model filename didn't contain any rule tags, let's check if it contains a group tag
+                                foreach (string tag in rule.tags)
+                                {
+                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotChest"].filename.Contains(x)))
+                                    {
+                                        // Chest model filename contains a group tag
+                                        foreach (GR2 attach in model.attachedModels)
+                                        {
+                                            attach.enabled = false;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Hand Rule
+                    if (testRule.slot == "Hand" && testRule.attachmentName == "" && models.ContainsKey(appSlot))
+                    {
+                        var rule = testRule;
+                        var model = models[appSlot];
+
+                        bool excluded = false;
+
+                        // Check for exclusions first
+                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
+                        {
+                            // There are exclusions for one or more of the rule tags
+                            foreach (string tag in rule.tags)
+                            {
+                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
+                                {
+                                    // Face model filename contains an exclusion tag
+                                    excluded = true;
+                                }
+                            }
+                        }
+
+                        // Check if hand (glove) model should be disabled
+                        if (!excluded && models.ContainsKey("appSlotHead"))
+                        {
+                            if (rule.tags.Any(x => models["appSlotHead"].filename.Contains(x)))
+                            {
+                                // Head model filename contains a rule tag
+                                model.enabled = false;
+                            }
+                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
+                            {
+                                // Head model filename didn't contain any rule tags, let's check if it contains a group tag
+                                foreach (string tag in rule.tags)
+                                {
+                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotHead"].filename.Contains(x)))
+                                    {
+                                        // Head model filename contains a group tag
+                                        model.enabled = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Face Rule
+                    if (testRule.slot == "Face" && testRule.attachmentName == "" && models.ContainsKey(appSlot))
+                    {
+                        var rule = testRule;
+                        var model = models[appSlot];
+
+                        bool excluded = false;
+
+                        // Check for exclusions first
+                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
+                        {
+                            // There are exclusions for one or more of the rule tags
+                            foreach (string tag in rule.tags)
+                            {
+                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
+                                {
+                                    // Face model filename contains an exclusion tag
+                                    excluded = true;
+                                }
+                            }
+                        }
+
+                        // Check if face model should be disabled
+                        if (!excluded && models.ContainsKey("appSlotHead"))
+                        {
+                            if (rule.tags.Any(x => models["appSlotHead"].filename.Contains(x)))
+                            {
+                                // Head model filename contains a rule tag
+                                model.enabled = false;
+                            }
+                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
+                            {
+                                // Head model filename didn't contain any rule tags, let's check if it contains a group tag
+                                foreach (string tag in rule.tags)
+                                {
+                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotHead"].filename.Contains(x)))
+                                    {
+                                        // Head model filename contains a group tag
+                                        model.enabled = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Boot Rule
+                    if (testRule.slot == "Boot" && testRule.attachmentName == "" && models.ContainsKey(appSlot))
+                    {
+                        var rule = testRule;
+                        var model = models[appSlot];
+
+                        bool excluded = false;
+
+                        // Check for exclusions first
+                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
+                        {
+                            // There are exclusions for one or more of the rule tags
+                            foreach (string tag in rule.tags)
+                            {
+                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
+                                {
+                                    // Face model filename contains an exclusion tag
+                                    excluded = true;
+                                }
+                            }
+                        }
+
+                        // Check if boot model should be disabled
+                        if (!excluded && models.ContainsKey("appSlotHead"))
+                        {
+                            if (rule.tags.Any(x => models["appSlotHead"].filename.Contains(x)))
+                            {
+                                // Head model filename contains a rule tag
+                                model.enabled = false;
+                            }
+                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
+                            {
+                                // Head model filename didn't contain any rule tags, let's check if it contains a group tag
+                                foreach (string tag in rule.tags)
+                                {
+                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotHead"].filename.Contains(x)))
+                                    {
+                                        // Head model filename contains a group tag
+                                        model.enabled = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // End of Override Rules ==============================================================================
 
                 panelRender.LoadModel(models, resources, npcData.Fqn, npcData.NppType);
                 render = new Thread(panelRender.StartRender)
@@ -1265,19 +2122,19 @@ namespace tor_tools
                         GR2 gr2_model = new GR2(br, name)
                         {
                             transformMatrix = Matrix.Scaling(scaleVec) *
-                                                        Matrix.RotationZ((float)((rotationVec.Z * Math.PI) / 180.0)) *
-                                                        Matrix.RotationX((float)((rotationVec.X * Math.PI) / 180.0)) *
-                                                        Matrix.RotationY((float)((rotationVec.Y * Math.PI) / 180.0)) *
-                                                        Matrix.Translation(positionVec)
+                                              Matrix.RotationZ((float)((rotationVec.Z * Math.PI) / 180.0)) *
+                                              Matrix.RotationX((float)((rotationVec.X * Math.PI) / 180.0)) *
+                                              Matrix.RotationY((float)((rotationVec.Y * Math.PI) / 180.0)) *
+                                              Matrix.Translation(positionVec)
                         };
 
                         try
                         {
                             models.Add(visualName, gr2_model);
                         }
-                        catch (Exception excep)
+                        catch (Exception ex)
                         {
-                            Console.WriteLine(excep.StackTrace.ToString());
+                            Console.WriteLine(ex.StackTrace.ToString());
                         }
                     }
                 }
@@ -1400,11 +2257,12 @@ namespace tor_tools
             {
                 if (appSlot.Value.Count == 1)
                 {
-                    string Bodytype;
-                    Bodytype = appSlot.Value[0].BodyType;
+                    string Bodytype = appSlot.Value[0].BodyType;
 
-                    string model;
-                    model = appSlot.Value[0].Model.Replace("[bt]", Bodytype);
+                    string model = appSlot.Value[0].Model.Replace("[bt]", Bodytype);
+
+                    if (appSlot.Key.Contains("FaceHair"))
+                        model = "/art/defaultassets/blank.gr2";
 
                     // Load Model & Materials for this Slot
                     if (model.Contains(".gr2"))
@@ -1691,7 +2549,7 @@ namespace tor_tools
                                         relRotVec = new Vector3(float.Parse(rot[0]), float.Parse(rot[1]), float.Parse(rot[2]));
                                     }
 
-                                    // Position Transform 
+                                    // Position Transform
                                     if (positionVecNode != null)
                                     {
                                         string[] temp = positionVecNode.InnerText.ToString().Replace("(", "").Replace(")", "").Split(',');
@@ -1760,8 +2618,8 @@ namespace tor_tools
                                         else if (itemName.Contains("blaster_") || itemName.Contains("rifle_"))
                                         {
                                             positionVec = new Vector3(positionVec.X, positionVec.Z, positionVec.Y);
-                                            rotationVec = new Vector3(rotationVec.X, rotationVec.Z, rotationVec.Y);
-                                            scaleVec = new Vector3(scaleVec.X, scaleVec.Z, scaleVec.Y);
+                                            rotationVec = new Vector3(rotationVec.X, rotationVec.Y, rotationVec.Z);
+                                            scaleVec = new Vector3(scaleVec.X, scaleVec.Y, scaleVec.Z);
                                         }
                                         else
                                         {
@@ -1792,12 +2650,12 @@ namespace tor_tools
             }
         }
 
-        private void ParseFXSpecEmitters(XmlNode emitterNode, XmlNode emitterList, ref Vector3 positionVec, ref Vector3 rotationVec, string type = "")
+        private void ParseFXSpecEmitters(XmlNode emitterNode, XmlNode emitterList, ref Vector3 positionVec, ref Vector3 rotationVec, string type)
         {
             XmlNode checkMe = emitterNode.ParentNode;
             if (checkMe.SelectSingleNode("./node()[@name='_fxAttachBone']").InnerText == "" &&
-                checkMe.SelectSingleNode("./node()[@name='_fxAttachTo']").InnerText != "CASTER" &&
-                checkMe.SelectSingleNode("./node()[@name='_fxAttachTo']").InnerText != "TARGET")
+            checkMe.SelectSingleNode("./node()[@name='_fxAttachTo']").InnerText != "CASTER" &&
+            checkMe.SelectSingleNode("./node()[@name='_fxAttachTo']").InnerText != "TARGET")
             {
                 XmlNode attachToNode = emitterNode.ParentNode.SelectSingleNode("./node()[@name='_fxAttachTo']");
                 emitterNode = emitterList.SelectSingleNode(".//node()[@name='_fxName' and text() = '" + attachToNode.InnerText + "']");
@@ -1868,7 +2726,7 @@ namespace tor_tools
             treeViewList.Dispose();
             treeViewList = null;
 
-            this.Dispose();
+            Dispose();
         }
 
         private void BtnExport_Click(object sender, EventArgs evnt)

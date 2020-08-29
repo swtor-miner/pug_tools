@@ -2,24 +2,27 @@
 using SlimDX_Framework.FX;
 using SlimDX.Direct3D11;
 
-namespace SlimDX_Framework {
-    public static class InputLayouts {
-        public static void InitAll(Device device) {
+namespace SlimDX_Framework
+{
+    public static class InputLayouts
+    {
+        public static void InitAll(Device device)
+        {
             /*
             var bl1 = Effects.BasicFX;
             if (bl1 != null) {
                 try {
                     var passDesc = bl1.Light1Tech.GetPassByIndex(0).Description;
                     if (passDesc.Signature != null) PosNormal = new InputLayout(device, passDesc.Signature, InputLayoutDescriptions.PosNormal);
-                } catch (Exception dex) {
-                    Console.WriteLine(dex.Message );
+                } catch (Exception ex) {
+                    Console.WriteLine(ex.Message );
                     PosNormal = null;
                 }
                 try {
                     var passDesc = bl1.Light1Tech.GetPassByIndex(0).Description;
                     Basic32 = new InputLayout(device, passDesc.Signature, InputLayoutDescriptions.Basic32);
-                } catch (Exception dex) {
-                    Console.WriteLine(dex.Message );
+                } catch (Exception ex) {
+                    Console.WriteLine(ex.Message );
                     Basic32 = null;
                 }
             }
@@ -29,8 +32,8 @@ namespace SlimDX_Framework {
                     var shaderSignature = ibl1.Light1Tech.GetPassByIndex(0).Description.Signature;
                     InstancedBasic32 = new InputLayout(device, shaderSignature, InputLayoutDescriptions.InstancedBasic32);
                 }
-            } catch (Exception dex) {
-                Console.WriteLine(dex.Message + dex.StackTrace);
+            } catch (Exception ex) {
+                Console.WriteLine(dex.Message + ex.StackTrace);
                 InstancedBasic32 = null;
             }
             try {
@@ -68,7 +71,7 @@ namespace SlimDX_Framework {
                 var tech = Effects.GR2_FX;
                 if (tech != null)
                 {
-                    var passDesc = tech.Light1Tech.GetPassByIndex(0).Description;
+                    var passDesc = tech.Generic.GetPassByIndex(0).Description;
                     PosNormalTexTan = new InputLayout(device, passDesc.Signature, InputLayoutDescriptions.PosNormalTexTan);
                 }
             }
@@ -132,9 +135,10 @@ namespace SlimDX_Framework {
                 Particle = null;
             }
              */
-            
+
         }
-        public static void DestroyAll() {
+        public static void DestroyAll()
+        {
             Util.ReleaseCom(ref Pos);
             Util.ReleaseCom(ref PosNormal);
             Util.ReleaseCom(ref Basic32);

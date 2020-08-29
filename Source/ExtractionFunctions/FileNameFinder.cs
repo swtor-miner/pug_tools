@@ -179,10 +179,10 @@ namespace tor_tools
                 sw.Stop();
                 addtolist("Finished in " + sw.ElapsedMilliseconds / 1000 + " seconds! Found " + filenames.Count + " potential filenames.");
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 // do something here 
-                System.Windows.MessageBox.Show(String.Format("An error occured while loading data. ({0})", e.HResult));
+                System.Windows.MessageBox.Show(String.Format("An error occured while loading data. ({0})", ex.HResult));
             }
             EnableButtons();
         } 

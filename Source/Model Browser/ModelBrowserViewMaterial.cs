@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using FileFormats;
 using TorLib;
@@ -26,37 +22,37 @@ namespace tor_tools
         {
             InitializeComponent();
             this.material = material;
-            this.Refresh();
+            Refresh();
             backgroundWorker1.RunWorkerAsync();
         }
 
         private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             Assets currentAssets = AssetHandler.Instance.GetCurrentAssets();
-            var materialFile = currentAssets.FindFile("/resources/art/shaders/materials/" + this.material.materialName + ".mat");
+            var materialFile = currentAssets.FindFile("/resources/art/shaders/materials/" + material.materialName + ".mat");
             if (materialFile != null)
             {
                 var materialStream = materialFile.OpenCopyInMemory();
-                this.xmlDoc.Load(materialStream);
+                xmlDoc.Load(materialStream);
             }
             matDict.Add("/", new NodeAsset("/", "", "Root", null));
-            matDict.Add("/xml", new NodeAsset("/xml", "/", "XML", this.xmlDoc));
+            matDict.Add("/xml", new NodeAsset("/xml", "/", "XML", xmlDoc));
 
-            if (this.material.parsed == false)
-                this.material.ParseMAT(null, null);
+            if (material.parsed == false)
+                material.ParseMAT(null, null);
 
-            DevIL.ImageImporter imp = new ImageImporter();
-            DevIL.ImageExporter exp = new ImageExporter();
+            ImageImporter imp = new ImageImporter();
+            ImageExporter exp = new ImageExporter();
             DevIL.Image dds;
 
-            if (this.material.diffuseDDS != null)
+            if (material.diffuseDDS != null)
             {
-                var diffuseFile = currentAssets.FindFile(this.material.diffuseDDS);
+                var diffuseFile = currentAssets.FindFile(material.diffuseDDS);
                 if (diffuseFile != null)
                 {
                     var memStream = new MemoryStream();
                     var diffuseStream = diffuseFile.OpenCopyInMemory();
-                    dds = imp.LoadImageFromStream(DevIL.ImageType.Dds, diffuseStream);
+                    dds = imp.LoadImageFromStream(ImageType.Dds, diffuseStream);
                     exp.SaveImageToStream(dds, ImageType.Png, memStream);
                     Bitmap bm = new Bitmap(memStream);
                     matDict.Add("/diffuse", new NodeAsset("/diffuse", "/", "Diffuse", bm));
@@ -93,14 +89,14 @@ namespace tor_tools
                 }
             }
 
-            if (this.material.rotationDDS != null)
+            if (material.rotationDDS != null)
             {
-                var rotationFile = currentAssets.FindFile(this.material.rotationDDS);
+                var rotationFile = currentAssets.FindFile(material.rotationDDS);
                 if (rotationFile != null)
                 {
                     var memStream = new MemoryStream();
                     var rotationStream = rotationFile.OpenCopyInMemory();
-                    dds = imp.LoadImageFromStream(DevIL.ImageType.Dds, rotationStream);
+                    dds = imp.LoadImageFromStream(ImageType.Dds, rotationStream);
                     exp.SaveImageToStream(dds, ImageType.Png, memStream);
                     Bitmap bm = new Bitmap(memStream);
                     matDict.Add("/rotation", new NodeAsset("/rotation", "/", "Rotation", bm));
@@ -136,15 +132,15 @@ namespace tor_tools
                 }
             }
 
-            if (this.material.glossDDS != null)
+            if (material.glossDDS != null)
             {
 
-                var glossFile = currentAssets.FindFile(this.material.glossDDS);
+                var glossFile = currentAssets.FindFile(material.glossDDS);
                 if (glossFile != null)
                 {
                     var memStream = new MemoryStream();
                     var glossStream = glossFile.OpenCopyInMemory();
-                    dds = imp.LoadImageFromStream(DevIL.ImageType.Dds, glossStream);
+                    dds = imp.LoadImageFromStream(ImageType.Dds, glossStream);
                     exp.SaveImageToStream(dds, ImageType.Png, memStream);
                     Bitmap bm = new Bitmap(memStream);
                     matDict.Add("/gloss", new NodeAsset("/gloss", "/", "Gloss", bm));
@@ -181,14 +177,14 @@ namespace tor_tools
                 }
             }
 
-            if (this.material.paletteDDS != null)
+            if (material.paletteDDS != null)
             {
-                var paletteMaskFile = currentAssets.FindFile(this.material.paletteDDS);
+                var paletteMaskFile = currentAssets.FindFile(material.paletteDDS);
                 if (paletteMaskFile != null)
                 {
                     var memStream = new MemoryStream();
                     var paletteMaskStream = paletteMaskFile.OpenCopyInMemory();
-                    dds = imp.LoadImageFromStream(DevIL.ImageType.Dds, paletteMaskStream);
+                    dds = imp.LoadImageFromStream(ImageType.Dds, paletteMaskStream);
                     exp.SaveImageToStream(dds, ImageType.Png, memStream);
                     Bitmap bm = new Bitmap(memStream);
                     matDict.Add("/palettemask", new NodeAsset("/palettemask", "/", "Palette Mask", bm));
@@ -225,14 +221,14 @@ namespace tor_tools
                 }
             }
 
-            if (this.material.paletteMaskDDS != null)
+            if (material.paletteMaskDDS != null)
             {
-                var paletteMaskMapFile = currentAssets.FindFile(this.material.paletteMaskDDS);
+                var paletteMaskMapFile = currentAssets.FindFile(material.paletteMaskDDS);
                 if (paletteMaskMapFile != null)
                 {
                     var memStream = new MemoryStream();
                     var paletteMaskMapStream = paletteMaskMapFile.OpenCopyInMemory();
-                    dds = imp.LoadImageFromStream(DevIL.ImageType.Dds, paletteMaskMapStream);
+                    dds = imp.LoadImageFromStream(ImageType.Dds, paletteMaskMapStream);
                     exp.SaveImageToStream(dds, ImageType.Png, memStream);
                     Bitmap bm = new Bitmap(memStream);
                     matDict.Add("/palettemaskmap", new NodeAsset("/palettemaskmap", "/", "Palette Mask Map", bm));
@@ -269,15 +265,15 @@ namespace tor_tools
                 }
             }
 
-            if (this.material.complexionDDS != null)
+            if (material.complexionDDS != null)
             {
 
-                var complexionFile = currentAssets.FindFile(this.material.complexionDDS);
+                var complexionFile = currentAssets.FindFile(material.complexionDDS);
                 if (complexionFile != null)
                 {
                     var memStream = new MemoryStream();
                     var complexionStream = complexionFile.OpenCopyInMemory();
-                    dds = imp.LoadImageFromStream(DevIL.ImageType.Dds, complexionStream);
+                    dds = imp.LoadImageFromStream(ImageType.Dds, complexionStream);
                     exp.SaveImageToStream(dds, ImageType.Png, memStream);
                     Bitmap bm = new Bitmap(memStream);
                     matDict.Add("/complexion", new NodeAsset("/complexion", "/", "Complexion Map", bm));
@@ -314,15 +310,15 @@ namespace tor_tools
                 }
             }
 
-            if (this.material.facepaintDDS != null)
+            if (material.facepaintDDS != null)
             {
 
-                var facepaintFile = currentAssets.FindFile(this.material.facepaintDDS);
+                var facepaintFile = currentAssets.FindFile(material.facepaintDDS);
                 if (facepaintFile != null)
                 {
                     var memStream = new MemoryStream();
                     var facepaintStream = facepaintFile.OpenCopyInMemory();
-                    dds = imp.LoadImageFromStream(DevIL.ImageType.Dds, facepaintStream);
+                    dds = imp.LoadImageFromStream(ImageType.Dds, facepaintStream);
                     exp.SaveImageToStream(dds, ImageType.Png, memStream);
                     Bitmap bm = new Bitmap(memStream);
                     matDict.Add("/facepaint", new NodeAsset("/facepaint", "/", "Facepaint Map", bm));
@@ -359,15 +355,15 @@ namespace tor_tools
                 }
             }
 
-            if (this.material.ageDDS != null)
+            if (material.ageDDS != null)
             {
 
-                var ageFile = currentAssets.FindFile(this.material.ageDDS);
+                var ageFile = currentAssets.FindFile(material.ageDDS);
                 if (ageFile != null)
                 {
                     var memStream = new MemoryStream();
                     var ageStream = ageFile.OpenCopyInMemory();
-                    dds = imp.LoadImageFromStream(DevIL.ImageType.Dds, ageStream);
+                    dds = imp.LoadImageFromStream(ImageType.Dds, ageStream);
                     exp.SaveImageToStream(dds, ImageType.Png, memStream);
                     Bitmap bm = new Bitmap(memStream);
                     matDict.Add("/age", new NodeAsset("/age", "/", "Age Map", bm));
@@ -407,11 +403,11 @@ namespace tor_tools
 
         private void BackgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            webBrowser1.DocumentText = new CodeColorizer().Colorize(AssetBrowser.Beautify(this.xmlDoc), Languages.Xml);
+            webBrowser1.DocumentText = new CodeColorizer().Colorize(AssetBrowser.Beautify(xmlDoc), Languages.Xml);
             webBrowser1.Visible = true;
-            Func<NodeAsset, string> getId = (x => x.Id);
-            Func<NodeAsset, string> getParentId = (x => x.parentId);
-            Func<NodeAsset, string> getDisplayName = (x => x.displayName);
+            string getId(NodeAsset x) => x.Id;
+            string getParentId(NodeAsset x) => x.parentId;
+            string getDisplayName(NodeAsset x) => x.displayName;
             treeViewFast1.BeginUpdate();
             treeViewFast1.LoadItems<NodeAsset>(matDict, getId, getParentId, getDisplayName);
             treeViewFast1.EndUpdate();
@@ -427,10 +423,10 @@ namespace tor_tools
             NodeAsset asset = (NodeAsset)node.Tag;
             if (asset.dynObject != null)
             {
-                if (asset.dynObject is Bitmap)
+                if (asset.dynObject is Bitmap bitmap)
                 {
                     webBrowser1.Visible = false;
-                    pictureBox1.Image = (System.Drawing.Bitmap)asset.dynObject;
+                    pictureBox1.Image = bitmap;
                     pictureBox1.Visible = true;
                 }
             }

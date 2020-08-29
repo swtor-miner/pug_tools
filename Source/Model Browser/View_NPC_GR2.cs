@@ -20,45 +20,30 @@ namespace tor_tools
 {
     internal class View_NPC_GR2 : D3DPanelApp
     {
-        String fqn;
-
-        Dictionary<string, GR2> models = new Dictionary<string, GR2>();
-        Dictionary<string, object> resources = new Dictionary<string, object>();
-
-        private readonly DirectionalLight[] _dirLights;
-
-        private Matrix _texTransform;
-        private Matrix _world;
-        // private Matrix _view;
-        private Matrix _proj;
-
-        private Point _lastMousePos;
-
         public bool _disposed;
+        private readonly FpsCamera _flyingCamera;
+        private float _flyingCameraSpeed = 1.0f;
         private GR2_Effect _fx;
-
-        private readonly FpsCamera _cam;
-        private readonly LookAtCamera _cam2;
-        private bool _useFpsCamera;
-        private float _FPScameraSpeed = 1.0f;
-        private float _LookAtZoomSpeed = 0.05f;
-
+        private Point _lastMousePos;
+        private readonly LookAtCamera _modelCamera;
+        private float _modelCameraSpeed = 0.05f;
+        private bool _useFlyingCamera;
+        public EffectTechnique activeTech;
+        private Vector3 cameraPos;
+        public Matrix cMatrix;
+        GR2 focus = new GR2();
+        string fqn;
         private Vector3 globalBoxMin;
         private Vector3 globalBoxMax;
         private Vector3 globalBoxCenter;
-        private Vector3 cameraPos;
-
-        private List<PosNormalTexTan> vertices = new List<PosNormalTexTan>();
         private readonly List<GR2_Mesh_Vertex_Index> indexes = new List<GR2_Mesh_Vertex_Index>();
         private readonly List<ushort> indexList = new List<ushort>();
-
         bool makeScreenshot = false;
-
-        GR2 focus = new GR2();
-
+        Dictionary<string, GR2> models = new Dictionary<string, GR2>();
+        public Matrix pMatrix;
+        Dictionary<string, object> resources = new Dictionary<string, object>();
         public string selectedModel = "";
-
-        public EffectTechnique activeTech;
+        private List<PosNormalTexTan> vertices = new List<PosNormalTexTan>();
 
         public View_NPC_GR2(IntPtr hInstance, Form form, string panelName = "")
             : base(hInstance, panelName)
@@ -69,25 +54,11 @@ namespace tor_tools
             ClientHeight = form.Controls.Find(panelName, true).First().Height;
             ClientWidth = form.Controls.Find(panelName, true).First().Width;
 
-            _useFpsCamera = false;
-            _cam = new FpsCamera();
-            _cam2 = new LookAtCamera();
+            _useFlyingCamera = false;
+            _flyingCamera = new FpsCamera();
+            _modelCamera = new LookAtCamera();
 
             _lastMousePos = new Point();
-
-            _world = Matrix.Identity;
-            _texTransform = Matrix.Identity;
-            // _view = Matrix.Identity;
-            _proj = Matrix.Identity;
-
-            _dirLights = new[] {
-                new DirectionalLight {
-                Ambient = Color.White,
-                Diffuse = Color.White,
-                Specular = new Color4(0.5f, 0.5f, 0.5f),
-                Direction = new Vector3(0.57735f, -0.57735f, 0.57735f)
-                },
-            };
         }
 
         public void Clear()
@@ -150,8 +121,6 @@ namespace tor_tools
 
         public void LoadModel(Dictionary<string, GR2> models, Dictionary<string, object> resources, string fqn, string type = "")
         {
-            activeTech = _fx.Light1Tech;
-
             this.fqn = fqn;
 
             switch (type)
@@ -167,7 +136,7 @@ namespace tor_tools
                     if (focus == null) focus = models.First().Value;
                     break;
                 case "nppTypeHumanoid":
-                    focus = models.ContainsKey("appSlotLeg") ? models["appSlotLeg"] : models.Last().Value;
+                    focus = models.ContainsKey("appSlotWaist") ? models["appSlotWaist"] : models.Last().Value;
                     break;
                 case "nppTypeCreature":
                     focus = models.ContainsKey("appSlotCreature") ? models["appSlotCreature"] : models.Last().Value;
@@ -193,13 +162,12 @@ namespace tor_tools
             globalBoxCenter = globalBoxMin + (globalBoxMax - globalBoxMin) / 2;
             cameraPos = new Vector3(globalBoxCenter.X * 2.5f, globalBoxCenter.Y * 2.5f, Math.Max(Math.Max(globalBoxMax.X, globalBoxMax.Y), globalBoxMax.Z) * 2.5f);
 
-            _useFpsCamera = false;
-            _cam.Reset();
-            _cam.Position = cameraPos;
+            _modelCamera.Reset();
+            _modelCamera.Position = cameraPos;
+            _modelCamera.LookAt(cameraPos, globalBoxCenter, Vector3.UnitY);
 
-            _cam2.Reset();
-            _cam2.Position = cameraPos;
-            _cam2.LookAt(cameraPos, globalBoxCenter, Vector3.UnitY);
+            _flyingCamera.Reset();
+            _flyingCamera.Position = cameraPos;
 
             foreach (var model in models)
             {
@@ -382,9 +350,8 @@ namespace tor_tools
         public override void OnResize()
         {
             base.OnResize();
-            _cam.SetLens(0.25f * MathF.PI, AspectRatio, 0.001f, 1000.0f);
-            _cam2.SetLens(0.25f * MathF.PI, AspectRatio, 0.001f, 1000.0f);
-            _proj = Matrix.PerspectiveFovRH(0.25f * MathF.PI, AspectRatio, 1.0f, 1000.0f);
+            _modelCamera.SetLens(0.25f * MathF.PI, AspectRatio, 0.001f, 1000.0f);
+            _flyingCamera.SetLens(0.25f * MathF.PI, AspectRatio, 0.001f, 1000.0f);
         }
 
         public override void UpdateScene(float dt)
@@ -395,98 +362,98 @@ namespace tor_tools
             {
                 if (Util.IsKeyDown(Keys.R))
                 {
-                    if (_useFpsCamera)
+                    if (!_useFlyingCamera)
                     {
-                        _cam.Reset();
-                        _cam.Position = cameraPos;
+                        _modelCamera.Reset();
+                        _modelCamera.Position = cameraPos;
+                        _modelCamera.LookAt(cameraPos, globalBoxCenter, Vector3.UnitY);
                     }
                     else
                     {
-                        _cam2.Reset();
-                        _cam2.Position = cameraPos;
-                        _cam2.LookAt(cameraPos, globalBoxCenter, Vector3.UnitY);
+                        _flyingCamera.Reset();
+                        _flyingCamera.Position = cameraPos;
                     }
                 }
 
                 if (Util.IsKeyDown(Keys.Oemplus))
                 {
-                    _FPScameraSpeed = 15.0f;
-                    _LookAtZoomSpeed = 0.20f;
+                    _flyingCameraSpeed = 15.0f;
+                    _modelCameraSpeed = 0.20f;
                 }
 
                 if (Util.IsKeyDown(Keys.OemMinus))
                 {
-                    _FPScameraSpeed = 2.5f;
-                    _LookAtZoomSpeed = 0.05f;
+                    _flyingCameraSpeed = 2.5f;
+                    _modelCameraSpeed = 0.05f;
                 }
 
-                if (Util.IsKeyDown(Keys.W) && _useFpsCamera)
+                if (Util.IsKeyDown(Keys.W) && _useFlyingCamera)
                     if (Util.IsKeyDown(Keys.LShiftKey))
-                        _cam.Walk(-0.2f * dt);
+                        _flyingCamera.Walk(-0.2f * dt);
                     else if (Util.IsKeyDown(Keys.LControlKey))
-                        _cam.Walk(-30.0f * dt);
+                        _flyingCamera.Walk(-30.0f * dt);
                     else
-                        _cam.Walk(-_FPScameraSpeed * dt);
+                        _flyingCamera.Walk(-_flyingCameraSpeed * dt);
 
-                if (Util.IsKeyDown(Keys.S) && _useFpsCamera)
+                if (Util.IsKeyDown(Keys.S) && _useFlyingCamera)
                     if (Util.IsKeyDown(Keys.LShiftKey))
-                        _cam.Walk(0.2f * dt);
+                        _flyingCamera.Walk(0.2f * dt);
                     else if (Util.IsKeyDown(Keys.LControlKey))
-                        _cam.Walk(30.0f * dt);
+                        _flyingCamera.Walk(30.0f * dt);
                     else
-                        _cam.Walk(_FPScameraSpeed * dt);
+                        _flyingCamera.Walk(_flyingCameraSpeed * dt);
 
-                if (Util.IsKeyDown(Keys.A) && _useFpsCamera)
+                if (Util.IsKeyDown(Keys.A) && _useFlyingCamera)
                     if (Util.IsKeyDown(Keys.LShiftKey))
-                        _cam.Strafe(-0.2f * dt);
+                        _flyingCamera.Strafe(-0.2f * dt);
                     else if (Util.IsKeyDown(Keys.LControlKey))
-                        _cam.Strafe(-30.0f * dt);
+                        _flyingCamera.Strafe(-30.0f * dt);
                     else
-                        _cam.Strafe(-_FPScameraSpeed * dt);
+                        _flyingCamera.Strafe(-_flyingCameraSpeed * dt);
 
-                if (Util.IsKeyDown(Keys.D) && _useFpsCamera)
+                if (Util.IsKeyDown(Keys.D) && _useFlyingCamera)
                     if (Util.IsKeyDown(Keys.LShiftKey))
-                        _cam.Strafe(0.2f * dt);
+                        _flyingCamera.Strafe(0.2f * dt);
                     else if (Util.IsKeyDown(Keys.LControlKey))
-                        _cam.Strafe(30.0f * dt);
+                        _flyingCamera.Strafe(30.0f * dt);
                     else
-                        _cam.Strafe(_FPScameraSpeed * dt);
+                        _flyingCamera.Strafe(_flyingCameraSpeed * dt);
 
                 if (Util.IsKeyDown(Keys.L))
-                    _useFpsCamera = false;
+                    _useFlyingCamera = false;
 
                 if (Util.IsKeyDown(Keys.F))
-                    _useFpsCamera = true;
+                    _useFlyingCamera = true;
 
                 if (Util.IsKeyDown(Keys.PageUp))
-                    if (!_useFpsCamera)
-                        _cam2.Zoom(-_FPScameraSpeed * dt);
+                    if (!_useFlyingCamera)
+                        _modelCamera.Zoom(-_flyingCameraSpeed * dt);
                     else
-                        _cam.Zoom(-dt);
+                        _flyingCamera.Zoom(-dt);
 
                 if (Util.IsKeyDown(Keys.PageDown))
-                    if (!_useFpsCamera)
-                        _cam2.Zoom(_FPScameraSpeed * dt);
+                    if (!_useFlyingCamera)
+                        _modelCamera.Zoom(_flyingCameraSpeed * dt);
                     else
-                        _cam.Zoom(+dt);
+                        _flyingCamera.Zoom(+dt);
 
                 if (Util.IsKeyDown(Keys.L))
-                    _useFpsCamera = false;
+                    _useFlyingCamera = false;
 
                 if (Util.IsKeyDown(Keys.F))
-                    _useFpsCamera = true;
+                    _useFlyingCamera = true;
 
                 if (Util.IsKeyDown(Keys.PageUp))
-                    if (!_useFpsCamera)
-                        _cam2.Zoom(-_FPScameraSpeed * dt);
+                    if (!_useFlyingCamera)
+                        _modelCamera.Zoom(-_flyingCameraSpeed * dt);
                     else
-                        _cam.Zoom(-dt);
+                        _flyingCamera.Zoom(-dt);
 
                 if (Util.IsKeyDown(Keys.PageDown))
-                    if (!_useFpsCamera)
-                        _cam2.Zoom(_FPScameraSpeed * dt);
+                    if (!_useFlyingCamera)
+                        _modelCamera.Zoom(_flyingCameraSpeed * dt);
                     else
-                        _cam.Zoom(+dt);
+                        _flyingCamera.Zoom(+dt);
             }
             System.Threading.Thread.Sleep(1); //Fix for UI lag. Sleeps the thread for 1 millisecond...
         }
@@ -494,77 +461,72 @@ namespace tor_tools
         public override void DrawScene()
         {
             base.DrawScene();
+
             ImmediateContext.ClearRenderTargetView(RenderTargetView, Color.LightSteelBlue);
             ImmediateContext.ClearDepthStencilView(DepthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
 
             ImmediateContext.InputAssembler.InputLayout = InputLayouts.PosNormalTexTan;
             ImmediateContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
 
-            ImmediateContext.OutputMerger.BlendState = RenderStates.TransparentBS;
-            ImmediateContext.OutputMerger.BlendFactor = new Color4(0, 0, 0, 0);
-            ImmediateContext.OutputMerger.BlendSampleMask = ~0;
+            ImmediateContext.OutputMerger.BlendState = RenderStates.AlphaToCoverageBS;
 
-            ImmediateContext.Rasterizer.State = RenderStates.CullClockwiseNoneRS;
-            Matrix viewProj;
+            ImmediateContext.Rasterizer.State = RenderStates.OneSidedRS;
 
-            if (_useFpsCamera)
+            if (!_useFlyingCamera)
             {
-                _cam.UpdateViewMatrix();
-                viewProj = _cam.ViewProj;
-                _fx.SetEyePosW(_cam.Position);
+                _modelCamera.UpdateViewMatrix();
+                cMatrix = _modelCamera.View;
+                pMatrix = _modelCamera.Proj;
             }
             else
             {
-                _cam2.UpdateViewMatrix();
-                viewProj = _cam2.ViewProj;
-                _fx.SetEyePosW(_cam2.Position);
+                _flyingCamera.UpdateViewMatrix();
+                cMatrix = _flyingCamera.View;
+                pMatrix = _flyingCamera.Proj;
             }
 
-            _fx.SetDirLights(_dirLights);
-            _fx.SetEyePosW(_cam.Position);
-
-            this.activeTech = _fx.Light1Tech;
+            activeTech = _fx.Generic;
 
             if (Form.ActiveForm != null)
             {
                 if (Util.IsKeyDown(Keys.Q))
                 {
-                    activeTech = _fx.Light1GarmentMask;
+                    activeTech = _fx.filterPaletteMask;
                 }
 
                 if (Util.IsKeyDown(Keys.E))
                 {
-                    activeTech = _fx.Light1GarmentDiffuse;
+                    activeTech = _fx.filterDiffuseMap;
                 }
 
                 if (Util.IsKeyDown(Keys.D1))
                 {
-                    activeTech = _fx.Light1GarmentPalette1;
+                    activeTech = _fx.filterPalette1;
                 }
 
                 if (Util.IsKeyDown(Keys.D2))
                 {
-                    activeTech = _fx.Light1GarmentPalette2;
+                    activeTech = _fx.filterPalette2;
                 }
 
                 if (Util.IsKeyDown(Keys.D3))
                 {
-                    activeTech = _fx.Light1GarmentPaletteMap;
+                    activeTech = _fx.filterPaletteMap;
                 }
 
                 if (Util.IsKeyDown(Keys.D4))
                 {
-                    activeTech = _fx.Light1Complexion;
+                    activeTech = _fx.filterComplexionMap;
                 }
 
                 if (Util.IsKeyDown(Keys.D5))
                 {
-                    activeTech = _fx.Light1Facepaint;
+                    activeTech = _fx.filterFacepaintMap;
                 }
 
                 if (Util.IsKeyDown(Keys.D6))
                 {
-                    activeTech = _fx.Light1Age;
+                    activeTech = _fx.filterAgeMap;
                 }
 
                 if (Util.IsKeyDown(Keys.C))
@@ -582,14 +544,18 @@ namespace tor_tools
             {
                 if (model.Value.enabled == false)
                     continue;
-                var world = _world * model.Value.GetTransform();
-                var wit = MathF.InverseTranspose(world);
-                var wvp = world * viewProj;
 
-                _fx.SetWorld(world);
-                _fx.SetWorldInvTranspose(wit);
+                var mvMatrix = new Matrix();
+                mvMatrix = model.Value.GetTransform();
+                Matrix.Multiply(ref mvMatrix, ref cMatrix, out mvMatrix);
+
+                var wvp = new Matrix();
+                Matrix.Multiply(ref mvMatrix, ref pMatrix, out wvp);
+                Matrix.Invert(ref mvMatrix, out mvMatrix);
+                Matrix.Transpose(ref mvMatrix, out mvMatrix);
+
+                _fx.SetWorld(mvMatrix);
                 _fx.SetWorldViewProj(wvp);
-                _fx.SetTexTransform(_texTransform);
 
                 foreach (var mesh in model.Value.meshes)
                 {
@@ -644,7 +610,7 @@ namespace tor_tools
                 {
                     foreach (var attachModel in model.Value.attachedModels)
                     {
-                        if (attachModel.enabled == false)
+                        if (!attachModel.enabled)
                             continue;
 
                         foreach (var attachMesh in attachModel.meshes)
@@ -673,7 +639,7 @@ namespace tor_tools
 
             if (makeScreenshot)
             {
-                MakeScreenshot(ImageFileFormat.Jpg);
+                MakeScreenshot(ImageFileFormat.Png);
                 makeScreenshot = false;
             }
 
@@ -681,35 +647,124 @@ namespace tor_tools
 
         public void SetMaterial(GR2_Material selectedMaterial)
         {
-            string derived = selectedMaterial.derived;
+            List<EffectTechnique> derivedList = new List<EffectTechnique>() {
+        _fx.Generic,
+        _fx.Eye,
+        _fx.Garment,
+        _fx.HairC,
+        _fx.SkinB
+    };
 
-            if (activeTech == _fx.Light1Garment || activeTech == _fx.Light1Tech || activeTech == _fx.Light1Skin || activeTech == _fx.Light1Hair || activeTech == _fx.Light1Eye)
+            if (derivedList.Any(x => activeTech == x))
             {
-                if (derived == "Garment" || derived == "GarmentScrolling")
-                    activeTech = _fx.Light1Garment;
-                else if (derived == "HairC")
-                    activeTech = _fx.Light1Hair;
-                else if (derived == "SkinB")
-                    activeTech = _fx.Light1Skin;
-                else if (derived == "Eye")
-                    activeTech = _fx.Light1Eye;
-                else
-                    activeTech = _fx.Light1Tech;
+                switch (selectedMaterial.derived)
+                {
+                    case "AnimatedUV":
+                        activeTech = _fx.Generic;
+                        break;
+                    case "AnimatedUVAlphaBlend":
+                        activeTech = _fx.Generic;
+                        break;
+                    case "Creature":
+                        activeTech = _fx.Generic;
+                        break;
+                    case "DiffuseFlat":
+                        activeTech = _fx.Generic;
+                        break;
+                    case "EmissiveOnly":
+                        activeTech = _fx.Generic;
+                        break;
+                    case "Eye":
+                        activeTech = _fx.Eye;
+                        break;
+                    case "Garment":
+                        activeTech = _fx.Garment;
+                        break;
+                    case "Glass":
+                        activeTech = _fx.Generic;
+                        break;
+                    case "HairC":
+                        activeTech = _fx.HairC;
+                        break;
+                    case "HighQualityCharacter":
+                        activeTech = _fx.Generic;
+                        break;
+                    case "Ice":
+                        activeTech = _fx.Generic;
+                        break;
+                    case "NoShadeTexFogged":
+                        activeTech = _fx.Generic;
+                        break;
+                    case "OpacityFade":
+                        activeTech = _fx.Generic;
+                        break;
+                    case "SkinB":
+                        activeTech = _fx.SkinB;
+                        break;
+                    case "Skydome":
+                        activeTech = _fx.Generic;
+                        break;
+                    case "Uber":
+                        activeTech = _fx.Generic;
+                        break;
+                    case "UberEnvBlend":
+                        activeTech = _fx.Generic;
+                        break;
+                    case "Vegetation":
+                        activeTech = _fx.Generic;
+                        break;
+                    default:
+                        activeTech = _fx.Generic;
+                        break;
+                }
             }
 
-            _fx.SetDiffuseMap(selectedMaterial.diffuseSRV);
-            _fx.SetGlossMap(selectedMaterial.glossSRV);
-            _fx.SetRotationMap(selectedMaterial.rotationSRV);
+            // switch (selectedMaterial.polytype)
+            // {
+            //     case "Ignore":
+            //         _fx.SetPolyType(new Vector2(1));
+            //         break;
+            //     default:
+            //         _fx.SetPolyType(new Vector2(0));
+            //         break;
+            // }
 
+            switch (selectedMaterial.alphaMode)
+            {
+                case "Test":
+                    _fx.SetAlphaMode(0);
+                    break;
+                case "Add":
+                    _fx.SetAlphaMode(4);
+                    break;
+                case "Multiply":
+                    _fx.SetAlphaMode(2);
+                    break;
+                case "Full":
+                    _fx.SetAlphaMode(3);
+                    break;
+                case "MultiPassFull":
+                    _fx.SetAlphaMode(3);
+                    break;
+                default:
+                    _fx.SetAlphaMode(0);
+                    break;
+            }
+
+            _fx.SetAlphaTestValue(selectedMaterial.alphaTestValue);
+
+            if (selectedMaterial.isTwoSided)
+                ImmediateContext.Rasterizer.State = RenderStates.TwoSidedRS;
+
+            _fx.SetDiffuseMap(selectedMaterial.diffuseSRV);
+            _fx.SetRotationMap(selectedMaterial.rotationSRV);
+            _fx.SetGlossMap(selectedMaterial.glossSRV);
             _fx.SetPaletteMap(selectedMaterial.paletteSRV);
             _fx.SetPaletteMaskMap(selectedMaterial.paletteMaskSRV);
 
             _fx.SetComplexionMap(selectedMaterial.complexionSRV);
             _fx.SetFacepaintMap(selectedMaterial.facepaintSRV);
             _fx.SetAgeMap(selectedMaterial.ageSRV);
-
-            _fx.SetFlushTone(selectedMaterial.flushTone);
-            _fx.SetFleshBrightness(selectedMaterial.fleshBrightness);
 
             _fx.SetPalette1(selectedMaterial.palette1);
             _fx.SetPalette2(selectedMaterial.palette2);
@@ -720,19 +775,15 @@ namespace tor_tools
             _fx.SetPalette1MetSpec(selectedMaterial.palette1MetSpec);
             _fx.SetPalette2MetSpec(selectedMaterial.palette2MetSpec);
 
-            _fx.SetAlphaClipValue(new Vector2(selectedMaterial.alphaClipValue));
-
-            if (selectedMaterial.polytype == "Ignore")
-                _fx.SetPolyIgnore(new Vector2(1));
-            else
-                _fx.SetPolyIgnore(new Vector2(0));
+            _fx.SetFlushTone(selectedMaterial.flushTone);
+            _fx.SetFleshBrightness(selectedMaterial.fleshBrightness);
         }
 
-        public void MakeScreenshot(SlimDX.Direct3D11.ImageFileFormat format)
+        public void MakeScreenshot(ImageFileFormat format)
         {
             try
             {
-                string filename = tor_tools.Tools.PrepExtractPath(this.fqn + '-' + DateTime.Now.ToString("yyyyMMddHHmmss") + '.' + format.ToString().ToLower());
+                string filename = Tools.PrepExtractPath(fqn + '-' + DateTime.Now.ToString("yyyyMMddHHmmss") + '.' + format.ToString().ToLower());
                 var outputDesc = new Texture2DDescription
                 {
                     Width = ClientWidth,
@@ -751,7 +802,7 @@ namespace tor_tools
                 ImmediateContext.ResolveSubresource(BackBuffer, 0, outputFile, 0, Format.R8G8B8A8_UNorm);
                 Texture2D.ToFile(ImmediateContext, outputFile, format, filename);
                 Util.ReleaseCom(ref outputFile);
-                ((tor_tools.ModelBrowser)Window).SetStatusLabel("Screenshot Completed");
+                ((ModelBrowser)Window).SetStatusLabel("Screenshot Completed");
             }
             catch (Exception ex)
             {
@@ -759,78 +810,78 @@ namespace tor_tools
             }
         }
 
-        protected override void OnMouseDown(object sender, MouseEventArgs mouseEventArgs)
+        protected override void OnMouseDown(object sender, MouseEventArgs mEvnt)
         {
-            _lastMousePos = mouseEventArgs.Location;
+            _lastMousePos = mEvnt.Location;
             Window.Controls.Find(RenderPanelName, true).First().Capture = true;
         }
 
-        protected override void OnMouseUp(object sender, MouseEventArgs e)
+        protected override void OnMouseUp(object sender, MouseEventArgs mEvnt)
         {
             Window.Controls.Find(RenderPanelName, true).First().Capture = true;
         }
 
-        protected override void OnMouseMove(object sender, MouseEventArgs e)
+        protected override void OnMouseMove(object sender, MouseEventArgs mEvnt)
         {
-            if (e.Button == MouseButtons.Left)
+            if (mEvnt.Button == MouseButtons.Left)
             {
-                var dy = MathF.ToRadians(0.4f * (e.Y - _lastMousePos.Y));
-                var dx = -MathF.ToRadians(0.4f * (e.X - _lastMousePos.X));
-                if (_useFpsCamera)
+                var yDelta = MathF.ToRadians(0.4f * (mEvnt.Y - _lastMousePos.Y));
+                var xDelta = -MathF.ToRadians(0.4f * (mEvnt.X - _lastMousePos.X));
+                if (_useFlyingCamera)
                 {
-                    _cam.Pitch(-dy);
-                    _cam.Yaw(dx);
+                    _flyingCamera.Pitch(-yDelta);
+                    _flyingCamera.Yaw(xDelta);
                 }
                 else
                 {
                     if (Util.IsKeyDown(Keys.LShiftKey))
                     {
-                        dx = MathF.ToRadians(0.05f * (e.X - _lastMousePos.X));
-                        dy = MathF.ToRadians(0.05f * (e.Y - _lastMousePos.Y));
-                        _cam2.Strafe(-dx * _cam2.Radius);
-                        _cam2.Fly(dy * _cam2.Radius);
+                        xDelta = MathF.ToRadians(0.05f * (mEvnt.X - _lastMousePos.X));
+                        yDelta = MathF.ToRadians(0.05f * (mEvnt.Y - _lastMousePos.Y));
+                        _modelCamera.Strafe(-xDelta * _modelCamera.Radius);
+                        _modelCamera.Fly(yDelta * _modelCamera.Radius);
                     }
                     else
                     {
-                        _cam2.Pitch(dy);
-                        _cam2.Yaw(-dx);
+                        _modelCamera.Pitch(yDelta);
+                        _modelCamera.Yaw(-xDelta);
                     }
                 }
             }
-            else if (e.Button == MouseButtons.Right)
+            else if (mEvnt.Button == MouseButtons.Right)
             {
-                var dx = MathF.ToRadians(0.05f * (e.X - _lastMousePos.X));
-                var dy = MathF.ToRadians(0.05f * (e.Y - _lastMousePos.Y));
-                if (!_useFpsCamera)
+                var xDelta = MathF.ToRadians(0.05f * (mEvnt.X - _lastMousePos.X));
+                var yDelta = MathF.ToRadians(0.05f * (mEvnt.Y - _lastMousePos.Y));
+                if (!_useFlyingCamera)
                 {
-                    _cam2.Strafe(-dx * _cam2.Radius);
-                    _cam2.Fly(dy * _cam2.Radius);
+                    _modelCamera.Strafe(-xDelta * _modelCamera.Radius);
+                    _modelCamera.Fly(yDelta * _modelCamera.Radius);
                 }
             }
-            _lastMousePos = e.Location;
+            _lastMousePos = mEvnt.Location;
         }
 
-        protected override void OnMouseWheel(object sender, MouseEventArgs evnt)
+        protected override void OnMouseWheel(object sender, MouseEventArgs mEvnt)
         {
-            int zoom = -evnt.Delta * SystemInformation.MouseWheelScrollLines / 120;
+            int zoom = -mEvnt.Delta * SystemInformation.MouseWheelScrollLines / 120;
 
-            if (!_useFpsCamera)
+            if (!_useFlyingCamera)
             {
                 if (Util.IsKeyDown(Keys.LShiftKey))
                 {
-                    _cam2.Zoom(0.005f * zoom);
+                    _modelCamera.Zoom(0.005f * zoom);
                 }
                 else if (Util.IsKeyDown(Keys.LControlKey))
                 {
-                    _cam2.Zoom(0.5f * zoom);
+                    _modelCamera.Zoom(0.5f * zoom);
                 }
                 else
                 {
-                    _cam2.Zoom(_LookAtZoomSpeed * zoom);
+                    _modelCamera.Zoom(_modelCameraSpeed * zoom);
                 }
             }
             else
-                _cam.Zoom(0.10f * zoom);
+                _flyingCamera.Zoom(0.10f * zoom);
 
         }
 
@@ -847,10 +898,10 @@ namespace tor_tools
                     foreach (var vertex in mesh.meshVerts)
                     {
                         Vector3 pos = new Vector3(vertex.X, vertex.Y, vertex.Z);
-                        Vector3 norm = new Vector3(vertex.normX, vertex.normY, vertex.normZ);
-                        Vector2 texC = new Vector2(vertex.texU, vertex.texV);
+                        Vector3 nor = new Vector3(vertex.normX, vertex.normY, vertex.normZ);
+                        Vector2 tex = new Vector2(vertex.texU, vertex.texV);
                         Vector3 tan = new Vector3(vertex.tanX, vertex.tanY, vertex.tanZ);
-                        vertices.Add(new PosNormalTexTan(pos, norm, texC, tan));
+                        vertices.Add(new PosNormalTexTan(pos, nor, tex, tan));
                     }
 
                     var vbd = new BufferDescription(PosNormalTexTan.Stride * vertices.Count, ResourceUsage.Immutable, BindFlags.VertexBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
@@ -897,33 +948,33 @@ namespace tor_tools
         public void ExportGeometry(string bt)
         {
             string parsedName;
-            if (this.fqn == null)
+            if (fqn == null)
             {
                 parsedName = models.First().Key;
                 bt = "";
             }
             else
             {
-                parsedName = this.fqn;
-                if (!this.fqn.StartsWith("ipp."))
+                parsedName = fqn;
+                if (!fqn.StartsWith("ipp."))
                     bt = "";
             }
-            string path = String.Format("export\\{0}[{1}]", parsedName, bt);
-            string filename = String.Format("{0}\\{1}[{2}].obj", path, parsedName, bt);
-            string mtlFile = String.Format("{0}\\{1}[{2}].mtl", path, parsedName, bt);
+            string path = string.Format("export\\{0}[{1}]", parsedName, bt);
+            string filename = string.Format("{0}\\{1}[{2}].obj", path, parsedName, bt);
+            string mtlFile = string.Format("{0}\\{1}[{2}].mtl", path, parsedName, bt);
 
-            tor_tools.Tools.WriteFile("", filename, false);
+            Tools.WriteFile("", filename, false);
 
             StringBuilder output = new StringBuilder();
 
-            output.Append("mtllib ").Append(String.Format("{0}[{1}].mtl\ns 1\n", parsedName, bt));
-            tor_tools.Tools.WriteFile("", mtlFile, false);
+            output.Append("mtllib ").Append(string.Format("{0}[{1}].mtl\ns 1\n", parsedName, bt));
+            Tools.WriteFile("", mtlFile, false);
             int StartIndex = 0;
             foreach (var model in models)
             {
                 foreach (var mat in model.Value.materials)
                 {
-                    tor_tools.Tools.WriteFile("newmtl " + mat.materialName + "\n" +
+                    Tools.WriteFile("newmtl " + mat.materialName + "\n" +
                     "Kd 1.000000 1.000000 1.000000\n" +
                     "Ks " + mat.palette1Spec.Y.ToString() + " " + mat.palette1Spec.Z.ToString() + " " + mat.palette1Spec.W.ToString() + "\n" +
                     "Ns 32.000000\n" +
@@ -937,7 +988,7 @@ namespace tor_tools
                     ((mat.rotationDDS != null) ? ("map_Normal " + mat.rotationDDS.Substring(mat.rotationDDS.LastIndexOf('/') + 1)) : "") + "\n\n"
                     , mtlFile, true);
 
-                    var file = ((tor_tools.ModelBrowser)Window).currentAssets.FindFile(mat.diffuseDDS);
+                    var file = ((ModelBrowser)Window).currentAssets.FindFile(mat.diffuseDDS);
                     if (file != null)
                     {
                         DevIL.ImageImporter imp = new DevIL.ImageImporter();
@@ -950,15 +1001,15 @@ namespace tor_tools
 
                         var diffuseData = dds.GetImageData(0);
 
-                        var diffuseBM = new System.Drawing.Bitmap(diffuseData.Width, diffuseData.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                        var bumpBM = new System.Drawing.Bitmap(diffuseData.Width, diffuseData.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-                        var emisBM = new System.Drawing.Bitmap(diffuseData.Width, diffuseData.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                        var diffuseBM = new Bitmap(diffuseData.Width, diffuseData.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                        var bumpBM = new Bitmap(diffuseData.Width, diffuseData.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                        var emisBM = new Bitmap(diffuseData.Width, diffuseData.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
                         bool garment = false;
                         if (mat.derived == "Garment" || mat.derived == "GarmentScrolling") //Only do palette mapping to Garment materials.
                         {
                             garment = true;
-                            file = ((tor_tools.ModelBrowser)Window).currentAssets.FindFile(mat.paletteMaskDDS);
+                            file = ((ModelBrowser)Window).currentAssets.FindFile(mat.paletteMaskDDS);
                             if (file != null)
                             {
                                 //load paletteMask
@@ -967,17 +1018,17 @@ namespace tor_tools
                                 dds.Resize(diffuseData.Width, diffuseData.Height, diffuseData.Depth, DevIL.SamplingFilter.Bilinear, false);
 
                                 var pMaskData = dds.GetImageData(0);
-                                file = ((tor_tools.ModelBrowser)Window).currentAssets.FindFile(mat.paletteDDS);
+                                file = ((ModelBrowser)Window).currentAssets.FindFile(mat.paletteDDS);
                                 if (file != null)
                                 {
-                                    //load paletteMap
+                                    // Load paletteMap
                                     using (Stream pMStream = file.OpenCopyInMemory())
                                         dds = imp.LoadImageFromStream(DevIL.ImageType.Dds, pMStream);
                                     dds.Resize(diffuseData.Width, diffuseData.Height, diffuseData.Depth, DevIL.SamplingFilter.Bilinear, false);
 
                                     var pMapData = dds.GetImageData(0);
 
-                                    //manipulate Bitmap
+                                    // Manipulate Bitmap
                                     for (int k = 0; k < diffuseData.Height * diffuseData.Width; k++)
                                     {
                                         Color4 diffusePixel = new Color4(diffuseData.Data[k * 4 + 3],
@@ -993,6 +1044,7 @@ namespace tor_tools
                                             pMapData.Data[k * 4 + 1],
                                             pMapData.Data[k * 4 + 2]);
                                         float sum = (maskPixel.Red + maskPixel.Green) / 255;
+
                                         //HuePixel
                                         Vector4 palette = mat.palette1;
                                         if (maskPixel.Green > maskPixel.Red)
@@ -1001,31 +1053,33 @@ namespace tor_tools
                                         float h = mapPixel.Green / 255;
                                         float s = mapPixel.Blue / 255;
                                         float l = mapPixel.Alpha / 255;
+
                                         //ManipulateHSL
                                         //ExpandHSL
                                         h = (h * (.706f - .3137f)) + .3137f;
                                         h -= .41176f;
                                         s *= .5882f;
                                         l *= .70588f;
+
                                         //AdujustLightness
-                                        l = (float)Math.Pow((double)l, palette.W) * palette.W;
+                                        l = (float)Math.Pow(l, palette.W) * palette.W;
                                         l = palette.Z + ((1 - palette.Z) * l);
 
                                         //OffsetHSL
                                         //OffsetHue
                                         h = (h + palette.X) % 1;
                                         //OffsetSaturation
-                                        s = (float)Math.Pow((double)s, palette.Y);
-                                        s *= (1 - palette.Y);
-                                        s = (float)Saturate((double)s);
+                                        s = (float)Math.Pow(s, palette.Y);
+                                        s *= 1 - palette.Y;
+                                        s = (float)Saturate(s);
 
                                         //ManipulateAO
                                         float brightness = palette.Z + 1;
                                         float ret = ambOcc * (brightness + (1 - brightness) * ambOcc);
-                                        ret = (float)Saturate((double)ret);
+                                        ret = (float)Saturate(ret);
 
                                         l = (float)l * ret;
-                                        l = (float)Saturate((double)l);
+                                        l = (float)Saturate(l);
 
                                         Color semiPixel = HSL2RGB(h, s, l);
 
@@ -1033,14 +1087,14 @@ namespace tor_tools
                                             Lerp((byte)diffusePixel.Red, semiPixel.R, sum),
                                             Lerp((byte)diffusePixel.Green, semiPixel.G, sum),
                                             Lerp((byte)diffusePixel.Blue, semiPixel.B, sum));
-                                        diffuseBM.SetPixel(k % diffuseData.Width, (int)k / diffuseData.Width, completedPixel);
+                                        diffuseBM.SetPixel(k % diffuseData.Width, k / diffuseData.Width, completedPixel);
                                     }
                                 }
                             }
                         }
 
                         DevIL.ImageData rotationData = null;
-                        file = ((tor_tools.ModelBrowser)Window).currentAssets.FindFile(mat.rotationDDS);
+                        file = ((ModelBrowser)Window).currentAssets.FindFile(mat.rotationDDS);
                         if (file != null)
                         {
                             using (Stream rotationStream = file.OpenCopyInMemory())
@@ -1056,7 +1110,7 @@ namespace tor_tools
                                 int p = 255;
                                 if (rotationData != null && mat.alphaClip)
                                 {
-                                    if ((rotationData.Data[k * 4 + 0] / 255.0f) > mat.alphaClipValue)
+                                    if ((rotationData.Data[k * 4 + 0] / 255.0f) > mat.alphaTestValue)
                                         p = rotationData.Data[k * 4 + 0];
                                 }
 
@@ -1065,7 +1119,7 @@ namespace tor_tools
                                             diffuseData.Data[k * 4 + 1],
                                             diffuseData.Data[k * 4 + 2]);
 
-                                diffuseBM.SetPixel(k % diffuseData.Width, (int)k / diffuseData.Width, diffusePixel);
+                                diffuseBM.SetPixel(k % diffuseData.Width, k / diffuseData.Width, diffusePixel);
                             }
                             if (rotationData != null)
                             {
@@ -1074,12 +1128,12 @@ namespace tor_tools
                                 float sign = (x < 0) ? -1.0f : 1.0f;
                                 x = Math.Abs(x) * 2.0f - 1.0f;
                                 float z = (float)Math.Sqrt(1.0f - x * x - y * y) * sign;
-                                z = (z < 0) ? 0 : (z > 1) ? 1 : (float.IsNaN(z)) ? 0 : z;
+                                z = (z < 0) ? 0 : (z > 1) ? 1 : float.IsNaN(z) ? 0 : z;
                                 Color bumpPixel = Color.FromArgb(255,
                                             rotationData.Data[k * 4 + 1],
                                             rotationData.Data[k * 4 + 3],
                                             Convert.ToByte(z * 255.0f));
-                                bumpBM.SetPixel(k % diffuseData.Width, (int)k / diffuseData.Width, bumpPixel);
+                                bumpBM.SetPixel(k % diffuseData.Width, k / diffuseData.Width, bumpPixel);
 
                                 if (mat.useEmissive)
                                 {
@@ -1087,7 +1141,7 @@ namespace tor_tools
                                                 rotationData.Data[k * 4 + 2],
                                                 rotationData.Data[k * 4 + 2],
                                                 rotationData.Data[k * 4 + 2]);
-                                    emisBM.SetPixel(k % diffuseData.Width, (int)k / diffuseData.Width, emisPixel);
+                                    emisBM.SetPixel(k % diffuseData.Width, k / diffuseData.Width, emisPixel);
                                 }
                             }
                         }
@@ -1099,7 +1153,7 @@ namespace tor_tools
                                 bumpBM.Save(bmStream, System.Drawing.Imaging.ImageFormat.Png); //Bitmap to Stream
                                 DevIL.Image bmp = imp.LoadImageFromStream(new MemoryStream(bmStream.GetBuffer())); //Image from Stream
                                 exp.SaveImageToStream(bmp, DevIL.ImageType.Png, bmStream); //Image to DDS
-                                tor_tools.Tools.WriteFile(bmStream, String.Format("{0}\\{1}", path, mat.rotationDDS.Substring(mat.rotationDDS.LastIndexOf('/') + 1).Replace(".dds", ".png"))); //Save DDS
+                                Tools.WriteFile(bmStream, string.Format("{0}\\{1}", path, mat.rotationDDS.Substring(mat.rotationDDS.LastIndexOf('/') + 1).Replace(".dds", ".png"))); //Save DDS
                             }
                             if (mat.useEmissive)
                                 using (var bmStream = new MemoryStream())
@@ -1107,7 +1161,7 @@ namespace tor_tools
                                     emisBM.Save(bmStream, System.Drawing.Imaging.ImageFormat.Png); //Bitmap to Stream
                                     DevIL.Image bmp = imp.LoadImageFromStream(new MemoryStream(bmStream.GetBuffer())); //Image from Stream
                                     exp.SaveImageToStream(bmp, DevIL.ImageType.Png, bmStream); //Image to DDS
-                                    tor_tools.Tools.WriteFile(bmStream, String.Format("{0}\\{1}", path, mat.glossDDS.Substring(mat.glossDDS.LastIndexOf('/') + 1).Replace("_s.", "_emis.").Replace(".dds", ".png"))); //Save DDS
+                                    Tools.WriteFile(bmStream, string.Format("{0}\\{1}", path, mat.glossDDS.Substring(mat.glossDDS.LastIndexOf('/') + 1).Replace("_s.", "_emis.").Replace(".dds", ".png"))); //Save DDS
                                 }
                         }
 
@@ -1117,12 +1171,12 @@ namespace tor_tools
                             diffuseBM.Save(bmStream, System.Drawing.Imaging.ImageFormat.Png); //Bitmap to Stream
                             DevIL.Image bmp = imp.LoadImageFromStream(new MemoryStream(bmStream.GetBuffer())); //Image from Stream
                             exp.SaveImageToStream(bmp, DevIL.ImageType.Png, bmStream); //Image to DDS
-                            tor_tools.Tools.WriteFile(bmStream, String.Format("{0}\\{1}", path, mat.diffuseDDS.Substring(mat.diffuseDDS.LastIndexOf('/') + 1).Replace(".dds", ".png"))); //Save DDS
+                            Tools.WriteFile(bmStream, string.Format("{0}\\{1}", path, mat.diffuseDDS.Substring(mat.diffuseDDS.LastIndexOf('/') + 1).Replace(".dds", ".png"))); //Save DDS
                         }
                     }
 
                     //gloss map
-                    file = ((tor_tools.ModelBrowser)Window).currentAssets.FindFile(mat.glossDDS);
+                    file = ((ModelBrowser)Window).currentAssets.FindFile(mat.glossDDS);
                     if (file != null)
                     {
                         DevIL.ImageImporter imp = new DevIL.ImageImporter();
@@ -1138,8 +1192,8 @@ namespace tor_tools
 
                         var glossData = dds.GetImageData(0);
 
-                        var glossBM = new System.Drawing.Bitmap(glossData.Width, glossData.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-                        var specBM = new System.Drawing.Bitmap(glossData.Width, glossData.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                        var glossBM = new Bitmap(glossData.Width, glossData.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                        var specBM = new Bitmap(glossData.Width, glossData.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
                         for (int k = 0; k < glossData.Height * glossData.Width; k++)
                         {
@@ -1164,7 +1218,7 @@ namespace tor_tools
                             glossBM.Save(bmStream, System.Drawing.Imaging.ImageFormat.Png); //Bitmap to Stream
                             DevIL.Image bmp = imp.LoadImageFromStream(new MemoryStream(bmStream.GetBuffer())); //Image from Stream
                             exp.SaveImageToStream(bmp, DevIL.ImageType.Png, bmStream); //Image to DDS
-                            tor_tools.Tools.WriteFile(bmStream, String.Format("{0}\\{1}", path, mat.glossDDS.Substring(mat.glossDDS.LastIndexOf('/') + 1).Replace("_s.", "_si.").Replace(".dds", ".png"))); //Save DDS
+                            tor_tools.Tools.WriteFile(bmStream, string.Format("{0}\\{1}", path, mat.glossDDS.Substring(mat.glossDDS.LastIndexOf('/') + 1).Replace("_s.", "_si.").Replace(".dds", ".png"))); //Save DDS
                         }
 
                         using (var bmStream = new MemoryStream())
@@ -1172,7 +1226,7 @@ namespace tor_tools
                             specBM.Save(bmStream, System.Drawing.Imaging.ImageFormat.Png); //Bitmap to Stream
                             DevIL.Image bmp = imp.LoadImageFromStream(new MemoryStream(bmStream.GetBuffer())); //Image from Stream
                             exp.SaveImageToStream(bmp, DevIL.ImageType.Png, bmStream); //Image to DDS
-                            tor_tools.Tools.WriteFile(bmStream, String.Format("{0}\\{1}", path, mat.glossDDS.Substring(mat.glossDDS.LastIndexOf('/') + 1).Replace(".dds", ".png"))); //Save DDS
+                            tor_tools.Tools.WriteFile(bmStream, string.Format("{0}\\{1}", path, mat.glossDDS.Substring(mat.glossDDS.LastIndexOf('/') + 1).Replace(".dds", ".png"))); //Save DDS
                         }
                     }
                 }
@@ -1196,7 +1250,7 @@ namespace tor_tools
                     }
                 }
             }
-            tor_tools.Tools.WriteFile(output.ToString(), filename, false);
+            Tools.WriteFile(output.ToString(), filename, false);
         }
 
         private static string MeshToString(GR2_Mesh mesh, int StartIndex)
@@ -1210,9 +1264,9 @@ namespace tor_tools
 
             foreach (var vertex in mesh.meshVerts)
             {
-                vertices.Append(String.Format("v {0} {1} {2}\n", vertex.X, vertex.Y, vertex.Z));
-                normals.Append(String.Format("vn {0} {1} {2} {3}\n", vertex.normX, vertex.normY, vertex.normZ, vertex.normW));
-                uvs.Append(String.Format("vt {0} {1}\n", vertex.texU, -vertex.texV));
+                vertices.Append(string.Format("v {0} {1} {2}\n", vertex.X, vertex.Y, vertex.Z));
+                normals.Append(string.Format("vn {0} {1} {2} {3}\n", vertex.normX, vertex.normY, vertex.normZ, vertex.normW));
+                uvs.Append(string.Format("vt {0} {1}\n", vertex.texU, -vertex.texV));
             }
             sb.Append(vertices).Append("\n")
                 .Append(uvs).Append("\n")
@@ -1262,9 +1316,9 @@ namespace tor_tools
             public byte B;
             public ColorRGB(Color value)
             {
-                this.R = value.R;
-                this.G = value.G;
-                this.B = value.B;
+                R = value.R;
+                G = value.G;
+                B = value.B;
             }
             public static implicit operator Color(ColorRGB rgb)
             {
@@ -1345,7 +1399,7 @@ namespace tor_tools
         public override bool Equals(object obj)
         {
             return obj is View_NPC_GR2 gR &&
-                   _proj.Equals(gR._proj);
+                    pMatrix.Equals(gR.pMatrix);
         }
 
         public override string ToString()

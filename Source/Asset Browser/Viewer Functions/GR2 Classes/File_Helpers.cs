@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using SlimDX;
 
@@ -29,14 +27,19 @@ namespace FileFormats
             return Encoding.ASCII.GetString(strBytes.ToArray());
         }
 
-        public static float ByteToFloat(byte byteValue)
+        public static float ByteToNormal(byte byteValue)
         {
-            return (float)(byteValue / 127.5 - 1.0);
+            return (float)((byteValue - 127.5) / 127.5);
         }
 
-        public static SlimDX.Matrix ReadMatrix(BinaryReader br, bool invert = false)
+        public static float ByteToFloat(byte byteValue)
         {
-            SlimDX.Matrix temp = new SlimDX.Matrix
+            return byteValue / 255;
+        }
+
+        public static Matrix ReadMatrix(BinaryReader br, bool invert = false)
+        {
+            Matrix temp = new Matrix
             {
                 M11 = br.ReadSingle(),
                 M12 = br.ReadSingle(),
@@ -88,18 +91,18 @@ namespace FileFormats
             return new Vector2(float.Parse(temp[0]), float.Parse(temp[1]));
         }
 
-        public static UInt16 ReverseBytes(UInt16 value)
+        public static ushort ReverseBytes(ushort value)
         {
-            return (UInt16)((value & 0xFFU) << 8 | (value & 0xFF00U) >> 8);
+            return (ushort)((value & 0xFFU) << 8 | (value & 0xFF00U) >> 8);
         }
 
-        public static UInt32 ReverseBytes(UInt32 value)
+        public static uint ReverseBytes(uint value)
         {
             return (value & 0x000000FFU) << 24 | (value & 0x0000FF00U) << 8 |
                    (value & 0x00FF0000U) >> 8 | (value & 0xFF000000U) >> 24;
         }
 
-        public static UInt64 ReverseBytes(UInt64 value)
+        public static ulong ReverseBytes(ulong value)
         {
             return (value & 0x00000000000000FFUL) << 56 | (value & 0x000000000000FF00UL) << 40 |
                    (value & 0x0000000000FF0000UL) << 24 | (value & 0x00000000FF000000UL) << 8 |

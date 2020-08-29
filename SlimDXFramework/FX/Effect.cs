@@ -4,7 +4,6 @@
     using System.IO;
     using System.Windows.Forms;
 
-    using SlimDX;
     using SlimDX.D3DCompiler;
     using SlimDX.Direct3D11;
 

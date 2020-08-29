@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 
 namespace FileFormats
@@ -47,32 +43,32 @@ namespace FileFormats
             }
             else
             {
-                this.X = br.ReadSingle();
-                this.Y = br.ReadSingle();
-                this.Z = br.ReadSingle();
+                X = br.ReadSingle();
+                Y = br.ReadSingle();
+                Z = br.ReadSingle();
             }
             if ((bitFlag2 & 0x100) == 0x100)
             {
-                this.boneWeight1 = File_Helpers.ByteToFloat(br.ReadByte());
-                this.boneWeight2 = File_Helpers.ByteToFloat(br.ReadByte());
-                this.boneWeight3 = File_Helpers.ByteToFloat(br.ReadByte());
-                this.boneWeight4 = File_Helpers.ByteToFloat(br.ReadByte());
-                this.boneIndex1 = File_Helpers.ByteToFloat(br.ReadByte());
-                this.boneIndex2 = File_Helpers.ByteToFloat(br.ReadByte());
-                this.boneIndex3 = File_Helpers.ByteToFloat(br.ReadByte());
-                this.boneIndex4 = File_Helpers.ByteToFloat(br.ReadByte());
+                boneWeight1 = File_Helpers.ByteToFloat(br.ReadByte());
+                boneWeight2 = File_Helpers.ByteToFloat(br.ReadByte());
+                boneWeight3 = File_Helpers.ByteToFloat(br.ReadByte());
+                boneWeight4 = File_Helpers.ByteToFloat(br.ReadByte());
+                boneIndex1 = File_Helpers.ByteToFloat(br.ReadByte());
+                boneIndex2 = File_Helpers.ByteToFloat(br.ReadByte());
+                boneIndex3 = File_Helpers.ByteToFloat(br.ReadByte());
+                boneIndex4 = File_Helpers.ByteToFloat(br.ReadByte());
             }
             if ((bitFlag2 & 0x2) == 0x2)
             {
-                this.normX = File_Helpers.ByteToFloat(br.ReadByte());
-                this.normY = File_Helpers.ByteToFloat(br.ReadByte());
-                this.normZ = File_Helpers.ByteToFloat(br.ReadByte());
-                this.normW = File_Helpers.ByteToFloat(br.ReadByte());
+                normX = br.ReadByte(); // File_Helpers.ByteToNormal(br.ReadByte());
+                normY = br.ReadByte(); // File_Helpers.ByteToNormal(br.ReadByte());
+                normZ = br.ReadByte(); // File_Helpers.ByteToNormal(br.ReadByte());
+                normW = br.ReadByte(); // File_Helpers.ByteToNormal(br.ReadByte());
 
-                this.tanX = File_Helpers.ByteToFloat(br.ReadByte());
-                this.tanY = File_Helpers.ByteToFloat(br.ReadByte());
-                this.tanZ = File_Helpers.ByteToFloat(br.ReadByte());
-                this.tanW = File_Helpers.ByteToFloat(br.ReadByte());
+                tanX = br.ReadByte(); // File_Helpers.ByteToNormal(br.ReadByte());
+                tanY = br.ReadByte(); // File_Helpers.ByteToNormal(br.ReadByte());
+                tanZ = br.ReadByte(); // File_Helpers.ByteToNormal(br.ReadByte());
+                tanW = br.ReadByte(); // File_Helpers.ByteToNormal(br.ReadByte());
             }
             if ((bitFlag2 & 0x10) == 0x10)
             {
@@ -83,11 +79,11 @@ namespace FileFormats
             }
             if ((bitFlag2 & 0x20) == 0x20)
             {
-                this.texHalfU.RawValue = br.ReadUInt16();
-                this.texHalfV.RawValue = br.ReadUInt16();
-                float[] texFloats = SlimDX.Half.ConvertToFloat(new SlimDX.Half[] { this.texHalfU, this.texHalfV });
-                this.texU = texFloats[0];
-                this.texV = texFloats[1];
+                texHalfU.RawValue = br.ReadUInt16();
+                texHalfV.RawValue = br.ReadUInt16();
+                float[] texFloats = SlimDX.Half.ConvertToFloat(new SlimDX.Half[] { texHalfU, texHalfV });
+                texU = texFloats[0];
+                texV = texFloats[1];
             }
             if ((bitFlag2 & 0x40) == 0x40)
             {

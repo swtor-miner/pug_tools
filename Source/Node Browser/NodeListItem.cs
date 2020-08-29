@@ -173,10 +173,10 @@ namespace tor_tools
                     }
 
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
                     Console.WriteLine("caught exception");
-                    Console.WriteLine("exception pause here" + e.ToString());
+                    Console.WriteLine("exception pause here" + ex.ToString());
                 }
             }
             else

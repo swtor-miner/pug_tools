@@ -679,7 +679,7 @@ namespace nsHashDictionary
             {
                 return ((HashTreeObject)hashtree.GetData(new HashTreeKey(sig))).Data;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 return "";
             }

@@ -223,9 +223,9 @@ namespace GomLib
                 }
                 return references.Count;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine(ex.Message);
             }
             return 0;
         }
