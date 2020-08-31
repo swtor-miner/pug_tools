@@ -859,817 +859,228 @@ namespace tor_tools
             {
                 ParseNpcData(npcData);
 
-                // ====================================================================================================
-                // Override Rules for appSlots, following "rules" parsed from /resources/art/dynamic/testrules.rul
-                // TODO: Refactor this, simplify and improve efficiency.
-                // ====================================================================================================
-
-                foreach (TestRule testRule in testRules)
+                // ================================================================================
+                // Override appSlot "rules" parsed from /resources/art/dynamic/testrules.rul
+                // ================================================================================
+                foreach (TestRule rule in testRules)
                 {
-                    var appSlot = "appSlot" + testRule.slot;
+                    var appSlot = "appSlot" + rule.slot;
+                    var aType = rule.archetype;
+                    var aName = rule.attachmentName;
+                    var model = models.ContainsKey(appSlot) ? models[appSlot] : null;
 
-                    // Hair Rule
-                    if (testRule.slot == "Hair" && testRule.attachmentName == "" && models.ContainsKey(appSlot))
+                    bool excluded = false;
+
+                    switch (rule.slot)
                     {
-                        var rule = testRule;
-                        var model = models[appSlot];
-
-                        bool excluded = false;
-
-                        // Check for exclusions first
-                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
-                        {
-                            // There are exclusions for one or more of the rule tags
-                            foreach (string tag in rule.tags)
+                        case "Hair":
+                            if (model != null)
                             {
-                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
+                                // Check for exclusions first
+                                CheckForExclusions(model, rule.tags, ref excluded);
+
+                                // Check if hair model should be disabled
+                                TagModelAsDisabled(excluded, "appSlotHead", rule.tags, ref model);
+                                TagModelAsDisabled(excluded, "appSlotFace", rule.tags, ref model);
+
+                                if (!excluded && models.ContainsKey("appSlotChest"))
                                 {
-                                    // Face model filename contains an exclusion tag
-                                    excluded = true;
-                                }
-                            }
-                        }
-
-                        // Check if hair model should be disabled
-                        if (!excluded && models.ContainsKey("appSlotFace"))
-                        {
-                            if (rule.tags.Any(x => models["appSlotFace"].filename.Contains(x)))
-                            {
-                                // Face model filename contains a rule tag
-                                model.enabled = false;
-                            }
-                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
-                            {
-                                // Face model filename didn't contain any rule tags, let's check if it contains a group tag
-                                foreach (string tag in rule.tags)
-                                {
-                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotFace"].filename.Contains(x)))
+                                    // This is an attachment so we have to dig a bit deeper!
+                                    if (models["appSlotChest"].attachedModels.Any(x => x.filename.Contains("hoodup")))
                                     {
-                                        // Face model filename contains a group tag
-                                        model.enabled = false;
-                                    }
-                                }
-                            }
-                        }
-                        else if (!excluded && models.ContainsKey("appSlotChest"))
-                        {
-                            // Hood is an attachment so we have to dig a bit deeper!
-                            if (models["appSlotChest"].attachedModels.Any(x => x.filename.Contains("hoodup")))
-                            {
-                                var attach = models["appSlotChest"].attachedModels.Where(x => x.filename.Contains("hoodup")).FirstOrDefault();
+                                        var attach = models["appSlotChest"].attachedModels.
+                                                     Where(x => x.filename.Contains("hoodup")).FirstOrDefault();
 
-                                if (rule.tags.Any(x => attach.filename.Contains(x)))
-                                {
-                                    // Hood model filename contains a rule tag
-                                    model.enabled = false;
-                                }
-                                else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
-                                {
-                                    // Hood mode filename didn't contain any rule tags, let's check if it contains a group tag
-                                    foreach (string tag in rule.tags)
-                                    {
-                                        if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => attach.filename.Contains(x)))
+                                        if (rule.tags.Any(x => attach.filename.Contains(x)))
                                         {
-                                            // Hood model filename contains a group tag
+                                            // Attachment model filename contains a rule tag
                                             model.enabled = false;
                                         }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // Face Hair Rule
-                    if (testRule.slot == "FaceHair" && testRule.attachmentName == "" && models.ContainsKey(appSlot))
-                    {
-                        var rule = testRule;
-                        var model = models[appSlot];
-
-                        bool excluded = false;
-
-                        // Check for exclusions first
-                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
-                        {
-                            // There are exclusions for one or more of the rule tags
-                            foreach (string tag in rule.tags)
-                            {
-                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
-                                {
-                                    // Face model filename contains an exclusion tag
-                                    excluded = true;
-                                }
-                            }
-                        }
-
-                        // Check if face hair model should be disabled
-                        if (!excluded && models.ContainsKey("appSlotHead"))
-                        {
-                            if (rule.tags.Any(x => models["appSlotHead"].filename.Contains(x)))
-                            {
-                                // Head model filename contains a tag rule
-                                model.enabled = false;
-                            }
-                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
-                            {
-                                // Head model filename didn't contain any rule tags, let's check if it contains a group tag
-                                foreach (string tag in rule.tags)
-                                {
-                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotHead"].filename.Contains(x)))
-                                    {
-                                        // Head model filename contains a group tag
-                                        model.enabled = false;
-                                    }
-                                }
-                            }
-                        }
-                        else if (!excluded && models.ContainsKey("appSlotFace"))
-                        {
-                            if (rule.tags.Any(x => models["appSlotFace"].filename.Contains(x)))
-                            {
-                                // Face model filename contains a tag rule
-                                model.enabled = false;
-                            }
-                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
-                            {
-                                // Face model filename didn't contain any rule tags, let's check if it contains a group tag
-                                foreach (string tag in rule.tags)
-                                {
-                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotFace"].filename.Contains(x)))
-                                    {
-                                        // Face model filename contains a group tag
-                                        model.enabled = false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // Face Hair (Chops) Rule
-                    if (testRule.slot == "FaceHair" && testRule.attachmentName == "chops" && models.ContainsKey(appSlot))
-                    {
-                        var rule = testRule;
-                        var model = models[appSlot];
-
-                        bool excluded = false;
-
-                        // Check for exclusions first
-                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
-                        {
-                            // There are exclusions for one or more of the rule tags
-                            foreach (string tag in rule.tags)
-                            {
-                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
-                                {
-                                    // Face model filename contains an exclusion tag
-                                    excluded = true;
-                                }
-                            }
-                        }
-
-                        // Check if face hair model should be disabled
-                        if (!excluded && models.ContainsKey("appSlotHead"))
-                        {
-                            if (rule.tags.Any(x => models["appSlotHead"].filename.Contains(x)))
-                            {
-                                // Head model filename contains a tag rule
-                                model.enabled = false;
-                            }
-                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
-                            {
-                                // Head model filename didn't contain any rule tags, let's check if it contains a group tag
-                                foreach (string tag in rule.tags)
-                                {
-                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotHead"].filename.Contains(x)))
-                                    {
-                                        // Head model filename contains a group tag
-                                        model.enabled = false;
-                                    }
-                                }
-                            }
-                        }
-                        else if (!excluded && models.ContainsKey("appSlotFace"))
-                        {
-                            if (rule.tags.Any(x => models["appSlotFace"].filename.Contains(x)))
-                            {
-                                // Face model filename contains a tag rule
-                                model.enabled = false;
-                            }
-                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
-                            {
-                                // Face model filename didn't contain any rule tags, let's check if it contains a group tag
-                                foreach (string tag in rule.tags)
-                                {
-                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotFace"].filename.Contains(x)))
-                                    {
-                                        // Face model filename contains a group tag
-                                        model.enabled = false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // Face Hair (Mustache) Rule
-                    if (testRule.slot == "FaceHair" && testRule.attachmentName == "mustache" && models.ContainsKey(appSlot))
-                    {
-                        var rule = testRule;
-                        var model = models[appSlot];
-
-                        bool excluded = false;
-
-                        // Check for exclusions first
-                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
-                        {
-                            // There are exclusions for one or more of the rule tags
-                            foreach (string tag in rule.tags)
-                            {
-                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
-                                {
-                                    // Face model filename contains an exclusion tag
-                                    excluded = true;
-                                }
-                            }
-                        }
-
-                        // Check if face hair model should be disabled
-                        if (!excluded && models.ContainsKey("appSlotHead"))
-                        {
-                            if (rule.tags.Any(x => models["appSlotHead"].filename.Contains(x)))
-                            {
-                                // Head model filename contains a tag rule
-                                model.enabled = false;
-                            }
-                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
-                            {
-                                // Head model filename didn't contain any rule tags, let's check if it contains a group tag
-                                foreach (string tag in rule.tags)
-                                {
-                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotHead"].filename.Contains(x)))
-                                    {
-                                        // Head model filename contains a group tag
-                                        model.enabled = false;
-                                    }
-                                }
-                            }
-                        }
-                        else if (!excluded && models.ContainsKey("appSlotFace"))
-                        {
-                            if (rule.tags.Any(x => models["appSlotFace"].filename.Contains(x)))
-                            {
-                                // Face model filename contains a tag rule
-                                model.enabled = false;
-                            }
-                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
-                            {
-                                // Face model filename didn't contain any rule tags, let's check if it contains a group tag
-                                foreach (string tag in rule.tags)
-                                {
-                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotFace"].filename.Contains(x)))
-                                    {
-                                        // Face model filename contains a group tag
-                                        model.enabled = false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // Fair Hair (Goatee) Rule
-                    if (testRule.slot == "FaceHair" && testRule.attachmentName == "goatee" && models.ContainsKey(appSlot))
-                    {
-                        var rule = testRule;
-                        var model = models[appSlot];
-
-                        bool excluded = false;
-
-                        // Check for exclusions first
-                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
-                        {
-                            // There are exclusions for one or more of the rule tags
-                            foreach (string tag in rule.tags)
-                            {
-                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
-                                {
-                                    // Face model filename contains an exclusion tag
-                                    excluded = true;
-                                }
-                            }
-                        }
-
-                        // Check if face hair model should be disabled
-                        if (!excluded && models.ContainsKey("appSlotHead"))
-                        {
-                            if (rule.tags.Any(x => models["appSlotHead"].filename.Contains(x)))
-                            {
-                                // Head model filename contains a tag rule
-                                model.enabled = false;
-                            }
-                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
-                            {
-                                // Head model filename didn't contain any rule tags, let's check if it contains a group tag
-                                foreach (string tag in rule.tags)
-                                {
-                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotHead"].filename.Contains(x)))
-                                    {
-                                        // Head model filename contains a group tag
-                                        model.enabled = false;
-                                    }
-                                }
-                            }
-                        }
-                        else if (!excluded && models.ContainsKey("appSlotFace"))
-                        {
-                            if (rule.tags.Any(x => models["appSlotFace"].filename.Contains(x)))
-                            {
-                                // Face model filename contains a tag rule
-                                model.enabled = false;
-                            }
-                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
-                            {
-                                // Face model filename didn't contain any rule tags, let's check if it contains a group tag
-                                foreach (string tag in rule.tags)
-                                {
-                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotFace"].filename.Contains(x)))
-                                    {
-                                        // Face model filename contains a group tag
-                                        model.enabled = false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // Face Hair (Miralukan) Rule
-                    if (testRule.slot == "FaceHair" && testRule.archetype == "miralukan" && models.ContainsKey(appSlot))
-                    {
-                        var rule = testRule;
-                        var model = models[appSlot];
-
-                        bool excluded = false;
-
-                        // Check for exclusions first
-                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
-                        {
-                            // There are exclusions for one or more of the rule tags
-                            foreach (string tag in rule.tags)
-                            {
-                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
-                                {
-                                    // Face model filename contains an exclusion tag
-                                    excluded = true;
-                                }
-                            }
-                        }
-
-                        // Check if face hair model should be disabled
-                        if (!excluded && models.ContainsKey("appSlotHead"))
-                        {
-                            if (rule.tags.Any(x => models["appSlotHead"].filename.Contains(x)))
-                            {
-                                // Head model filename contains a tag rule
-                                model.enabled = false;
-                            }
-                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
-                            {
-                                // Head model filename didn't contain any rule tags, let's check if it contains a group tag
-                                foreach (string tag in rule.tags)
-                                {
-                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotHead"].filename.Contains(x)))
-                                    {
-                                        // Head model filename contains a group tag
-                                        model.enabled = false;
-                                    }
-                                }
-                            }
-                        }
-                        else if (!excluded && models.ContainsKey("appSlotFace"))
-                        {
-                            if (rule.tags.Any(x => models["appSlotFace"].filename.Contains(x)))
-                            {
-                                // Face model filename contains a tag rule
-                                model.enabled = false;
-                            }
-                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
-                            {
-                                // Face model filename didn't contain any rule tags, let's check if it contains a group tag
-                                foreach (string tag in rule.tags)
-                                {
-                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotFace"].filename.Contains(x)))
-                                    {
-                                        // Face model filename contains a group tag
-                                        model.enabled = false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // Head Rule
-                    if (testRule.slot == "Head" && testRule.attachmentName == "" && models.ContainsKey(appSlot))
-                    {
-                        var rule = testRule;
-                        var model = models[appSlot];
-
-                        bool excluded = false;
-
-                        // Check for exclusions first
-                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
-                        {
-                            // There are exclusions for one or more of the rule tags
-                            foreach (string tag in rule.tags)
-                            {
-                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
-                                {
-                                    // Face model filename contains an exclusion tag
-                                    excluded = true;
-                                }
-                            }
-                        }
-
-                        // Check if head model should be disabled
-                        if (!excluded && models.ContainsKey("appSlotFace"))
-                        {
-                            if (rule.tags.Any(x => models["appSlotFace"].filename.Contains(x)))
-                            {
-                                // Face model filename contains a tag rule
-                                model.enabled = false;
-                            }
-                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
-                            {
-                                // Face model filename didn't contain any rule tags, let's check if it contains a group tag
-                                foreach (string tag in rule.tags)
-                                {
-                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotFace"].filename.Contains(x)))
-                                    {
-                                        // Face model filename contains a group tag
-                                        model.enabled = false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // Chest Attachments (Hoods) Rule
-                    if (testRule.slot == "Chest" && testRule.attachmentName == "hoodup" && models.ContainsKey(appSlot))
-                    {
-                        var rule = testRule;
-                        var model = models[appSlot];
-
-                        // Hood is an attachment so we have to dig a bit deeper!
-                        if (rule.attachmentName == "hoodup" && model.attachedModels.Any(x => x.filename.Contains("hoodup")))
-                        {
-                            var attach = model.attachedModels.Where(x => x.filename.Contains("hoodup")).FirstOrDefault();
-
-                            bool excluded = false;
-
-                            // Check for exclusions first
-                            if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
-                            {
-                                // There are exclusions for one or more of the rule tags
-                                foreach (string tag in rule.tags)
-                                {
-                                    if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => attach.filename.Contains(x)))
-                                    {
-                                        // Hood model filename contains an exclusion tag
-                                        excluded = true;
-                                    }
-                                }
-                            }
-
-                            // Check if hood attachment model should be disabled
-                            if (!excluded && models.ContainsKey("appSlotHead")) // First we check by head model
-                            {
-                                if (rule.tags.Any(x => models["appSlotHead"].filename.Contains(x)))
-                                {
-                                    // Head model filename contains a rule tag
-                                    attach.enabled = false;
-                                }
-                                else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
-                                {
-                                    // Head model filename didn't contain a rule tag, let's check if it contains a group tag
-                                    foreach (string tag in rule.tags)
-                                    {
-                                        if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotHead"].filename.Contains(x)))
+                                        else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
                                         {
-                                            // Head model filename contains a group tag
-                                            attach.enabled = false;
+                                            // Attachment model filename didn't contain any rule tags,
+                                            // let's check if it contains a group tag
+                                            foreach (string tag in rule.tags)
+                                            {
+                                                if (testGroups.ContainsKey(tag) &&
+                                                    testGroups[tag].Any(x => attach.filename.Contains(x)))
+                                                {
+                                                    // Attachment model filename contains a group tag
+                                                    model.enabled = false;
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             }
-                            else if (!excluded && models.ContainsKey("appSlotFace"))
+                            break;
+
+                        case "FaceHair":
+                            // if (aName == "" && model != null)
+                            // {
+                            //     // TODO: General face hair rule.
+                            // }
+                            if (aName == "chops" && model != null)
                             {
-                                if (rule.tags.Any(x => models["appSlotFace"].filename.Contains(x)))
+                                // We're after attachments, so we have to dig a bit deeper!
+                                if (model.attachedModels.Any(x => x.filename.Contains("chops")))
                                 {
-                                    // Face model filename contains a rule tag
-                                    attach.enabled = false;
-                                }
-                                else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
-                                {
-                                    // Face model filename didn't contain a rule tag, let's check if it contains a group tag
-                                    foreach (string tag in rule.tags)
-                                    {
-                                        if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotFace"].filename.Contains(x)))
-                                        {
-                                            // Face model filename contains a group tag
-                                            attach.enabled = false;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                                    var attach = model.attachedModels.
+                                                 Where(x => x.filename.Contains("chops")).FirstOrDefault();
 
-                    // Boot Attachments Rule
-                    if (testRule.slot == "Boot" && testRule.attachmentName == "bootattachments" && models.ContainsKey(appSlot))
-                    {
-                        var rule = testRule;
-                        var model = models[appSlot];
+                                    // Check for exclusions first
+                                    CheckForExclusions(model, rule.tags, ref excluded);
 
-                        bool excluded = false;
-
-                        // Check for exclusions first
-                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
-                        {
-                            // There are exclusions for one or more of the rule tags
-                            foreach (string tag in rule.tags)
-                            {
-                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
-                                {
-                                    // Face model filename contains an exclusion tag
-                                    excluded = true;
+                                    // Check if waist attachment models should be disabled
+                                    TagModelAsDisabled(excluded, "appSlotHead", rule.tags, ref attach);
+                                    TagModelAsDisabled(excluded, "appSlotFace", rule.tags, ref attach);
                                 }
                             }
-                        }
-
-                        // Check if boot attachment models should be disabled
-                        if (!excluded && models.ContainsKey("appSlotLeg"))
-                        {
-                            if (rule.tags.Any(x => models["appSlotLeg"].filename.Contains(x)))
+                            if (aName == "mustache" && model != null)
                             {
-                                // Leg model filename contains a rule tag
-                                foreach (GR2 attach in model.attachedModels)
+                                // We're after attachments, so we have to dig a bit deeper!
+                                if (model.attachedModels.Any(x => x.filename.Contains("mustache")))
                                 {
-                                    attach.enabled = false;
+                                    var attach = model.attachedModels.
+                                                 Where(x => x.filename.Contains("mustache")).FirstOrDefault();
+
+                                    // Check for exclusions first
+                                    CheckForExclusions(model, rule.tags, ref excluded);
+
+                                    // Check if waist attachment models should be disabled
+                                    TagModelAsDisabled(excluded, "appSlotHead", rule.tags, ref attach);
+                                    TagModelAsDisabled(excluded, "appSlotFace", rule.tags, ref attach);
                                 }
                             }
-                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
+                            if (aName == "goatee" && model != null)
                             {
-                                // Leg model filename didn't contain any rule tags, let's check if it contains a group tag
-                                foreach (string tag in rule.tags)
+                                // We're after attachments, so we have to dig a bit deeper!
+                                if (model.attachedModels.Any(x => x.filename.Contains("goatee")))
                                 {
-                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotLeg"].filename.Contains(x)))
-                                    {
-                                        // Leg model filename contains a group tag
-                                        foreach (GR2 attach in model.attachedModels)
-                                        {
-                                            attach.enabled = false;
-                                        }
-                                    }
+                                    var attach = model.attachedModels.
+                                                 Where(x => x.filename.Contains("goatee")).FirstOrDefault();
+
+                                    // Check for exclusions first
+                                    CheckForExclusions(model, rule.tags, ref excluded);
+
+                                    // Check if waist attachment models should be disabled
+                                    TagModelAsDisabled(excluded, "appSlotHead", rule.tags, ref attach);
+                                    TagModelAsDisabled(excluded, "appSlotFace", rule.tags, ref attach);
                                 }
                             }
-                        }
-                    }
+                            // if (aType == "miralukan" && model != null)
+                            // {
+                            //     // TODO: Miralukan "FaceHair" rule.
+                            // }
+                            break;
 
-                    // Hand Attachments Rule
-                    if (testRule.slot == "Hand" && testRule.attachmentName == "handattachments" && models.ContainsKey(appSlot))
-                    {
-                        var rule = testRule;
-                        var model = models[appSlot];
-
-                        bool excluded = false;
-
-                        // Check for exclusions first
-                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
-                        {
-                            // There are exclusions for one or more of the rule tags
-                            foreach (string tag in rule.tags)
+                        case "Head":
+                            if (model != null)
                             {
-                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
+                                // Check for exclusions first
+                                CheckForExclusions(model, rule.tags, ref excluded);
+
+                                // Check if head model should be disabled
+                                TagModelAsDisabled(excluded, "appSlotFace", rule.tags, ref model);
+                            }
+                            break;
+
+                        case "Chest":
+                            if (aName == "hoodup" && model != null)
+                            {
+                                // Hood is an attachment so we have to dig a bit deeper!
+                                if (model.attachedModels.Any(x => x.filename.Contains("hoodup")))
                                 {
-                                    // Face model filename contains an exclusion tag
-                                    excluded = true;
+                                    var attach = model.attachedModels.
+                                                 Where(x => x.filename.Contains("hoodup")).FirstOrDefault();
+
+                                    // Check for exclusions first
+                                    CheckForExclusions(model, rule.tags, ref excluded);
+
+                                    // Check if hood attachment model should be disabled
+                                    TagModelAsDisabled(excluded, "appSlotHead", rule.tags, ref attach);
+                                    TagModelAsDisabled(excluded, "appSlotFace", rule.tags, ref attach);
                                 }
                             }
-                        }
+                            break;
 
-                        // Check if hand attachment models should be disabled
-                        if (!excluded && models.ContainsKey("appSlotChest"))
-                        {
-                            if (rule.tags.Any(x => models["appSlotChest"].filename.Contains(x)))
+                        case "Boot":
+                            if (aName == "bootattachments" && model != null)
                             {
-                                // Chest model filename contains a rule tag
-                                foreach (GR2 attach in model.attachedModels)
+                                // We're after attachments, so we have to dig a bit deeper!
+                                if (model.attachedModels.Count > 0)
                                 {
-                                    attach.enabled = false;
+                                    // Check for exclusions first
+                                    CheckForExclusions(model, rule.tags, ref excluded);
+
+                                    // Check if boot attachment models should be disabled
+                                    TagModelsAsDisabled(excluded, "appSlotLeg", rule.tags, ref model);
                                 }
                             }
-                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
+                            if (aName == "" && model != null)
                             {
-                                // Chest model filename didn't contain any rule tags, let's check if it contains a group tag
-                                foreach (string tag in rule.tags)
+                                // Check for exclusions first
+                                CheckForExclusions(model, rule.tags, ref excluded);
+
+                                // Check if boot model should be disabled
+                                TagModelAsDisabled(excluded, "appSlotHead", rule.tags, ref model);
+                            }
+                            break;
+
+                        case "Hand":
+                            if (aName == "handattachments" && model != null)
+                            {
+                                // We're after attachments, so we have to dig a bit deeper!
+                                if (model.attachedModels.Count > 0)
                                 {
-                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotChest"].filename.Contains(x)))
-                                    {
-                                        // Chest model filename contains a group tag
-                                        foreach (GR2 attach in model.attachedModels)
-                                        {
-                                            attach.enabled = false;
-                                        }
-                                    }
+                                    // Check for exclusions first
+                                    CheckForExclusions(model, rule.tags, ref excluded);
+
+                                    // Check if hand attachment models should be disabled
+                                    TagModelsAsDisabled(excluded, "appSlotChest", rule.tags, ref model);
                                 }
                             }
-                        }
-                    }
-
-                    // Waist Attachments Rule
-                    if (testRule.slot == "Waist" && testRule.attachmentName == "back" && models.ContainsKey(appSlot))
-                    {
-                        var rule = testRule;
-                        var model = models[appSlot];
-
-                        bool excluded = false;
-
-                        // Check for exclusions first
-                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
-                        {
-                            // There are exclusions for one or more of the rule tags
-                            foreach (string tag in rule.tags)
+                            if (aName == "" && model != null)
                             {
-                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
+                                // Check for exclusions first
+                                CheckForExclusions(model, rule.tags, ref excluded);
+
+                                // Check if hand (glove) model should be disabled
+                                TagModelAsDisabled(excluded, "appSlotHead", rule.tags, ref model);
+                            }
+                            break;
+
+                        case "Waist":
+                            if (aName == "back" && model != null)
+                            {
+                                // We're after attachments, so we have to dig a bit deeper!
+                                if (model.attachedModels.Any(x => x.filename.Contains("back")))
                                 {
-                                    // Face model filename contains an exclusion tag
-                                    excluded = true;
+                                    var attach = model.attachedModels.
+                                                 Where(x => x.filename.Contains("back")).FirstOrDefault();
+
+                                    // Check for exclusions first
+                                    CheckForExclusions(model, rule.tags, ref excluded);
+
+                                    // Check if waist attachment models should be disabled
+                                    TagModelAsDisabled(excluded, "appSlotChest", rule.tags, ref attach);
                                 }
                             }
-                        }
+                            break;
 
-                        // Check if waist attachment models should be disabled
-                        if (!excluded && models.ContainsKey("appSlotChest"))
-                        {
-                            if (rule.tags.Any(x => models["appSlotChest"].filename.Contains(x)))
+                        case "Face":
+                            if (model != null)
                             {
-                                // Chest model filename contains a rule tag
-                                foreach (GR2 attach in model.attachedModels)
-                                {
-                                    attach.enabled = false;
-                                }
+                                // Check for exclusions first
+                                CheckForExclusions(model, rule.tags, ref excluded);
+
+                                // Check if face model should be disabled
+                                TagModelAsDisabled(excluded, "appSlotHead", rule.tags, ref model);
                             }
-                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
-                            {
-                                // Chest model filename didn't contain any rule tags, let's check if it contains a group tag
-                                foreach (string tag in rule.tags)
-                                {
-                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotChest"].filename.Contains(x)))
-                                    {
-                                        // Chest model filename contains a group tag
-                                        foreach (GR2 attach in model.attachedModels)
-                                        {
-                                            attach.enabled = false;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // Hand Rule
-                    if (testRule.slot == "Hand" && testRule.attachmentName == "" && models.ContainsKey(appSlot))
-                    {
-                        var rule = testRule;
-                        var model = models[appSlot];
-
-                        bool excluded = false;
-
-                        // Check for exclusions first
-                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
-                        {
-                            // There are exclusions for one or more of the rule tags
-                            foreach (string tag in rule.tags)
-                            {
-                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
-                                {
-                                    // Face model filename contains an exclusion tag
-                                    excluded = true;
-                                }
-                            }
-                        }
-
-                        // Check if hand (glove) model should be disabled
-                        if (!excluded && models.ContainsKey("appSlotHead"))
-                        {
-                            if (rule.tags.Any(x => models["appSlotHead"].filename.Contains(x)))
-                            {
-                                // Head model filename contains a rule tag
-                                model.enabled = false;
-                            }
-                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
-                            {
-                                // Head model filename didn't contain any rule tags, let's check if it contains a group tag
-                                foreach (string tag in rule.tags)
-                                {
-                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotHead"].filename.Contains(x)))
-                                    {
-                                        // Head model filename contains a group tag
-                                        model.enabled = false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // Face Rule
-                    if (testRule.slot == "Face" && testRule.attachmentName == "" && models.ContainsKey(appSlot))
-                    {
-                        var rule = testRule;
-                        var model = models[appSlot];
-
-                        bool excluded = false;
-
-                        // Check for exclusions first
-                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
-                        {
-                            // There are exclusions for one or more of the rule tags
-                            foreach (string tag in rule.tags)
-                            {
-                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
-                                {
-                                    // Face model filename contains an exclusion tag
-                                    excluded = true;
-                                }
-                            }
-                        }
-
-                        // Check if face model should be disabled
-                        if (!excluded && models.ContainsKey("appSlotHead"))
-                        {
-                            if (rule.tags.Any(x => models["appSlotHead"].filename.Contains(x)))
-                            {
-                                // Head model filename contains a rule tag
-                                model.enabled = false;
-                            }
-                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
-                            {
-                                // Head model filename didn't contain any rule tags, let's check if it contains a group tag
-                                foreach (string tag in rule.tags)
-                                {
-                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotHead"].filename.Contains(x)))
-                                    {
-                                        // Head model filename contains a group tag
-                                        model.enabled = false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // Boot Rule
-                    if (testRule.slot == "Boot" && testRule.attachmentName == "" && models.ContainsKey(appSlot))
-                    {
-                        var rule = testRule;
-                        var model = models[appSlot];
-
-                        bool excluded = false;
-
-                        // Check for exclusions first
-                        if (rule.tags.Any(x => tagExclusions.ContainsKey(x)))
-                        {
-                            // There are exclusions for one or more of the rule tags
-                            foreach (string tag in rule.tags)
-                            {
-                                if (tagExclusions.ContainsKey(tag) && tagExclusions[tag].Any(x => model.filename.Contains(x)))
-                                {
-                                    // Face model filename contains an exclusion tag
-                                    excluded = true;
-                                }
-                            }
-                        }
-
-                        // Check if boot model should be disabled
-                        if (!excluded && models.ContainsKey("appSlotHead"))
-                        {
-                            if (rule.tags.Any(x => models["appSlotHead"].filename.Contains(x)))
-                            {
-                                // Head model filename contains a rule tag
-                                model.enabled = false;
-                            }
-                            else if (rule.tags.Any(x => testGroups.ContainsKey(x)))
-                            {
-                                // Head model filename didn't contain any rule tags, let's check if it contains a group tag
-                                foreach (string tag in rule.tags)
-                                {
-                                    if (testGroups.ContainsKey(tag) && testGroups[tag].Any(x => models["appSlotHead"].filename.Contains(x)))
-                                    {
-                                        // Head model filename contains a group tag
-                                        model.enabled = false;
-                                    }
-                                }
-                            }
-                        }
+                            break;
                     }
                 }
-
-                // End of Override Rules ==============================================================================
+                // End of Override Rules ==========================================================
 
                 panelRender.LoadModel(models, resources, npcData.Fqn, npcData.NppType);
                 render = new Thread(panelRender.StartRender)
@@ -1680,6 +1091,79 @@ namespace tor_tools
             }
         }
 #pragma warning restore CS1998, CS4014
+
+        private void CheckForExclusions(GR2 model, List<string> tags, ref bool excluded)
+        {
+            if (tags.Any(x => tagExclusions.ContainsKey(x)))
+            {
+                // There are exclusions for one or more of the rule tags
+                foreach (string tag in tags)
+                {
+                    if (tagExclusions.ContainsKey(tag) &&
+                       tagExclusions[tag].Any(x => model.filename.Contains(x)))
+                    {
+                        // Model filename contains an exclusion tag
+                        excluded = true;
+                    }
+                }
+            }
+        }
+
+        private void TagModelAsDisabled(bool excluded, string appSlot, List<string> tags, ref GR2 model)
+        {
+            if (!excluded && models.ContainsKey(appSlot))
+            {
+                if (tags.Any(x => models[appSlot].filename.Contains(x)))
+                {
+                    // Model filename contains a rule tag
+                    model.enabled = false;
+                }
+                else if (tags.Any(x => testGroups.ContainsKey(x)))
+                {
+                    // Model filename didn't contain any rule tags,
+                    // let's check if it contains a group tag
+                    foreach (string tag in tags)
+                    {
+                        if (testGroups.ContainsKey(tag))
+                        {
+                            if (testGroups[tag].Any(x => models[appSlot].filename.Contains(x)))
+                            {
+                                // Model filename contains a group tag
+                                model.enabled = false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void TagModelsAsDisabled(bool excluded, string appSlot, List<string> tags, ref GR2 model)
+        {
+            if (!excluded && models.ContainsKey(appSlot))
+            {
+                if (tags.Any(x => models[appSlot].filename.Contains(x)))
+                {
+                    // Chest model filename contains a rule tag
+                    foreach (GR2 attach in model.attachedModels)
+                        attach.enabled = false;
+                }
+                else if (tags.Any(x => testGroups.ContainsKey(x)))
+                {
+                    // Chest model filename didn't contain any rule tags,
+                    // let's check if it contains a group tag
+                    foreach (string tag in tags)
+                    {
+                        if (testGroups.ContainsKey(tag) &&
+                            testGroups[tag].Any(x => models[appSlot].filename.Contains(x)))
+                        {
+                            // Chest model filename contains a group tag
+                            foreach (GR2 attach in model.attachedModels)
+                                attach.enabled = false;
+                        }
+                    }
+                }
+            }
+        }
 
         string Bodytype = "bmn";
 
@@ -1711,8 +1195,6 @@ namespace tor_tools
 
                 if (model.Contains(".gr2"))
                 {
-                    // string bodyType = currentAssets.FindFile("/resources" + model.Replace("[bt]", "bfn")) != null ? "bfn" : "bmn";
-
                     model = model.Replace("[bt]", Bodytype);
 
                     var modelFile = currentAssets.FindFile("/resources" + model);
@@ -2087,7 +1569,7 @@ namespace tor_tools
                         }
                         else if (item.Key == "dynRotation" || item.Key == "dynScale" || item.Key == "dynPosition")
                         {
-                            List<Single> value = (List<Single>)item.Value;
+                            List<float> value = (List<float>)item.Value;
                             if (item.Key == "dynRotation")
                             {
                                 rotationVec = new Vector3(value[0], value[1], value[2]);
@@ -2122,9 +1604,9 @@ namespace tor_tools
                         GR2 gr2_model = new GR2(br, name)
                         {
                             transformMatrix = Matrix.Scaling(scaleVec) *
-                                              Matrix.RotationZ((float)((rotationVec.Z * Math.PI) / 180.0)) *
-                                              Matrix.RotationX((float)((rotationVec.X * Math.PI) / 180.0)) *
-                                              Matrix.RotationY((float)((rotationVec.Y * Math.PI) / 180.0)) *
+                                              Matrix.RotationZ((float)(rotationVec.Z * Math.PI / 180.0)) *
+                                              Matrix.RotationX((float)(rotationVec.X * Math.PI / 180.0)) *
+                                              Matrix.RotationY((float)(rotationVec.Y * Math.PI / 180.0)) *
                                               Matrix.Translation(positionVec)
                         };
 
@@ -2261,7 +1743,7 @@ namespace tor_tools
 
                     string model = appSlot.Value[0].Model.Replace("[bt]", Bodytype);
 
-                    if (appSlot.Key.Contains("FaceHair"))
+                    if (appSlot.Key.Contains("FaceHair") && model == "")
                         model = "/art/defaultassets/blank.gr2";
 
                     // Load Model & Materials for this Slot

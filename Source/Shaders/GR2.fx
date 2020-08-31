@@ -5,6 +5,8 @@
 // could be some extra ones that aren't really used.
 // ===================================================================================
 
+static const float3 lightDirection = float3(0.0f, 0.0f, 1.0f);
+
 cbuffer cbPerObject
 {
     float4x4            mvMatrix;
@@ -56,7 +58,7 @@ SamplerState samLinear
 // End shader parameters
 // ===================================================================================
 
-//Start Common.h.fx functions
+// Start Common.h.fx functions
 
 // ===================================================================================
 // HUEING
@@ -115,8 +117,8 @@ float3 ConvertHSLToRGB(in float3 HSL)
     float S = HSL.g;
     float L = HSL.b;
     
-    //if (S == 0)
-    //    return float3(L, L, L);
+    // if (S == 0)
+    //     return float3(L, L, L);
      
     float LtimesS = L*S;
     
@@ -198,7 +200,7 @@ float3 ManipulateSkinHSL(in float3 HSL, float4 palette)
 float ManipulateAO(in float ao, float brightness, float contrast)
 {
     brightness += 1;
-    //brightness + ((1 - brightness) * HSL.b);    
+    // brightness + ((1 - brightness) * HSL.b);    
     float ret = ao * (brightness + (1 - brightness) * ao);
     return saturate(ret);
 }
@@ -243,7 +245,7 @@ void HuePixel(
     HSL.z                             *= ambientOcclusion;
     float3 RGB                         = ConvertHSLToRGB(HSL);
 
-    //Blend the result into the original diffuse
+    // Blend the result into the original diffuse
     fragmentDiffuseColor               = lerp(diffuseMapValue.rgb, RGB.rgb, paletteMaskSum);
 
     // Determine the hue specular color
@@ -251,23 +253,18 @@ void HuePixel(
     const float3 white                 = float3(1,1,1);
     float metallicMask                 = paletteMaskMapValue.b;
 
-    //1.0 uses chosenMetallicSpecColor, .5 uses white, 0.0 uses chosenSpecColor      
+    // 1.0 uses chosenMetallicSpecColor, .5 uses white, 0.0 uses chosenSpecColor      
     if( metallicMask > .5 )
-    {
-        hueSpecColor                   = lerp(white, chosenMetallicSpecColor, (metallicMask - 0.5)
-                                              * 2.0);
-    }
+        hueSpecColor                   = lerp(white, chosenMetallicSpecColor, (metallicMask - 0.5) * 2.0);
     else
-    {
         hueSpecColor                   = lerp(chosenSpecColor, white, metallicMask * 2.0);
-    }
 
     hueSpecColor                      *= glossMapValue.r;
     fragmentSpecularColor.rgb          = lerp(fragmentSpecularColor.rgb, hueSpecColor,
                                               paletteMaskSum);
 }
 
-//Should refactor this and HuePixel to reuse code, only one line difference
+// Should refactor this and HuePixel to reuse code, only one line difference
 void HueSkinPixel(
     in float3  diffuseMapValue,
     in float4  glossMapValue,
@@ -307,7 +304,7 @@ void HueSkinPixel(
                                                                   palette);
     float3 RGB                         = ConvertHSLToRGB(HSL) * paletteMapValue.r;
 
-    //Blend the result into the original diffuse
+    // Blend the result into the original diffuse
     fragmentDiffuseColor               = lerp(diffuseMapValue.rgb, RGB.rgb, paletteMaskSum);
 
     // Determine the hue specular color
@@ -315,23 +312,18 @@ void HueSkinPixel(
     const float3 white                 = float3(1,1,1);
     float metallicMask                 = paletteMaskMapValue.b;
 
-    //1.0 uses chosenMetallicSpecColor, .5 uses white, 0.0 uses chosenSpecColor      
+    // 1.0 uses chosenMetallicSpecColor, .5 uses white, 0.0 uses chosenSpecColor      
     if( metallicMask > .5 )
-    {
-        hueSpecColor                   = lerp(white, chosenMetallicSpecColor, (metallicMask - 0.5)
-                                              * 2.0);
-    }
+        hueSpecColor                   = lerp(white, chosenMetallicSpecColor, (metallicMask - 0.5) * 2.0);
     else
-    {
         hueSpecColor                   = lerp(chosenSpecColor, white, metallicMask * 2.0);
-    }
 
     hueSpecColor                      *= glossMapValue.r;
     fragmentSpecularColor.rgb          = lerp(fragmentSpecularColor.rgb, hueSpecColor,
                                               paletteMaskSum);
 }
 
-//End Common.h.fx functions
+// End Common.h.fx functions
 
 // ===================================================================================
 // Textures - the sampler definitions remain in the shaders
@@ -425,10 +417,6 @@ float4 psMain(outputVertex In) : SV_Target
     const float3 diffuseSample         = texDiffuse.Sample(samLinear, In.texCo).xyz;
 
     // =========================
-    // Light Mapping
-    const float3 lightDirection        = float3(0.0f, 0.0f, 1.0f);
-
-    // =========================
     // Normal Mapping
     const float4 rotationSample        = texRotation.Sample(samLinear, In.texCo);
     float2 bumpValue                   = (rotationSample.wy * 2.0f) - float2(1.0f, 1.0f);
@@ -467,10 +455,6 @@ float4 psEye(outputVertex In) : SV_Target
     // =========================
     // Diffuse Mapping   
     const float3 diffuseSample         = texDiffuse.Sample(samLinear, In.texCo).xyz;
-
-    // =========================
-    // Light Mapping
-    const float3 lightDirection        = float3(0.0f, 0.0f, 1.0f);
 
     // =========================
     // Normal Mapping
@@ -525,10 +509,6 @@ float4 psGarment(outputVertex In) : SV_Target
     const float3 diffuseSample         = texDiffuse.Sample(samLinear, In.texCo).xyz;
 
     // =========================
-    // Light Mapping
-    const float3 lightDirection        = float3(0.0f, 0.0f, 1.0f);
-
-    // =========================
     // Normal Mapping
     const float4 rotationSample        = texRotation.Sample(samLinear, In.texCo);
     float2 bumpValue                   = (rotationSample.wy * 2.0f) - float2(1.0f, 1.0f);
@@ -548,7 +528,7 @@ float4 psGarment(outputVertex In) : SV_Target
     const float4 glossSample           = texGloss.Sample(samLinear, In.texCo);
 
     // =========================
-    // HUEING
+    // Hueing
     const float4 paletteMapSample      = texPalette.Sample(samLinear, In.texCo);
     const float4 paletteMapMaskSample  = texPaletteMask.Sample(samLinear, In.texCo);
 
@@ -581,10 +561,6 @@ float4 psHairC(outputVertex In) : SV_Target
     const float3 diffuseSample         = texDiffuse.Sample(samLinear, In.texCo).xyz;
 
     // =========================
-    // Light Mapping
-    const float3 lightDirection        = float3(0.0f, 0.0f, 1.0f);
-
-    // =========================
     // Normal Mapping
     const float4 rotationSample        = texRotation.Sample(samLinear, In.texCo);
     float2 bumpValue                   = (rotationSample.wy * 2.0f) - float2(1.0f, 1.0f);
@@ -604,7 +580,7 @@ float4 psHairC(outputVertex In) : SV_Target
     const float4 glossSample           = texGloss.Sample(samLinear, In.texCo);
 
     // =========================
-    // HUEING
+    // Hueing
     const float4 paletteMapSample      = texPalette.Sample(samLinear, In.texCo);
     const float4 paletteMapMaskSample  = texPaletteMask.Sample(samLinear, In.texCo);
 
@@ -637,10 +613,6 @@ float4 psSkinB(outputVertex In) : SV_Target
     const float3 diffuseSample         = texDiffuse.Sample(samLinear, In.texCo).xyz;
 
     // =========================
-    // Light Mapping
-    const float3 lightDirection        = float3(0.0f, 0.0f, 1.0f);
-
-    // =========================
     // Normal Mapping
     const float4 rotationSample        = texRotation.Sample(samLinear, In.texCo);
     float2 bumpValue                   = (rotationSample.wy * 2.0f) - float2(1.0f, 1.0f);
@@ -660,7 +632,7 @@ float4 psSkinB(outputVertex In) : SV_Target
     const float4 glossSample           = texGloss.Sample(samLinear, In.texCo);
 
     // =========================
-    // HUEING
+    // Hueing
     const float4 paletteMapSample      = texPalette.Sample(samLinear, In.texCo);
     const float4 paletteMapMaskSample  = texPaletteMask.Sample(samLinear, In.texCo);
 
@@ -755,7 +727,7 @@ float4 psFilterSpecular(outputVertex In) : SV_Target
     float3x3 toWorld              = float3x3(float3(In.tanW), float3(In.binW), float3(In.norW));
     float3 N                      = normalize(mul(tangentN, toWorld));
     
-    float NdotL                   = max(0.0f, dot(N, float3(0.0f, 0.0f, 1.0f)));
+    float NdotL                   = max(0.0f, dot(N, lightDirection));
 
     const float4 glossSample      = texGloss.Sample(samLinear, In.texCo);
 

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
+﻿using System.IO;
 
 namespace FileFormats
 {
@@ -20,15 +15,15 @@ namespace FileFormats
 
         public GR2_Bounding_Box(BinaryReader br)
         {
-            this.minX = br.ReadSingle();
-            this.minY = br.ReadSingle();
-            this.minZ = br.ReadSingle();
-            this.minW = br.ReadSingle();
+            minX = br.ReadSingle();
+            minY = br.ReadSingle();
+            minZ = br.ReadSingle();
+            minW = br.ReadSingle();
 
-            this.maxX = br.ReadSingle();
-            this.maxY = br.ReadSingle();
-            this.maxZ = br.ReadSingle();
-            this.maxW = br.ReadSingle();
+            maxX = br.ReadSingle();
+            maxY = br.ReadSingle();
+            maxZ = br.ReadSingle();
+            maxW = br.ReadSingle();
         }
     }
 }

@@ -123,44 +123,77 @@ namespace tor_tools
         {
             this.fqn = fqn;
 
+            float fac;
+
             switch (type)
             {
                 case "dyn":
-                    focus = models.First().Value;
+                    fac = 2.25f;
                     break;
                 case "itm":
-                    focus = models.First().Value;
+                    fac = 1.75f;
                     break;
                 case "mnt":
-                    models.TryGetValue("appSlotCreature", out focus);
-                    if (focus == null) focus = models.First().Value;
+                    fac = 2.5f;
                     break;
                 case "nppTypeHumanoid":
-                    focus = models.ContainsKey("appSlotWaist") ? models["appSlotWaist"] : models.Last().Value;
+                    fac = 1.4f;
                     break;
                 case "nppTypeCreature":
-                    focus = models.ContainsKey("appSlotCreature") ? models["appSlotCreature"] : models.Last().Value;
+                    fac = 1.4f;
                     break;
                 default:
-                    focus = models.First().Value;
+                    fac = 2.0f;
                     break;
+            }
+
+            globalBoxCenter = new Vector3();
+            globalBoxMax = new Vector3();
+            globalBoxMin = new Vector3();
+
+            if (type == "ipp")
+            {
+                focus = models.First().Value;
+
+                globalBoxMin = new Vector3(focus.global_box.minX, focus.global_box.minY, focus.global_box.minZ);
+                Vector4 tempMin = Vector3.Transform(globalBoxMin, focus.GetTransform());
+                globalBoxMin = new Vector3(tempMin.X, tempMin.Y, tempMin.Z);
+
+                globalBoxMax = new Vector3(focus.global_box.maxX, focus.global_box.maxY, focus.global_box.maxZ);
+                Vector4 tempMax = Vector3.Transform(globalBoxMax, focus.GetTransform());
+                globalBoxMax = new Vector3(tempMax.X, tempMax.Y, tempMax.Z);
+
+                globalBoxCenter = globalBoxMin + (globalBoxMax - globalBoxMin) / 2;
+                cameraPos = new Vector3(globalBoxCenter.X * 1.85f, globalBoxCenter.Y * 1.85f, Math.Max(Math.Max(globalBoxMax.X, globalBoxMax.Y), globalBoxMax.Z) * 1.85f);
+            }
+            else
+            {
+                foreach (KeyValuePair<string, GR2> model in models)
+                {
+                    if (model.Key.Contains("skeleton"))
+                        continue;
+
+                    focus = model.Value;
+                    var min = Vector3.Transform(new Vector3(focus.global_box.minX, focus.global_box.minY, focus.global_box.minZ), focus.GetTransform());
+                    var max = Vector3.Transform(new Vector3(focus.global_box.maxX, focus.global_box.maxY, focus.global_box.maxZ), focus.GetTransform());
+
+                    globalBoxMin.X = min.X < globalBoxMin.X ? min.X : globalBoxMin.X;
+                    globalBoxMin.Y = min.Y < globalBoxMin.Y ? min.Y : globalBoxMin.Y;
+                    globalBoxMin.Z = min.Z < globalBoxMin.Z ? min.Z : globalBoxMin.Z;
+
+                    globalBoxMax.X = max.X > globalBoxMax.X ? max.X : globalBoxMax.X;
+                    globalBoxMax.Y = max.Y > globalBoxMax.Y ? max.Y : globalBoxMax.Y;
+                    globalBoxMax.Z = max.Z > globalBoxMax.Z ? max.Z : globalBoxMax.Z;
+                }
+
+                globalBoxCenter = globalBoxMin + (globalBoxMax - globalBoxMin) / 2;
+                cameraPos = new Vector3(globalBoxCenter.X * fac, globalBoxCenter.Y * fac, Math.Max(Math.Max(globalBoxMax.X, globalBoxMax.Y), globalBoxMax.Z) * fac);
             }
 
             if (models != null)
                 this.models = models;
             if (resources != null)
                 this.resources = resources;
-
-            globalBoxMin = new Vector3(focus.global_box.minX, focus.global_box.minY, focus.global_box.minZ);
-            Vector4 tempMin = Vector3.Transform(globalBoxMin, focus.GetTransform());
-            globalBoxMin = new Vector3(tempMin.X, tempMin.Y, tempMin.Z);
-
-            globalBoxMax = new Vector3(focus.global_box.maxX, focus.global_box.maxY, focus.global_box.maxZ);
-            Vector4 tempMax = Vector3.Transform(globalBoxMax, focus.GetTransform());
-            globalBoxMax = new Vector3(tempMax.X, tempMax.Y, tempMax.Z);
-
-            globalBoxCenter = globalBoxMin + (globalBoxMax - globalBoxMin) / 2;
-            cameraPos = new Vector3(globalBoxCenter.X * 2.5f, globalBoxCenter.Y * 2.5f, Math.Max(Math.Max(globalBoxMax.X, globalBoxMax.Y), globalBoxMax.Z) * 2.5f);
 
             _modelCamera.Reset();
             _modelCamera.Position = cameraPos;
