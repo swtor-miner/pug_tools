@@ -4,16 +4,15 @@ namespace SlimDX_Framework.Camera
 {
     public class LookAtCamera : CameraBase
     {
-        private float _radius;
         private float _alpha;
         private float _beta;
 
-        public float Radius { get { return _radius; } }
+        public float Radius { get; private set; }
 
         public LookAtCamera() : base()
         {
             _alpha = _beta = 0.5f;
-            _radius = 10.0f;
+            Radius = 10.0f;
             Target = new Vector3();
 
         }
@@ -21,7 +20,7 @@ namespace SlimDX_Framework.Camera
         public new void Reset()
         {
             _alpha = _beta = 0.5f;
-            _radius = 10.0f;
+            Radius = 10.0f;
             Target = new Vector3();
         }
 
@@ -35,7 +34,7 @@ namespace SlimDX_Framework.Camera
             Look = Vector3.Normalize(target - pos);
             Right = Vector3.Normalize(Vector3.Cross(up, Look));
             Up = Vector3.Cross(Look, Right);
-            _radius = (target - pos).Length();
+            Radius = (target - pos).Length();
         }
 
         public override void Strafe(float d)
@@ -66,14 +65,14 @@ namespace SlimDX_Framework.Camera
         }
         public override void Zoom(float dr)
         {
-            _radius += dr;
-            _radius = MathF.Clamp(_radius, 0.001f, 500.0f);
+            Radius += dr;
+            Radius = MathF.Clamp(Radius, 0.001f, 500.0f);
         }
 
         public override void UpdateViewMatrix()
         {
-            var sideRadius = _radius * MathF.Cos(_beta);
-            var height = _radius * MathF.Sin(_beta);
+            var sideRadius = Radius * MathF.Cos(_beta);
+            var height = Radius * MathF.Sin(_beta);
 
             Position = new Vector3(
                 Target.X + sideRadius * MathF.Cos(_alpha),

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace tor_tools
 {
@@ -12,11 +8,7 @@ namespace tor_tools
 
         public NodeFileSource()
         {
-            _ = new List<NodeFileSourceItem>();
-
             //Tuple<string, string>[] strItems;
-
-            _ = new List<NodeFileSourceItem>();
 
             List<NodeFileSourceItem> strItems = new List<NodeFileSourceItem> { new NodeFileSourceItem("ablIconSpec", "icon") };
             sources.Add("abl.", strItems);

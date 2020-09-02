@@ -46,6 +46,7 @@
         private readonly EffectResourceVariable _Age;
 
         // Material Inputs
+        private readonly EffectVectorVariable _glassParams;
         private readonly EffectVectorVariable _palette1;
         private readonly EffectVectorVariable _palette2;
         private readonly EffectVectorVariable _palette1Spec;
@@ -60,7 +61,7 @@
 
         // Constants
         private readonly EffectMatrixVariable _world;
-        private readonly EffectMatrixVariable _worldViewProj;
+        private readonly EffectMatrixVariable _mvMatrix;
 
         // Channel Filters
         public readonly EffectTechnique filterDiffuseMap;
@@ -118,6 +119,7 @@
             _Age = FX.GetVariableByName("texAge").AsResource();
 
             // Material Inputs
+            _glassParams = FX.GetVariableByName("GlassParams").AsVector();
             _palette1 = FX.GetVariableByName("Palette1").AsVector();
             _palette2 = FX.GetVariableByName("Palette2").AsVector();
             _palette1Spec = FX.GetVariableByName("Palette1Specular").AsVector();
@@ -130,7 +132,7 @@
 
             // Constants
             _world = FX.GetVariableByName("world").AsMatrix();
-            _worldViewProj = FX.GetVariableByName("mvMatrix").AsMatrix();
+            _mvMatrix = FX.GetVariableByName("mvMatrix").AsMatrix();
 
             // Channel Filters
             filterDiffuseMap = FX.GetTechniqueByName("FilterDiffuse");
@@ -199,6 +201,10 @@
         }
 
         // Material Inputs
+        public void SetGlassParams(Vector4 v)
+        {
+            _glassParams.Set(v);
+        }
         public void SetPalette1(Vector4 v)
         {
             _palette1.Set(v);
@@ -233,13 +239,13 @@
         }
 
         // Constants
-        public void SetWorld(Matrix m)
+        public void SetWorldMatrix(Matrix m)
         {
             _world.SetMatrix(m);
         }
-        public void SetWorldViewProj(Matrix m)
+        public void SetMvMatrix(Matrix m)
         {
-            _worldViewProj.SetMatrix(m);
+            _mvMatrix.SetMatrix(m);
         }
     }
 }

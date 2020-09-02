@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace tor_tools
+﻿namespace tor_tools
 {
     public class NodeAsset
     {
@@ -27,27 +21,27 @@ namespace tor_tools
 
         public NodeAsset(string id, string parent, string display, object obj)
         {
-            this.Id = id;
-            this.parentId = parent;
-            this.displayName = display;
+            Id = id;
+            parentId = parent;
+            displayName = display;
             if (obj is GomLib.DataObjectModel model)
-                this._dom = model;
+                _dom = model;
             else if (obj is GomLib.GomObject @object)
-                this._obj = @object;
+                _obj = @object;
             else if (obj is GomLib.GomObjectData data)
-                this.objData = data;
+                objData = data;
             else if (obj is FileFormats.GR2 gR)
-                this.dynObject = gR;
+                dynObject = gR;
             else if (obj is FileFormats.GR2_Material material)
-                this.dynObject = material;
+                dynObject = material;
             else if (obj is FileFormats.GR2_Mesh mesh)
-                this.dynObject = mesh;
+                dynObject = mesh;
             else if (obj is TorLib.HashFileInfo info)
-                this.dynObject = info;
+                dynObject = info;
             else if (obj is System.Drawing.Bitmap bitmap)
-                this.dynObject = bitmap;
+                dynObject = bitmap;
             else if (obj is FileFormats.GR2_Bone_Skeleton skeleton)
-                this.dynObject = skeleton;
+                dynObject = skeleton;
         }
     }
 }

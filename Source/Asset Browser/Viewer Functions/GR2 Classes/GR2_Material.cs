@@ -29,6 +29,7 @@ namespace FileFormats
         public ShaderResourceView facepaintSRV;
         public Vector4 flushTone;
         public float fleshBrightness;
+        public Vector4 glassParams;
         public string glossDDS;
         public ShaderResourceView glossSRV;
         public bool isTwoSided;
@@ -51,6 +52,7 @@ namespace FileFormats
         public string rotationDDS;
         public ShaderResourceView rotationSRV;
         public bool useEmissive;
+        public bool useReflection;
 
 
         public GR2_Material(string materialName)
@@ -209,6 +211,7 @@ namespace FileFormats
                     {
                         useEmissive = Convert.ToBoolean(value);
                     }
+
                     if (matType == "Garment" || matType == "GarmentScrolling" || matType == "SkinB" || matType == "HairC" || matType == "Eye")
                     {
                         if (semantic == "PaletteMap")
@@ -262,6 +265,7 @@ namespace FileFormats
                             palette2MetSpec = File_Helpers.StringToVec4(value);
                         }
                     }
+
                     if (matType == "SkinB")
                     {
                         if (semantic == "ComplexionMap")
@@ -309,6 +313,18 @@ namespace FileFormats
                         {
                             if (fleshBrightness == 0)
                                 fleshBrightness = float.Parse(value);
+                        }
+                    }
+
+                    if (matType == "Glass")
+                    {
+                        if (semantic == "UsesReflection")
+                        {
+                            useReflection = Convert.ToBoolean(value);
+                        }
+                        else if (semantic == "GlassParams")
+                        {
+                            glassParams = File_Helpers.StringToVec4(value);
                         }
                     }
                 }

@@ -326,8 +326,8 @@ namespace tor_tools
             Matrix.Invert(ref mvMatrix, out mvMatrix);
             Matrix.Transpose(ref mvMatrix, out mvMatrix);
 
-            _fx.SetWorld(mvMatrix);
-            _fx.SetWorldViewProj(wvp);
+            _fx.SetWorldMatrix(mvMatrix);
+            _fx.SetMvMatrix(wvp);
 
             foreach (var mesh in model.meshes)
             {

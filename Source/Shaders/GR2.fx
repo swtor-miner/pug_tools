@@ -28,6 +28,7 @@ cbuffer cbPerFrame
     float               FleshBrightness;
     float               RimWidth;
     float               RimStrength;
+    float4              GlassParams;
 };
 
 struct Vertex
@@ -429,7 +430,7 @@ float4 psMain(outputVertex In) : SV_Target
     float3x3 toWorld                   = float3x3(float3(In.tanW), float3(In.binW), float3(In.norW));
     float3 N                           = normalize(mul(tangentN, toWorld));
     
-    float NdotL                        = max(0.0f, dot(N, lightDirection));
+    float nDotL                        = max(0.0f, dot(N, lightDirection));
 
     // =========================
     // Specular Mapping
@@ -437,13 +438,14 @@ float4 psMain(outputVertex In) : SV_Target
 
     // =========================
     // Model Lighting
-    float3 specColor                   = glossSample.xyz * pow(NdotL, (glossSample.w * 63.0f) + 1.0f);
-    float3 oColor                      = ((diffuseSample * (0.4f + (NdotL * 0.6f))) + specColor) + (diffuseSample * emissiveLum);
+    float3 specColor                   = glossSample.xyz * pow(nDotL, (glossSample.w * 63.0f) + 1.0f);
+    float3 oColor                      = ((diffuseSample * (0.4f + (nDotL * 0.6f))) + specColor) + (diffuseSample * emissiveLum);
     float4 color                       = float4(oColor, min(1.0f, alphaValue));
     
     // =========================
     // Alpha Blending
-    clip(alphaValue - AlphaTestValue);
+    if (AlphaMode == 1) clip(color.a - AlphaTestValue);
+    if (AlphaMode >= 4) clip(color.a - 1.0f);
 
     float4 fragmentColor = float4(color.xyz, 1.0f);
 
@@ -469,7 +471,7 @@ float4 psEye(outputVertex In) : SV_Target
     float3x3 toWorld                   = float3x3(float3(In.tanW), float3(In.binW), float3(In.norW));
     float3 N                           = normalize(mul(tangentN, toWorld));
     
-    float NdotL                        = max(0.0f, dot(N, lightDirection));
+    float nDotL                        = max(0.0f, dot(N, lightDirection));
 
     // =========================
     // Specular Mapping
@@ -489,13 +491,14 @@ float4 psEye(outputVertex In) : SV_Target
 
     // =========================
     // Model Lighting
-    float3 specColor                   = huedSpecularColor.xyz * pow(NdotL, (huedSpecularColor.w * 63.0f) + 1.0f);
-    float3 oColor                      = ((fragmentDiffuseColor * (0.4f + (NdotL * 0.6f))) + specColor) + (fragmentDiffuseColor * emissiveLum);
+    float3 specColor                   = huedSpecularColor.xyz * pow(nDotL, (huedSpecularColor.w * 63.0f) + 1.0f);
+    float3 oColor                      = ((fragmentDiffuseColor * (0.4f + (nDotL * 0.6f))) + specColor) + (fragmentDiffuseColor * emissiveLum);
     float4 color                       = float4(oColor, min(1.0f, alphaValue));
     
     // =========================
     // Alpha Blending
-    clip(alphaValue - AlphaTestValue);
+    if (AlphaMode == 1) clip(color.a - AlphaTestValue);
+    if (AlphaMode >= 4) clip(color.a - 1.0f);
 
     float4 fragmentColor = float4(color.xyz, 1.0f);
 
@@ -521,7 +524,7 @@ float4 psGarment(outputVertex In) : SV_Target
     float3x3 toWorld                   = float3x3(float3(In.tanW), float3(In.binW), float3(In.norW));
     float3 N                           = normalize(mul(tangentN, toWorld));
     
-    float NdotL                        = max(0.0f, dot(N, lightDirection));
+    float nDotL                        = max(0.0f, dot(N, lightDirection));
 
     // =========================
     // Specular Mapping
@@ -541,13 +544,14 @@ float4 psGarment(outputVertex In) : SV_Target
 
     // =========================
     // Model Lighting
-    float3 specColor                   = huedSpecularColor.xyz * pow(NdotL, (huedSpecularColor.w * 63.0f) + 1.0f);
-    float3 oColor                      = ((fragmentDiffuseColor * (0.4f + (NdotL * 0.6f))) + specColor) + (fragmentDiffuseColor * emissiveLum);
+    float3 specColor                   = huedSpecularColor.xyz * pow(nDotL, (huedSpecularColor.w * 63.0f) + 1.0f);
+    float3 oColor                      = ((fragmentDiffuseColor * (0.4f + (nDotL * 0.6f))) + specColor) + (fragmentDiffuseColor * emissiveLum);
     float4 color                       = float4(oColor, min(1.0f, alphaValue));
     
     // =========================
     // Alpha Blending
-    clip(alphaValue - AlphaTestValue);
+    if (AlphaMode == 1) clip(color.a - AlphaTestValue);
+    if (AlphaMode >= 4) clip(color.a - 1.0f);
 
     float4 fragmentColor               = float4(color.xyz, 1.0f);
 
@@ -573,7 +577,7 @@ float4 psHairC(outputVertex In) : SV_Target
     float3x3 toWorld                   = float3x3(float3(In.tanW), float3(In.binW), float3(In.norW));
     float3 N                           = normalize(mul(tangentN, toWorld));
     
-    float NdotL                        = max(0.0f, dot(N, lightDirection));
+    float nDotL                        = max(0.0f, dot(N, lightDirection));
 
     // =========================
     // Specular Mapping
@@ -593,13 +597,14 @@ float4 psHairC(outputVertex In) : SV_Target
 
     // =========================
     // Model Lighting
-    float3 specColor                   = huedSpecularColor.xyz * pow(NdotL, (huedSpecularColor.w * 63.0f) + 1.0f);
-    float3 oColor                      = ((fragmentDiffuseColor * (0.4f + (NdotL * 0.6f))) + specColor) + (fragmentDiffuseColor * emissiveLum);
+    float3 specColor                   = huedSpecularColor.xyz * pow(nDotL, (huedSpecularColor.w * 63.0f) + 1.0f);
+    float3 oColor                      = ((fragmentDiffuseColor * (0.4f + (nDotL * 0.6f))) + specColor) + (fragmentDiffuseColor * emissiveLum);
     float4 color                       = float4(oColor, min(1.0f, alphaValue));
     
     // =========================
     // Alpha Blending
-    clip(alphaValue - AlphaTestValue);
+    if (AlphaMode == 1) clip(color.a - AlphaTestValue);
+    if (AlphaMode >= 4) clip(color.a - 1.0f);
 
     float4 fragmentColor = float4(color.xyz, 1.0f);
 
@@ -625,7 +630,7 @@ float4 psSkinB(outputVertex In) : SV_Target
     float3x3 toWorld                   = float3x3(float3(In.tanW), float3(In.binW), float3(In.norW));
     float3 N                           = normalize(mul(tangentN, toWorld));
     
-    float NdotL                        = max(0.0f, dot(N, lightDirection));
+    float nDotL                        = max(0.0f, dot(N, lightDirection));
 
     // =========================
     // Specular Mapping
@@ -652,19 +657,20 @@ float4 psSkinB(outputVertex In) : SV_Target
     fragmentDiffuseColor               = lerp(fragmentDiffuseColor, facepaintSample.rgb, facepaintSample.a);
 
     // GetFlushColor Function
-    float flushFactor                  = (saturate(NdotL - 0.27) * 3) * FleshBrightness;
+    float flushFactor                  = (saturate(nDotL - 0.27) * 3) * FleshBrightness;
     float3 flushColor                  = FlushTone.xyz * flushFactor * huedDiffuseColor;
     fragmentDiffuseColor              += flushColor;
 
     // =========================
     // Model Lighting
-    float3 specColor                   = huedSpecularColor.xyz * pow(NdotL, (huedSpecularColor.w * 63.0f) + 1.0f);
-    float3 oColor                      = ((fragmentDiffuseColor * (0.4f + (NdotL * 0.6f))) + specColor) + (fragmentDiffuseColor * emissiveLum);
+    float3 specColor                   = huedSpecularColor.xyz * pow(nDotL, (huedSpecularColor.w * 63.0f) + 1.0f);
+    float3 oColor                      = ((fragmentDiffuseColor * (0.4f + (nDotL * 0.6f))) + specColor) + (fragmentDiffuseColor * emissiveLum);
     float4 color                       = float4(oColor, min(1.0f, alphaValue));
     
     // =========================
     // Alpha Blending
-    clip(alphaValue - AlphaTestValue);
+    if (AlphaMode == 1) clip(color.a - AlphaTestValue);
+    if (AlphaMode >= 4) clip(color.a - 1.0f);
 
     float4 fragmentColor = float4(color.xyz, 1.0f);
 
@@ -727,11 +733,11 @@ float4 psFilterSpecular(outputVertex In) : SV_Target
     float3x3 toWorld              = float3x3(float3(In.tanW), float3(In.binW), float3(In.norW));
     float3 N                      = normalize(mul(tangentN, toWorld));
     
-    float NdotL                   = max(0.0f, dot(N, lightDirection));
+    float nDotL                   = max(0.0f, dot(N, lightDirection));
 
     const float4 glossSample      = texGloss.Sample(samLinear, In.texCo);
 
-    float3 specColor              = glossSample.xyz * pow(NdotL, (glossSample.w * 63.0f) + 1.0f);
+    float3 specColor              = glossSample.xyz * pow(nDotL, (glossSample.w * 63.0f) + 1.0f);
 
     const float4 fragmentColor    = float4(specColor, alphaValue);
 

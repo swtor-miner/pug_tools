@@ -119,7 +119,10 @@ namespace tor_tools
             indexList.Clear();
         }
 
-        public void LoadModel(Dictionary<string, GR2> models, Dictionary<string, object> resources, string fqn, string type = "")
+        public void LoadModel(Dictionary<string, GR2> models,
+                              Dictionary<string, object> resources,
+                              string fqn,
+                              string type = "")
         {
             this.fqn = fqn;
 
@@ -155,11 +158,15 @@ namespace tor_tools
             {
                 focus = models.First().Value;
 
-                globalBoxMin = new Vector3(focus.global_box.minX, focus.global_box.minY, focus.global_box.minZ);
+                globalBoxMin = new Vector3(focus.global_box.minX,
+                                           focus.global_box.minY,
+                                           focus.global_box.minZ);
                 Vector4 tempMin = Vector3.Transform(globalBoxMin, focus.GetTransform());
                 globalBoxMin = new Vector3(tempMin.X, tempMin.Y, tempMin.Z);
 
-                globalBoxMax = new Vector3(focus.global_box.maxX, focus.global_box.maxY, focus.global_box.maxZ);
+                globalBoxMax = new Vector3(focus.global_box.maxX,
+                                           focus.global_box.maxY,
+                                           focus.global_box.maxZ);
                 Vector4 tempMax = Vector3.Transform(globalBoxMax, focus.GetTransform());
                 globalBoxMax = new Vector3(tempMax.X, tempMax.Y, tempMax.Z);
 
@@ -174,8 +181,12 @@ namespace tor_tools
                         continue;
 
                     focus = model.Value;
-                    var min = Vector3.Transform(new Vector3(focus.global_box.minX, focus.global_box.minY, focus.global_box.minZ), focus.GetTransform());
-                    var max = Vector3.Transform(new Vector3(focus.global_box.maxX, focus.global_box.maxY, focus.global_box.maxZ), focus.GetTransform());
+                    var min = Vector3.Transform(new Vector3(focus.global_box.minX,
+                                                            focus.global_box.minY,
+                                                            focus.global_box.minZ), focus.GetTransform());
+                    var max = Vector3.Transform(new Vector3(focus.global_box.maxX,
+                                                            focus.global_box.maxY,
+                                                            focus.global_box.maxZ), focus.GetTransform());
 
                     globalBoxMin.X = min.X < globalBoxMin.X ? min.X : globalBoxMin.X;
                     globalBoxMin.Y = min.Y < globalBoxMin.Y ? min.Y : globalBoxMin.Y;
@@ -488,7 +499,7 @@ namespace tor_tools
                     else
                         _flyingCamera.Zoom(+dt);
             }
-            System.Threading.Thread.Sleep(1); //Fix for UI lag. Sleeps the thread for 1 millisecond...
+            System.Threading.Thread.Sleep(1); // Fix for UI lag. Sleeps the thread for 1 millisecond...
         }
 
         public override void DrawScene()
@@ -496,12 +507,16 @@ namespace tor_tools
             base.DrawScene();
 
             ImmediateContext.ClearRenderTargetView(RenderTargetView, Color.LightSteelBlue);
-            ImmediateContext.ClearDepthStencilView(DepthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
+            ImmediateContext.ClearDepthStencilView(DepthStencilView,
+                                                   DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil,
+                                                   1.0f,
+                                                   0);
 
             ImmediateContext.InputAssembler.InputLayout = InputLayouts.PosNormalTexTan;
             ImmediateContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
 
-            ImmediateContext.OutputMerger.BlendState = RenderStates.AlphaToCoverageBS;
+            // ImmediateContext.OutputMerger.BlendState = RenderStates.AlphaToCoverageBS;
+            ImmediateContext.OutputMerger.BlendState = RenderStates.TransparentBS;
 
             ImmediateContext.Rasterizer.State = RenderStates.OneSidedRS;
 
@@ -587,8 +602,8 @@ namespace tor_tools
                 Matrix.Invert(ref mvMatrix, out mvMatrix);
                 Matrix.Transpose(ref mvMatrix, out mvMatrix);
 
-                _fx.SetWorld(mvMatrix);
-                _fx.SetWorldViewProj(wvp);
+                _fx.SetWorldMatrix(mvMatrix);
+                _fx.SetMvMatrix(wvp);
 
                 foreach (var mesh in model.Value.meshes)
                 {
@@ -765,19 +780,19 @@ namespace tor_tools
             switch (selectedMaterial.alphaMode)
             {
                 case "Test":
-                    _fx.SetAlphaMode(0);
+                    _fx.SetAlphaMode(1);
                     break;
                 case "Add":
-                    _fx.SetAlphaMode(4);
-                    break;
-                case "Multiply":
                     _fx.SetAlphaMode(2);
                     break;
-                case "Full":
+                case "Multiply":
                     _fx.SetAlphaMode(3);
                     break;
+                case "Full":
+                    _fx.SetAlphaMode(4);
+                    break;
                 case "MultiPassFull":
-                    _fx.SetAlphaMode(3);
+                    _fx.SetAlphaMode(4);
                     break;
                 default:
                     _fx.SetAlphaMode(0);
@@ -799,6 +814,8 @@ namespace tor_tools
             _fx.SetFacepaintMap(selectedMaterial.facepaintSRV);
             _fx.SetAgeMap(selectedMaterial.ageSRV);
 
+            // _fx.SetGlassParams(selectedMaterial.glassParams);
+
             _fx.SetPalette1(selectedMaterial.palette1);
             _fx.SetPalette2(selectedMaterial.palette2);
 
@@ -816,7 +833,11 @@ namespace tor_tools
         {
             try
             {
-                string filename = Tools.PrepExtractPath(fqn + '-' + DateTime.Now.ToString("yyyyMMddHHmmss") + '.' + format.ToString().ToLower());
+                string filename = Tools.PrepExtractPath(fqn
+                                                        + '-'
+                                                        + DateTime.Now.ToString("yyyyMMddHHmmss")
+                                                        + '.'
+                                                        + format.ToString().ToLower());
                 var outputDesc = new Texture2DDescription
                 {
                     Width = ClientWidth,

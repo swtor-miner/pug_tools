@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -20,7 +19,10 @@ namespace TreeViewFast.Controls
         /// <param name="getId">Function to parse Id value from item object</param>
         /// <param name="getParentId">Function to parse parentId value from item object</param>
         /// <param name="getDisplayName">Function to parse display name value from item object. This is used as node text.</param>
-        public void LoadItems<T>(IEnumerable<T> items, Func<T, string> getId, Func<T, string> getParentId, Func<T, string> getDisplayName)
+        public void LoadItems<T>(IEnumerable<T> items,
+                                 Func<T, string> getId,
+                                 Func<T, string> getParentId,
+                                 Func<T, string> getDisplayName)
         {
             // Clear view and internal dictionary
             Nodes.Clear();
@@ -135,7 +137,10 @@ namespace TreeViewFast.Controls
             return items;
         }
 
-        internal void LoadItems<T1>(Dictionary<string, TreeListItem> testDict, Func<TreeListItem, string> getId, Func<TreeListItem, string> getParentId, Func<TreeListItem, string> getDisplayName)
+        internal void LoadItems<T1>(Dictionary<string, TreeListItem> testDict,
+                                    Func<TreeListItem, string> getId,
+                                    Func<TreeListItem, string> getParentId,
+                                    Func<TreeListItem, string> getDisplayName)
         {
             // Clear view and internal dictionary
             Nodes.Clear();
@@ -181,7 +186,7 @@ namespace TreeViewFast.Controls
             foreach (var id in _treeNodes.Keys)
             {
                 var node = GetNode(id);
-                var obj = (tor_tools.TreeListItem)node.Tag;
+                var obj = (TreeListItem)node.Tag;
                 var parentId = getParentId(obj);
 
                 if (parentId != "")
@@ -196,7 +201,12 @@ namespace TreeViewFast.Controls
             }
         }
 
-        internal void LoadItems<T1>(Dictionary<string, tor_tools.TreeListItem> assetDict, Func<tor_tools.TreeListItem, string> getId, Func<tor_tools.TreeListItem, string> getParentId, Func<tor_tools.TreeListItem, string> getDisplayName, string filter, string type)
+        internal void LoadItems<T1>(Dictionary<string, TreeListItem> assetDict,
+                                    Func<TreeListItem, string> getId,
+                                    Func<TreeListItem, string> getParentId,
+                                    Func<TreeListItem, string> getDisplayName,
+                                    string filter,
+                                    string type)
         {
             if (filter is null)
             {
@@ -239,7 +249,7 @@ namespace TreeViewFast.Controls
             foreach (var id in _treeNodes.Keys)
             {
                 var node = GetNode(id);
-                var obj = (tor_tools.TreeListItem)node.Tag;
+                var obj = (TreeListItem)node.Tag;
                 var parentId = getParentId(obj);
 
                 if (parentId != "")
@@ -254,7 +264,10 @@ namespace TreeViewFast.Controls
             }
         }
 
-        internal void LoadItems<T1>(Dictionary<string, tor_tools.NodeAsset> assetDict, Func<tor_tools.NodeAsset, string> getId, Func<tor_tools.NodeAsset, string> getParentId, Func<tor_tools.NodeAsset, string> getDisplayName)
+        internal void LoadItems<T1>(Dictionary<string, NodeAsset> assetDict,
+                                    Func<NodeAsset, string> getId,
+                                    Func<NodeAsset, string> getParentId,
+                                    Func<NodeAsset, string> getDisplayName)
         {
             // Clear view and internal dictionary
             Nodes.Clear();
@@ -266,11 +279,21 @@ namespace TreeViewFast.Controls
                 NodeAsset tx = assetDict[x];
                 NodeAsset ty = assetDict[y];
 
-                if ((tx.Obj == null && tx.dynObject == null && tx.objData == null) && (ty.Obj != null || ty.dynObject != null || ty.objData != null))
+                if (tx.Obj == null
+                    && tx.dynObject == null
+                    && tx.objData == null
+                    && (ty.Obj != null || ty.dynObject != null || ty.objData != null))
                     return -1;
-                else if ((tx.Obj != null || tx.dynObject != null || tx.objData != null) && (ty.Obj == null && ty.dynObject == null && ty.objData == null))
+                else if ((tx.Obj != null
+                          || tx.dynObject != null
+                          || tx.objData != null) && ty.Obj == null && ty.dynObject == null && ty.objData == null)
                     return 1;
-                else if ((tx.Obj == null && tx.dynObject == null && tx.objData == null) && (ty.Obj == null && ty.dynObject == null && ty.objData == null))
+                else if (tx.Obj == null
+                         && tx.dynObject == null
+                         && tx.objData == null
+                         && ty.Obj == null
+                         && ty.dynObject == null
+                         && ty.objData == null)
                     return string.Compare(x, y);
                 else
                     return string.Compare(tx.Id, ty.Id);
@@ -302,7 +325,7 @@ namespace TreeViewFast.Controls
             foreach (var id in _treeNodes.Keys)
             {
                 var node = GetNode(id);
-                var obj = (tor_tools.NodeAsset)node.Tag;
+                var obj = (NodeAsset)node.Tag;
                 var parentId = getParentId(obj);
 
                 if (parentId != "")
@@ -317,7 +340,10 @@ namespace TreeViewFast.Controls
             }
         }
 
-        internal void LoadItems<T1>(Dictionary<string, ArchTreeListItem> testDict, Func<ArchTreeListItem, string> getId, Func<ArchTreeListItem, string> getParentId, Func<ArchTreeListItem, string> getDisplayName)
+        internal void LoadItems<T1>(Dictionary<string, ArchTreeListItem> testDict,
+                                    Func<ArchTreeListItem, string> getId,
+                                    Func<ArchTreeListItem, string> getParentId,
+                                    Func<ArchTreeListItem, string> getDisplayName)
         {
             // Clear view and internal dictionary
             Nodes.Clear();
@@ -348,7 +374,7 @@ namespace TreeViewFast.Controls
             foreach (var id in _treeNodes.Keys)
             {
                 var node = GetNode(id);
-                var obj = (tor_tools.ArchTreeListItem)node.Tag;
+                var obj = (ArchTreeListItem)node.Tag;
                 var parentId = getParentId(obj);
 
                 if (parentId != "")

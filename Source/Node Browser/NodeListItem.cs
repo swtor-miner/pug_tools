@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GomLib;
 
 namespace tor_tools
@@ -17,7 +15,7 @@ namespace tor_tools
 
         public List<NodeListItem> children = new List<NodeListItem>();
 
-        //Sort of hacky to avoid changing all the existing stuff.
+        // Sort of hacky to avoid changing all the existing stuff.
         public NodeListItem(object name, object value, GomType type = null)
         {
             this.name = name;
@@ -27,18 +25,18 @@ namespace tor_tools
                 DataObjectModel currentDom = DomHandler.Instance.GetCurrentDOM();
                 if (currentDom.DomTypeMap.TryGetValue(potNodeID, out DomType nodeLookup))
                 {
-                    this.displayName = potNodeID.ToString() + "  (" + nodeLookup.Name.ToString() + ")";
+                    displayName = potNodeID.ToString() + "  (" + nodeLookup.Name.ToString() + ")";
                 }
                 else
                 {
-                    this.displayName = name.ToString();
+                    displayName = name.ToString();
                 }
 
                 NodeListItemSetup(name.ToString(), value, type);
             }
             else
             {
-                this.displayName = name.ToString();
+                displayName = name.ToString();
                 NodeListItemSetup(name.ToString(), value, type);
             }
         }
@@ -46,7 +44,7 @@ namespace tor_tools
         public NodeListItem(string name, object value, GomType type = null)
         {
             this.name = name;
-            this.displayName = name;
+            displayName = name;
             NodeListItemSetup(name, value, type);
         }
         private void NodeListItemSetup(string name, object value, GomType type = null)
@@ -54,7 +52,7 @@ namespace tor_tools
             try
             {
                 this.value = value;
-                //Console.WriteLine(name);
+                // Console.WriteLine(name);
             }
             catch (Exception) { }
 
@@ -89,7 +87,7 @@ namespace tor_tools
                             }
                             children.Add(child);
                         }
-                        this.displayValue = "";
+                        displayValue = "";
 
                     }
                     else if (type.TypeId == GomTypeId.List)
@@ -105,7 +103,7 @@ namespace tor_tools
                             children.Add(child);
                             count++;
                         }
-                        this.displayValue = "";
+                        displayValue = "";
                     }
                     else if (type.TypeId == GomTypeId.EmbeddedClass)
                     {
@@ -146,7 +144,7 @@ namespace tor_tools
                     else if (type.TypeId == GomTypeId.Vec3)
                     {
                         List<Single> list = (List<Single>)this.value;
-                        this.displayValue = "(" + String.Join(", ", list.ToArray()) + ")";
+                        displayValue = "(" + string.Join(", ", list.ToArray()) + ")";
                         this.type = type.ToString();
                     }
                     else if (type.TypeId == GomTypeId.UInt64)
@@ -155,11 +153,11 @@ namespace tor_tools
                         currentDom.DomTypeMap.TryGetValue((ulong)this.value, out DomType nodeLookup);
                         if (nodeLookup != null)
                         {
-                            this.displayValue = value.ToString() + "  (" + nodeLookup.Name.ToString() + ")";
+                            displayValue = value.ToString() + "  (" + nodeLookup.Name.ToString() + ")";
                         }
                         else
                         {
-                            this.displayValue = value.ToString();
+                            displayValue = value.ToString();
                         }
                         this.type = type.ToString();
                     }
@@ -168,7 +166,7 @@ namespace tor_tools
                         this.type = type.ToString();
                         if (this.value != null && displayValue == null)
                         {
-                            this.displayValue = value.ToString();
+                            displayValue = value.ToString();
                         }
                     }
 
@@ -187,7 +185,7 @@ namespace tor_tools
                     foreach (var item in objDict)
                     {
                         NodeListItem child = new NodeListItem(item.Key.ToString(), item.Value);
-                        if (this.displayName == "locTextRetrieverMap")
+                        if (displayName == "locTextRetrieverMap")
                         {
                             GomObjectData currentValue = (GomObjectData)item.Value;
                             long stringId = currentValue.ValueOrDefault<long>("strLocalizedTextRetrieverStringID", 0);
@@ -204,7 +202,7 @@ namespace tor_tools
                         child.type = GetType(item.Key.ToString());
                         children.Add(child);
                     }
-                    this.displayValue = "";
+                    displayValue = "";
                 }
                 else if (this.value is Dictionary<string, string> stringDict)
                 {
@@ -216,7 +214,7 @@ namespace tor_tools
                         };
                         children.Add(child);
                     }
-                    this.displayValue = "";
+                    displayValue = "";
                 }
                 else if (this.value is GomObjectData obj)
                 {
@@ -240,7 +238,7 @@ namespace tor_tools
                         };
                         children.Add(child);
                     }
-                    this.displayValue = "";
+                    displayValue = "";
                 }
                 else if (value1 is List<string>)
                 {
@@ -255,11 +253,11 @@ namespace tor_tools
                     }
                     if (children.Count() == 0)
                     {
-                        if (this.name != null && this.displayValue == "")
-                            this.displayValue = name;
+                        if (this.name != null && displayValue == "")
+                            displayValue = name;
                     }
                     else
-                        this.displayValue = "";
+                        displayValue = "";
                 }
                 else if (this.value is DEP_Entry entry)
                 {
@@ -277,7 +275,7 @@ namespace tor_tools
                     if (this.value != null)
                     {
                         if (displayValue == null)
-                            this.displayValue = value.ToString();
+                            displayValue = value.ToString();
                     }
                 }
             }

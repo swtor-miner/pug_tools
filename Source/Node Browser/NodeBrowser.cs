@@ -3,34 +3,25 @@ using System.Collections.Generic;
 using System.Collections;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO;
 using System.Xml;
 using System.Xml.Linq;
-using System.Xml.Serialization;
-using System.Windows.Forms.Integration;
 using GomLib;
 using TorLib;
-using nsHashDictionary;
-using DevIL;
 using BrightIdeasSoftware;
-using TreeViewFast.Controls;
 
 namespace tor_tools
 {
     public partial class NodeBrowser : Form
     {
-        private TorLib.Assets currentAssets;
+        private Assets currentAssets;
         private DataObjectModel currentDom;
 
-        //private bool autoPreview = true;
+        // private bool autoPreview = true;
         private string extractPath;
-        //private bool invalidXML = false;
+        // private bool invalidXML = false;
 
         /*
         private HashDictionaryInstance hashData = HashDictionaryInstance.Instance;
@@ -78,7 +69,7 @@ namespace tor_tools
 
             Config.Load();
             txtExtractPath.Text = Config.ExtractPath;
-            this.extractPath = txtExtractPath.Text;
+            extractPath = txtExtractPath.Text;
 
             List<object> args = new List<object>
             {
@@ -107,7 +98,7 @@ namespace tor_tools
             toolStripStatusLabel1.Text = "Loading Assets ...";
             ShowLoader();
             backgroundWorker1.RunWorkerAsync(args);
-            treeListView1.CanExpandGetter = delegate (object x) { return (((NodeListItem)x).children.Count > 0); };
+            treeListView1.CanExpandGetter = delegate (object x) { return ((NodeListItem)x).children.Count > 0; };
             treeListView1.ChildrenGetter = delegate (object x)
             {
                 NodeListItem obj = (NodeListItem)x;
@@ -127,9 +118,9 @@ namespace tor_tools
         private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             List<object> args = e.Argument as List<object>;
-            this.currentAssets = AssetHandler.Instance.GetCurrentAssets((string)args[0], (bool)args[1]);
-            //this.currentAssets = this.currentAssets.getCurrentAssets((string)args[0], (bool)args[1]);            
-            this.currentDom = DomHandler.Instance.GetCurrentDOM(currentAssets);
+            currentAssets = AssetHandler.Instance.GetCurrentAssets((string)args[0], (bool)args[1]);
+            // currentAssets = currentAssets.getCurrentAssets((string)args[0], (bool)args[1]);            
+            currentDom = DomHandler.Instance.GetCurrentDOM(currentAssets);
         }
 
         private void BackgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -139,20 +130,20 @@ namespace tor_tools
             HashSet<string> nodeDirs = new HashSet<string>();
             HashSet<string> allDirs = new HashSet<string>();
 
-            assetDict.Add("/", new NodeAsset("/", "", "Root", (GomObject)null));
+            assetDict.Add("/", new NodeAsset("/", "", "Root", null));
             if (customSort)
             {
                 if (customRoots.Count() > 0)
                 {
                     foreach (string customRoot in customRoots)
                     {
-                        assetDict.Add(customRoot, new NodeAsset(customRoot, "/", customRoot, (GomObject)null));
+                        assetDict.Add(customRoot, new NodeAsset(customRoot, "/", customRoot, null));
                         nodeDirs.Add(customRoot);
                     }
                 }
             }
 
-            this.currentDom.nodeLookup.TryGetValue(typeof(GomObject), out nodeDict);
+            currentDom.nodeLookup.TryGetValue(typeof(GomObject), out nodeDict);
 
 
             /*
@@ -168,14 +159,14 @@ namespace tor_tools
                 foreach (var currentNode in nodeDict)
                 {
                     nodeKeys.Add(currentNode.Key.ToString());
-                    GomLib.GomObject obj = (GomLib.GomObject)currentNode.Value;
+                    GomObject obj = (GomObject)currentNode.Value;
                     string display = currentNode.Key.ToString();
 
                     string parent;
                     if (obj.Name.Contains("."))
                     {
                         string[] temp = obj.Name.Split('.');
-                        parent = String.Join(".", temp.Take(temp.Length - 1));
+                        parent = string.Join(".", temp.Take(temp.Length - 1));
                         if (customSort)
                         {
                             if (customNodeSort.Count() > 0)
@@ -247,15 +238,15 @@ namespace tor_tools
             }
 
             toolStripStatusLabel1.Text = "Loading Tree View Items ...";
-            this.Refresh();
+            Refresh();
             backgroundWorker2.RunWorkerAsync();
         }
 
         private void BackgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
         {
-            Func<NodeAsset, string> getId = (x => x.Id);
-            Func<NodeAsset, string> getParentId = (x => x.parentId);
-            Func<NodeAsset, string> getDisplayName = (x => x.displayName);
+            string getId(NodeAsset x) => x.Id;
+            string getParentId(NodeAsset x) => x.parentId;
+            string getDisplayName(NodeAsset x) => x.displayName;
             treeViewFast1.BeginUpdate();
             treeViewFast1.LoadItems<NodeAsset>(assetDict, getId, getParentId, getDisplayName);
         }
@@ -264,7 +255,7 @@ namespace tor_tools
         {
             treeViewFast1.EndUpdate();
 
-            //Expand root node
+            // Expand root node
             if (treeViewFast1.Nodes.Count > 0) treeViewFast1.Nodes[0].Expand();
 
             toolStripStatusLabel1.Text = "Loading Complete";
@@ -286,7 +277,7 @@ namespace tor_tools
 
                 if (asset.hashInfo.File != null)
                 {
-                    //extractAsset(asset.file);
+                    // extractAsset(asset.file);
                 }
 
                 if (child.Nodes.Count > 0)
@@ -296,7 +287,7 @@ namespace tor_tools
 
         private void SearchTreeNodes()
         {
-            this.nodeMatch = treeViewFast1.Nodes.Find(this.searchNodes[this.searchIndex], true);
+            nodeMatch = treeViewFast1.Nodes.Find(searchNodes[searchIndex], true);
         }
 
 
@@ -357,10 +348,10 @@ namespace tor_tools
             treeListView1.Visible = false;
             TreeNode selected = treeViewFast1.SelectedNode;
             NodeAsset asset = (NodeAsset)selected.Tag;
-            this.Text = "Node Browser - " + asset.Id.ToString();
-            this.collapseStatus = false;
-            this.btnToggleCollapse.Enabled = true;
-            this.btnToggleCollapse.Text = "Collapse Child Nodes";
+            Text = "Node Browser - " + asset.Id.ToString();
+            collapseStatus = false;
+            btnToggleCollapse.Enabled = true;
+            btnToggleCollapse.Text = "Collapse Child Nodes";
 
             if (selected.Tag != null)
             {
@@ -376,7 +367,7 @@ namespace tor_tools
                     treeListView1.ExpandAll();
                     HideLoader();
                     treeListView1.Visible = true;
-                    if (this.filterEnabled)
+                    if (filterEnabled)
                     {
                         treeListView1.ModelFilter = TextMatchFilter.Contains(treeListView1, txtFilter.Text);
                     }
@@ -390,7 +381,7 @@ namespace tor_tools
             dt.Columns.Add("Property");
             dt.Columns.Add("Value");
             dt.Rows.Add(new string[] { "Current Node", asset.Id.ToString() });
-            this.currentTreeNode = asset.Id.ToString();
+            currentTreeNode = asset.Id.ToString();
             dataGridView1.DataSource = dt;
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
 
@@ -469,16 +460,16 @@ namespace tor_tools
 
         private void EnableUI()
         {
-            this.dataGridView1.Enabled = true;
-            this.txtExtractPath.Enabled = true;
-            this.btnChooseExtract.Enabled = true;
-            this.btnExtract.Enabled = true;
-            this.txtSearch.Enabled = true;
-            this.btnSearch.Enabled = true;
-            this.txtFilter.Enabled = true;
-            this.btnFilterList.Enabled = true;
-            this.lblListFilter.Enabled = true;
-            this.btnFileFinder.Enabled = true;
+            dataGridView1.Enabled = true;
+            txtExtractPath.Enabled = true;
+            btnChooseExtract.Enabled = true;
+            btnExtract.Enabled = true;
+            txtSearch.Enabled = true;
+            btnSearch.Enabled = true;
+            txtFilter.Enabled = true;
+            btnFilterList.Enabled = true;
+            lblListFilter.Enabled = true;
+            btnFileFinder.Enabled = true;
         }
 
         #endregion
@@ -492,7 +483,7 @@ namespace tor_tools
             WriteFile(new XDocument(new XElement(asset.Obj.Print())), asset.Obj.Name + ".xml", false, false);
             byte[] buffer = asset.Obj.GetRawUncompressedNode();
             WriteFile(buffer, asset.Obj.Name + ".node");
-            MessageBox.Show("Extracted " + asset.Obj.Name + " to " + this.extractPath);
+            MessageBox.Show("Extracted " + asset.Obj.Name + " to " + extractPath);
         }
 
         public void WriteFile(XDocument content, string filename, bool append, bool trimEmpty)
@@ -500,13 +491,13 @@ namespace tor_tools
             if (trimEmpty)
             {
                 content.Descendants()
-                    .Where(e => e.IsEmpty || String.IsNullOrWhiteSpace(e.Value))
+                    .Where(e => e.IsEmpty || string.IsNullOrWhiteSpace(e.Value))
                     .Remove();
             }
             if (content.Root.IsEmpty) return;
             filename = filename.Replace('/', '.');
-            if (!System.IO.Directory.Exists(this.extractPath)) { System.IO.Directory.CreateDirectory(this.extractPath); }
-            using (System.IO.StreamWriter file2 = new System.IO.StreamWriter(this.extractPath + filename, append))
+            if (!System.IO.Directory.Exists(extractPath)) { System.IO.Directory.CreateDirectory(extractPath); }
+            using (System.IO.StreamWriter file2 = new System.IO.StreamWriter(extractPath + filename, append))
             {
                 content.Save(file2, SaveOptions.None);
             }
@@ -516,29 +507,29 @@ namespace tor_tools
         {
             if (content == null || content.Count() == 0) return;
             filename = filename.Replace('/', '.');
-            if (!System.IO.Directory.Exists(this.extractPath)) { System.IO.Directory.CreateDirectory(this.extractPath); }
-            System.IO.File.WriteAllBytes(this.extractPath + filename, content);
+            if (!System.IO.Directory.Exists(extractPath)) { System.IO.Directory.CreateDirectory(extractPath); }
+            System.IO.File.WriteAllBytes(extractPath + filename, content);
         }
 
         private async void BtnSearch_Click(object sender, EventArgs e)
         {
-            this.toolStripStatusLabel1.Text = "Performing Search ...";
-            this.searchNodes = this.nodeKeys.Where(d => d.Contains(txtSearch.Text)).ToList();
-            if (this.searchNodes.Count() > 0)
+            toolStripStatusLabel1.Text = "Performing Search ...";
+            searchNodes = nodeKeys.Where(d => d.Contains(txtSearch.Text)).ToList();
+            if (searchNodes.Count() > 0)
             {
                 await OnSuccesfulSearch();
             }
             else
             {
-                //Check if search value is ulong.
+                // Check if search value is ulong.
                 if (ulong.TryParse(txtSearch.Text, out ulong nodeID))
                 {
                     GomObject node = currentDom.GetObject(nodeID);
                     if (node != null)
                     {
                         txtSearch.Text = node.Name;
-                        this.searchNodes = this.nodeKeys.Where(d => d.Contains(txtSearch.Text)).ToList();
-                        if (this.searchNodes.Count() > 0)
+                        searchNodes = nodeKeys.Where(d => d.Contains(txtSearch.Text)).ToList();
+                        if (searchNodes.Count() > 0)
                         {
                             await OnSuccesfulSearch();
                             return;
@@ -546,54 +537,54 @@ namespace tor_tools
                     }
                 }
 
-                this.toolStripStatusLabel1.Text = "Search complete";
+                toolStripStatusLabel1.Text = "Search complete";
                 MessageBox.Show("Search term not found.");
             }
         }
 
         private async Task OnSuccesfulSearch()
         {
-            this.btnClearSearch.Enabled = true;
-            this.btnSearch.Enabled = false;
-            this.txtSearch.Enabled = false;
-            this.btnFindNext.Enabled = true;
-            this.toolStripStatusLabel1.Text = "Found " + (this.searchNodes.Count() + 1) + " Matches";
+            btnClearSearch.Enabled = true;
+            btnSearch.Enabled = false;
+            txtSearch.Enabled = false;
+            btnFindNext.Enabled = true;
+            toolStripStatusLabel1.Text = "Found " + (searchNodes.Count() + 1) + " Matches";
             ShowLoader();
             await Task.Run(() => SearchTreeNodes());
             HideLoader();
-            treeViewFast1.SelectedNode = this.nodeMatch[0];
+            treeViewFast1.SelectedNode = nodeMatch[0];
             treeViewFast1.Focus();
-            this.toolStripStatusLabel2.Text = "Item " + (this.searchIndex + 1) + " of " + this.searchNodes.Count();
-            this.searchIndex++;
+            toolStripStatusLabel2.Text = "Item " + (searchIndex + 1) + " of " + searchNodes.Count();
+            searchIndex++;
         }
 
         private async void BtnFindNext_Click(object sender, EventArgs e)
         {
-            if (this.searchNodes.ElementAtOrDefault(this.searchIndex) != null)
+            if (searchNodes.ElementAtOrDefault(searchIndex) != null)
             {
                 await Task.Run(() => SearchTreeNodes());
-                treeViewFast1.SelectedNode = this.nodeMatch[0];
+                treeViewFast1.SelectedNode = nodeMatch[0];
                 treeViewFast1.Focus();
-                this.toolStripStatusLabel2.Text = "Item " + (this.searchIndex + 1) + " of " + this.searchNodes.Count();
-                this.searchIndex++;
+                toolStripStatusLabel2.Text = "Item " + (searchIndex + 1) + " of " + searchNodes.Count();
+                searchIndex++;
             }
             else
             {
-                this.toolStripStatusLabel1.Text = "Search complete";
+                toolStripStatusLabel1.Text = "Search complete";
                 MessageBox.Show("No more search terms found");
             }
         }
 
         private void BtnClearSearch_Click(object sender, EventArgs e)
         {
-            this.searchNodes = new List<string>();
-            this.searchIndex = 0;
-            this.txtSearch.Enabled = true;
-            this.txtSearch.Text = "";
-            this.btnFindNext.Enabled = false;
-            this.btnSearch.Enabled = true;
-            this.btnClearSearch.Enabled = false;
-            this.toolStripStatusLabel2.Text = "";
+            searchNodes = new List<string>();
+            searchIndex = 0;
+            txtSearch.Enabled = true;
+            txtSearch.Text = "";
+            btnFindNext.Enabled = false;
+            btnSearch.Enabled = true;
+            btnClearSearch.Enabled = false;
+            toolStripStatusLabel2.Text = "";
         }
 
         private void BtnChooseExtract_Click(object sender, EventArgs e)
@@ -604,18 +595,18 @@ namespace tor_tools
             };
             _ = fbd.ShowDialog();
             txtExtractPath.Text = fbd.SelectedPath + "\\";
-            this.extractPath = txtExtractPath.Text;
+            extractPath = txtExtractPath.Text;
         }
 
         private void BtnToggleCollapse_Click(object sender, EventArgs e)
         {
-            //Check if we can collapse or expand the selected node.
+            // Check if we can collapse or expand the selected node.
             if (treeListView1.SelectedObject != null)
             {
                 TreeListView.Branch br = treeListView1.TreeModel.GetBranch(treeListView1.SelectedObject);
                 if (br != null && br.CanExpand && !br.IsExpanded)
                 {
-                    //Expand node and all child nodes.
+                    // Expand node and all child nodes.
                     treeListView1.Visible = false;
                     ShowLoader();
                     foreach (object nodeObj in treeListView1.GetChildren(treeListView1.SelectedObject))
@@ -624,14 +615,14 @@ namespace tor_tools
                     }
 
                     treeListView1.Expand(treeListView1.SelectedObject);
-                    this.btnToggleCollapse.Text = "Collapse Child Nodes";
+                    btnToggleCollapse.Text = "Collapse Child Nodes";
                     treeListView1.Visible = true;
                     HideLoader();
                     return;
                 }
                 else if (br != null && br.CanExpand && br.IsExpanded)
                 {
-                    //Collapse node and all child nodes.
+                    // Collapse node and all child nodes.
                     treeListView1.Visible = false;
                     ShowLoader();
                     foreach (object nodeObj in treeListView1.GetChildren(treeListView1.SelectedObject))
@@ -640,44 +631,44 @@ namespace tor_tools
                     }
 
                     treeListView1.Collapse(treeListView1.SelectedObject);
-                    this.btnToggleCollapse.Text = "Expand Child Nodes";
+                    btnToggleCollapse.Text = "Expand Child Nodes";
                     treeListView1.Visible = true;
                     HideLoader();
                     return;
                 }
             }
 
-            //Couldn't collapse or expand child node. Do whole page.
-            if (this.collapseStatus)
+            // Couldn't collapse or expand child node. Do whole page.
+            if (collapseStatus)
             {
-                this.collapseStatus = false;
+                collapseStatus = false;
                 treeListView1.ExpandAll();
-                this.btnToggleCollapse.Text = "Collapse Child Nodes";
+                btnToggleCollapse.Text = "Collapse Child Nodes";
             }
             else
             {
-                this.collapseStatus = true;
+                collapseStatus = true;
                 treeListView1.CollapseAll();
-                this.btnToggleCollapse.Text = "Expand Child Nodes";
+                btnToggleCollapse.Text = "Expand Child Nodes";
             }
         }
 
         private void BtnFilterList_Click(object sender, EventArgs e)
         {
-            this.txtFilter.Enabled = false;
-            this.btnFilterList.Enabled = false;
-            this.btnClearFilter.Enabled = true;
-            this.treeListView1.ModelFilter = TextMatchFilter.Contains(this.treeListView1, txtFilter.Text);
-            this.filterEnabled = true;
+            txtFilter.Enabled = false;
+            btnFilterList.Enabled = false;
+            btnClearFilter.Enabled = true;
+            treeListView1.ModelFilter = TextMatchFilter.Contains(treeListView1, txtFilter.Text);
+            filterEnabled = true;
         }
 
         private void BtnClearFilter_Click(object sender, EventArgs e)
         {
-            this.btnClearFilter.Enabled = false;
-            this.btnFilterList.Enabled = true;
-            this.txtFilter.Enabled = true;
-            this.treeListView1.ModelFilter = null;
-            this.filterEnabled = false;
+            btnClearFilter.Enabled = false;
+            btnFilterList.Enabled = true;
+            txtFilter.Enabled = true;
+            treeListView1.ModelFilter = null;
+            filterEnabled = false;
         }
         #endregion
 
@@ -697,9 +688,9 @@ namespace tor_tools
                 }
 
                 ShowLoader();
-                this.toolStripStatusLabel1.Text = "Running File Name Finder ...";
+                toolStripStatusLabel1.Text = "Running File Name Finder ...";
                 await Task.Run(() => RunFileNameFinder());
-                this.toolStripStatusLabel1.Text = "File Name Finder Complete";
+                toolStripStatusLabel1.Text = "File Name Finder Complete";
                 MessageBox.Show("File Name Files Generated", "Files Generated", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 HideLoader();
             }
@@ -715,21 +706,21 @@ namespace tor_tools
 
             foreach (var source in nodeSource.sources)
             {
-                this.searchNodes = this.nodeKeys.Where(d => d.Contains(source.Key)).ToList();
-                foreach (var nodeKey in this.searchNodes)
+                searchNodes = nodeKeys.Where(d => d.Contains(source.Key)).ToList();
+                foreach (var nodeKey in searchNodes)
                 {
-                    this.currentNode = nodeKey;
+                    currentNode = nodeKey;
                     NodeAsset node = assetDict[nodeKey];
                     {
                         if (node.Obj.Data != null)
                         {
-                            this.currentItem = node.Id.ToString();
+                            currentItem = node.Id.ToString();
                             foreach (KeyValuePair<string, object> item in node.Obj.Data.Dictionary)
                             {
                                 NodeListItem dataItem = new NodeListItem(item.Key.ToString(), item.Value);
                                 if (dataItem.children.Count > 0)
                                 {
-                                    this.currentParent = dataItem.name.ToString();
+                                    currentParent = dataItem.name.ToString();
                                     foreach (var child in dataItem.children)
                                     {
                                         HandleChildData(child, source.Value);
@@ -761,11 +752,11 @@ namespace tor_tools
                 if (source.Value.Count > 0)
                     source.Value.Clear();
             }
-            this.currentParent = null;
-            this.currentItem = null;
-            this.currentNode = null;
-            this.searchNodes.Clear();
-            this.searchNodes = null;
+            currentParent = null;
+            currentItem = null;
+            currentNode = null;
+            searchNodes.Clear();
+            searchNodes = null;
             nodeSource.sources.Clear();
             nodeSource = null;
             GC.Collect();
@@ -779,7 +770,7 @@ namespace tor_tools
             {
                 if (item.children.Count > 0)
                 {
-                    this.currentParent = item.name.ToString();
+                    currentParent = item.name.ToString();
                     foreach (var child in item.children)
                     {
                         HandleChildData(child, fields);
@@ -832,7 +823,7 @@ namespace tor_tools
                                     continue;
                                 if (BuildCSV)
                                 {
-                                    NodeOutput output = new NodeOutput(this.currentNode, this.currentItem, this.currentParent, item.name.ToString(), item.value.ToString());
+                                    NodeOutput output = new NodeOutput(currentNode, currentItem, currentParent, item.name.ToString(), item.value.ToString());
                                     outputList.Add(output);
                                 }
                                 outputData.Add(item.value.ToString());
@@ -866,41 +857,41 @@ namespace tor_tools
 
         public void WriteData(bool firstRun)
         {
-            if (!System.IO.Directory.Exists(this.extractPath + "\\File_Names"))
-                System.IO.Directory.CreateDirectory(this.extractPath + "\\File_Names");
+            if (!System.IO.Directory.Exists(extractPath + "\\File_Names"))
+                System.IO.Directory.CreateDirectory(extractPath + "\\File_Names");
             if (BuildCSV)
             {
-                if (this.outputList.Count > 0)
+                if (outputList.Count > 0)
                 {
-                    System.IO.StreamWriter outputCSV = new System.IO.StreamWriter(this.extractPath + "\\File_Names\\node_string_data.csv", !firstRun);
+                    System.IO.StreamWriter outputCSV = new System.IO.StreamWriter(extractPath + "\\File_Names\\node_string_data.csv", !firstRun);
                     foreach (NodeOutput output in outputList)
                     {
                         outputCSV.Write(output.node + ", " + output.item + ", " + output.parent + ", " + output.name + ", " + output.value + "\r\n");
                     }
                     outputCSV.Close();
-                    this.outputList.Clear();
+                    outputList.Clear();
                 }
             }
-            if (this.outputData.Count > 0)
+            if (outputData.Count > 0)
             {
-                System.IO.StreamWriter output = new System.IO.StreamWriter(this.extractPath + "\\File_Names\\node_string_list.txt", !firstRun);
+                System.IO.StreamWriter output = new System.IO.StreamWriter(extractPath + "\\File_Names\\node_string_list.txt", !firstRun);
                 foreach (string data in outputData)
                 {
                     output.Write(data + "\r\n");
                 }
                 output.Close();
-                this.outputData.Clear();
+                outputData.Clear();
             }
             GC.Collect();
         }
 
         private void TreeListView1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            BrightIdeasSoftware.TreeListView tlv = sender as BrightIdeasSoftware.TreeListView;
+            TreeListView tlv = sender as TreeListView;
             dt = new DataTable();
             dt.Columns.Add("Property");
             dt.Columns.Add("Value");
-            dt.Rows.Add(new string[] { "Current Node", this.currentTreeNode });
+            dt.Rows.Add(new string[] { "Current Node", currentTreeNode });
             if (tlv.SelectedObject is NodeListItem child)
             {
                 if (child.name != null)
@@ -917,27 +908,27 @@ namespace tor_tools
 
             if (tlv.SelectedObject != null)
             {
-                //Node selected. Lets see if it can collapse or not.
+                // Node selected. Lets see if it can collapse or not.
                 TreeListView.Branch br = tlv.TreeModel.GetBranch(tlv.SelectedObject);
                 if (br != null && br.CanExpand && br.IsExpanded)
                 {
-                    this.btnToggleCollapse.Text = "Collapse Child Nodes";
+                    btnToggleCollapse.Text = "Collapse Child Nodes";
                 }
                 else if (br != null && br.CanExpand && !br.IsExpanded)
                 {
-                    this.btnToggleCollapse.Text = "Expand Child Nodes";
+                    btnToggleCollapse.Text = "Expand Child Nodes";
                 }
             }
             else
             {
-                //Page selected.
-                if (this.collapseStatus)
+                // Page selected.
+                if (collapseStatus)
                 {
-                    this.btnToggleCollapse.Text = "Expand Child Nodes";
+                    btnToggleCollapse.Text = "Expand Child Nodes";
                 }
                 else
                 {
-                    this.btnToggleCollapse.Text = "Collapse Child Nodes";
+                    btnToggleCollapse.Text = "Collapse Child Nodes";
                 }
             }
         }
@@ -946,11 +937,11 @@ namespace tor_tools
         {
             if (e.Button == MouseButtons.Right)
             {
-                BrightIdeasSoftware.TreeListView tlv = sender as BrightIdeasSoftware.TreeListView;
+                TreeListView tlv = sender as TreeListView;
 
                 if (tlv.SelectedObject is NodeListItem item)
                 {
-                    //Prefer the value. Do we ever have a case of both the key and value representing nodes?
+                    // Prefer the value. Do we ever have a case of both the key and value representing nodes?
                     if (item.type == "ulong" && item.displayValue.Contains("(") && item.displayValue.Contains(")"))
                     {
                         cmsJumpToNode.Show(treeListView1, e.Location);
@@ -965,9 +956,9 @@ namespace tor_tools
 
         private void TsmiJumpToNode_Click(object sender, EventArgs e)
         {
-            //BrightIdeasSoftware.TreeListView tlv = sender as BrightIdeasSoftware.TreeListView;
+            // BrightIdeasSoftware.TreeListView tlv = sender as BrightIdeasSoftware.TreeListView;
             NodeListItem item = treeListView1.SelectedObject as NodeListItem;
-            //NodeListItem item = tr .SelectedObject as NodeListItem;
+            // NodeListItem item = tr .SelectedObject as NodeListItem;
             string nodeString;
             if (item.displayValue.Contains(" (") && item.displayValue.EndsWith(")"))
             {
