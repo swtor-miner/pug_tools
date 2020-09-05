@@ -19,3 +19,8 @@ TorLib/Bin/
 TorLib/obj/
 *.pdb
 *.log
+/.vs/slnx.sqlite-journal
+/.vs/slnx.sqlite
+/.vs/PugTools/v15/Browse.VC.opendb
+/.vs/PugTools/v15/Browse.VC.db
+/.vs/ProjectSettings.json

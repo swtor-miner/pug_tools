@@ -66,15 +66,14 @@ namespace GomLib.Models
 
             for (var i = 0; i < abl.DescriptionTokens.Count; i++)
             {
-                var id = abl.DescriptionTokens.ElementAt(i).Key;
-                string value;
-                try { value = abl.DescriptionTokens.ElementAt(i).Value["ablParsedDescriptionToken"].ToString(); }
-                catch (Exception)
-                {
-                    continue;
-                };
-
-                var type = abl.DescriptionTokens.ElementAt(i).Value["ablDescriptionTokenType"].ToString().Replace("ablDescriptionTokenType", "");
+                var curToken = abl.DescriptionTokens.ElementAt(i);
+                var id = curToken.Key;
+                var value = "";
+                if (curToken.Value.ContainsKey("ablParsedDescriptionToken"))
+                    value = curToken.Value["ablParsedDescriptionToken"].ToString();
+                var type = "";
+                if (curToken.Value.ContainsKey("ablDescriptionTokenType"))
+                    type = curToken.Value["ablDescriptionTokenType"].ToString().Replace("ablDescriptionTokenType", "");
                 var start = desc.IndexOf("<<" + id);
 
                 if (start == -1)
