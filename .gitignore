@@ -1,8 +1,11 @@
+.vs/
 .vscode/
 BeWindowsFormsHexBox/Bin/
 BeWindowsFormsHexBox/obj/
 DevILNet/Bin/
 DevILNet/obj/
+glMatrixNet/Bin/
+glMatrixNet/obj/
 GomLib/Bin/
 GomLib/obj/
 HashDictionary/Bin/
