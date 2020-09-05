@@ -8,7 +8,7 @@ using System.IO;
 using System.Threading;
 using System.Diagnostics;
 
-namespace tor_tools
+namespace PugTools
 {
     public class View_DAT
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GomLib;
 
-namespace tor_tools
+namespace PugTools
 {
     class NodeListItem
     {

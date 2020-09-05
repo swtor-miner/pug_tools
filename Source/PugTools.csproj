@@ -373,6 +373,9 @@
     <Reference Include="DevILNet">
       <HintPath>..\DevILNet\Bin\x64\DevILNet.dll</HintPath>
     </Reference>
+    <!-- <Reference Include="glMatrixNet">
+      <HintPath>..\glMatrixNet\Bin\glMatrixNet.dll</HintPath>
+    </Reference> -->
     <Reference Include="GomLib">
       <HintPath>..\GomLib\Bin\GomLib.dll</HintPath>
     </Reference>
@@ -492,7 +495,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>tor_tools.Program</StartupObject>
+    <StartupObject>PugTools.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>

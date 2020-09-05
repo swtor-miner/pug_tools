@@ -21,7 +21,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using MessageBox = System.Windows.Forms.MessageBox;
 
-namespace tor_tools
+namespace PugTools
 {
     public partial class Tools : Form
     {
@@ -478,9 +478,9 @@ namespace tor_tools
                        impClasses["Imperial Agent"],
                        impClasses["Sith Inquisitor"],
                        impClasses["Sith Warrior"]
-                            /*from c in impClasses
-                                orderby c.Value<string>("ClassName")
-                                select c*/)),
+                                /*from c in impClasses
+                                    orderby c.Value<string>("ClassName")
+                                    select c*/)),
                new JProperty("Republic",
                    new JArray(
                        repClasses["Trooper"],

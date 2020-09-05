@@ -17,7 +17,7 @@ using System.IO;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
-namespace tor_tools
+namespace PugTools
 {
     public partial class Tools
     {

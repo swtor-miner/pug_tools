@@ -10,7 +10,7 @@ using System.Xml;
 using ColorCode;
 using DevIL;
 
-namespace tor_tools
+namespace PugTools
 {
     public partial class ModelBrowserViewMaterial : Form
     {

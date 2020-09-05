@@ -18,7 +18,7 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 using MessageBox = System.Windows.Forms.MessageBox;
 
-namespace tor_tools
+namespace PugTools
 {
     public partial class Tools
     {

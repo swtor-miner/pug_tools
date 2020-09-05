@@ -78,7 +78,7 @@ namespace GomLib.Models
         public bool UnknownBool7 { get; set; } //4611686299759854004
         public bool UnknownBool4 { get; set; } //4611686300275404002
 
-        //pseudo fields that are added by tor_tools
+        //pseudo fields that are added by PugTools
         //public Dictionary<string, bool> ParsedStackLimitRelevantTags { get; set; } //DEPRECATED
         public List<string> ParsedTags { get; set; }
         public string Name { get; set; }

@@ -21,7 +21,7 @@ using System.Xml.Serialization;
 using GomLib;
 using Newtonsoft.Json;
 
-namespace tor_tools
+namespace PugTools
 {
     public partial class Tools
     {

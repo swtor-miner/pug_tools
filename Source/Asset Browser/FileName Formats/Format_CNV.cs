@@ -8,7 +8,7 @@ using System.Xml;
 using System.Xml.Linq;
 using GomLib;
 
-namespace tor_tools
+namespace PugTools
 {
     class Format_CNV
     {
@@ -23,7 +23,7 @@ namespace tor_tools
         {
             this.dest = dest;
             this.extension = ext;
-        }        
+        }
 
         public void ParseCNVNodes(List<GomObject> cnvNodes)
         {
@@ -39,7 +39,7 @@ namespace tor_tools
                 fileNames.Add(fxe);
 
                 //Check for alien vo files.
-                if(obj.Name.StartsWith("cnv.alien_vo"))
+                if (obj.Name.StartsWith("cnv.alien_vo"))
                 {
                     fileNames.Add("/resources/bnk2/" + under + ".acb");
                 }
@@ -53,7 +53,7 @@ namespace tor_tools
                             if (action.Contains("stg."))
                                 continue;
                             animNames.Add(action.Split('.').Last().ToLower());
-                        }                                                
+                        }
                     }
                 }
 
@@ -70,9 +70,9 @@ namespace tor_tools
                                 foreach (string vfx in value)
                                 {
                                     fxSpecNames.Add(vfx.ToLower());
-                                }                                                                
+                                }
                             }
-                        }                                                
+                        }
                     }
                 }
                 obj.Unload();
@@ -91,7 +91,7 @@ namespace tor_tools
                     outputNames.Write(file.Replace("\\", "/") + "\r\n");
                 }
                 outputNames.Close();
-                fileNames.Clear(); 
+                fileNames.Clear();
             }
 
             if (this.animNames.Count > 0)
@@ -115,8 +115,8 @@ namespace tor_tools
                 outputfxSpecNames.Close();
                 fxSpecNames.Clear();
             }
-           
-            if(this.errors.Count > 0)
+
+            if (this.errors.Count > 0)
             {
                 System.IO.StreamWriter outputErrors = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_error_list.txt", false);
                 foreach (string error in errors)

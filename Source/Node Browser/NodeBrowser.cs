@@ -12,7 +12,7 @@ using GomLib;
 using TorLib;
 using BrightIdeasSoftware;
 
-namespace tor_tools
+namespace PugTools
 {
     public partial class NodeBrowser : Form
     {

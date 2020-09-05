@@ -10,7 +10,7 @@ using GomLib;
 using GomLib.Models;
 using TorLib;
 
-namespace tor_tools
+namespace PugTools
 {
     public partial class Tools
     {

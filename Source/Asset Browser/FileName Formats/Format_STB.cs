@@ -8,7 +8,7 @@ using TorLib;
 using GomLib;
 using System.Xml;
 
-namespace tor_tools
+namespace PugTools
 {
     class Format_STB
     {

@@ -20,12 +20,12 @@ using GomLib;
 using Newtonsoft.Json;
 using MessageBox = System.Windows.Forms.MessageBox;
 
-namespace tor_tools
+namespace PugTools
 {
     public partial class Tools
     {
         #region Advanced Class
-            /* code moved to GomLib.Models.AdvancedClass.cs*/
+        /* code moved to GomLib.Models.AdvancedClass.cs*/
         #endregion
         /* code moved to GomLib.Models.Discipline.cs */
     }

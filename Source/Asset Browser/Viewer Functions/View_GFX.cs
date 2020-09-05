@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 
-namespace tor_tools
+namespace PugTools
 {
     public static class View_GFX
     {

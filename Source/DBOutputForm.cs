@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace tor_tools
+namespace PugTools
 {
     public partial class DBOutputForm : Form
     {

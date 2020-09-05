@@ -27,7 +27,7 @@ using NVorbis.NAudioSupport;
 using NVorbis.Ogg;
 using System.Diagnostics;
 
-namespace tor_tools
+namespace PugTools
 {
     public partial class AssetBrowser : Form
     {

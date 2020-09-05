@@ -20,7 +20,7 @@ using System.Xml.Serialization;
 using GomLib;
 using MessageBox = System.Windows.Forms.MessageBox;
 
-namespace tor_tools
+namespace PugTools
 {
     public partial class Tools
     {

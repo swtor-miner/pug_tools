@@ -7,7 +7,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace tor_tools
+namespace PugTools
 {
     class Format_XML_MAT
     {
@@ -21,7 +21,7 @@ namespace tor_tools
         {
             this.dest = dest;
             this.extension = ext;
-        }        
+        }
 
         public void ParseXML(Stream fileStream, string fullFileName, string baseFolder = null)
         {
@@ -47,7 +47,8 @@ namespace tor_tools
                         return;
                     }
                     var actionElement = aamElement.Element("actions");
-                    if (actionElement != null) {
+                    if (actionElement != null)
+                    {
                         var actionList = actionElement.Elements("action");
 
                         foreach (var action in actionList)
@@ -175,7 +176,7 @@ namespace tor_tools
                 errors.Add("File: " + fullFileName);
                 errors.Add(ex.Message + ":");
                 errors.Add(ex.StackTrace);
-                errors.Add("");                    
+                errors.Add("");
             }
         }
 
@@ -204,7 +205,7 @@ namespace tor_tools
                                 List<object> tagsToRemove = new List<object> { "_d", "_n", "_s" };
                                 if (tagsToRemove.Any(name => scrubbedName.EndsWith(name.ToString()))) { length -= 2; }
                                 string primaryName = scrubbedName.Substring(startPosition, length);
-                                this.fileNames.Add("\\resources\\art\\shaders\\materials\\" + primaryName + ".mat");                                
+                                this.fileNames.Add("\\resources\\art\\shaders\\materials\\" + primaryName + ".mat");
                             }
                         }
                         /*else //catch types for analysis. Caught the following types: bool, uvscale, float, rgba, vector4
@@ -225,7 +226,7 @@ namespace tor_tools
                         }
                     }
                     if (childnode.Name == "Asset")
-                    {                        
+                    {
                         var assetFilenames = AssetReader(childnode);
                         foreach (var name in assetFilenames)
                         {
@@ -329,7 +330,7 @@ namespace tor_tools
                             var matoverrides = material.Element("MaterialOverrides").Elements();
                             if (matoverrides != null)
                             {
-                                foreach(var over in matoverrides)
+                                foreach (var over in matoverrides)
                                 {
                                     string override_filename = over.Attribute("filename").Value;
                                     if (override_filename.Contains("[bt]") && hasBodyTypes) { fileList.AddRange(BodyType(bodyTypeList, override_filename)); } //Checking if we need to create file names for each bodytype.
@@ -339,7 +340,7 @@ namespace tor_tools
                                         else { fileList.Add("/resources" + override_filename); }
                                     }
                                 }
-                            }                            
+                            }
                         }
                     }
 

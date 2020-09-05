@@ -29,7 +29,7 @@ using System.Diagnostics;
 using System.Windows.Forms.Layout;
 using System.Runtime.Remoting;
 
-namespace tor_tools
+namespace PugTools
 {
     public partial class AssetBrowserFileTable : Form
     {

@@ -2,7 +2,7 @@
 using System.Configuration;
 using System.IO;
 
-namespace tor_tools
+namespace PugTools
 {
     public static class Config
     {

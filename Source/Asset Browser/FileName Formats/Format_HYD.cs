@@ -7,7 +7,7 @@ using System.IO;
 using TorLib;
 using GomLib;
 
-namespace tor_tools
+namespace PugTools
 {
     class Format_HYD
     {

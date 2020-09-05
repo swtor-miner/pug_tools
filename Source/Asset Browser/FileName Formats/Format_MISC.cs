@@ -8,7 +8,7 @@ using System.Xml;
 using System.Xml.Linq;
 using GomLib;
 
-namespace tor_tools
+namespace PugTools
 {
     class Format_MISC
     {

@@ -8,7 +8,7 @@ using System.Threading;
 using System.Diagnostics;
 using NAudio.Wave;
 
-namespace tor_tools
+namespace PugTools
 {
     public class WEM_File
     {

@@ -16,7 +16,7 @@ using SlimDX_Framework.Vertex;
 using FileFormats;
 using GomLib;
 
-namespace tor_tools
+namespace PugTools
 {
     internal class View_NPC_GR2 : D3DPanelApp
     {
@@ -1241,7 +1241,7 @@ namespace tor_tools
                         using (Stream glossStream = file.OpenCopyInMemory())
                         {
                             dds = imp.LoadImageFromStream(DevIL.ImageType.Dds, glossStream);
-                            //tor_tools.Tools.WriteFile((MemoryStream)glossStream, String.Format("{0}\\{1}", path, mat.glossDDS.Substring(mat.glossDDS.LastIndexOf('/') + 1))); //Save DDS
+                            //PugTools.Tools.WriteFile((MemoryStream)glossStream, String.Format("{0}\\{1}", path, mat.glossDDS.Substring(mat.glossDDS.LastIndexOf('/') + 1))); //Save DDS
                         }
 
                         var glossData = dds.GetImageData(0);
@@ -1272,7 +1272,7 @@ namespace tor_tools
                             glossBM.Save(bmStream, System.Drawing.Imaging.ImageFormat.Png); //Bitmap to Stream
                             DevIL.Image bmp = imp.LoadImageFromStream(new MemoryStream(bmStream.GetBuffer())); //Image from Stream
                             exp.SaveImageToStream(bmp, DevIL.ImageType.Png, bmStream); //Image to DDS
-                            tor_tools.Tools.WriteFile(bmStream, string.Format("{0}\\{1}", path, mat.glossDDS.Substring(mat.glossDDS.LastIndexOf('/') + 1).Replace("_s.", "_si.").Replace(".dds", ".png"))); //Save DDS
+                            PugTools.Tools.WriteFile(bmStream, string.Format("{0}\\{1}", path, mat.glossDDS.Substring(mat.glossDDS.LastIndexOf('/') + 1).Replace("_s.", "_si.").Replace(".dds", ".png"))); //Save DDS
                         }
 
                         using (var bmStream = new MemoryStream())
@@ -1280,7 +1280,7 @@ namespace tor_tools
                             specBM.Save(bmStream, System.Drawing.Imaging.ImageFormat.Png); //Bitmap to Stream
                             DevIL.Image bmp = imp.LoadImageFromStream(new MemoryStream(bmStream.GetBuffer())); //Image from Stream
                             exp.SaveImageToStream(bmp, DevIL.ImageType.Png, bmStream); //Image to DDS
-                            tor_tools.Tools.WriteFile(bmStream, string.Format("{0}\\{1}", path, mat.glossDDS.Substring(mat.glossDDS.LastIndexOf('/') + 1).Replace(".dds", ".png"))); //Save DDS
+                            PugTools.Tools.WriteFile(bmStream, string.Format("{0}\\{1}", path, mat.glossDDS.Substring(mat.glossDDS.LastIndexOf('/') + 1).Replace(".dds", ".png"))); //Save DDS
                         }
                     }
                 }

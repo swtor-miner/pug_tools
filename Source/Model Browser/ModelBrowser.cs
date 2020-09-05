@@ -14,7 +14,7 @@ using FileFormats;
 using SlimDX;
 using System.Xml;
 
-namespace tor_tools
+namespace PugTools
 {
     public partial class ModelBrowser : Form
     {

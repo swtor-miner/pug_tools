@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GomLib;
 
-namespace tor_tools
+namespace PugTools
 {
     class WemListItem
 

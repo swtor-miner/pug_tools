@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using nsHashDictionary;
 using TorLib;
 
-namespace tor_tools
+namespace PugTools
 {
     public partial class AssetBrowserHashStatus : Form
     {

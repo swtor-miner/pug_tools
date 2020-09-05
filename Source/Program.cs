@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace tor_tools
+namespace PugTools
 {
     static class Program
     {

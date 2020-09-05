@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace tor_tools
+namespace PugTools
 {
     class HelperFunctions
     {

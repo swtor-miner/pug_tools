@@ -19,7 +19,7 @@ using System.Xml.Serialization;
 using GomLib;
 using TorLib;
 
-namespace tor_tools
+namespace PugTools
 {
     public partial class Tools
     {

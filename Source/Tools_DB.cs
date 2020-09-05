@@ -19,7 +19,7 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 using GomLib;
 
-namespace tor_tools
+namespace PugTools
 {
     public partial class Tools
     {
@@ -347,7 +347,7 @@ INSERT INTO `{0}` (`current_version`, `previous_version`, `first_seen`, `{1}`, `
              */
             string creationQuery = String.Format(defaultQuery, Table, columnTypes, priString, trigger, oldString, indexString);
 
-            tor_tools.Tools.WriteFile(creationQuery, String.Format("SQL Creation Files\\{0}_create.sql", Table), false);
+            PugTools.Tools.WriteFile(creationQuery, String.Format("SQL Creation Files\\{0}_create.sql", Table), false);
         }
     }
 }

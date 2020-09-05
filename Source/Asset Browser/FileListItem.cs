@@ -7,7 +7,7 @@ using GomLib;
 using TorLib;
 using BrightIdeasSoftware;
 
-namespace tor_tools
+namespace PugTools
 {
     class FileListItem
 

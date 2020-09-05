@@ -13,7 +13,7 @@ using SlimDX_Framework.FX;
 using SlimDX_Framework.Vertex;
 using FileFormats;
 
-namespace tor_tools
+namespace PugTools
 {
     class View_GR2 : D3DPanelApp
     {

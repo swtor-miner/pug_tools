@@ -18,7 +18,7 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 using GomLib;
 
-namespace tor_tools
+namespace PugTools
 {
     public partial class Tools
     {
@@ -36,7 +36,7 @@ namespace tor_tools
         }
 
         /* code moved to GomLib.Models.AbilityPackage.cs */
-                
+
         /* code moved to GomLib.Models.Ability.cs */
         #endregion
     }

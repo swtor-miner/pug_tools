@@ -1,4 +1,4 @@
-﻿namespace tor_tools
+﻿namespace PugTools
 {
     partial class AssetBrowserHelp
     {

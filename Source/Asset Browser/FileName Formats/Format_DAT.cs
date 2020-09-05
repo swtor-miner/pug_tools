@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Xml.Linq;
 
-namespace tor_tools
+namespace PugTools
 {
     class Format_DAT
     {
@@ -29,7 +29,7 @@ namespace tor_tools
             this.extension = ext;
         }
 
-        public void ParseDAT(Stream fileStream, string fullFileName, tor_tools.AssetBrowser form)
+        public void ParseDAT(Stream fileStream, string fullFileName, PugTools.AssetBrowser form)
         {
             if (form is null)
             {

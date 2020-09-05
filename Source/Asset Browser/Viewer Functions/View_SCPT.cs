@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using nsHashDictionary;
 
-namespace tor_tools
+namespace PugTools
 {
     public static class View_SCPT
     {

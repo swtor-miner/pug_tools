@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TorLib;
 
-namespace tor_tools
+namespace PugTools
 {
     public class TreeListItem
     {
