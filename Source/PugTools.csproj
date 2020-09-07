@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <RuntimeIdentifiers>win-x64;win7-x64</RuntimeIdentifiers>
     <ProjectGuid>{C6399BF7-80CB-4A2E-8A84-3751A5E6E674}</ProjectGuid>
@@ -28,6 +28,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <!-- ROOT -->
