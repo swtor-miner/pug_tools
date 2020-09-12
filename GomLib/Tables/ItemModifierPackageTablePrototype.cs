@@ -78,7 +78,7 @@ namespace GomLib.Tables
             foreach (var kvp in tableData)
             {
                 long modId = (long)kvp.Key;
-                Dictionary<string, object> map = (Dictionary<string, object>)((GomLib.GomObjectData)kvp.Value).Dictionary;
+                Dictionary<string, object> map = (Dictionary<string, object>)((GomObjectData)kvp.Value).Dictionary;
 
                 item_modpkgprototype_data[modId] = map;
 

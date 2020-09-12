@@ -24,8 +24,8 @@ namespace GomLib.Models
         {
             get
             {
-                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/codex/{0}.dds", this.Image));
-                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+                var fileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/codex/{0}.dds", Image));
+                return string.Format("{0}_{1}", fileId.ph, fileId.sh);
             }
         }
         public bool IsHidden { get; set; }
@@ -115,64 +115,64 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, cdx)) return true;
 
-            if (this.CategoryId != cdx.CategoryId)
+            if (CategoryId != cdx.CategoryId)
                 return false;
-            if (this.CategoryName != cdx.CategoryName)
+            if (CategoryName != cdx.CategoryName)
                 return false;
-            if (this.Classes != null)
+            if (Classes != null)
             {
                 if (cdx.Classes != null)
                 {
-                    if (this.Classes.Count != cdx.Classes.Count
-                        && (!this.Classes.Select(x => x.Name).ToList().SequenceEqual(cdx.Classes.Select(x => x.Name).ToList())))
+                    if (Classes.Count != cdx.Classes.Count
+                        && (!Classes.Select(x => x.Name).ToList().SequenceEqual(cdx.Classes.Select(x => x.Name).ToList())))
                         return false;
                 }
             }
             else if (cdx.Classes != null)
                 return false;
-            if (this.ClassRestricted != cdx.ClassRestricted)
+            if (ClassRestricted != cdx.ClassRestricted)
                 return false;
-            if (this.Faction != cdx.Faction)
+            if (Faction != cdx.Faction)
                 return false;
-            if (this.Fqn != cdx.Fqn)
+            if (Fqn != cdx.Fqn)
                 return false;
-            if (this.HasPlanets != cdx.HasPlanets)
+            if (HasPlanets != cdx.HasPlanets)
                 return false;
-            if (this.Id != cdx.Id)
+            if (Id != cdx.Id)
                 return false;
-            if (this.Image != cdx.Image)
+            if (Image != cdx.Image)
                 return false;
-            if (this.IsHidden != cdx.IsHidden)
+            if (IsHidden != cdx.IsHidden)
                 return false;
-            if (this.IsPlanet != cdx.IsPlanet)
+            if (IsPlanet != cdx.IsPlanet)
                 return false;
-            if (this.Level != cdx.Level)
+            if (Level != cdx.Level)
                 return false;
 
             var ssComp = new DictionaryComparer<string, string>();
-            if (!ssComp.Equals(this.LocalizedDescription, cdx.LocalizedDescription))
+            if (!ssComp.Equals(LocalizedDescription, cdx.LocalizedDescription))
                 return false;
-            if (!ssComp.Equals(this.LocalizedName, cdx.LocalizedName))
+            if (!ssComp.Equals(LocalizedName, cdx.LocalizedName))
                 return false;
 
-            if (this.Planets != null)
+            if (Planets != null)
             {
-                if (!this.Planets.SequenceEqual(cdx.Planets))
+                if (!Planets.SequenceEqual(cdx.Planets))
                     return false;
             }
             else if (cdx.Planets != null)
                 return false;
-            if (this.PlanetsIds != null)
+            if (PlanetsIds != null)
             {
-                if (!this.PlanetsIds.SequenceEqual(cdx.PlanetsIds))
+                if (!PlanetsIds.SequenceEqual(cdx.PlanetsIds))
                     return false;
             }
             else if (cdx.PlanetsIds != null)
                 return false;
 
-            if (this.Description != cdx.Description)
+            if (Description != cdx.Description)
                 return false;
-            if (this.Name != cdx.Name)
+            if (Name != cdx.Name)
                 return false;
             return true;
         }

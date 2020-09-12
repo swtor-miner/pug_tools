@@ -14,13 +14,13 @@ namespace GomLib.GomTypes
 
         internal override void Link(DataObjectModel dom)
         {
-            this._dom = dom;
+            _dom = dom;
             DomEnum = _dom.Get<DomEnum>(DomEnumId);
         }
 
         public override string ToString()
         {
-            return System.String.Format("enum {0}", this.DomEnum);
+            return string.Format("enum {0}", DomEnum);
         }
 
         public override object ReadData(DataObjectModel dom, GomBinaryReader reader)
@@ -30,7 +30,7 @@ namespace GomLib.GomTypes
             int val = (int)reader.ReadNumber();
             //result.Value = val;
             result.Value = val - 1; //The DomEnum is zero-indexed, but the value that was stored to reference it wasn't. Fixed this discrepancy by making the stored value zero-indexed when read in.
-            result.EnumType = this.DomEnum;
+            result.EnumType = DomEnum;
 
             return result;
         }

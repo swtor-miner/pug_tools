@@ -3,10 +3,25 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <RuntimeIdentifiers>win-x64;win7-x64</RuntimeIdentifiers>
     <ProjectGuid>{C6399BF7-80CB-4A2E-8A84-3751A5E6E674}</ProjectGuid>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -29,6 +44,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>PugTools.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>PugTools</RootNamespace>
+  </PropertyGroup>
   <ItemGroup>
     <!-- ROOT -->
     <Compile Include="Config.cs" />
@@ -46,7 +67,6 @@
     </Compile>
     <Compile Include="murmur.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Settings.cs" />
     <Compile Include="Smart_Link.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -260,11 +280,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
     <Compile Include="Tools\HelperFunctions.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -351,103 +366,97 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="app.config.example" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="AssimpNet">
-      <HintPath>..\SlimDXFramework\Bin\AssimpNet.dll</HintPath>
-    </Reference>
-    <Reference Include="Be.Windows.Forms.HexBox">
-      <HintPath>..\BeWindowsFormsHexBox\Bin\BeWindowsFormsHexBox.dll</HintPath>
-    </Reference>
-    <Reference Include="ColorCode">
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ColorCode, Version=1.0.1.62759, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Assemblies\ColorCode.dll</HintPath>
     </Reference>
-    <Reference Include="DevILNet">
-      <HintPath>..\DevILNet\Bin\x64\DevILNet.dll</HintPath>
-    </Reference>
-    <!-- <Reference Include="glMatrixNet">
-      <HintPath>..\glMatrixNet\Bin\glMatrixNet.dll</HintPath>
-    </Reference> -->
-    <Reference Include="GomLib">
-      <HintPath>..\GomLib\Bin\GomLib.dll</HintPath>
-    </Reference>
-    <Reference Include="HashDictionary">
-      <HintPath>..\HashDictionary\Bin\HashDictionary.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib">
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Assemblies\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Bson, Version=1.8.3.9, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
+    <Reference Include="MySql.Data, Version=6.8.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Assemblies\MongoDB.Bson.dll</HintPath>
-    </Reference>
-    <Reference Include="MongoDB.Driver, Version=1.8.3.9, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Assemblies\MongoDB.Driver.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="mscorlib" />
-    <Reference Include="MySql.Data">
       <HintPath>..\Assemblies\MySql.Data.dll</HintPath>
     </Reference>
-    <Reference Include="NAudio">
+    <Reference Include="NAudio, Version=1.7.0.15, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Assemblies\NAudio.dll</HintPath>
     </Reference>
-    <Reference Include="NAudio.WindowsMediaFormat">
-      <HintPath>..\Assemblies\NAudio.WindowsMediaFormat.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Assemblies\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NVorbis">
+    <Reference Include="NVorbis, Version=0.8.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Assemblies\NVorbis.dll</HintPath>
     </Reference>
-    <Reference Include="NVorbis.NAudioSupport">
+    <Reference Include="NVorbis.NAudioSupport, Version=0.5.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Assemblies\NVorbis.NAudioSupport.dll</HintPath>
     </Reference>
-    <Reference Include="ObjectListView">
-      <HintPath>..\ObjectListView\Bin\ObjectListView.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="SlimDX">
-      <HintPath>..\SlimDXFramework\Bin\SlimDX.dll</HintPath>
-    </Reference>
-    <Reference Include="SlimDX_Framework">
-      <HintPath>..\SlimDXFramework\Bin\SlimDX_Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="SpriteTextRenderer">
-      <HintPath>..\SlimDXFramework\Bin\SpriteTextRenderer.dll</HintPath>
+    <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SlimDXNet\SlimDX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
-    <Reference Include="System.Core" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="TorLib">
-      <HintPath>..\TorLib\Bin\TorLib.dll</HintPath>
-    </Reference>
-    <Reference Include="WarhammerOnlineHash">
+    <Reference Include="WarhammerOnlineHash, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Assemblies\WarhammerOnlineHash.dll</HintPath>
     </Reference>
-    <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DevILNet\DevILNet.csproj">
+      <Project>{578fd0d9-41aa-4fa4-8d9b-4021978fa48d}</Project>
+      <Name>DevILNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GomLib\GomLib.csproj">
+      <Project>{a147d4d8-1ea1-4bda-a388-ab843b037307}</Project>
+      <Name>GomLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HashDictionary\HashDictionary.csproj">
+      <Project>{7d3858a9-1902-46b0-a121-c8b2f18806ed}</Project>
+      <Name>HashDictionary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HexControl\HexControl.csproj">
+      <Project>{18f68579-1df5-411f-9dfb-9ddc9515130e}</Project>
+      <Name>HexControl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ObjectListView\ObjectListView.csproj">
+      <Project>{18feda0c-d147-4286-b39a-01204808106a}</Project>
+      <Name>ObjectListView</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SlimDXNet\SlimDXNet.csproj">
+      <Project>{41acbef1-b159-4c49-a0f9-a07911617b52}</Project>
+      <Name>SlimDXNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TorLib\TorLib.csproj">
+      <Project>{f59df2f2-4e69-41e5-b63b-6d4abf2ca6e1}</Project>
+      <Name>TorLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
@@ -457,509 +466,3 @@
     <MakeDir Directories="$(TargetDir)\Hash" Condition="!Exists('$(TargetDir)\Hash')" />
   </Target>
 </Project>
-<!-- <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{C6399BF7-80CB-4A2E-8A84-3751A5E6E674}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PugTools</RootNamespace>
-    <AssemblyName>PugTools</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>portable</DebugType>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <OutputPath>..\..\Bin\</OutputPath>
-    <PlatformTarget>x64</PlatformTarget>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <DebugType>pdbonly</DebugType>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\Bin</OutputPath>
-    <PlatformTarget>x64</PlatformTarget>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>PugTools.Program</StartupObject>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>
-    </ApplicationIcon>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="AssimpNet">
-      <HintPath>..\SlimDXFramework\Bin\AssimpNet.dll</HintPath>
-    </Reference>
-    <Reference Include="Be.Windows.Forms.HexBox">
-      <HintPath>..\BeWindowsFormsHexBox\Bin\BeWindowsFormsHexBox.dll</HintPath>
-    </Reference>
-    <Reference Include="ColorCode">
-      <HintPath>..\..\Assemblies\ColorCode.dll</HintPath>
-    </Reference>
-    <Reference Include="DevILNet">
-      <HintPath>..\DevILNet\Bin\x64\DevILNet.dll</HintPath>
-    </Reference>
-    <Reference Include="GomLib">
-      <HintPath>..\GomLib\Bin\GomLib.dll</HintPath>
-    </Reference>
-    <Reference Include="HashDictionary">
-      <HintPath>..\HashDictionary\Bin\HashDictionary.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\..\Assemblies\ICSharpCode.SharpZipLib.dll</HintPath>
-    </Reference>
-    <Reference Include="MongoDB.Bson, Version=1.8.3.9, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Assemblies\MongoDB.Bson.dll</HintPath>
-    </Reference>
-    <Reference Include="MongoDB.Driver, Version=1.8.3.9, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Assemblies\MongoDB.Driver.dll</HintPath>
-    </Reference>
-    <Reference Include="MySql.Data">
-      <HintPath>..\..\Assemblies\MySql.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="NAudio">
-      <HintPath>..\..\Assemblies\NAudio.dll</HintPath>
-    </Reference>
-    <Reference Include="NAudio.WindowsMediaFormat">
-      <HintPath>..\..\Assemblies\NAudio.WindowsMediaFormat.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\Assemblies\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="NVorbis">
-      <HintPath>..\..\Assemblies\NVorbis.dll</HintPath>
-    </Reference>
-    <Reference Include="NVorbis.NAudioSupport">
-      <HintPath>..\..\Assemblies\NVorbis.NAudioSupport.dll</HintPath>
-    </Reference>
-    <Reference Include="ObjectListView">
-      <HintPath>..\ObjectListView\Bin\ObjectListView.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="SlimDX">
-      <HintPath>..\SlimDXFramework\Bin\SlimDX.dll</HintPath>
-    </Reference>
-    <Reference Include="SlimDX_Framework">
-      <HintPath>..\SlimDXFramework\Bin\SlimDX_Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="SpriteTextRenderer">
-      <HintPath>..\SlimDXFramework\Bin\SpriteTextRenderer.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-    <Reference Include="TorLib">
-      <HintPath>..\TorLib\Bin\TorLib.dll</HintPath>
-    </Reference>
-    <Reference Include="WarhammerOnlineHash">
-      <HintPath>..\..\Assemblies\WarhammerOnlineHash.dll</HintPath>
-    </Reference>
-    <Reference Include="WindowsBase" />
-    <Reference Include="WindowsFormsIntegration" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Asset Browser\AssetBrowser.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Asset Browser\AssetBrowser.Designer.cs">
-      <DependentUpon>AssetBrowser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Asset Browser\AssetBrowserExtractExt.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Asset Browser\AssetBrowserExtractExt.Designer.cs">
-      <DependentUpon>AssetBrowserExtractExt.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Asset Browser\AssetBrowserHashStatus.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Asset Browser\AssetBrowserHashStatus.Designer.cs">
-      <DependentUpon>AssetBrowserHashStatus.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Asset Browser\AssetBrowserHelp.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Asset Browser\AssetBrowserHelp.Designer.cs">
-      <DependentUpon>AssetBrowserHelp.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Asset Browser\AssetBrowserTestFile.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Asset Browser\AssetBrowserTestFile.Designer.cs">
-      <DependentUpon>AssetBrowserTestFile.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Asset Browser\AssetBrowserFileTable.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Asset Browser\AssetBrowserFileTable.Designer.cs">
-      <DependentUpon>AssetBrowserFileTable.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Asset Browser\ArchTreeListItem.cs" />
-    <Compile Include="Asset Browser\FileListItem.cs" />
-    <Compile Include="Asset Browser\FileName Formats\Format_STB.cs" />
-    <Compile Include="Asset Browser\FileName Formats\Format_PLC.cs" />
-    <Compile Include="Asset Browser\FileName Formats\Format_DYN.cs" />
-    <Compile Include="Asset Browser\FileName Formats\Format_ICONS.cs" />
-    <Compile Include="Asset Browser\FileName Formats\Format_HYD.cs" />
-    <Compile Include="Asset Browser\FileName Formats\Format_SDEF.cs" />
-    <Compile Include="Asset Browser\FileName Formats\Format_AMX.cs" />
-    <Compile Include="Asset Browser\FileName Formats\Format_BNK.cs" />
-    <Compile Include="Asset Browser\FileName Formats\Format_CNV.cs" />
-    <Compile Include="Asset Browser\FileName Formats\Format_DAT.cs" />
-    <Compile Include="Asset Browser\FileName Formats\Format_EPP.cs" />
-    <Compile Include="Asset Browser\FileName Formats\Format_FXSPEC.cs" />
-    <Compile Include="Asset Browser\FileName Formats\Format_GR2.cs" />
-    <Compile Include="Asset Browser\FileName Formats\Format_MISC.cs" />
-    <Compile Include="Asset Browser\FileName Formats\Format_PRT.cs" />
-    <Compile Include="Asset Browser\FileName Formats\Format_XML_MAT.cs" />
-    <Compile Include="Asset Browser\TreeListItem.cs" />
-    <Compile Include="Asset Browser\Viewer Functions\GR2 Classes\File_Helpers.cs" />
-    <Compile Include="Asset Browser\Viewer Functions\GR2 Classes\GR2.cs" />
-    <Compile Include="Asset Browser\Viewer Functions\GR2 Classes\GR2_Attachment.cs" />
-    <Compile Include="Asset Browser\Viewer Functions\GR2 Classes\GR2_Bone_Skeleton.cs" />
-    <Compile Include="Asset Browser\Viewer Functions\GR2 Classes\GR2_Bounding_Box.cs" />
-    <Compile Include="Asset Browser\Viewer Functions\GR2 Classes\GR2_Material.cs" />
-    <Compile Include="Asset Browser\Viewer Functions\GR2 Classes\GR2_Mesh.cs" />
-    <Compile Include="Asset Browser\Viewer Functions\GR2 Classes\GR2_Mesh_Bone.cs" />
-    <Compile Include="Asset Browser\Viewer Functions\GR2 Classes\GR2_Mesh_Piece.cs" />
-    <Compile Include="Asset Browser\Viewer Functions\GR2 Classes\GR2_Mesh_Vertex.cs" />
-    <Compile Include="Asset Browser\Viewer Functions\GR2 Classes\GR2_Mesh_Vertex_Index.cs" />
-    <Compile Include="Asset Browser\Viewer Functions\View_ACB.cs" />
-    <Compile Include="Asset Browser\Viewer Functions\View_DAT.cs" />
-    <Compile Include="Asset Browser\Viewer Functions\View_GFX.cs" />
-    <Compile Include="Asset Browser\Viewer Functions\View_SCPT.cs" />
-    <Compile Include="Asset Browser\Viewer Functions\View_DEP.cs" />
-    <Compile Include="Asset Browser\Viewer Functions\View_GR2.cs" />
-    <Compile Include="Asset Browser\Viewer Functions\View_STB.cs" />
-    <Compile Include="Asset Browser\Viewer Functions\View_WEM.cs" />
-    <Compile Include="Asset Browser\WemListItem.cs" />
-    <Compile Include="Controls\BitInfo.cs" />
-    <Compile Include="Controls\TreeViewFast.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="DBOutputForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DBOutputForm.Designer.cs">
-      <DependentUpon>DBOutputForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ExtractionFunctions\BnkIdDict.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExtractionFunctions\Torcommunity.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExtractionFunctions\Torcommunity.Designer.cs">
-      <DependentUpon>Torcommunity.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ExtractionFunctions\Tooltips.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Model Browser\ModelBrowser.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Model Browser\ModelBrowser.Designer.cs">
-      <DependentUpon>ModelBrowser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Model Browser\ModelBrowserHelp.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Model Browser\ModelBrowserHelp.Designer.cs">
-      <DependentUpon>ModelBrowserHelp.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Model Browser\ModelBrowserViewMaterial.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Model Browser\ModelBrowserViewMaterial.Designer.cs">
-      <DependentUpon>ModelBrowserViewMaterial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Model Browser\View_NPC_GR2.cs" />
-    <Compile Include="murmur.cs" />
-    <Compile Include="Node Browser\NodeAsset.cs" />
-    <Compile Include="Node Browser\NodeBrowser.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Node Browser\NodeBrowser.Designer.cs">
-      <DependentUpon>NodeBrowser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Node Browser\NodeFileSource.cs" />
-    <Compile Include="Node Browser\NodeListItem.cs" />
-    <Compile Include="Node Browser\NodeOutput.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Settings.cs" />
-    <Compile Include="Smart_Link.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Tools_Process.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Tools_DB.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Tools_UI.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExtractCheckForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExtractCheckForm.Designer.cs">
-      <DependentUpon>ExtractCheckForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ExtractionFunctions\Abilities.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExtractionFunctions\Achievements.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExtractionFunctions\Codex.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExtractionFunctions\Conversations.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExtractionFunctions\AdvancedClasses.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExtractionFunctions\AdvancedClasses.Designer.cs">
-      <DependentUpon>AdvancedClasses.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ExtractionFunctions\Strongholds.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExtractionFunctions\Schematics.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExtractionFunctions\StringTables.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExtractionFunctions\MtxAndCollections.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExtractionFunctions\Companions.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExtractionFunctions\Areas.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExtractionFunctions\Icons.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExtractionFunctions\FileNameFinder.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExtractionFunctions\Npcs.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExtractionFunctions\Quests.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExtractionFunctions\Items.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Config.cs" />
-    <Compile Include="ExtractionFunctions\GalacticStarfighter.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExtractionFunctions\Talents.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExtractionFunctions\_Empty.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExtractionFunctions\_Empty.Designer.cs">
-      <DependentUpon>_Empty.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Tools.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Tools.Designer.cs">
-      <DependentUpon>Tools.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tools\HelperFunctions.cs" />
-    <Compile Include="World Browser\View_Area.cs" />
-    <Compile Include="World Browser\WorldBrowser.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="World Browser\WorldBrowser.Designer.cs">
-      <DependentUpon>WorldBrowser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="World Browser\WorldBrowserHelp.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="World Browser\WorldBrowserHelp.Designer.cs">
-      <DependentUpon>WorldBrowserHelp.cs</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="Asset Browser\AssetBrowser.resx">
-      <DependentUpon>AssetBrowser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Asset Browser\AssetBrowserExtractExt.resx">
-      <DependentUpon>AssetBrowserExtractExt.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Asset Browser\AssetBrowserHashStatus.resx">
-      <DependentUpon>AssetBrowserHashStatus.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Asset Browser\AssetBrowserHelp.resx">
-      <DependentUpon>AssetBrowserHelp.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Asset Browser\AssetBrowserTestFile.resx">
-      <DependentUpon>AssetBrowserTestFile.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Asset Browser\AssetBrowserFileTable.resx">
-      <DependentUpon>AssetBrowserFileTable.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="DBOutputForm.resx">
-      <DependentUpon>DBOutputForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ExtractCheckForm.resx">
-      <DependentUpon>ExtractCheckForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Model Browser\ModelBrowser.resx">
-      <DependentUpon>ModelBrowser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Model Browser\ModelBrowserHelp.resx">
-      <DependentUpon>ModelBrowserHelp.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Model Browser\ModelBrowserViewMaterial.resx">
-      <DependentUpon>ModelBrowserViewMaterial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Node Browser\NodeBrowser.resx">
-      <DependentUpon>NodeBrowser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Tools.resx">
-      <DependentUpon>Tools.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="World Browser\WorldBrowser.resx">
-      <DependentUpon>WorldBrowser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="World Browser\WorldBrowserHelp.resx">
-      <DependentUpon>WorldBrowserHelp.cs</DependentUpon>
-    </EmbeddedResource>
-    <None Include="app.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="app.config.example" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <EmbeddedResource Include="Resources\cross_shield.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\tick_shield.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <Content Include="SQL Files\default_create.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <None Include="Resources\Transparent.png" />
-    <Content Include="Tools\packed_codebooks_aoTuV_603.bin">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Asset Browser\Icons\COMPUTER.ICO" />
-    <Content Include="Asset Browser\Icons\Folder.ico" />
-    <Content Include="Asset Browser\Icons\loading.gif" />
-    <Content Include="Asset Browser\Icons\textdoc.ico" />
-    <Content Include="Asset Browser\Viewer Functions\GR2 Classes\GR2.fx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Node Browser\custom_node_sorting.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <EmbeddedResource Include="Resources\loading.gif">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <Content Include="Tools\revorb.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Tools\ww2ogg.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.4.5">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 4.5</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>-->
-<!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  -->
-<!--<Target Name="AfterBuild">
-    <Copy SourceFiles="$(MSBuildProjectDirectory)\..\DevILNet\Lib\x64\DevIL.dll" DestinationFolder="$(TargetDir)" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-    <Copy SourceFiles="$(MSBuildProjectDirectory)\..\DevILNet\Lib\x64\ILU.dll" DestinationFolder="$(TargetDir)" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-    <Copy SourceFiles="$(MSBuildProjectDirectory)\..\GomLib\gom_type_names.xml" DestinationFolder="$(TargetDir)" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-    <MakeDir Directories="$(TargetDir)\Hash" Condition="!Exists('$(TargetDir)\Hash')" />
-  </Target>
-</Project> -->

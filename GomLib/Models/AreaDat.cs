@@ -102,9 +102,9 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, itm)) return true;
 
-            if (this.GetHashCode() != itm.GetHashCode())
+            if (GetHashCode() != itm.GetHashCode())
                 return false;
-            if (this.Id != itm.Id)
+            if (Id != itm.Id)
                 return false;
 
             return true;

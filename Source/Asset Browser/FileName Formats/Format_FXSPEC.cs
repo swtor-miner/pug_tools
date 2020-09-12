@@ -21,7 +21,7 @@ namespace PugTools
         public Format_FXSPEC(string dest, string ext)
         {
             this.dest = dest;
-            this.extension = ext;
+            extension = ext;
         }
 
         public void ParseFXSPEC(Stream fileStream, string fullFileName)
@@ -113,11 +113,11 @@ namespace PugTools
 
         public void WriteFile()
         {
-            if (!System.IO.Directory.Exists(this.dest + "\\File_Names"))
-                System.IO.Directory.CreateDirectory(this.dest + "\\File_Names");
-            if (this.fileNames.Count > 0)
+            if (!Directory.Exists(dest + "\\File_Names"))
+                Directory.CreateDirectory(dest + "\\File_Names");
+            if (fileNames.Count > 0)
             {
-                System.IO.StreamWriter outputNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_file_names.txt", false);
+                StreamWriter outputNames = new StreamWriter(dest + "\\File_Names\\" + extension + "_file_names.txt", false);
                 foreach (string file in fileNames)
                 {
                     outputNames.Write(file.Replace("\\", "/") + "\r\n");
@@ -126,9 +126,9 @@ namespace PugTools
                 fileNames.Clear();
             }
 
-            if (this.resourceFileNames.Count > 0)
+            if (resourceFileNames.Count > 0)
             {
-                System.IO.StreamWriter outputNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_resource_file_names.txt", false);
+                StreamWriter outputNames = new StreamWriter(dest + "\\File_Names\\" + extension + "_resource_file_names.txt", false);
                 foreach (string file in resourceFileNames)
                 {
                     outputNames.Write(file.Replace("\\", "/") + "\r\n");
@@ -137,9 +137,9 @@ namespace PugTools
                 resourceFileNames.Clear();
             }
 
-            if (this.errors.Count > 0)
+            if (errors.Count > 0)
             {
-                System.IO.StreamWriter outputErrors = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_error_list.txt", false);
+                StreamWriter outputErrors = new StreamWriter(dest + "\\File_Names\\" + extension + "_error_list.txt", false);
                 foreach (string error in errors)
                 {
                     outputErrors.Write(error + "\r\n");

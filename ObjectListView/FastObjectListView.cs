@@ -66,8 +66,8 @@ namespace BrightIdeasSoftware
         /// </summary>
         public FastObjectListView()
         {
-            this.VirtualListDataSource = new FastObjectListDataSource(this);
-            this.GroupingStrategy = new FastListGroupingStrategy();
+            VirtualListDataSource = new FastObjectListDataSource(this);
+            GroupingStrategy = new FastListGroupingStrategy();
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace BrightIdeasSoftware
             get
             {
                 // This is much faster than the base method
-                return ((FastObjectListDataSource)this.VirtualListDataSource).FilteredObjectList;
+                return ((FastObjectListDataSource)VirtualListDataSource).FilteredObjectList;
             }
         }
 
@@ -103,7 +103,7 @@ namespace BrightIdeasSoftware
             get
             {
                 // This is much faster than the base method
-                return ((FastObjectListDataSource)this.VirtualListDataSource).ObjectList;
+                return ((FastObjectListDataSource)VirtualListDataSource).ObjectList;
             }
             set { base.Objects = value; }
         }
@@ -116,10 +116,10 @@ namespace BrightIdeasSoftware
         /// effectively just turns off sorting.</remarks>
         public override void Unsort()
         {
-            this.ShowGroups = false;
-            this.PrimarySortColumn = null;
-            this.PrimarySortOrder = SortOrder.None;
-            this.SetObjects(this.Objects);
+            ShowGroups = false;
+            PrimarySortColumn = null;
+            PrimarySortOrder = SortOrder.None;
+            SetObjects(Objects);
         }
     }
 
@@ -150,8 +150,8 @@ namespace BrightIdeasSoftware
         /// <returns></returns>
         public override object GetNthObject(int n)
         {
-            if (n >= 0 && n < this.filteredObjectList.Count)
-                return this.filteredObjectList[n];
+            if (n >= 0 && n < filteredObjectList.Count)
+                return filteredObjectList[n];
 
             return null;
         }
@@ -162,7 +162,7 @@ namespace BrightIdeasSoftware
         /// <returns></returns>
         public override int GetObjectCount()
         {
-            return this.filteredObjectList.Count;
+            return filteredObjectList.Count;
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace BrightIdeasSoftware
         public override int GetObjectIndex(object model)
         {
 
-            if (model != null && this.objectsToIndexMap.TryGetValue(model, out int index))
+            if (model != null && objectsToIndexMap.TryGetValue(model, out int index))
                 return index;
 
             return -1;
@@ -193,7 +193,7 @@ namespace BrightIdeasSoftware
             {
                 for (int i = first; i <= last; i++)
                 {
-                    string data = column.GetStringValue(this.listView.GetNthItemInDisplayOrder(i).RowObject);
+                    string data = column.GetStringValue(listView.GetNthItemInDisplayOrder(i).RowObject);
                     if (data.StartsWith(text, StringComparison.CurrentCultureIgnoreCase))
                         return i;
                 }
@@ -202,7 +202,7 @@ namespace BrightIdeasSoftware
             {
                 for (int i = first; i >= last; i--)
                 {
-                    string data = column.GetStringValue(this.listView.GetNthItemInDisplayOrder(i).RowObject);
+                    string data = column.GetStringValue(listView.GetNthItemInDisplayOrder(i).RowObject);
                     if (data.StartsWith(text, StringComparison.CurrentCultureIgnoreCase))
                         return i;
                 }
@@ -220,11 +220,11 @@ namespace BrightIdeasSoftware
         {
             if (sortOrder != SortOrder.None)
             {
-                ModelObjectComparer comparer = new ModelObjectComparer(column, sortOrder, this.listView.SecondarySortColumn, this.listView.SecondarySortOrder);
-                this.fullObjectList.Sort(comparer);
-                this.filteredObjectList.Sort(comparer);
+                ModelObjectComparer comparer = new ModelObjectComparer(column, sortOrder, listView.SecondarySortColumn, listView.SecondarySortOrder);
+                fullObjectList.Sort(comparer);
+                filteredObjectList.Sort(comparer);
             }
-            this.RebuildIndexMap();
+            RebuildIndexMap();
         }
 
         /// <summary>
@@ -236,10 +236,10 @@ namespace BrightIdeasSoftware
             foreach (object modelObject in modelObjects)
             {
                 if (modelObject != null)
-                    this.fullObjectList.Add(modelObject);
+                    fullObjectList.Add(modelObject);
             }
-            this.FilterObjects();
-            this.RebuildIndexMap();
+            FilterObjects();
+            RebuildIndexMap();
         }
 
         /// <summary>
@@ -251,12 +251,12 @@ namespace BrightIdeasSoftware
             List<int> indicesToRemove = new List<int>();
             foreach (object modelObject in modelObjects)
             {
-                int i = this.GetObjectIndex(modelObject);
+                int i = GetObjectIndex(modelObject);
                 if (i >= 0)
                     indicesToRemove.Add(i);
 
                 // Remove the objects from the unfiltered list
-                this.fullObjectList.Remove(modelObject);
+                fullObjectList.Remove(modelObject);
             }
 
             // Sort the indices from highest to lowest so that we
@@ -266,10 +266,10 @@ namespace BrightIdeasSoftware
             indicesToRemove.Reverse();
 
             foreach (int i in indicesToRemove)
-                this.listView.SelectedIndices.Remove(i);
+                listView.SelectedIndices.Remove(i);
 
-            this.FilterObjects();
-            this.RebuildIndexMap();
+            FilterObjects();
+            RebuildIndexMap();
         }
 
         /// <summary>
@@ -280,9 +280,9 @@ namespace BrightIdeasSoftware
         {
             ArrayList newObjects = ObjectListView.EnumerableToArray(collection, true);
 
-            this.fullObjectList = newObjects;
-            this.FilterObjects();
-            this.RebuildIndexMap();
+            fullObjectList = newObjects;
+            FilterObjects();
+            RebuildIndexMap();
         }
 
         /// <summary>
@@ -292,16 +292,16 @@ namespace BrightIdeasSoftware
         /// <param name="modelObject"></param>
         public override void UpdateObject(int index, object modelObject)
         {
-            if (index < 0 || index >= this.filteredObjectList.Count)
+            if (index < 0 || index >= filteredObjectList.Count)
                 return;
 
-            int i = this.fullObjectList.IndexOf(this.filteredObjectList[index]);
+            int i = fullObjectList.IndexOf(filteredObjectList[index]);
             if (i < 0)
                 return;
 
-            this.fullObjectList[i] = modelObject;
-            this.filteredObjectList[index] = modelObject;
-            this.objectsToIndexMap[modelObject] = index;
+            fullObjectList[i] = modelObject;
+            filteredObjectList[index] = modelObject;
+            objectsToIndexMap[modelObject] = index;
         }
 
         private ArrayList fullObjectList = new ArrayList();
@@ -320,9 +320,9 @@ namespace BrightIdeasSoftware
         /// <param name="iListFilter"></param>
         public override void ApplyFilters(IModelFilter iModelFilter, IListFilter iListFilter)
         {
-            this.modelFilter = iModelFilter;
-            this.listFilter = iListFilter;
-            this.SetObjects(this.fullObjectList);
+            modelFilter = iModelFilter;
+            listFilter = iListFilter;
+            SetObjects(fullObjectList);
         }
 
         #endregion
@@ -351,38 +351,38 @@ namespace BrightIdeasSoftware
         /// </summary>
         protected void RebuildIndexMap()
         {
-            this.objectsToIndexMap.Clear();
-            for (int i = 0; i < this.filteredObjectList.Count; i++)
-                this.objectsToIndexMap[this.filteredObjectList[i]] = i;
+            objectsToIndexMap.Clear();
+            for (int i = 0; i < filteredObjectList.Count; i++)
+                objectsToIndexMap[filteredObjectList[i]] = i;
         }
-        readonly Dictionary<Object, int> objectsToIndexMap = new Dictionary<Object, int>();
+        readonly Dictionary<object, int> objectsToIndexMap = new Dictionary<object, int>();
 
         /// <summary>
         /// Build our filtered list from our full list.
         /// </summary>
         protected void FilterObjects()
         {
-            if (!this.listView.UseFiltering || (this.modelFilter == null && this.listFilter == null))
+            if (!listView.UseFiltering || (modelFilter == null && listFilter == null))
             {
-                this.filteredObjectList = new ArrayList(this.fullObjectList);
+                filteredObjectList = new ArrayList(fullObjectList);
                 return;
             }
 
-            IEnumerable objects = (this.listFilter == null) ?
-                this.fullObjectList : this.listFilter.Filter(this.fullObjectList);
+            IEnumerable objects = (listFilter == null) ?
+                fullObjectList : listFilter.Filter(fullObjectList);
 
             // Apply the object filter if there is one
-            if (this.modelFilter == null)
+            if (modelFilter == null)
             {
-                this.filteredObjectList = ObjectListView.EnumerableToArray(objects, false);
+                filteredObjectList = ObjectListView.EnumerableToArray(objects, false);
             }
             else
             {
-                this.filteredObjectList = new ArrayList();
+                filteredObjectList = new ArrayList();
                 foreach (object model in objects)
                 {
-                    if (this.modelFilter.Filter(model))
-                        this.filteredObjectList.Add(model);
+                    if (modelFilter.Filter(model))
+                        filteredObjectList.Add(model);
                 }
             }
         }

@@ -19,10 +19,10 @@ namespace GomLib.Tables
             LoadData();
         }
 
-        private Dictionary<int, Dictionary<Models.ItemQuality, int>> item_rating_data;
+        private Dictionary<int, Dictionary<ItemQuality, int>> item_rating_data;
         readonly string itmRatingsTablePath = "itmRatingTablePrototype";
 
-        public Dictionary<int, Dictionary<Models.ItemQuality, int>> TableData
+        public Dictionary<int, Dictionary<ItemQuality, int>> TableData
         {
             get
             {
@@ -32,7 +32,7 @@ namespace GomLib.Tables
         }
 
         public int GetRating(Item i) { return GetRating(i.ItemLevel, i.Quality); }
-        public int GetRating(int level, Models.ItemQuality quality)
+        public int GetRating(int level, ItemQuality quality)
         {
             if (level <= 0) { return 0; }
             else if (level > item_rating_data.Count - 1) { return GetRating(item_rating_data.Count - 1, quality); }
@@ -45,15 +45,15 @@ namespace GomLib.Tables
         {
             GomObject table = _dom.GetObject(itmRatingsTablePath);
             Dictionary<object, object> tableData = table.Data.Get<Dictionary<object, object>>("itmRatings");
-            item_rating_data = new Dictionary<int, Dictionary<Models.ItemQuality, int>>();
+            item_rating_data = new Dictionary<int, Dictionary<ItemQuality, int>>();
             foreach (var kvp in tableData)
             {
                 int lvl = (int)(long)kvp.Key;
                 var ratingData = (Dictionary<object, object>)kvp.Value;
-                var qMap = new Dictionary<Models.ItemQuality, int>();
+                var qMap = new Dictionary<ItemQuality, int>();
                 foreach (var qr in ratingData)
                 {
-                    var quality = Models.ItemQualityExtensions.ToItemQuality((ScriptEnum)qr.Key);
+                    var quality = ItemQualityExtensions.ToItemQuality((ScriptEnum)qr.Key);
                     var rating = (int)(long)qr.Value;
                     qMap.Add(quality, rating);
                 }

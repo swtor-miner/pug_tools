@@ -71,7 +71,7 @@ namespace BrightIdeasSoftware
     /// Instances of this class specify how should "hot items" (non-selected
     /// rows under the cursor) be renderered.
     /// </summary>
-    public class HotItemStyle : System.ComponentModel.Component, IItemStyle
+    public class HotItemStyle : Component, IItemStyle
     {
         /// <summary>
         /// Gets or sets the font that will be applied by this style
@@ -79,8 +79,8 @@ namespace BrightIdeasSoftware
         [DefaultValue(null)]
         public Font Font
         {
-            get { return this.font; }
-            set { this.font = value; }
+            get { return font; }
+            set { font = value; }
         }
         private Font font;
 
@@ -90,8 +90,8 @@ namespace BrightIdeasSoftware
         [DefaultValue(FontStyle.Regular)]
         public FontStyle FontStyle
         {
-            get { return this.fontStyle; }
-            set { this.fontStyle = value; }
+            get { return fontStyle; }
+            set { fontStyle = value; }
         }
         private FontStyle fontStyle;
 
@@ -101,8 +101,8 @@ namespace BrightIdeasSoftware
         [DefaultValue(typeof(Color), "")]
         public Color ForeColor
         {
-            get { return this.foreColor; }
-            set { this.foreColor = value; }
+            get { return foreColor; }
+            set { foreColor = value; }
         }
         private Color foreColor;
 
@@ -112,8 +112,8 @@ namespace BrightIdeasSoftware
         [DefaultValue(typeof(Color), "")]
         public Color BackColor
         {
-            get { return this.backColor; }
-            set { this.backColor = value; }
+            get { return backColor; }
+            set { backColor = value; }
         }
         private Color backColor;
 
@@ -124,8 +124,8 @@ namespace BrightIdeasSoftware
          DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IOverlay Overlay
         {
-            get { return this.overlay; }
-            set { this.overlay = value; }
+            get { return overlay; }
+            set { overlay = value; }
         }
         private IOverlay overlay;
 
@@ -138,8 +138,8 @@ namespace BrightIdeasSoftware
          DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IDecoration Decoration
         {
-            get { return this.decoration; }
-            set { this.decoration = value; }
+            get { return decoration; }
+            set { decoration = value; }
         }
         private IDecoration decoration;
     }
@@ -155,8 +155,8 @@ namespace BrightIdeasSoftware
         /// </summary>
         public Font Font
         {
-            get { return this.font; }
-            set { this.font = value; }
+            get { return font; }
+            set { font = value; }
         }
         private Font font;
 
@@ -166,8 +166,8 @@ namespace BrightIdeasSoftware
         [DefaultValue(FontStyle.Regular)]
         public FontStyle FontStyle
         {
-            get { return this.fontStyle; }
-            set { this.fontStyle = value; }
+            get { return fontStyle; }
+            set { fontStyle = value; }
         }
         private FontStyle fontStyle;
 
@@ -177,8 +177,8 @@ namespace BrightIdeasSoftware
         [DefaultValue(typeof(Color), "")]
         public Color ForeColor
         {
-            get { return this.foreColor; }
-            set { this.foreColor = value; }
+            get { return foreColor; }
+            set { foreColor = value; }
         }
         private Color foreColor;
 
@@ -188,8 +188,8 @@ namespace BrightIdeasSoftware
         [DefaultValue(typeof(Color), "")]
         public Color BackColor
         {
-            get { return this.backColor; }
-            set { this.backColor = value; }
+            get { return backColor; }
+            set { backColor = value; }
         }
         private Color backColor;
     }
@@ -197,26 +197,26 @@ namespace BrightIdeasSoftware
     /// <summary>
     /// Instances of this class describe how hyperlinks will appear
     /// </summary>
-    public class HyperlinkStyle : System.ComponentModel.Component
+    public class HyperlinkStyle : Component
     {
         /// <summary>
         /// Create a HyperlinkStyle
         /// </summary>
         public HyperlinkStyle()
         {
-            this.Normal = new CellStyle
+            Normal = new CellStyle
             {
                 ForeColor = Color.Blue
             };
-            this.Over = new CellStyle
+            Over = new CellStyle
             {
                 FontStyle = FontStyle.Underline
             };
-            this.Visited = new CellStyle
+            Visited = new CellStyle
             {
                 ForeColor = Color.Purple
             };
-            this.OverCursor = Cursors.Hand;
+            OverCursor = Cursors.Hand;
         }
 
         /// <summary>
@@ -226,8 +226,8 @@ namespace BrightIdeasSoftware
          Description("How should hyperlinks be drawn")]
         public CellStyle Normal
         {
-            get { return this.normalStyle; }
-            set { this.normalStyle = value; }
+            get { return normalStyle; }
+            set { normalStyle = value; }
         }
         private CellStyle normalStyle;
 
@@ -238,8 +238,8 @@ namespace BrightIdeasSoftware
          Description("How should hyperlinks be drawn when the mouse is over them?")]
         public CellStyle Over
         {
-            get { return this.overStyle; }
-            set { this.overStyle = value; }
+            get { return overStyle; }
+            set { overStyle = value; }
         }
         private CellStyle overStyle;
 
@@ -250,8 +250,8 @@ namespace BrightIdeasSoftware
          Description("How should hyperlinks be drawn after they have been clicked")]
         public CellStyle Visited
         {
-            get { return this.visitedStyle; }
-            set { this.visitedStyle = value; }
+            get { return visitedStyle; }
+            set { visitedStyle = value; }
         }
         private CellStyle visitedStyle;
 
@@ -262,8 +262,8 @@ namespace BrightIdeasSoftware
          Description("What cursor should be shown when the mouse is over a link?")]
         public Cursor OverCursor
         {
-            get { return this.overCursor; }
-            set { this.overCursor = value; }
+            get { return overCursor; }
+            set { overCursor = value; }
         }
         private Cursor overCursor;
     }
@@ -281,8 +281,8 @@ namespace BrightIdeasSoftware
         [DefaultValue(null)]
         public Font Font
         {
-            get { return this.font; }
-            set { this.font = value; }
+            get { return font; }
+            set { font = value; }
         }
         private Font font;
 
@@ -292,8 +292,8 @@ namespace BrightIdeasSoftware
         [DefaultValue(typeof(Color), "")]
         public Color ForeColor
         {
-            get { return this.foreColor; }
-            set { this.foreColor = value; }
+            get { return foreColor; }
+            set { foreColor = value; }
         }
         private Color foreColor;
 
@@ -303,8 +303,8 @@ namespace BrightIdeasSoftware
         [DefaultValue(typeof(Color), "")]
         public Color BackColor
         {
-            get { return this.backColor; }
-            set { this.backColor = value; }
+            get { return backColor; }
+            set { backColor = value; }
         }
         private Color backColor;
 
@@ -314,8 +314,8 @@ namespace BrightIdeasSoftware
         [DefaultValue(typeof(Color), "")]
         public Color FrameColor
         {
-            get { return this.frameColor; }
-            set { this.frameColor = value; }
+            get { return frameColor; }
+            set { frameColor = value; }
         }
         private Color frameColor;
 
@@ -325,8 +325,8 @@ namespace BrightIdeasSoftware
         [DefaultValue(0.0f)]
         public float FrameWidth
         {
-            get { return this.frameWidth; }
-            set { this.frameWidth = value; }
+            get { return frameWidth; }
+            set { frameWidth = value; }
         }
         private float frameWidth;
     }
@@ -334,16 +334,16 @@ namespace BrightIdeasSoftware
     /// <summary>
     /// This class defines how a header should be formatted in its various states.
     /// </summary>
-    public class HeaderFormatStyle : System.ComponentModel.Component
+    public class HeaderFormatStyle : Component
     {
         /// <summary>
         /// Create a new HeaderFormatStyle
         /// </summary>
         public HeaderFormatStyle()
         {
-            this.Hot = new HeaderStateStyle();
-            this.Normal = new HeaderStateStyle();
-            this.Pressed = new HeaderStateStyle();
+            Hot = new HeaderStateStyle();
+            Normal = new HeaderStateStyle();
+            Pressed = new HeaderStateStyle();
         }
 
         /// <summary>
@@ -353,8 +353,8 @@ namespace BrightIdeasSoftware
          Description("How should the header be drawn when the mouse is over it?")]
         public HeaderStateStyle Hot
         {
-            get { return this.hotStyle; }
-            set { this.hotStyle = value; }
+            get { return hotStyle; }
+            set { hotStyle = value; }
         }
         private HeaderStateStyle hotStyle;
 
@@ -365,8 +365,8 @@ namespace BrightIdeasSoftware
          Description("How should a column header normally be drawn")]
         public HeaderStateStyle Normal
         {
-            get { return this.normalStyle; }
-            set { this.normalStyle = value; }
+            get { return normalStyle; }
+            set { normalStyle = value; }
         }
         private HeaderStateStyle normalStyle;
 
@@ -377,8 +377,8 @@ namespace BrightIdeasSoftware
          Description("How should a column header be drawn when it is pressed")]
         public HeaderStateStyle Pressed
         {
-            get { return this.pressedStyle; }
-            set { this.pressedStyle = value; }
+            get { return pressedStyle; }
+            set { pressedStyle = value; }
         }
         private HeaderStateStyle pressedStyle;
 
@@ -388,9 +388,9 @@ namespace BrightIdeasSoftware
         /// <param name="font"></param>
         public void SetFont(Font font)
         {
-            this.Normal.Font = font;
-            this.Hot.Font = font;
-            this.Pressed.Font = font;
+            Normal.Font = font;
+            Hot.Font = font;
+            Pressed.Font = font;
         }
 
         /// <summary>
@@ -399,9 +399,9 @@ namespace BrightIdeasSoftware
         /// <param name="color"></param>
         public void SetForeColor(Color color)
         {
-            this.Normal.ForeColor = color;
-            this.Hot.ForeColor = color;
-            this.Pressed.ForeColor = color;
+            Normal.ForeColor = color;
+            Hot.ForeColor = color;
+            Pressed.ForeColor = color;
         }
 
         /// <summary>
@@ -410,9 +410,9 @@ namespace BrightIdeasSoftware
         /// <param name="color"></param>
         public void SetBackColor(Color color)
         {
-            this.Normal.BackColor = color;
-            this.Hot.BackColor = color;
-            this.Pressed.BackColor = color;
+            Normal.BackColor = color;
+            Hot.BackColor = color;
+            Pressed.BackColor = color;
         }
     }
 }

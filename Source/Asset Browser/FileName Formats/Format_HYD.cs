@@ -20,7 +20,7 @@ namespace PugTools
         public Format_HYD(string dest, string ext)
         {
             this.dest = dest;
-            this.extension = ext;
+            extension = ext;
         }
 
         public void ParseHYD(List<GomObject> hydNodes)
@@ -30,27 +30,27 @@ namespace PugTools
                 Dictionary<object, object> hydScriptMap = obj.Data.ValueOrDefault<Dictionary<object, object>>("hydScriptMap", null);
                 if (hydScriptMap != null)
                 {
-                    foreach (var scriptMapItem in (Dictionary<object, object>)hydScriptMap)
+                    foreach (var scriptMapItem in hydScriptMap)
                     {
-                        var scriptMapItem2 = (GomLib.GomObjectData)scriptMapItem.Value;
+                        var scriptMapItem2 = (GomObjectData)scriptMapItem.Value;
                         List<object> hydScriptBlocks = scriptMapItem2.ValueOrDefault<List<object>>("hydScriptBlocks", null);
                         if (hydScriptBlocks != null)
                         {
-                            foreach (var hydScriptBlocksItem in (List<object>)hydScriptBlocks)
+                            foreach (var hydScriptBlocksItem in hydScriptBlocks)
                             {
-                                var hydScriptBlocksItem2 = (GomLib.GomObjectData)hydScriptBlocksItem;
+                                var hydScriptBlocksItem2 = (GomObjectData)hydScriptBlocksItem;
                                 List<object> hydActionBlocks = hydScriptBlocksItem2.ValueOrDefault<List<object>>("hydActionBlocks", null);
                                 if (hydActionBlocks != null)
                                 {
-                                    foreach (var hydActionBlocksItem in (List<object>)hydActionBlocks)
+                                    foreach (var hydActionBlocksItem in hydActionBlocks)
                                     {
-                                        var hydActionBlocksItem2 = (GomLib.GomObjectData)hydActionBlocksItem;
+                                        var hydActionBlocksItem2 = (GomObjectData)hydActionBlocksItem;
                                         List<object> hydActions = hydActionBlocksItem2.ValueOrDefault<List<object>>("hydActions", null);
                                         if (hydActions != null)
                                         {
-                                            foreach (var hydActionsItem in (List<object>)hydActions)
+                                            foreach (var hydActionsItem in hydActions)
                                             {
-                                                var hydActionsItem2 = (GomLib.GomObjectData)hydActionsItem;
+                                                var hydActionsItem2 = (GomObjectData)hydActionsItem;
                                                 var action = hydActionsItem2.ValueOrDefault<object>("hydAction", "").ToString();
                                                 var value = hydActionsItem2.ValueOrDefault<object>("hydValue", "").ToString().ToLower();
                                                 if (action.Contains("Animation"))
@@ -71,11 +71,11 @@ namespace PugTools
 
         public void WriteFile(bool _ = false)
         {
-            if (!System.IO.Directory.Exists(this.dest + "\\File_Names"))
-                System.IO.Directory.CreateDirectory(this.dest + "\\File_Names");
-            if (this.animFileNames.Count > 0)
+            if (!Directory.Exists(dest + "\\File_Names"))
+                Directory.CreateDirectory(dest + "\\File_Names");
+            if (animFileNames.Count > 0)
             {
-                System.IO.StreamWriter outputAnimFileNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_anim_file_names.txt", false);
+                StreamWriter outputAnimFileNames = new StreamWriter(dest + "\\File_Names\\" + extension + "_anim_file_names.txt", false);
                 foreach (string item in animFileNames)
                 {
                     if (item != "")
@@ -85,9 +85,9 @@ namespace PugTools
                 animFileNames.Clear();
             }
 
-            if (this.vfxFileNames.Count > 0)
+            if (vfxFileNames.Count > 0)
             {
-                System.IO.StreamWriter outputVfxFileNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_fxspec_file_names.txt", false);
+                StreamWriter outputVfxFileNames = new StreamWriter(dest + "\\File_Names\\" + extension + "_fxspec_file_names.txt", false);
                 foreach (string item in vfxFileNames)
                 {
                     if (item != "")
@@ -108,9 +108,9 @@ namespace PugTools
                 vfxFileNames.Clear();
             }
 
-            if (this.errors.Count > 0)
+            if (errors.Count > 0)
             {
-                System.IO.StreamWriter outputErrors = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_error_list.txt", false);
+                StreamWriter outputErrors = new StreamWriter(dest + "\\File_Names\\" + extension + "_error_list.txt", false);
                 foreach (string error in errors)
                 {
                     outputErrors.Write(error + "\r\n");

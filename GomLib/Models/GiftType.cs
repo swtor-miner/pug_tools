@@ -30,13 +30,13 @@ namespace GomLib.Models
     {
         public static GiftType ToGiftType(this ScriptEnum val)
         {
-            if (val == null) { return ToGiftType(String.Empty); }
+            if (val == null) { return ToGiftType(string.Empty); }
             return ToGiftType(val.ToString());
         }
 
         public static GiftType ToGiftType(this string str)
         {
-            if (String.IsNullOrEmpty(str)) return GiftType.None;
+            if (string.IsNullOrEmpty(str)) return GiftType.None;
 
             switch (str)
             {

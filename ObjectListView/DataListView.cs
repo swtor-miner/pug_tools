@@ -67,7 +67,7 @@ namespace BrightIdeasSoftware
         /// </summary>
         public DataListView()
         {
-            this.Adapter = new DataSourceAdapter(this);
+            Adapter = new DataSourceAdapter(this);
         }
 
         #region Public Properties
@@ -81,8 +81,8 @@ namespace BrightIdeasSoftware
          Description("Should the control automatically generate columns from the DataSource"),
          DefaultValue(true)]
         public bool AutoGenerateColumns {
-            get { return this.Adapter.AutoGenerateColumns; }
-            set { this.Adapter.AutoGenerateColumns = value; }
+            get { return Adapter.AutoGenerateColumns; }
+            set { Adapter.AutoGenerateColumns = value; }
         }
 
         /// <summary>
@@ -112,10 +112,10 @@ namespace BrightIdeasSoftware
         /// </remarks>
         [Category("Data"),
         TypeConverter("System.Windows.Forms.Design.DataSourceConverter, System.Design")]
-        public virtual Object DataSource
+        public virtual object DataSource
         {
-            get { return this.Adapter.DataSource; }
-            set { this.Adapter.DataSource = value; }
+            get { return Adapter.DataSource; }
+            set { Adapter.DataSource = value; }
         }
 
         /// <summary>
@@ -127,8 +127,8 @@ namespace BrightIdeasSoftware
          DefaultValue("")]
         public virtual string DataMember
         {
-            get { return this.Adapter.DataMember; }
-            set { this.Adapter.DataMember = value; }
+            get { return Adapter.DataMember; }
+            set { Adapter.DataMember = value; }
         }
 
         #endregion

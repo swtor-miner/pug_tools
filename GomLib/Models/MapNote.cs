@@ -60,28 +60,28 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, itm)) return true;
 
-            if (this.Icon != itm.Icon)
+            if (Icon != itm.Icon)
                 return false;
-            if (this.Id != itm.Id)
+            if (Id != itm.Id)
                 return false;
 
             var dComp = new DictionaryComparer<string, string>();
-            if (!dComp.Equals(this.LocalizedName, itm.LocalizedName))
+            if (!dComp.Equals(LocalizedName, itm.LocalizedName))
                 return false;
 
-            if (this.Name != itm.Name)
+            if (Name != itm.Name)
                 return false;
-            if (this.Condition != itm.Condition)
+            if (Condition != itm.Condition)
                 return false;
-            if (this.HuntingRadius != itm.HuntingRadius)
+            if (HuntingRadius != itm.HuntingRadius)
                 return false;
-            if (this.BonusHuntingRadius != itm.BonusHuntingRadius)
+            if (BonusHuntingRadius != itm.BonusHuntingRadius)
                 return false;
-            if (this.AssetID != itm.AssetID)
+            if (AssetID != itm.AssetID)
                 return false;
-            if (this.MapLink != null)
+            if (MapLink != null)
             {
-                if (!this.MapLink.Equals(itm.MapLink))
+                if (!MapLink.Equals(itm.MapLink))
                     return false;
             }
             else if (itm.MapLink != null)
@@ -154,11 +154,11 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, itm)) return true;
 
-            if (this.AreaId != itm.AreaId)
+            if (AreaId != itm.AreaId)
                 return false;
-            if (this.MapNameSId != itm.MapNameSId)
+            if (MapNameSId != itm.MapNameSId)
                 return false;
-            if (this.SubmapNameSId != itm.SubmapNameSId)
+            if (SubmapNameSId != itm.SubmapNameSId)
                 return false;
 
             return true;

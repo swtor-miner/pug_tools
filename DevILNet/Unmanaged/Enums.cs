@@ -322,16 +322,16 @@ namespace DevIL.Unmanaged {
         /// <summary>
         /// Denotes a "next" image in the chain, e.g. animation or face.
         /// </summary>
-        Image = (int) ILDefines.IL_SUB_NEXT,
+        Image = ILDefines.IL_SUB_NEXT,
 
         /// <summary>
         /// Denotes a mipmap.
         /// </summary>
-        MipMap = (int) ILDefines.IL_SUB_MIPMAP,
+        MipMap = ILDefines.IL_SUB_MIPMAP,
 
         /// <summary>
         /// Denotes a layer.
         /// </summary>
-        Layer = (int) ILDefines.IL_SUB_LAYER
+        Layer = ILDefines.IL_SUB_LAYER
     }
 }

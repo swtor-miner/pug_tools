@@ -16,9 +16,9 @@ namespace PugTools
 
         public TreeListItem(string id, string parent, string display, HashFileInfo hashInfo)
         {
-            this.Id = id;
-            this.parentId = parent;
-            this.displayName = display;
+            Id = id;
+            parentId = parent;
+            displayName = display;
             this.hashInfo = hashInfo;
         }
     }

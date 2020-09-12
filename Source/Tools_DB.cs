@@ -197,7 +197,7 @@ namespace PugTools
 
                 try
                 {
-                    command.CommandText = BaseQuery + String.Join(",", StoredQueryValues) + EndQuery;
+                    command.CommandText = BaseQuery + string.Join(",", StoredQueryValues) + EndQuery;
                     //command.Parameters.AddWithValue("@update_record", false);
                     command.ExecuteNonQuery();
                     trans.Commit();
@@ -292,13 +292,13 @@ namespace PugTools
                 SqlData = object1.SQLInfo(); //returns the SQLInfo related to the type. It's just a list of SQLProperties right now.
             }
             var names = SqlData.SQLProperties.Select(x => x.Name).ToList(); //Use linq to suck all the sql column names into a list.
-            InitBegin = String.Format(@"USE `tor_dump`;
-INSERT INTO `{0}` (`current_version`, `previous_version`, `first_seen`, `{1}`, `Hash`) VALUES ", name, String.Join("`, `", names)); //join the name list together and create a basic insert query for the type
-            InitEnd = String.Format(@"ON DUPLICATE KEY UPDATE 
+            InitBegin = string.Format(@"USE `tor_dump`;
+INSERT INTO `{0}` (`current_version`, `previous_version`, `first_seen`, `{1}`, `Hash`) VALUES ", name, string.Join("`, `", names)); //join the name list together and create a basic insert query for the type
+            InitEnd = string.Format(@"ON DUPLICATE KEY UPDATE 
 `previous_version` = IF((@update_record := (`Hash` <> VALUES(`Hash`))), `current_version`, `previous_version`),
 `current_version` = IF(@update_record, VALUES(`current_version`), `current_version`),
 {0}
-`Hash` = IF(@update_record, VALUES(`Hash`), `Hash`);", String.Join(Environment.NewLine, names.Select(x => String.Format("`{0}` = IF(@update_record, VALUES(`{0}`), `{0}`),", x)))); //same thing, but slightly reversed. Use linq to take the name list and turn it into a formatted string for each row, then join those lines together with with a newline. It's better to use the String.Join/Format options so you're not spawning a billion new strings like when you + them together.
+`Hash` = IF(@update_record, VALUES(`Hash`), `Hash`);", string.Join(Environment.NewLine, names.Select(x => string.Format("`{0}` = IF(@update_record, VALUES(`{0}`), `{0}`),", x)))); //same thing, but slightly reversed. Use linq to take the name list and turn it into a formatted string for each row, then join those lines together with with a newline. It's better to use the String.Join/Format options so you're not spawning a billion new strings like when you + them together.
         }
         internal SQLData SqlData;
 
@@ -311,15 +311,15 @@ INSERT INTO `{0}` (`current_version`, `previous_version`, `first_seen`, `{1}`, `
         {
             string defaultQuery = File.ReadAllText("SQL Files\\default_create.sql");
 
-            string columnTypes = String.Join(Environment.NewLine, SqlData.SQLProperties.Select(x => String.Format("  `{0}` {1},", x.Name, x.Type)));
+            string columnTypes = string.Join(Environment.NewLine, SqlData.SQLProperties.Select(x => string.Format("  `{0}` {1},", x.Name, x.Type)));
             string priunikey = SqlData.SQLProperties.Where(x => x.IsPrimaryKey).Select(x => x.Name).First();
             string keyString = "  PRIMARY KEY (`{0}`),\r\n  UNIQUE KEY `id_UNIQUE` (`{0}`)";
-            string priString = String.Format(keyString, priunikey);
-            string oldString = String.Format(keyString, String.Format("{0}`, `version", priunikey));
+            string priString = string.Format(keyString, priunikey);
+            string oldString = string.Format(keyString, string.Format("{0}`, `version", priunikey));
 
             List<string> columnNames = SqlData.SQLProperties.Select(x => x.Name).ToList();
-            string columns = String.Join("`, `", columnNames);
-            string oldColumns = String.Join("`, OLD.`", columnNames);
+            string columns = string.Join("`, `", columnNames);
+            string oldColumns = string.Join("`, OLD.`", columnNames);
 
             /*
              * {0} = table name
@@ -327,14 +327,14 @@ INSERT INTO `{0}` (`current_version`, `previous_version`, `first_seen`, `{1}`, `
              * {2} = column names
              * {3} = Old.column names
              */
-            string trigger = String.Format(@"((NOT EXISTS(SELECT 1 FROM {0}_old_versions WHERE `{1}` =  OLD.`{1}` AND `Hash` = OLD.`Hash`)) AND (NOT (OLD.`Hash` = NEW.`Hash`))) THEN
+            string trigger = string.Format(@"((NOT EXISTS(SELECT 1 FROM {0}_old_versions WHERE `{1}` =  OLD.`{1}` AND `Hash` = OLD.`Hash`)) AND (NOT (OLD.`Hash` = NEW.`Hash`))) THEN
 	INSERT INTO `{0}_old_versions` (`version`, `{2}`, `Hash`)
 	VALUES (OLD.`current_version`, OLD.`{3}`, OLD.`Hash`)", Table, priunikey, columns, oldColumns);
 
-            string indexString = String.Join(
+            string indexString = string.Join(
                 Environment.NewLine,
-                SqlData.SQLProperties.Where(x => x.AddIndex).Select(x => String.Format("ALTER TABLE `{0}` ADD INDEX `{1}` (`{1}`);", Table, x.Name)).ToList().Union(
-                SqlData.SQLProperties.Where(x => x.AddFullTextIndex).Select(x => String.Format("ALTER TABLE `{0}` ADD FULLTEXT INDEX `{1}` (`{1}`);", Table, x.Name)).ToList())
+                SqlData.SQLProperties.Where(x => x.AddIndex).Select(x => string.Format("ALTER TABLE `{0}` ADD INDEX `{1}` (`{1}`);", Table, x.Name)).ToList().Union(
+                SqlData.SQLProperties.Where(x => x.AddFullTextIndex).Select(x => string.Format("ALTER TABLE `{0}` ADD FULLTEXT INDEX `{1}` (`{1}`);", Table, x.Name)).ToList())
             );
 
             /*
@@ -345,9 +345,9 @@ INSERT INTO `{0}` (`current_version`, `previous_version`, `first_seen`, `{1}`, `
              * {4} = old_versions primary unique key statements
              * {5} = AddIndex statements
              */
-            string creationQuery = String.Format(defaultQuery, Table, columnTypes, priString, trigger, oldString, indexString);
+            string creationQuery = string.Format(defaultQuery, Table, columnTypes, priString, trigger, oldString, indexString);
 
-            PugTools.Tools.WriteFile(creationQuery, String.Format("SQL Creation Files\\{0}_create.sql", Table), false);
+            Tools.WriteFile(creationQuery, string.Format("SQL Creation Files\\{0}_create.sql", Table), false);
         }
     }
 }

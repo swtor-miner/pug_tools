@@ -169,7 +169,7 @@ namespace PugTools
                                             filename = names[filename];
                                     }
                                     Addtolist2(filename);
-                                    WriteFile(outputStream, String.Format("/MtxImages/unnamed/{0}.png", filename));
+                                    WriteFile(outputStream, string.Format("/MtxImages/unnamed/{0}.png", filename));
                                 }
                             }
                         }
@@ -221,8 +221,8 @@ namespace PugTools
             {
                 ProgressUpdate(i, count);
                 mtxDataProto.TryGetValue(id, out object curData);
-                GomLib.Models.PseudoGameObject curObj = PseudoGameObject.Load("MtxStoreFronts", currentDom, id, curData);
-                string filename = String.Format("/resources/gfx/mtxstore/{0}_400x400.dds", ((MtxStorefrontEntry)curObj).Icon);
+                PseudoGameObject curObj = PseudoGameObject.Load("MtxStoreFronts", currentDom, id, curData);
+                string filename = string.Format("/resources/gfx/mtxstore/{0}_400x400.dds", ((MtxStorefrontEntry)curObj).Icon);
                 if (!icons.ContainsValue(filename)) icons.Add(FileNameToHash(filename), filename);
                 i++;
             }
@@ -230,8 +230,8 @@ namespace PugTools
             {
                 ProgressUpdate(i, count);
                 colDataProto.TryGetValue(id, out object curData);
-                GomLib.Models.PseudoGameObject curObj = PseudoGameObject.Load("Collections", currentDom, id, curData);
-                string filename = String.Format("/resources/gfx/mtxstore/{0}.dds", ((Collection)curObj).Icon);
+                PseudoGameObject curObj = PseudoGameObject.Load("Collections", currentDom, id, curData);
+                string filename = string.Format("/resources/gfx/mtxstore/{0}.dds", ((Collection)curObj).Icon);
                 if (!icons.ContainsValue(filename)) icons.Add(FileNameToHash(filename), filename);
                 i++;
             }
@@ -244,7 +244,7 @@ namespace PugTools
         public string FileNameToHash(string filename)
         {
             FileId id = FileId.FromFilePath(filename);
-            return String.Format("{0}_{1}", id.ph, id.sh);
+            return string.Format("{0}_{1}", id.ph, id.sh);
         }
         #endregion
     }

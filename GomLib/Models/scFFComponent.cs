@@ -59,56 +59,56 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, scp)) return true;
 
-            if (this.ColorOption != scp.ColorOption)
+            if (ColorOption != scp.ColorOption)
                 return false;
-            if (this.ComponentId != scp.ComponentId)
+            if (ComponentId != scp.ComponentId)
                 return false;
-            if (this.ControllerNodeId != scp.ControllerNodeId)
+            if (ControllerNodeId != scp.ControllerNodeId)
                 return false;
-            if (this.Cost != scp.Cost)
+            if (Cost != scp.Cost)
                 return false;
-            if (this.CostLookupId != scp.CostLookupId)
+            if (CostLookupId != scp.CostLookupId)
                 return false;
-            if (this.Description != scp.Description)
+            if (Description != scp.Description)
                 return false;
-            if (this.DescriptionId != scp.DescriptionId)
+            if (DescriptionId != scp.DescriptionId)
                 return false;
-            if (this.Fqn != scp.Fqn)
+            if (Fqn != scp.Fqn)
                 return false;
-            if (this.Icon != scp.Icon)
+            if (Icon != scp.Icon)
                 return false;
-            if (this.Id != scp.Id)
+            if (Id != scp.Id)
                 return false;
-            if (this.IsAvailable != scp.IsAvailable)
+            if (IsAvailable != scp.IsAvailable)
                 return false;
-            if (this.IsDeprecated != scp.IsDeprecated)
+            if (IsDeprecated != scp.IsDeprecated)
                 return false;
-            if (this.Model != scp.Model)
+            if (Model != scp.Model)
                 return false;
-            if (this.Name != scp.Name)
+            if (Name != scp.Name)
                 return false;
-            if (this.NameId != scp.NameId)
+            if (NameId != scp.NameId)
                 return false;
-            if (this.NumUpgradeTiers != scp.NumUpgradeTiers)
+            if (NumUpgradeTiers != scp.NumUpgradeTiers)
                 return false;
-            if (this.Slot != scp.Slot)
+            if (Slot != scp.Slot)
                 return false;
 
             var sfComp = new DictionaryComparer<string, float>();
-            if (!sfComp.Equals(this.StatsList, scp.StatsList))
+            if (!sfComp.Equals(StatsList, scp.StatsList))
                 return false;
 
             var iiComp = new DictionaryComparer<int, int>();
-            if (!iiComp.Equals(this.TalentCostList, scp.TalentCostList))
+            if (!iiComp.Equals(TalentCostList, scp.TalentCostList))
                 return false;
 
-            if (this.TalentList != null)
+            if (TalentList != null)
             {
                 if (scp.TalentList != null)
                 {
-                    if (!this.TalentList.Keys.SequenceEqual(scp.TalentList.Keys))
+                    if (!TalentList.Keys.SequenceEqual(scp.TalentList.Keys))
                         return false;
-                    foreach (var kvp in this.TalentList)
+                    foreach (var kvp in TalentList)
                     {
                         if (!kvp.Value.Equals(scp.TalentList[kvp.Key]))
                             return false;
@@ -118,11 +118,11 @@ namespace GomLib.Models
                     return false;
             }
 
-            if (!this.Talents.Equals(scp.Talents))
+            if (!Talents.Equals(scp.Talents))
                 return false;
-            if (this.UnknownId != scp.UnknownId)
+            if (UnknownId != scp.UnknownId)
                 return false;
-            if (this.UsedByShipId != scp.UsedByShipId)
+            if (UsedByShipId != scp.UsedByShipId)
                 return false;
             return true;
         }
@@ -156,11 +156,11 @@ namespace GomLib.Models
                 if (type.Name == "Talent")
                 {
                     if (verbose) component.Add(new XElement("Ability"));
-                    component.Add(((GomLib.Models.Talent)TalentList[0]).ToXElement(verbose));
+                    component.Add(((Talent)TalentList[0]).ToXElement(verbose));
                 }
                 else
                 {
-                    component.Add(((GomLib.Models.Ability)TalentList[0]).ToXElement(verbose));
+                    component.Add(((Ability)TalentList[0]).ToXElement(verbose));
                     component.Add(new XElement("Talent"));
                 }
             }
@@ -175,22 +175,22 @@ namespace GomLib.Models
                     foreach (var column in row.Value)
                     {
                         XElement xCol = null; //new XElement("Column"); 
-                        if (((List<object>)column.Value)[0].GetType() == typeof(GomLib.Models.Talent))
+                        if (column.Value[0].GetType() == typeof(Talent))
                         {
-                            xCol = ((GomLib.Models.Talent)((List<object>)column.Value)[0]).ToXElement(verbose);
+                            xCol = ((Talent)column.Value[0]).ToXElement(verbose);
                         }
                         else
                         {
-                            xCol = ((GomLib.Models.Ability)((List<object>)column.Value)[0]).ToXElement(verbose);
+                            xCol = ((Ability)column.Value[0]).ToXElement(verbose);
                         }
                         xCol.Add(new XAttribute("Priority", column.Key));
-                        if (((List<object>)column.Value)[1] == null)
+                        if (column.Value[1] == null)
                         {
                             xCol.Add(new XAttribute("Target", "All"));
                         }
                         else
                         {
-                            xCol.Add(new XAttribute("Target", ((List<object>)column.Value)[1]));
+                            xCol.Add(new XAttribute("Target", column.Value[1]));
                         }
                         xRow.Add(xCol);
                     }

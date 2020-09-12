@@ -12,7 +12,7 @@ namespace GomLib.Models
     {
         public MapNoteData(DataObjectModel dom)
         {
-            this.Dom_ = dom;
+            Dom_ = dom;
         }
         public float PositionX { get; set; }
         public float PositionY { get; set; }
@@ -54,7 +54,7 @@ namespace GomLib.Models
                 {
                     var obj = Dom_.GetObject(TemplateFQN);
                     if (obj != null)
-                        MPN_ = (MapNote)GameObject.Load(obj);
+                        MPN_ = (MapNote)Load(obj);
                 }
                 return MPN_;
             }
@@ -75,11 +75,11 @@ namespace GomLib.Models
                         if (split.Count() == 3)
                         {
                             float.TryParse(split[0], out float x);
-                            this.PositionX = x;
+                            PositionX = x;
                             float.TryParse(split[1], out float y);
-                            this.PositionY = y;
+                            PositionY = y;
                             float.TryParse(split[2], out float z);
-                            this.PositionZ = z;
+                            PositionZ = z;
                         }
                         break;
                     case "mpnRotation":
@@ -87,51 +87,51 @@ namespace GomLib.Models
                         if (rotsplit.Count() == 3)
                         {
                             float.TryParse(rotsplit[1], out float r);
-                            this.Rotation = r;
+                            Rotation = r;
                         }
                         break;
                     case "mpnMapTags":
-                        this.MapTags = new Dictionary<string, bool>();
+                        MapTags = new Dictionary<string, bool>();
                         for (var m = 0; m < f.Elements().Count(); m += 2)
                         {
                             var elems = f.Elements();
                             var k = elems.ElementAt(m);
                             var e = elems.ElementAt(m + 1);
                             bool.TryParse(e.Value, out bool mtb);
-                            this.MapTags.Add(k.Value, mtb);
+                            MapTags.Add(k.Value, mtb);
                         }
                         break;
                     case "ParentMapTag":
-                        this.ParentMapTag = f.Value;
+                        ParentMapTag = f.Value;
                         break;
                     case "ShowGhosted":
                         bool g;
                         bool.TryParse(f.Value, out g);
-                        this.ShowGhosted = g;
+                        ShowGhosted = g;
                         break;
                     case "ShowOffmapArrow":
                         bool o;
                         bool.TryParse(f.Value, out o);
-                        this.ShowOffmapArrow = o;
+                        ShowOffmapArrow = o;
                         break;
                     case "ShowQuestBreadcrumbOnly":
                         bool b;
                         bool.TryParse(f.Value, out b);
-                        this.ShowQuestBreadcrumbOnly = b;
+                        ShowQuestBreadcrumbOnly = b;
                         break;
                     case "DoNotBreadcrumb":
                         bool d;
                         bool.TryParse(f.Value, out d);
-                        this.DoNotBreadcrumb = d;
+                        DoNotBreadcrumb = d;
                         break;
                     case "mpnIgnoreFoW":
                         bool w;
                         bool.TryParse(f.Value, out w);
-                        this.IgnoreFoW = w;
+                        IgnoreFoW = w;
                         break;
                     case "mpnTemplateFQN":
                         string fqn = f.Value.Replace("\\server\\mpn\\", "mpn.").Replace(".mpn", "").Replace("\\", ".");
-                        this.TemplateFQN = fqn;
+                        TemplateFQN = fqn;
                         //var objId = _dom.GetObjectId(fqn);
                         //if(objId != null)
                         //{

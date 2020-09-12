@@ -35,7 +35,7 @@ namespace GomLib.Models
             }
         }
         internal AMIEntry _AMI;
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public AMIEntry AMI
         {
             get
@@ -46,9 +46,9 @@ namespace GomLib.Models
             }
         }
         public long MaterialIndex { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal string _Material0;
-        [Newtonsoft.Json.JsonIgnore] //Need to fix this
+        [JsonIgnore] //Need to fix this
         public string Material0
         {
             get
@@ -58,9 +58,9 @@ namespace GomLib.Models
                 return _Material0; //.Replace("[BT]", BodyType).Replace("[bt]", BodyType);
             }
         }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal string _MaterialMirror;
-        [Newtonsoft.Json.JsonIgnore] //Need to fix this
+        [JsonIgnore] //Need to fix this
         public string MaterialMirror
         {
             get
@@ -83,7 +83,7 @@ namespace GomLib.Models
             _MaterialMirror = matKvP.Value;
         }
         public List<long> Attachments { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal List<string> _AttachedModels;
         public List<string> AttachedModels
         {
@@ -106,9 +106,9 @@ namespace GomLib.Models
             }
         }
         public long PrimaryHueId { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal AMIEntry _PrimaryAMI;
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         private AMIEntry PrimaryAMI
         {
             get
@@ -118,7 +118,7 @@ namespace GomLib.Models
                 return _PrimaryAMI;
             }
         }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal string _PrimaryHue;
         public string PrimaryHue
         {
@@ -126,7 +126,7 @@ namespace GomLib.Models
             {
                 if (_PrimaryHue == null)
                     if (PrimaryAMI != null)
-                        _PrimaryHue = String.Format("{0};{1}", PrimaryAMI.BaseFile, PrimaryAMI.ColorAsVector4);
+                        _PrimaryHue = string.Format("{0};{1}", PrimaryAMI.BaseFile, PrimaryAMI.ColorAsVector4);
                     else
                         return "";
                 return _PrimaryHue;
@@ -134,9 +134,9 @@ namespace GomLib.Models
         }
 
         public long SecondaryHueId { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal AMIEntry _SecondaryAMI;
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         private AMIEntry SecondaryAMI
         {
             get
@@ -146,7 +146,7 @@ namespace GomLib.Models
                 return _SecondaryAMI;
             }
         }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal string _SecondaryHue;
         public string SecondaryHue
         {
@@ -154,7 +154,7 @@ namespace GomLib.Models
             {
                 if (_SecondaryHue == null)
                     if (SecondaryAMI != null)
-                        _SecondaryHue = String.Format("{0};{1}", SecondaryAMI.BaseFile, SecondaryAMI.ColorAsVector4);
+                        _SecondaryHue = string.Format("{0};{1}", SecondaryAMI.BaseFile, SecondaryAMI.ColorAsVector4);
                     else
                         return "";
                 return _SecondaryHue;
@@ -167,7 +167,7 @@ namespace GomLib.Models
         {
             HashSet<string> returnList = new HashSet<string>
             {
-                this.Model
+                Model
             };
             //finish this off
             return returnList;
@@ -305,9 +305,9 @@ namespace GomLib.Models
         public HashSet<string> GetAttachedFX()
         {
             HashSet<string> ret = new HashSet<string>();
-            if (this.IPP != null)
+            if (IPP != null)
             {
-                foreach (var mod in this.IPP.AttachedModels)
+                foreach (var mod in IPP.AttachedModels)
                 {
                     string btmod = mod.Replace("[bt]", "bmn");
                     var file = Dom_._assets.FindFile("/resources" + btmod);

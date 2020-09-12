@@ -33,7 +33,7 @@ namespace PugTools
             Addtolist("Building BNK ID Dictionary...");
             Addtolist2("Getting Data...");
 
-            GomLib.GomObject utlhydramusicevents = currentDom.GetObject("utlhydramusicevents");
+            GomObject utlhydramusicevents = currentDom.GetObject("utlhydramusicevents");
             List<object> hmeUtlDatatableRows = utlhydramusicevents.Data.ValueOrDefault<List<object>>("utlDatatableRows", null);
             if (hmeUtlDatatableRows != null)
             {
@@ -45,7 +45,7 @@ namespace PugTools
                 hmeUtlDatatableRows.Clear();
             }
 
-            GomLib.GomObject sndAmbienceRegionsTablePrototype = currentDom.GetObject("sndAmbienceRegionsTablePrototype");
+            GomObject sndAmbienceRegionsTablePrototype = currentDom.GetObject("sndAmbienceRegionsTablePrototype");
             Dictionary<object, object> sndAmbienceRegionsMap = sndAmbienceRegionsTablePrototype.Data.ValueOrDefault<Dictionary<object, object>>("sndAmbienceRegionsMap", null);
             if (sndAmbienceRegionsMap != null)
             {
@@ -56,7 +56,7 @@ namespace PugTools
                 sndAmbienceRegionsMap.Clear();
             }
 
-            GomLib.GomObject sndareasoundbanks = currentDom.GetObject("sndareasoundbanks");
+            GomObject sndareasoundbanks = currentDom.GetObject("sndareasoundbanks");
             List<object> asbUtlDatatableRows = sndareasoundbanks.Data.ValueOrDefault<List<object>>("utlDatatableRows", null);
             if (asbUtlDatatableRows != null)
             {
@@ -68,7 +68,7 @@ namespace PugTools
                 asbUtlDatatableRows.Clear();
             }
 
-            GomLib.GomObject sndaudioregions = currentDom.GetObject("sndaudioregions");
+            GomObject sndaudioregions = currentDom.GetObject("sndaudioregions");
             List<object> arUtlDatatableRows = sndaudioregions.Data.ValueOrDefault<List<object>>("utlDatatableRows", null);
             if (arUtlDatatableRows != null)
             {
@@ -83,7 +83,7 @@ namespace PugTools
                 arUtlDatatableRows.Clear();
             }
 
-            GomLib.GomObject vehsoundpackage = currentDom.GetObject("vehsoundpackage");
+            GomObject vehsoundpackage = currentDom.GetObject("vehsoundpackage");
             List<object> vehUtlDatatableRows = vehsoundpackage.Data.ValueOrDefault<List<object>>("utlDatatableRows", null);
             if (vehUtlDatatableRows != null)
             {
@@ -157,7 +157,7 @@ namespace PugTools
                 {
                     outputFile.Append(kvp.Key.ToString() + " : " + kvp.Value + Environment.NewLine);
                 }
-                using (System.IO.StreamWriter file2 = new System.IO.StreamWriter(Config.ExtractPath + "bnk_id_dictionary.txt", false))
+                using (StreamWriter file2 = new StreamWriter(Config.ExtractPath + "bnk_id_dictionary.txt", false))
                 {
                     file2.Write(outputFile.NullSafeToString());
                 }

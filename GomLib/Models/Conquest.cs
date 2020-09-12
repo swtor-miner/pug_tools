@@ -24,8 +24,8 @@ namespace GomLib.Models
         {
             get
             {
-                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/codex/{0}.dds", this.Icon));
-                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+                var fileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/codex/{0}.dds", Icon));
+                return string.Format("{0}_{1}", fileId.ph, fileId.sh);
             }
         }
         [JsonConverter(typeof(LongConverter))]
@@ -134,76 +134,76 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, itm)) return true;
 
-            if (this.ActivePlanets != null)
+            if (ActivePlanets != null)
             {
                 if (itm.ActivePlanets == null)
                     return false;
-                foreach (var kvp in this.ActivePlanets)
+                foreach (var kvp in ActivePlanets)
                 {
                     itm.ActivePlanets.TryGetValue(kvp.Key, out bool prev);
                     if (!kvp.Value.Equals(prev))
                         return false;
                 }
             }
-            if (this.DescId != itm.DescId)
+            if (DescId != itm.DescId)
                 return false;
-            if (this.Description != itm.Description)
+            if (Description != itm.Description)
                 return false;
-            if (this.DesignName != itm.DesignName)
+            if (DesignName != itm.DesignName)
                 return false;
-            if (this.Icon != itm.Icon)
+            if (Icon != itm.Icon)
                 return false;
-            if (this.Id != itm.Id)
+            if (Id != itm.Id)
                 return false;
-            if (this.RepeatableObjectivesList != null)
+            if (RepeatableObjectivesList != null)
             {
                 if (itm.RepeatableObjectivesList == null)
                     return false;
-                if (!this.RepeatableObjectivesList.SequenceEqual(itm.RepeatableObjectivesList))
+                if (!RepeatableObjectivesList.SequenceEqual(itm.RepeatableObjectivesList))
                     return false;
             }
-            if (this.OneTimeObjectivesList != null)
+            if (OneTimeObjectivesList != null)
             {
                 if (itm.OneTimeObjectivesList == null)
                     return false;
-                if (!this.OneTimeObjectivesList.SequenceEqual(itm.OneTimeObjectivesList))
+                if (!OneTimeObjectivesList.SequenceEqual(itm.OneTimeObjectivesList))
                     return false;
             }
             var ssComp = new DictionaryComparer<string, string>();
-            if (!ssComp.Equals(this.LocalizedDescription, itm.LocalizedDescription))
+            if (!ssComp.Equals(LocalizedDescription, itm.LocalizedDescription))
                 return false;
-            if (!ssComp.Equals(this.LocalizedName, itm.LocalizedName))
+            if (!ssComp.Equals(LocalizedName, itm.LocalizedName))
                 return false;
 
-            if (this.Name != itm.Name)
+            if (Name != itm.Name)
                 return false;
-            if (this.NameId != itm.NameId)
+            if (NameId != itm.NameId)
                 return false;
-            if (this.Id != itm.Id)
+            if (Id != itm.Id)
                 return false;
-            if (this.RepeatableObjectivesList != null)
+            if (RepeatableObjectivesList != null)
             {
                 if (itm.RepeatableObjectivesList == null)
                     return false;
-                if (!this.RepeatableObjectivesList.SequenceEqual(itm.RepeatableObjectivesList))
+                if (!RepeatableObjectivesList.SequenceEqual(itm.RepeatableObjectivesList))
                     return false;
             }
-            if (this.ParticipateGoal != itm.ParticipateGoal)
+            if (ParticipateGoal != itm.ParticipateGoal)
                 return false;
-            if (this.OneTimeObjectivesList != null)
+            if (OneTimeObjectivesList != null)
             {
                 if (itm.OneTimeObjectivesList == null)
                     return false;
-                if (!this.OneTimeObjectivesList.SequenceEqual(itm.OneTimeObjectivesList))
+                if (!OneTimeObjectivesList.SequenceEqual(itm.OneTimeObjectivesList))
                     return false;
             }
             else if (itm.OneTimeObjectivesList != null)
                 return false;
-            if (this.ActiveData != null)
+            if (ActiveData != null)
             {
                 if (itm.ActiveData == null)
                     return false;
-                if (!this.ActiveData.SequenceEqual(itm.ActiveData))
+                if (!ActiveData.SequenceEqual(itm.ActiveData))
                     return false;
             }
             else if (itm.ActiveData != null)
@@ -228,29 +228,29 @@ namespace GomLib.Models
             string conquestDates = "Event Order/Start Time: None Listed!";
             if (ActiveData != null)
             {
-                var data = String.Join(
+                var data = string.Join(
                     Environment.NewLine,
-                    ActiveData.OrderBy(x => x.ActualOrderNum).Select(x => String.Format("Event Order/Start Time: {0} - {1} EST", x.ActualOrderNum, x.StartTime.ToString())));
+                    ActiveData.OrderBy(x => x.ActualOrderNum).Select(x => string.Format("Event Order/Start Time: {0} - {1} EST", x.ActualOrderNum, x.StartTime.ToString())));
                 conquestDates = data;
             }
             else if (NewActiveData != null)
             {
-                var data = String.Join(
+                var data = string.Join(
                     Environment.NewLine,
-                    NewActiveData.OrderBy(x => x.Ticks).Select(x => String.Format("Start Time: {0} EST", x.ToString())));
+                    NewActiveData.OrderBy(x => x.Ticks).Select(x => string.Format("Start Time: {0} EST", x.ToString())));
                 conquestDates = data;
             }
             //WriteFile(String.Join(Environment.NewLine, Name, conquestDates, Environment.NewLine), "conquestPost.txt", true);
-            return String.Join(Environment.NewLine,
+            return string.Join(Environment.NewLine,
                 Name,
                 Description,
                 conquestDates,
-                String.Format("Personal Goal: {0}", ParticipateGoal),
-                String.Format("Republic Active Planets: {0}", String.Join(" - ", RepublicActivePlanets.Select(x => x.Name).ToList())),
-                String.Format("Imperial Active Planets: {0}", String.Join(" - ", ImperialActivePlanets.Select(x => x.Name).ToList())),
-                String.Format("Daily Repeatable Objectives List: {0}  {1}", Environment.NewLine, dailyObjectives),
-                String.Format("Repeatable Objectives List: {0}  {1}", Environment.NewLine, objectives),
-                String.Format("One Time Objectives List: {0}  {1}", Environment.NewLine, oneTimeObjectives),
+                string.Format("Personal Goal: {0}", ParticipateGoal),
+                string.Format("Republic Active Planets: {0}", string.Join(" - ", RepublicActivePlanets.Select(x => x.Name).ToList())),
+                string.Format("Imperial Active Planets: {0}", string.Join(" - ", ImperialActivePlanets.Select(x => x.Name).ToList())),
+                string.Format("Daily Repeatable Objectives List: {0}  {1}", Environment.NewLine, dailyObjectives),
+                string.Format("Repeatable Objectives List: {0}  {1}", Environment.NewLine, objectives),
+                string.Format("One Time Objectives List: {0}  {1}", Environment.NewLine, oneTimeObjectives),
                 Environment.NewLine
                 );
         }
@@ -317,28 +317,28 @@ namespace GomLib.Models
             string conquestDates = "Event Order/Start Time: None Listed!";
             if (ActiveData != null)
             {
-                var data = String.Join(
-                    String.Format("{0};;", Environment.NewLine),
-                    ActiveData.OrderBy(x => x.ActualOrderNum).Select(x => String.Format("Event Order/Start Time: {0} - {1} EST", x.ActualOrderNum, x.StartTime.ToString())));
+                var data = string.Join(
+                    string.Format("{0};;", Environment.NewLine),
+                    ActiveData.OrderBy(x => x.ActualOrderNum).Select(x => string.Format("Event Order/Start Time: {0} - {1} EST", x.ActualOrderNum, x.StartTime.ToString())));
                 conquestDates = data;
             }
             //WriteFile(String.Join(Environment.NewLine, Name, conquestDates, Environment.NewLine), "conquestPost.txt", true);
-            return String.Join(Environment.NewLine,
-                String.Format("{0};;{1}", Name, conquestDates),
-                String.Format(";;{0}", Description),
-                String.Format("Personal Goal: {0};;;Planetary Multipliers", ParticipateGoal),
-                String.Format("Active Planets;Objective Points;{0};Task Description;Required Task Total", String.Join(";", ActivePlanets.Select(y =>
+            return string.Join(Environment.NewLine,
+                string.Format("{0};;{1}", Name, conquestDates),
+                string.Format(";;{0}", Description),
+                string.Format("Personal Goal: {0};;;Planetary Multipliers", ParticipateGoal),
+                string.Format("Active Planets;Objective Points;{0};Task Description;Required Task Total", string.Join(";", ActivePlanets.Select(y =>
                     (!RepublicActivePlanets.Select(w => w.Id).ToList().Contains(y.Key))
                     ?
                         (!ActivePlanetObjects.ContainsKey(y.Key))
                             ?
                                 "Unknown Planet Name"
                             :
-                                String.Format("Imperial {0}", ActivePlanetObjects[y.Key].Name)
+                                string.Format("Imperial {0}", ActivePlanetObjects[y.Key].Name)
                     :
                         (!ImperialActivePlanets.Select(w => w.Id).ToList().Contains(y.Key))
                         ?
-                            String.Format("Republic {0}", ActivePlanetObjects[y.Key].Name)
+                            string.Format("Republic {0}", ActivePlanetObjects[y.Key].Name)
                         :
                             (!ActivePlanetObjects.ContainsKey(y.Key))
                             ?
@@ -347,8 +347,8 @@ namespace GomLib.Models
                                 ActivePlanetObjects[y.Key].Name
                     ).ToList())),
                 //String.Format("Invasion Bonus:;;{0}", String.Join(";", ActivePlanets.Select(y => ActivePlanetObjects[y.Key].InvasionBonus.Replace("Invasion Bonus - ", "")).ToList())),
-                String.Format("Repeatable Objectives:;;{0}{1}{2}",
-                    String.Join(";", ActivePlanets.Select(y =>
+                string.Format("Repeatable Objectives:;;{0}{1}{2}",
+                    string.Join(";", ActivePlanets.Select(y =>
                         (!ActivePlanetObjects.ContainsKey(y.Key))
                             ?
                                 ""
@@ -357,7 +357,7 @@ namespace GomLib.Models
                     Environment.NewLine,
                     objectives),
                 "",
-                String.Format("One Time Objectives: {0}{1}", Environment.NewLine, secondObjectives),
+                string.Format("One Time Objectives: {0}{1}", Environment.NewLine, secondObjectives),
                 Environment.NewLine
                 );
         }
@@ -431,7 +431,7 @@ namespace GomLib.Models
                 XElement activeData = new XElement("Schedule", new XAttribute("Num", NewActiveData.Count));
                 for (int i = 0; i < NewActiveData.Count; i++)
                 {
-                    var actDat = new XElement("Date", String.Format("{0} EST", NewActiveData[i].ToString()));
+                    var actDat = new XElement("Date", string.Format("{0} EST", NewActiveData[i].ToString()));
                     actDat.SetAttributeValue("Id", i);
                     activeData.Add(actDat);
                 }
@@ -499,15 +499,15 @@ namespace GomLib.Models
         {
             get
             {
-                return ((ulong)AchievementID).ToMaskedBase62();
+                return AchievementID.ToMaskedBase62();
             }
         }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Achievement AchievementObj;
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Dictionary<long, float> PlanetIDMultiplyerList = new Dictionary<long, float>();
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal Dictionary<string, float> PlanetIDMultiplyerB62List_ { get; set; }
         public Dictionary<string, float> PlanetIDMultiplyerB62List
         {
@@ -552,15 +552,15 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, itm)) return true;
 
-            if (this.AchievementID != itm.AchievementID)
+            if (AchievementID != itm.AchievementID)
                 return false;
 
-            if (this.PlanetIDMultiplyerList.Count != itm.PlanetIDMultiplyerList.Count)
+            if (PlanetIDMultiplyerList.Count != itm.PlanetIDMultiplyerList.Count)
                 return false;
 
-            for (int i = 0; i < this.PlanetIDMultiplyerList.Count; i++)
+            for (int i = 0; i < PlanetIDMultiplyerList.Count; i++)
             {
-                KeyValuePair<long, float> thisPlanetMulti = this.PlanetIDMultiplyerList.ElementAt(i);
+                KeyValuePair<long, float> thisPlanetMulti = PlanetIDMultiplyerList.ElementAt(i);
                 KeyValuePair<long, float> itmPlanetMulti = itm.PlanetIDMultiplyerList.ElementAt(i);
                 if (thisPlanetMulti.Key != itmPlanetMulti.Key || thisPlanetMulti.Value != itmPlanetMulti.Value)
                     return false;
@@ -625,12 +625,12 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, obj)) return true;
 
-            if (this.Id != obj.Id)
+            if (Id != obj.Id)
                 return false;
 
-            if (this.Objectives.Count != obj.Objectives.Count)
+            if (Objectives.Count != obj.Objectives.Count)
                 return false;
-            if (!this.Objectives.SequenceEqual(obj.Objectives))
+            if (!Objectives.SequenceEqual(obj.Objectives))
                 return false;
 
             return true;
@@ -650,7 +650,7 @@ namespace GomLib.Models
 
     public class Planet : GameObject, IEquatable<Planet>
     {
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public long NameId { get; set; }
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
@@ -662,8 +662,8 @@ namespace GomLib.Models
         {
             get
             {
-                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/codex/{0}.dds", this.Icon));
-                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+                var fileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/codex/{0}.dds", Icon));
+                return string.Format("{0}_{1}", fileId.ph, fileId.sh);
             }
         }
         [JsonIgnore]
@@ -671,18 +671,18 @@ namespace GomLib.Models
         public ulong PrimaryAreaId { get; set; }
         public long TransportCost { get; set; }
         public long OrbtSupportCost { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public ulong OrbtSupportAblId { get; set; }
         public string OrbtSupportAblB62Id
         {
             get
             {
-                return ((ulong)OrbtSupportAblId).ToMaskedBase62();
+                return OrbtSupportAblId.ToMaskedBase62();
             }
         }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal Ability OrbtSupportAbility_ { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Ability OrbtSupportAbility
         {
             get
@@ -699,18 +699,18 @@ namespace GomLib.Models
         public long InvasionBonusId { get; set; }
         public DetailedFaction Faction { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public ulong ConquestGuildQuestId { get; set; }
         public string ConquestGuildQuestB62Id
         {
             get
             {
-                return ((ulong)ConquestGuildQuestId).ToMaskedBase62();
+                return ConquestGuildQuestId.ToMaskedBase62();
             }
         }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal Quest ConquestGuildQuest_ { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Quest ConquestGuildQuest
         {
             get
@@ -761,51 +761,51 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, itm)) return true;
 
-            if (this.DescId != itm.DescId)
+            if (DescId != itm.DescId)
                 return false;
-            if (this.Description != itm.Description)
+            if (Description != itm.Description)
                 return false;
-            if (this.Icon != itm.Icon)
+            if (Icon != itm.Icon)
                 return false;
-            if (this.Id != itm.Id)
+            if (Id != itm.Id)
                 return false;
-            if (this.InvasionBonus != itm.InvasionBonus)
+            if (InvasionBonus != itm.InvasionBonus)
                 return false;
-            if (this.InvasionBonusId != itm.InvasionBonusId)
+            if (InvasionBonusId != itm.InvasionBonusId)
                 return false;
 
             var ssComp = new DictionaryComparer<string, string>();
-            if (!ssComp.Equals(this.LocalizedDescription, itm.LocalizedDescription))
+            if (!ssComp.Equals(LocalizedDescription, itm.LocalizedDescription))
                 return false;
-            if (!ssComp.Equals(this.LocalizedName, itm.LocalizedName))
+            if (!ssComp.Equals(LocalizedName, itm.LocalizedName))
                 return false;
-            if (!ssComp.Equals(this.LocalizedInvasionBonus, itm.LocalizedInvasionBonus))
+            if (!ssComp.Equals(LocalizedInvasionBonus, itm.LocalizedInvasionBonus))
                 return false;
 
-            if (this.Name != itm.Name)
+            if (Name != itm.Name)
                 return false;
-            if (this.NameId != itm.NameId)
+            if (NameId != itm.NameId)
                 return false;
-            if (this.OrbtSupportAblId != itm.OrbtSupportAblId)
+            if (OrbtSupportAblId != itm.OrbtSupportAblId)
                 return false;
-            if (this.OrbtSupportCost != itm.OrbtSupportCost)
+            if (OrbtSupportCost != itm.OrbtSupportCost)
                 return false;
-            if (this.PrimaryAreaId != itm.PrimaryAreaId)
+            if (PrimaryAreaId != itm.PrimaryAreaId)
                 return false;
-            if (this.ExitList != null)
+            if (ExitList != null)
             {
                 if (itm.ExitList == null)
                     return false;
-                if (this.ExitList.Count != itm.ExitList.Count)
+                if (ExitList.Count != itm.ExitList.Count)
                     return false;
-                foreach (var kvp in this.ExitList)
+                foreach (var kvp in ExitList)
                 {
                     itm.ExitList.TryGetValue(kvp.Key, out object prev);
                     if (kvp.Value != prev)
                         return false;
                 }
             }
-            if (this.TransportCost != itm.TransportCost)
+            if (TransportCost != itm.TransportCost)
                 return false;
             return true;
         }
@@ -844,18 +844,18 @@ namespace GomLib.Models
             ProtoDataTable = "wevConquestsInfoTable";
         }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public ulong GuildQstId { get; set; }
         public string GuildQstB62Id
         {
             get
             {
-                return ((ulong)GuildQstId).ToMaskedBase62();
+                return GuildQstId.ToMaskedBase62();
             }
         }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal Quest GuildQst_ { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Quest GuildQst
         {
             get
@@ -867,18 +867,18 @@ namespace GomLib.Models
                 return GuildQst_;
             }
         }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public ulong PersonalQstId { get; set; }
         public string PersonalQstB62Id
         {
             get
             {
-                return ((ulong)PersonalQstId).ToMaskedBase62();
+                return PersonalQstId.ToMaskedBase62();
             }
         }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal Quest PersonalQst_ { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Quest PersonalQst
         {
             get
@@ -923,17 +923,17 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, itm)) return true;
 
-            if (this.GuildQstId != itm.GuildQstId)
+            if (GuildQstId != itm.GuildQstId)
                 return false;
-            if (this.PersonalQstId != itm.PersonalQstId)
+            if (PersonalQstId != itm.PersonalQstId)
                 return false;
-            if (this.OrderId != itm.OrderId)
+            if (OrderId != itm.OrderId)
                 return false;
-            if (this.Id != itm.Id)
+            if (Id != itm.Id)
                 return false;
-            if (this.RawStartTime != itm.RawStartTime)
+            if (RawStartTime != itm.RawStartTime)
                 return false;
-            if (this.ActualOrderNum != itm.ActualOrderNum)
+            if (ActualOrderNum != itm.ActualOrderNum)
                 return false;
 
             return true;
@@ -944,7 +944,7 @@ namespace GomLib.Models
             XElement room = new XElement("EventData", new XAttribute("Id", Id));
 
             room.Add(new XElement("OrderNum", ActualOrderNum),
-                new XElement("StartTime", String.Format("{0} EST", StartTime.ToString())));
+                new XElement("StartTime", string.Format("{0} EST", StartTime.ToString())));
             if (verbose)
             {
                 room.Element("OrderNum").Add(new XAttribute("Id", OrderId));

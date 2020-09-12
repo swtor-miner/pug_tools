@@ -54,11 +54,11 @@ namespace BrightIdeasSoftware
         /// <summary>
         /// Create a OLVListItem for the given row object, represented by the given string and image
         /// </summary>
-        public OLVListItem(object rowObject, string text, Object image)
+        public OLVListItem(object rowObject, string text, object image)
             : base(text, -1)
         {
             this.rowObject = rowObject;
-            this.imageSelector = image;
+            imageSelector = image;
         }
 
         #endregion
@@ -76,7 +76,7 @@ namespace BrightIdeasSoftware
                 {
                     return base.Bounds;
                 }
-                catch (System.ArgumentException)
+                catch (ArgumentException)
                 {
                     // If the item is part of a collapsed group, Bounds will throw an exception
                     return Rectangle.Empty;
@@ -90,8 +90,8 @@ namespace BrightIdeasSoftware
         /// <remarks>This setting only takes effect when the control is owner drawn.</remarks>
         public Rectangle? CellPadding
         {
-            get { return this.cellPadding; }
-            set { this.cellPadding = value; }
+            get { return cellPadding; }
+            set { cellPadding = value; }
         }
         private Rectangle? cellPadding;
 
@@ -101,8 +101,8 @@ namespace BrightIdeasSoftware
         /// <remarks>This setting only takes effect when the control is owner drawn.</remarks>
         public StringAlignment? CellVerticalAlignment
         {
-            get { return this.cellVerticalAlignment; }
-            set { this.cellVerticalAlignment = value; }
+            get { return cellVerticalAlignment; }
+            set { cellVerticalAlignment = value; }
         }
         private StringAlignment? cellVerticalAlignment;
 
@@ -123,12 +123,12 @@ namespace BrightIdeasSoftware
             }
             set
             {
-                if (this.Checked != value)
+                if (Checked != value)
                 {
                     if (value)
-                        ((ObjectListView)this.ListView).CheckObject(this.RowObject);
+                        ((ObjectListView)ListView).CheckObject(RowObject);
                     else
-                        ((ObjectListView)this.ListView).UncheckObject(this.RowObject);
+                        ((ObjectListView)ListView).UncheckObject(RowObject);
                 }
             }
         }
@@ -142,24 +142,24 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                switch (this.StateImageIndex)
+                switch (StateImageIndex)
                 {
                     case 0:
-                        return System.Windows.Forms.CheckState.Unchecked;
+                        return CheckState.Unchecked;
                     case 1:
-                        return System.Windows.Forms.CheckState.Checked;
+                        return CheckState.Checked;
                     case 2:
-                        return System.Windows.Forms.CheckState.Indeterminate;
+                        return CheckState.Indeterminate;
                     default:
-                        return System.Windows.Forms.CheckState.Unchecked;
+                        return CheckState.Unchecked;
                 }
             }
             set
             {
-                if (this.checkState == value)
+                if (checkState == value)
                     return;
 
-                this.checkState = value;
+                checkState = value;
 
                 //THINK: I don't think we need this, since the Checked property just uses StateImageIndex, which we are about to set.
                 //this.Checked = (checkState == CheckState.Checked);
@@ -167,14 +167,14 @@ namespace BrightIdeasSoftware
                 // We have to specifically set the state image
                 switch (value)
                 {
-                    case System.Windows.Forms.CheckState.Unchecked:
-                        this.StateImageIndex = 0;
+                    case CheckState.Unchecked:
+                        StateImageIndex = 0;
                         break;
-                    case System.Windows.Forms.CheckState.Checked:
-                        this.StateImageIndex = 1;
+                    case CheckState.Checked:
+                        StateImageIndex = 1;
                         break;
-                    case System.Windows.Forms.CheckState.Indeterminate:
-                        this.StateImageIndex = 2;
+                    case CheckState.Indeterminate:
+                        StateImageIndex = 2;
                         break;
                 }
             }
@@ -188,7 +188,7 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                return this.decorations != null && this.decorations.Count > 0;
+                return decorations != null && decorations.Count > 0;
             }
         }
 
@@ -200,16 +200,16 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                if (this.HasDecoration)
-                    return this.Decorations[0];
+                if (HasDecoration)
+                    return Decorations[0];
                 else
                     return null;
             }
             set
             {
-                this.Decorations.Clear();
+                Decorations.Clear();
                 if (value != null)
-                    this.Decorations.Add(value);
+                    Decorations.Add(value);
             }
         }
 
@@ -220,9 +220,9 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                if (this.decorations == null)
-                    this.decorations = new List<IDecoration>();
-                return this.decorations;
+                if (decorations == null)
+                    decorations = new List<IDecoration>();
+                return decorations;
             }
         }
         private IList<IDecoration> decorations;
@@ -232,21 +232,21 @@ namespace BrightIdeasSoftware
         /// </summary>
         /// <remarks><para>This can be an Image, a string or an int. A string or an int will
         /// be used as an index into the small image list.</para></remarks>
-        public Object ImageSelector
+        public object ImageSelector
         {
             get { return imageSelector; }
             set
             {
                 imageSelector = value;
-                if (value is Int32 @int)
-                    this.ImageIndex = @int;
-                else if (value is String @string)
-                    this.ImageKey = @string;
+                if (value is int @int)
+                    ImageIndex = @int;
+                else if (value is string @string)
+                    ImageKey = @string;
                 else
-                    this.ImageIndex = -1;
+                    ImageIndex = -1;
             }
         }
-        private Object imageSelector;
+        private object imageSelector;
 
         /// <summary>
         /// Gets or sets the the model object that is source of the data for this list item.
@@ -269,8 +269,8 @@ namespace BrightIdeasSoftware
         /// <returns>An OLVListSubItem</returns>
         public virtual OLVListSubItem GetSubItem(int index)
         {
-            if (index >= 0 && index < this.SubItems.Count)
-                return (OLVListSubItem)this.SubItems[index];
+            if (index >= 0 && index < SubItems.Count)
+                return (OLVListSubItem)SubItems[index];
 
             return null;
         }
@@ -284,14 +284,14 @@ namespace BrightIdeasSoftware
         {
             if (subItemIndex == 0)
             {
-                Rectangle r = this.Bounds;
-                Point sides = NativeMethods.GetScrolledColumnSides(this.ListView, subItemIndex);
+                Rectangle r = Bounds;
+                Point sides = NativeMethods.GetScrolledColumnSides(ListView, subItemIndex);
                 r.X = sides.X + 1;
                 r.Width = sides.Y - sides.X;
                 return r;
             }
 
-            OLVListSubItem subItem = this.GetSubItem(subItemIndex);
+            OLVListSubItem subItem = GetSubItem(subItemIndex);
             return subItem == null ? new Rectangle() : subItem.Bounds;
         }
 

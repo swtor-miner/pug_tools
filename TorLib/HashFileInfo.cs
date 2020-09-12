@@ -48,53 +48,53 @@ namespace TorLib
             FileInfo info = file.FileInfo;
 
             nsHashDictionary.HashData data = HashDictionaryInstance.Instance.dictionary.SearchHashList(ph, sh, file.Archive.StrippedFileName);
-            this._FileRef = new WeakReference<File>(file);
-            this.Source = file.Archive.FileName.ToString().Split('\\').Last();
+            _FileRef = new WeakReference<File>(file);
+            Source = file.Archive.FileName.ToString().Split('\\').Last();
             if (data != null && data.filename.Length > 0)
             {
-                this.IsNamed = true;
-                this.FileName = data.filename;
-                this.Extension = this.FileName.Split('.').Last();
-                string[] temp = this.FileName.Split('/');
-                this.Directory = String.Join("/", temp.Take(temp.Length - 1));
-                this.FileName = temp.Last();
+                IsNamed = true;
+                FileName = data.filename;
+                Extension = FileName.Split('.').Last();
+                string[] temp = FileName.Split('/');
+                Directory = string.Join("/", temp.Take(temp.Length - 1));
+                FileName = temp.Last();
 
                 if (info.CRC != data.crc)
                 {
-                    this.FileState = HashFileInfo.State.Modified;
+                    FileState = State.Modified;
                     HashDictionaryInstance.Instance.dictionary.UpdateCRC(info.PrimaryHash, info.SecondaryHash, info.CRC, file.Archive.StrippedFileName);
                 }
                 else if (info.CRC == data.crc)
                 {
-                    this.FileState = HashFileInfo.State.Unchanged;
+                    FileState = State.Unchanged;
                 }
                 //this.Archive.directories.Add(this.Directory);
             }
             else
             {
-                this.IsNamed = false;
-                this.Directory = "/" + this.Source;
-                this.Extension = FileExtension.Instance.GuessExtension(file);
+                IsNamed = false;
+                Directory = "/" + Source;
+                Extension = FileExtension.Instance.GuessExtension(file);
 
                 if (data == null)
                 {
-                    this.FileState = HashFileInfo.State.New;
+                    FileState = State.New;
                     //this.FileName = info.Checksum + "_" + String.Format(info.FileId.ToString();
-                    this.FileName = string.Format("{0:X8}", info.Checksum) + "_" + string.Format("{0:X16}", info.FileId);
+                    FileName = string.Format("{0:X8}", info.Checksum) + "_" + string.Format("{0:X16}", info.FileId);
                     HashDictionaryInstance.Instance.dictionary.AddHash(info.PrimaryHash, info.SecondaryHash, "", info.CRC, file.Archive.StrippedFileName);
                 }
                 else if (info.CRC != data.crc)
                 {
-                    this.FileState = HashFileInfo.State.Modified;
+                    FileState = State.Modified;
                     HashDictionaryInstance.Instance.dictionary.UpdateCRC(info.PrimaryHash, info.SecondaryHash, info.CRC, file.Archive.StrippedFileName);
                 }
                 else if (info.CRC == data.crc)
                 {
-                    this.FileState = HashFileInfo.State.Unchanged;
+                    FileState = State.Unchanged;
                 }
-                if (this.FileName == null)
+                if (FileName == null)
                 {
-                    this.FileName = string.Format("{0:X8}", info.Checksum) + "_" + string.Format("{0:X16}", info.FileId);
+                    FileName = string.Format("{0:X8}", info.Checksum) + "_" + string.Format("{0:X16}", info.FileId);
                 }
             }
         }

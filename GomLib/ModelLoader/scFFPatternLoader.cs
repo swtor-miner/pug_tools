@@ -22,7 +22,7 @@ namespace GomLib.ModelLoader
             idLookup = new Dictionary<object, object>();
         }
 
-        public Models.ScFFPattern Load(Models.ScFFPattern pat, GomObjectData obj)
+        public ScFFPattern Load(ScFFPattern pat, GomObjectData obj)
         {
             if (obj == null) { return pat; }
             if (pat == null) { return null; }
@@ -61,7 +61,7 @@ namespace GomLib.ModelLoader
             return pat;
         }
 
-        private void CheckAvailability(Models.ScFFPattern pat, ScriptEnum availability)
+        private void CheckAvailability(ScFFPattern pat, ScriptEnum availability)
         {
             bool available = false;
             bool deprecated = false;

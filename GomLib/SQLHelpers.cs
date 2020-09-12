@@ -76,7 +76,7 @@ namespace GomLib
                     int indexStart = propertyNamePart.IndexOf("[") + 1;
                     string collectionPropertyName = propertyNamePart.Substring(0, indexStart - 1);
                     string indexName = propertyNamePart.Substring(indexStart, propertyNamePart.Length - indexStart - 1);
-                    Int32.TryParse(indexName, out int collectionElementIndex);
+                    int.TryParse(indexName, out int collectionElementIndex);
                     //   get collection object
                     PropertyInfo pi = obj.GetType().GetProperty(collectionPropertyName, BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetProperty);
                     if (pi == null)
@@ -125,7 +125,7 @@ namespace GomLib
         public static string ToSQL(object obj, SQLData sql, string patchVersion)
         {
             string s = "', '";
-            string value = String.Format("('{0}', '', '{0}', '{1}', '{2}')", SqlSani(patchVersion), String.Join(s, GetPropertyValues(obj, sql.SQLProperties)), obj.GetHashCode());
+            string value = string.Format("('{0}', '', '{0}', '{1}', '{2}')", SqlSani(patchVersion), string.Join(s, GetPropertyValues(obj, sql.SQLProperties)), obj.GetHashCode());
             return value;
         }
 
@@ -234,7 +234,7 @@ namespace GomLib
         /// <returns>Base62 string</returns>
         public static string ToMaskedBase62(this ulong id)
         {
-            ulong maskedId = (ulong)(id & 0xFFFFFFFFFF);
+            ulong maskedId = id & 0xFFFFFFFFFF;
             List<byte> maskedBytes = BitConverter.GetBytes(maskedId).ToList();
             maskedBytes.RemoveRange(5, 3);
             return maskedBytes.ToArray().ToBase62();
@@ -303,19 +303,19 @@ namespace GomLib
                 int length = stream.Read(read, 0, 6);           // Try to read 6 bits
                 if (length == 6)                                // Not reaching the end
                 {
-                    if ((int)(read[0] >> 3) == 0x1f)            // First 5-bit is 11111
+                    if (read[0] >> 3 == 0x1f)            // First 5-bit is 11111
                     {
                         sb.Append(Base62CodingSpace[61]);
                         stream.Seek(-1, SeekOrigin.Current);    // Leave the 6th bit to next group
                     }
-                    else if ((int)(read[0] >> 3) == 0x1e)       // First 5-bit is 11110
+                    else if (read[0] >> 3 == 0x1e)       // First 5-bit is 11110
                     {
                         sb.Append(Base62CodingSpace[60]);
                         stream.Seek(-1, SeekOrigin.Current);
                     }
                     else                                        // Encode 6-bit
                     {
-                        sb.Append(Base62CodingSpace[(int)(read[0] >> 2)]);
+                        sb.Append(Base62CodingSpace[read[0] >> 2]);
                     }
                 }
                 else if (length == 0)                           // Reached the end completely
@@ -325,7 +325,7 @@ namespace GomLib
                 else                                            // Reached the end with some bits left
                 {
                     // Padding 0s to make the last bits to 6 bit
-                    sb.Append(Base62CodingSpace[(int)(read[0] >> (int)(8 - length))]);
+                    sb.Append(Base62CodingSpace[read[0] >> 8 - length]);
                     break;
                 }
             }
@@ -404,7 +404,7 @@ namespace GomLib
         /// <param name="capacity">Capacity of the stream</param>
         public BitStream(int capacity)
         {
-            this.Source = new byte[capacity];
+            Source = new byte[capacity];
         }
 
         /// <summary>
@@ -413,7 +413,7 @@ namespace GomLib
         /// <param name="source"></param>
         public BitStream(byte[] source)
         {
-            this.Source = source;
+            Source = source;
         }
 
         public override bool CanRead
@@ -459,7 +459,7 @@ namespace GomLib
         public override int Read(byte[] buffer, int offset, int count)
         {
             // Temporary position cursor
-            long tempPos = this.Position;
+            long tempPos = Position;
             tempPos += offset;
 
             // Buffer byte position and in-byte position
@@ -469,16 +469,16 @@ namespace GomLib
             long posCount = tempPos >> 3;
             int posMod = (int)(tempPos - ((tempPos >> 3) << 3));
 
-            while (tempPos < this.Position + offset + count && tempPos < this.Length)
+            while (tempPos < Position + offset + count && tempPos < Length)
             {
                 // Copy the bit from the stream to buffer
-                if ((((int)this.Source[posCount]) & (0x1 << (7 - posMod))) != 0)
+                if ((Source[posCount] & (0x1 << (7 - posMod))) != 0)
                 {
-                    buffer[readPosCount] = (byte)((int)(buffer[readPosCount]) | (0x1 << (7 - readPosMod)));
+                    buffer[readPosCount] = (byte)(buffer[readPosCount] | (0x1 << (7 - readPosMod)));
                 }
                 else
                 {
-                    buffer[readPosCount] = (byte)((int)(buffer[readPosCount]) & (0xffffffff - (0x1 << (7 - readPosMod))));
+                    buffer[readPosCount] = (byte)(buffer[readPosCount] & (0xffffffff - (0x1 << (7 - readPosMod))));
                 }
 
                 // Increment position cursors
@@ -502,8 +502,8 @@ namespace GomLib
                     readPosMod++;
                 }
             }
-            int bits = (int)(tempPos - this.Position - offset);
-            this.Position = tempPos;
+            int bits = (int)(tempPos - Position - offset);
+            Position = tempPos;
             return bits;
         }
 
@@ -519,21 +519,21 @@ namespace GomLib
             {
                 case (SeekOrigin.Begin):
                     {
-                        this.Position = offset;
+                        Position = offset;
                         break;
                     }
                 case (SeekOrigin.Current):
                     {
-                        this.Position += offset;
+                        Position += offset;
                         break;
                     }
                 case (SeekOrigin.End):
                     {
-                        this.Position = this.Length + offset;
+                        Position = Length + offset;
                         break;
                     }
             }
-            return this.Position;
+            return Position;
         }
 
         public override void SetLength(long value)
@@ -550,7 +550,7 @@ namespace GomLib
         public override void Write(byte[] buffer, int offset, int count)
         {
             // Temporary position cursor
-            long tempPos = this.Position;
+            long tempPos = Position;
 
             // Buffer byte position and in-byte position
             int readPosCount = offset >> 3, readPosMod = offset - ((offset >> 3) << 3);
@@ -559,16 +559,16 @@ namespace GomLib
             long posCount = tempPos >> 3;
             int posMod = (int)(tempPos - ((tempPos >> 3) << 3));
 
-            while (tempPos < this.Position + count && tempPos < this.Length)
+            while (tempPos < Position + count && tempPos < Length)
             {
                 // Copy the bit from buffer to the stream
-                if ((((int)buffer[readPosCount]) & (0x1 << (7 - readPosMod))) != 0)
+                if ((buffer[readPosCount] & (0x1 << (7 - readPosMod))) != 0)
                 {
-                    this.Source[posCount] = (byte)((int)(this.Source[posCount]) | (0x1 << (7 - posMod)));
+                    Source[posCount] = (byte)(Source[posCount] | (0x1 << (7 - posMod)));
                 }
                 else
                 {
-                    this.Source[posCount] = (byte)((int)(this.Source[posCount]) & (0xffffffff - (0x1 << (7 - posMod))));
+                    Source[posCount] = (byte)(Source[posCount] & (0xffffffff - (0x1 << (7 - posMod))));
                 }
 
                 // Increment position cursors
@@ -592,7 +592,7 @@ namespace GomLib
                     readPosMod++;
                 }
             }
-            this.Position = tempPos;
+            Position = tempPos;
         }
     }
     #endregion
@@ -692,7 +692,7 @@ namespace GomLib
     {
         public static Dictionary<string, string> Dictionary(Dictionary<string, string> inc, string fqn)
         {
-            return Normalize.Dictionary(inc, fqn, false);
+            return Dictionary(inc, fqn, false);
         }
         public static Dictionary<string, string> Dictionary(Dictionary<string, string> inc, string fqn, bool fullfqn)
         {
@@ -712,7 +712,7 @@ namespace GomLib
                     { "deFemale", name }
                 };
             }
-            var reps = inc.Where(x => String.IsNullOrWhiteSpace(x.Value));
+            var reps = inc.Where(x => string.IsNullOrWhiteSpace(x.Value));
             foreach (var rep in reps.ToList())
                 inc[rep.Key] = name;
             inc["enMale"] = inc["enMale"].Trim();

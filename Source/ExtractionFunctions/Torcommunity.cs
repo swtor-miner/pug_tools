@@ -89,7 +89,7 @@ namespace PugTools
             foreach (var gom in gomList)
             {
                 ProgressUpdate(i, count);
-                WriteFile(String.Join(Environment.NewLine, Environment.NewLine + gom.Value.Name + " (" + gom.Value.Id + ")", String.Join(Environment.NewLine, gom.Value.SubCategories.Select(x => "  " + x.Value.Name + " (" + x.Value.Id + ")").ToList())), "aucCats.txt", true);
+                WriteFile(string.Join(Environment.NewLine, Environment.NewLine + gom.Value.Name + " (" + gom.Value.Id + ")", string.Join(Environment.NewLine, gom.Value.SubCategories.Select(x => "  " + x.Value.Name + " (" + x.Value.Id + ")").ToList())), "aucCats.txt", true);
                 i++;
             }
         }
@@ -194,7 +194,7 @@ namespace PugTools
 
                 ProgressUpdate(i, count);
                 var itm = currentDom.itemLoader.Load(gom);
-                WriteFile(String.Format("{0}: http://torcommunity.com/db/{1}{2}", itm.Name, itm.Base62Id, Environment.NewLine), "itemIds.txt", true);
+                WriteFile(string.Format("{0}: http://torcommunity.com/db/{1}{2}", itm.Name, itm.Base62Id, Environment.NewLine), "itemIds.txt", true);
                 i++;
             }
         }
@@ -226,10 +226,10 @@ namespace PugTools
                 i++;
             }
             Addtolist("item list created in memory, scanning torhead");
-            Addtolist(String.Format("Found {0} unique names, full scan", itemlist.Count));
+            Addtolist(string.Format("Found {0} unique names, full scan", itemlist.Count));
             TimeSpan t = TimeSpan.FromSeconds(itemlist.Count / 5);
 
-            string answer = String.Format("will take {0:D2}h:{1:D2}m:{2:D2}s",
+            string answer = string.Format("will take {0:D2}h:{1:D2}m:{2:D2}s",
                             t.Hours,
                             t.Minutes,
                             t.Seconds);
@@ -246,8 +246,8 @@ namespace PugTools
             foreach (var kvp in itemlist)
             {
                 ProgressUpdate(i, count);
-                string url = String.Format("http://www.torhead.com/item/{0}", kvp.Key.Replace(" ", "+"));
-                HttpWebRequest req = (HttpWebRequest)HttpWebRequest.CreateHttp(url);
+                string url = string.Format("http://www.torhead.com/item/{0}", kvp.Key.Replace(" ", "+"));
+                HttpWebRequest req = WebRequest.CreateHttp(url);
                 req.AllowAutoRedirect = false;
                 try
                 {
@@ -256,20 +256,20 @@ namespace PugTools
                     {
                         string loc = response.GetResponseHeader("Location");
                         nametourlmap.Add(kvp.Value.Base62Id, loc);
-                        WriteFile(String.Format("{0},{1},http://www.torhead.com{2}{3}", kvp.Value.Base62Id, url, loc, Environment.NewLine), "torheadurls.txt", true);
+                        WriteFile(string.Format("{0},{1},http://www.torhead.com{2}{3}", kvp.Value.Base62Id, url, loc, Environment.NewLine), "torheadurls.txt", true);
                         Addtolist2(url);
                     }
                     else
-                        WriteFile(String.Format("{0},{1}{2}", kvp.Value.Base62Id, url, Environment.NewLine), "badtorheadurls.txt", true);
+                        WriteFile(string.Format("{0},{1}{2}", kvp.Value.Base62Id, url, Environment.NewLine), "badtorheadurls.txt", true);
                 }
                 catch (WebException ex)
                 {
-                    WriteFile(String.Format("{0},{1}{2}", kvp.Value.Base62Id, url, Environment.NewLine), "torheadurlserrors.txt", true);
-                    Addtolist(String.Format("Error: {0}", ex.Message));
+                    WriteFile(string.Format("{0},{1}{2}", kvp.Value.Base62Id, url, Environment.NewLine), "torheadurlserrors.txt", true);
+                    Addtolist(string.Format("Error: {0}", ex.Message));
                     if (ex.Status == WebExceptionStatus.ProtocolError)
                     {
-                        Addtolist(String.Format("Status Code : {0}", ((HttpWebResponse)ex.Response).StatusCode));
-                        Addtolist(String.Format("Status Description : {0}", ((HttpWebResponse)ex.Response).StatusDescription));
+                        Addtolist(string.Format("Status Code : {0}", ((HttpWebResponse)ex.Response).StatusCode));
+                        Addtolist(string.Format("Status Description : {0}", ((HttpWebResponse)ex.Response).StatusDescription));
                     }
                 }
                 i++;
@@ -305,7 +305,7 @@ namespace PugTools
             opsList = opsList.OrderBy(x => x.Key.StartTime.Date).ToDictionary(x => x.Key, x => x.Value);
             foreach (var kvp in opsList)
             {
-                txter.Append(String.Format("Start: {0}; End: {1}; Name: {2}{3}", kvp.Key.StartTime.ToString(), kvp.Key.EndTime.ToString(), kvp.Value, Environment.NewLine));
+                txter.Append(string.Format("Start: {0}; End: {1}; Name: {2}{3}", kvp.Key.StartTime.ToString(), kvp.Key.EndTime.ToString(), kvp.Value, Environment.NewLine));
             }
             WriteFile(txter.ToString(), "gfDat.txt", false);
 
@@ -551,7 +551,7 @@ namespace PugTools
                     new JProperty("UtilitiesAvailable", new JValue(utilAvailable)),
                     new JProperty("Background", new JValue(GetIconFilename(ac.ClassBackground))),
                     new JProperty("JsonPath", new JValue(ac.Name.Replace(' ', '_'))),
-                    new JProperty("UtilitiesPath", new JValue(String.Format("{0}_utilities", ac.Name.Replace(' ', '_')))),
+                    new JProperty("UtilitiesPath", new JValue(string.Format("{0}_utilities", ac.Name.Replace(' ', '_')))),
                     new JProperty("Disciplines",
                         new JArray(from d in ac.Disciplines
                                    orderby d.SortIdx
@@ -585,11 +585,11 @@ namespace PugTools
                         )
                     )
                 );
-            WriteFile(utilObj.ToString(/*Newtonsoft.Json.Formatting.None*/), String.Format("DiscContent\\Data\\{0}_utilities.json", ac.Name.Replace(' ', '_')), false);
+            WriteFile(utilObj.ToString(/*Newtonsoft.Json.Formatting.None*/), string.Format("DiscContent\\Data\\{0}_utilities.json", ac.Name.Replace(' ', '_')), false);
 
             foreach (var dis in ac.Disciplines)
             {
-                WriteFile(DisciplineToMinifiedJSON(dis).ToString(/*Newtonsoft.Json.Formatting.None*/), String.Format("DiscContent\\Data\\{0}.json", dis.Name.Replace(' ', '_')), false);
+                WriteFile(DisciplineToMinifiedJSON(dis).ToString(/*Newtonsoft.Json.Formatting.None*/), string.Format("DiscContent\\Data\\{0}.json", dis.Name.Replace(' ', '_')), false);
             }
 
             //generate ability json
@@ -600,7 +600,7 @@ namespace PugTools
                     .Where(x => x.Fqn.Contains("base"))
                     .First())
                 );
-            WriteFile(acPkgObj.ToString(/*Newtonsoft.Json.Formatting.None*/), String.Format("DiscContent\\Data\\{0}.json", ac.Name.Replace(' ', '_')), false);
+            WriteFile(acPkgObj.ToString(/*Newtonsoft.Json.Formatting.None*/), string.Format("DiscContent\\Data\\{0}.json", ac.Name.Replace(' ', '_')), false);
 
 
             JObject cPkgObj = new JObject(
@@ -612,7 +612,7 @@ namespace PugTools
                     .Where(x => x.Fqn.Contains("default"))
                     .First()));
             className = className.Replace(' ', '_');
-            WriteFile(cPkgObj.ToString(/*Newtonsoft.Json.Formatting.None*/), String.Format("DiscContent\\Data\\{0}.json", className), false);
+            WriteFile(cPkgObj.ToString(/*Newtonsoft.Json.Formatting.None*/), string.Format("DiscContent\\Data\\{0}.json", className), false);
             return acObj;
         }
 
@@ -680,8 +680,8 @@ namespace PugTools
                     .PackageTalents
                     .Select(x => TalentToMinifiedJSON(x.Talent, (int)x.Level))
                     )
-                .OrderBy(x => ((JObject)x).Value<int>("Level"))
-                .ThenBy(x => ((JObject)x).Value<string>("Name"))
+                .OrderBy(x => x.Value<int>("Level"))
+                .ThenBy(x => x.Value<string>("Name"))
                             ));
         }
         private JObject AbilityToMinifiedJSON(GomLib.Models.Ability abl)
@@ -913,7 +913,7 @@ namespace PugTools
                                          from schem in s.Value
                                          select SchematicToMinifiedJSON(schem))));
 
-                WriteFile(output.ToString(Newtonsoft.Json.Formatting.None), String.Format("PrfContent\\Data\\{0}.json", c.Key), false);
+                WriteFile(output.ToString(Newtonsoft.Json.Formatting.None), string.Format("PrfContent\\Data\\{0}.json", c.Key), false);
             }
 
             output = new JObject(from id in materialIds
@@ -926,7 +926,7 @@ namespace PugTools
                     continue;
                 var jDict = kvp.Value.Select(x => new KeyValuePair<ulong, JObject>(x, ItemToMinifiedJSON(currentDom.itemLoader.Load(x))));
                 output = new JObject(kvp.Value.Select(x => new JProperty(x.ToMaskedBase62(), ItemToMinifiedJSON(currentDom.itemLoader.Load(x)))));
-                WriteFile(output.ToString(Newtonsoft.Json.Formatting.None), String.Format("PrfContent\\Data\\{0}_Items.json", kvp.Key), false);
+                WriteFile(output.ToString(Newtonsoft.Json.Formatting.None), string.Format("PrfContent\\Data\\{0}_Items.json", kvp.Key), false);
             }
         }
 
@@ -975,7 +975,7 @@ namespace PugTools
                                     new JObject(
                                         new JProperty("Name", x.Name),
                                         new JProperty("Stats",
-                                            new JArray(x.AtrributePercentages.Select(y => String.Format("+{1}% {0}", y.Key, y.Value)).ToArray()))
+                                            new JArray(x.AtrributePercentages.Select(y => string.Format("+{1}% {0}", y.Key, y.Value)).ToArray()))
                                     )
                                 ).ToArray()
                             );
@@ -1072,7 +1072,7 @@ namespace PugTools
                     string[] durationList = partialToken.Replace("%d", "").Split('/').ToArray();
                     //console.log(durationList);
 
-                    Int32.TryParse(value.ToString(), out int pValue);
+                    int.TryParse(value.ToString(), out int pValue);
                     if (pValue <= 0)
                         durationText = durationList[0];
                     else if (pValue > 1)

@@ -14,7 +14,7 @@ namespace GomLib.ModelLoader
             _dom = dom;
         }
 
-        public Models.ScFFColorOption Load(Models.ScFFColorOption col, GomObjectData obj)
+        public ScFFColorOption Load(ScFFColorOption col, GomObjectData obj)
         {
             if (obj == null) { return col; }
             if (col == null) { return null; }
@@ -42,7 +42,7 @@ namespace GomLib.ModelLoader
             return col;
         }
 
-        private void CheckAvailability(Models.ScFFColorOption col, ScriptEnum availability)
+        private void CheckAvailability(ScFFColorOption col, ScriptEnum availability)
         {
             bool available = false;
             bool deprecated = false;

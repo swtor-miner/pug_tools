@@ -23,7 +23,7 @@ namespace GomLib.Models
         [JsonIgnore]
         public string CrewSkillName { get; set; }
         public Dictionary<string, string> LocalizedCrewSkillName { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Item Item
         {
             get
@@ -37,7 +37,7 @@ namespace GomLib.Models
                 Item_ = value;
             }
         }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         private Item Item_ { get; set; }
         public int SkillOrange { get; set; }
         public int SkillYellow { get; set; }
@@ -76,15 +76,15 @@ namespace GomLib.Models
         public string SubTypeName { get; set; }
         public Dictionary<string, string> LocalizedSubTypeName { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Item Research1 { get; set; }
         public int ResearchQuantity1 { get; set; }
         public SchematicResearchChance ResearchChance1 { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Item Research2 { get; set; }
         public int ResearchQuantity2 { get; set; }
         public SchematicResearchChance ResearchChance2 { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Item Research3 { get; set; }
         public int ResearchQuantity3 { get; set; }
         public SchematicResearchChance ResearchChance3 { get; set; }
@@ -119,7 +119,7 @@ namespace GomLib.Models
         {
             get
             {
-                return String.Join(", ", LearnedIds.Where(x => x != 0).Select(x => x.ToMaskedBase62()));
+                return string.Join(", ", LearnedIds.Where(x => x != 0).Select(x => x.ToMaskedBase62()));
             }
         }
         public string HashedIcon
@@ -131,8 +131,8 @@ namespace GomLib.Models
                 {
                     icon = Item.Icon;
                 }
-                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", icon));
-                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+                var fileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/icons/{0}.dds", icon));
+                return string.Format("{0}_{1}", fileId.ph, fileId.sh);
             }
         }
         public bool TrainerTaught { get; set; }
@@ -212,113 +212,113 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, sch)) return true;
 
-            if (this.CraftingTime != sch.CraftingTime)
+            if (CraftingTime != sch.CraftingTime)
                 return false;
             //if (this.ablEffects != abl.ablEffects)
             //return false;
-            if (this.CraftingTimeT1 != sch.CraftingTimeT1)
+            if (CraftingTimeT1 != sch.CraftingTimeT1)
                 return false;
-            if (this.CraftingTimeT2 != sch.CraftingTimeT2)
+            if (CraftingTimeT2 != sch.CraftingTimeT2)
                 return false;
-            if (this.CraftingTimeT3 != sch.CraftingTimeT3)
+            if (CraftingTimeT3 != sch.CraftingTimeT3)
                 return false;
-            if (this.CrewSkill != sch.CrewSkill)
+            if (CrewSkill != sch.CrewSkill)
                 return false;
-            if (this.Deprecated != sch.Deprecated)
+            if (Deprecated != sch.Deprecated)
                 return false;
-            if (this.DisableCritical != sch.DisableCritical)
+            if (DisableCritical != sch.DisableCritical)
                 return false;
-            if (this.DisableDisassemble != sch.DisableDisassemble)
+            if (DisableDisassemble != sch.DisableDisassemble)
                 return false;
-            if (this.Fqn != sch.Fqn)
+            if (Fqn != sch.Fqn)
                 return false;
-            if (this.Id != sch.Id)
+            if (Id != sch.Id)
                 return false;
-            if (this.ItemId != sch.ItemId)
+            if (ItemId != sch.ItemId)
                 return false;
 
             var uiComp = new DictionaryComparer<ulong, int>();
-            if (!uiComp.Equals(this.Materials, sch.Materials))
+            if (!uiComp.Equals(Materials, sch.Materials))
                 return false;
 
-            if (this.MissionCost != sch.MissionCost)
+            if (MissionCost != sch.MissionCost)
                 return false;
-            if (this.MissionDark != sch.MissionDark)
+            if (MissionDark != sch.MissionDark)
                 return false;
-            if (this.MissionDarkCrit != sch.MissionDarkCrit)
+            if (MissionDarkCrit != sch.MissionDarkCrit)
                 return false;
-            if (this.MissionDescription != sch.MissionDescription)
+            if (MissionDescription != sch.MissionDescription)
                 return false;
-            if (this.MissionDescriptionId != sch.MissionDescriptionId)
+            if (MissionDescriptionId != sch.MissionDescriptionId)
                 return false;
-            if (this.MissionLight != sch.MissionLight)
+            if (MissionLight != sch.MissionLight)
                 return false;
-            if (this.MissionLightCrit != sch.MissionLightCrit)
+            if (MissionLightCrit != sch.MissionLightCrit)
                 return false;
-            if (this.MissionUnlockable != sch.MissionUnlockable)
+            if (MissionUnlockable != sch.MissionUnlockable)
                 return false;
-            if (this.MissionYieldDescription != sch.MissionYieldDescription)
+            if (MissionYieldDescription != sch.MissionYieldDescription)
                 return false;
-            if (this.MissionYieldDescriptionId != sch.MissionYieldDescriptionId)
+            if (MissionYieldDescriptionId != sch.MissionYieldDescriptionId)
                 return false;
-            if (this.Name != sch.Name)
+            if (Name != sch.Name)
                 return false;
-            if (this.NameId != sch.NameId)
+            if (NameId != sch.NameId)
                 return false;
-            if (this.NodeId != sch.NodeId)
+            if (NodeId != sch.NodeId)
                 return false;
-            if (this.Research1 != null)
+            if (Research1 != null)
             {
                 if (sch.Research1 == null)
                     return false;
-                if (!this.Research1.Equals(sch.Research1))
+                if (!Research1.Equals(sch.Research1))
                     return false;
             }
             else if (sch.Research1 != null)
                 return false;
-            if (this.ResearchChance1 != sch.ResearchChance1)
+            if (ResearchChance1 != sch.ResearchChance1)
                 return false;
-            if (this.ResearchQuantity1 != sch.ResearchQuantity1)
+            if (ResearchQuantity1 != sch.ResearchQuantity1)
                 return false;
-            if (this.Research2 != null)
+            if (Research2 != null)
             {
                 if (sch.Research2 == null)
                     return false;
-                if (!this.Research2.Equals(sch.Research2))
+                if (!Research2.Equals(sch.Research2))
                     return false;
             }
             else if (sch.Research2 != null)
                 return false;
-            if (this.ResearchChance2 != sch.ResearchChance2)
+            if (ResearchChance2 != sch.ResearchChance2)
                 return false;
-            if (this.ResearchQuantity2 != sch.ResearchQuantity2)
+            if (ResearchQuantity2 != sch.ResearchQuantity2)
                 return false;
-            if (this.Research3 != null)
+            if (Research3 != null)
             {
                 if (sch.Research3 == null)
                     return false;
-                if (!this.Research3.Equals(sch.Research3))
+                if (!Research3.Equals(sch.Research3))
                     return false;
             }
             else if (sch.Research3 != null)
                 return false;
-            if (this.ResearchChance3 != sch.ResearchChance3)
+            if (ResearchChance3 != sch.ResearchChance3)
                 return false;
-            if (this.ResearchQuantity3 != sch.ResearchQuantity3)
+            if (ResearchQuantity3 != sch.ResearchQuantity3)
                 return false;
-            if (this.SkillGreen != sch.SkillGreen)
+            if (SkillGreen != sch.SkillGreen)
                 return false;
-            if (this.SkillGrey != sch.SkillGrey)
+            if (SkillGrey != sch.SkillGrey)
                 return false;
-            if (this.SkillOrange != sch.SkillOrange)
+            if (SkillOrange != sch.SkillOrange)
                 return false;
-            if (this.SkillYellow != sch.SkillYellow)
+            if (SkillYellow != sch.SkillYellow)
                 return false;
-            if (this.Subtype != sch.Subtype)
+            if (Subtype != sch.Subtype)
                 return false;
-            if (this.TrainingCost != sch.TrainingCost)
+            if (TrainingCost != sch.TrainingCost)
                 return false;
-            if (this.Workstation != sch.Workstation)
+            if (Workstation != sch.Workstation)
                 return false;
             return true;
         }
@@ -329,7 +329,7 @@ namespace GomLib.Models
             var txt = new StringBuilder();
             string n = Environment.NewLine;
 
-            txt.Append(String.Format("* {0}{1}", Item.Name, n)); //Item.Description.Replace("\r\n", replaceWith).Replace("\n", replaceWith).Replace("\r", replaceWith), n));
+            txt.Append(string.Format("* {0}{1}", Item.Name, n)); //Item.Description.Replace("\r\n", replaceWith).Replace("\n", replaceWith).Replace("\r", replaceWith), n));
             /*List<string> reqs = new List<string>();
             foreach (var kvp in Materials)
             {
@@ -340,7 +340,7 @@ namespace GomLib.Models
                 txt.Append(String.Format(" * {0}{1}", String.Join(n + " * ", reqs), n));*/
             return txt.ToString();
         }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public override List<SQLProperty> SQLProperties
         {
             get
@@ -395,7 +395,7 @@ namespace GomLib.Models
         public override XElement ToXElement(bool verbose)
         {
             XElement schem = new XElement("Schematic");
-            if (this.Id == 0) return schem;
+            if (Id == 0) return schem;
 
             schem.Add(new XElement("Fqn", Fqn),
                 new XAttribute("Id", NodeId),
@@ -450,7 +450,7 @@ namespace GomLib.Models
                     schem.Add(new XElement("Yield", MissionYieldDescription),
                         new XElement("IsUnlockable", MissionUnlockable),
                         new XElement("Cost", MissionCost),
-                        new XElement("Alignment", String.Format("Light(normal/crit): {0}/{1}, Dark(normal/crit): {2}/{3}", MissionLight, MissionLightCrit, MissionDark, MissionDarkCrit)));
+                        new XElement("Alignment", string.Format("Light(normal/crit): {0}/{1}, Dark(normal/crit): {2}/{3}", MissionLight, MissionLightCrit, MissionDark, MissionDarkCrit)));
                 }
                 schem.Add(new XElement("SkillRanges",
                     new XElement("Orange", SkillOrange),
@@ -527,13 +527,13 @@ namespace GomLib.Models
             if (ReferenceEquals(this, obj))
                 return true;
 
-            if (this.Id != obj.Id)
+            if (Id != obj.Id)
                 return false;
-            if (this.NameId != obj.NameId)
+            if (NameId != obj.NameId)
                 return false;
-            if (this.AtrributePercentages.Count != obj.AtrributePercentages.Count)
+            if (AtrributePercentages.Count != obj.AtrributePercentages.Count)
                 return false;
-            if (!this.AtrributePercentages.SequenceEqual(obj.AtrributePercentages))
+            if (!AtrributePercentages.SequenceEqual(obj.AtrributePercentages))
                 return false;
 
             return true;

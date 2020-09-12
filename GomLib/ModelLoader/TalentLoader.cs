@@ -35,7 +35,7 @@ namespace GomLib.ModelLoader
             get { return "talType"; }
         }
 
-        public Models.Talent Load(ulong nodeId)
+        public Talent Load(ulong nodeId)
         {
             if (idMap.TryGetValue(nodeId, out Talent result))
             {
@@ -47,7 +47,7 @@ namespace GomLib.ModelLoader
             return Load(tal, obj);
         }
 
-        public Models.Talent Load(string fqn)
+        public Talent Load(string fqn)
         {
             if (nameMap.TryGetValue(fqn, out Talent result))
             {
@@ -59,25 +59,25 @@ namespace GomLib.ModelLoader
             return Load(tal, obj);
         }
 
-        public Models.Talent Load(GomObject obj)
+        public Talent Load(GomObject obj)
         {
             Talent tal = new Talent();
             return Load(tal, obj);
         }
 
-        public Models.GameObject CreateObject()
+        public GameObject CreateObject()
         {
-            return new Models.Talent();
+            return new Talent();
         }
 
-        public Models.Talent Load(Models.GameObject obj, GomObject gom)
+        public Talent Load(GameObject obj, GomObject gom)
         {
             if (gom == null) { return (Talent)obj; }
 
             return Load(obj as Talent, gom);
         }
 
-        public Models.Talent Load(Models.Talent tal, GomObject obj)
+        public Talent Load(Talent tal, GomObject obj)
         {
             if (obj == null) { return null; }
             if (tal == null) { return null; }
@@ -124,8 +124,8 @@ namespace GomLib.ModelLoader
             }
             tal.Ranks = tal.RankStats.Count;
 
-            tal.TalentVisibility = obj.Data.ValueOrDefault<ScriptEnum>("talTalentVisibility", new ScriptEnum()); //.Value;
-            tal.Icon = obj.Data.ValueOrDefault<string>("talTalentIcon", String.Empty);
+            tal.TalentVisibility = obj.Data.ValueOrDefault("talTalentVisibility", new ScriptEnum()); //.Value;
+            tal.Icon = obj.Data.ValueOrDefault("talTalentIcon", string.Empty);
             _dom._assets.icons.Add(tal.Icon);
 
             //Read tokens
@@ -187,13 +187,13 @@ namespace GomLib.ModelLoader
             return desc;
         }
 
-        public void LoadObject(Models.GameObject loadMe, GomObject obj)
+        public void LoadObject(GameObject loadMe, GomObject obj)
         {
-            GomLib.Models.Talent tal = (Models.Talent)loadMe;
+            Talent tal = (Talent)loadMe;
             Load(tal, obj);
         }
 
-        public void LoadReferences(Models.GameObject obj, GomObject gom)
+        public void LoadReferences(GameObject obj, GomObject gom)
         {
             if (obj is null)
             {

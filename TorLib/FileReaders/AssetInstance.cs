@@ -24,12 +24,12 @@ namespace TorLib.FileReaders
                 PositionY,
                 PositionZ
             };
-            long pId = this.ParentInstanceId;
+            long pId = ParentInstanceId;
             AssetInstance p;
             while (pId != 0)
             {
-                if (!this.Room.InstancesById.ContainsKey(pId)) { break; }
-                p = this.Room.InstancesById[pId];
+                if (!Room.InstancesById.ContainsKey(pId)) { break; }
+                p = Room.InstancesById[pId];
                 result[0] += p.PositionX;
                 result[1] += p.PositionY;
                 result[2] += p.PositionZ;

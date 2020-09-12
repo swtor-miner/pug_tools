@@ -24,7 +24,7 @@ namespace GomLib.Models
     {
         public static Toughness ToToughness(this string str)
         {
-            if (String.IsNullOrEmpty(str)) { return Toughness.None; }
+            if (string.IsNullOrEmpty(str)) { return Toughness.None; }
 
             switch (str)
             {
@@ -53,7 +53,7 @@ namespace GomLib.Models
         public static Toughness ToToughness(this ScriptEnum val)
         {
             if (val == null) { return Toughness.None; }
-            return ToToughness((int)val.Value);
+            return ToToughness(val.Value);
         }
     }
 }

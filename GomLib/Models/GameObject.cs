@@ -20,11 +20,11 @@ namespace GomLib.Models
             }
         }
         public string Fqn { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public DataObjectModel Dom_ { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Dictionary<string, SortedSet<ulong>> References { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Dictionary<string, List<string>> B62References_ { get; set; }
         public Dictionary<string, List<string>> B62References
         {
@@ -92,7 +92,7 @@ namespace GomLib.Models
                 return new XElement("NotFound", fqn);
         }
         public virtual XElement ToXElement() { return ToXElement(false); }
-        public virtual XElement ToXElement(bool verbose) { return new XElement("NotImplemented", this.GetType().ToString()); }
+        public virtual XElement ToXElement(bool verbose) { return new XElement("NotImplemented", GetType().ToString()); }
 
         public virtual HashSet<string> GetDependencies()
         {
@@ -186,7 +186,7 @@ namespace GomLib.Models
         {
             return new SQLData(SQLProperties);
         }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public virtual List<SQLProperty> SQLProperties { get; set; }
     }
 
@@ -202,15 +202,15 @@ namespace GomLib.Models
             }
         }
         public virtual string Name { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public string Prototype { get; set; } //Which prototype this object is from.
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public string ProtoDataTable { get; set; } //which prototype field contains the object
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public DataObjectModel Dom_ { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Dictionary<string, SortedSet<ulong>> References { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Dictionary<string, List<string>> B62References_ { get; set; }
         public Dictionary<string, List<string>> B62References
         {
@@ -227,7 +227,7 @@ namespace GomLib.Models
             }
         }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public HashSet<string> RequiredFiles;
 
         public string ToJSON()
@@ -256,30 +256,30 @@ namespace GomLib.Models
         }
 
         public virtual XElement ToXElement() { return ToXElement(true); }
-        public virtual XElement ToXElement(bool verbose) { return new XElement("NotImplemented", this.GetType().ToString()); }
+        public virtual XElement ToXElement(bool verbose) { return new XElement("NotImplemented", GetType().ToString()); }
 
         public static PseudoGameObject Load(string xmlRoot, DataObjectModel dom, object id, object gomObjectData)
         {
             switch (xmlRoot)
             {
                 case "MtxStoreFronts":
-                    GomLib.Models.MtxStorefrontEntry mtx = new GomLib.Models.MtxStorefrontEntry();
+                    MtxStorefrontEntry mtx = new MtxStorefrontEntry();
                     dom.mtxStorefrontEntryLoader.Load(mtx, (long)id, (GomObjectData)gomObjectData);
                     return mtx;
                 case "Collections":
-                    GomLib.Models.Collection col = new GomLib.Models.Collection();
+                    Collection col = new Collection();
                     dom.collectionLoader.Load(col, (long)id, (GomObjectData)gomObjectData);
                     return col;
                 case "Companions":
-                    GomLib.Models.Companion cmp = new GomLib.Models.Companion();
+                    Companion cmp = new Companion();
                     dom.companionLoader.Load(cmp, (ulong)id, (GomObjectData)gomObjectData);
                     return cmp;
                 case "Ships":
-                    GomLib.Models.ScFFShip ship = new GomLib.Models.ScFFShip();
+                    ScFFShip ship = new ScFFShip();
                     dom.scFFShipLoader.Load(ship, (long)id, (GomObjectData)gomObjectData);
                     return ship;
                 case "Conquests":
-                    GomLib.Models.Conquest cnq = new GomLib.Models.Conquest();
+                    Conquest cnq = new Conquest();
                     dom.conquestLoader.Load(cnq, (long)id, (GomObjectData)gomObjectData);
                     return cnq;
                 /*case "AdvancedClasses":
@@ -287,27 +287,27 @@ namespace GomLib.Models
                     dom.disciplineLoader.LoadClass(dis, (ulong)id, ((List<Object>)gomObjectData).ToList().ConvertAll(x => (GomObjectData)x));
                     return dis;*/
                 case "AchCategories":
-                    GomLib.Models.AchievementCategory ach = new GomLib.Models.AchievementCategory();
+                    AchievementCategory ach = new AchievementCategory();
                     dom.achievementCategoryLoader.Load(ach, (long)id, (GomObjectData)gomObjectData);
                     return ach;
                 case "Areas":
-                    GomLib.Models.Area ara = new GomLib.Models.Area();
+                    Area ara = new Area();
                     dom.areaLoader.Load(ara, (GomObjectData)gomObjectData);
                     return ara;
                 case "SetBonuses":
-                    GomLib.Models.SetBonusEntry setEntry = new GomLib.Models.SetBonusEntry();
+                    SetBonusEntry setEntry = new SetBonusEntry();
                     dom.setBonusLoader.Load(setEntry, (long)id, (GomObjectData)gomObjectData);
                     return setEntry;
                 case "CodexCategoryTotals":
-                    GomLib.Models.CodexCatByFaction cdxCatByFaction = new GomLib.Models.CodexCatByFaction();
+                    CodexCatByFaction cdxCatByFaction = new CodexCatByFaction();
                     dom.cdxCatTotalsLoader.Load(cdxCatByFaction, (long)id, (Dictionary<object, object>)gomObjectData);
                     return cdxCatByFaction;
                 case "SchematicVariations":
-                    GomLib.Models.SchematicVariation schemVariation = new GomLib.Models.SchematicVariation();
+                    SchematicVariation schemVariation = new SchematicVariation();
                     dom.schemVariationLoader.Load(schemVariation, (ulong)id, (Dictionary<object, object>)gomObjectData);
                     return schemVariation;
                 case "PlayerTitles":
-                    GomLib.Models.PlayerTitle playerTitle = new GomLib.Models.PlayerTitle();
+                    PlayerTitle playerTitle = new PlayerTitle();
                     dom.playerTitleLoader.Load(playerTitle, (long)id, (GomObjectData)gomObjectData);
                     return playerTitle;
                 default:
@@ -347,7 +347,7 @@ namespace GomLib.Models
         {
             return new SQLData(SQLProperties);
         }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public virtual List<SQLProperty> SQLProperties { get; set; }
     }
 

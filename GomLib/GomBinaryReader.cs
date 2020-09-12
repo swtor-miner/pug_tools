@@ -29,13 +29,13 @@ namespace GomLib
         {
             //System.Console.WriteLine(this.ToString());
             ulong val = 0;
-            byte b0 = this.ReadByte();
-            if (b0 == 0xD2) { b0 = this.ReadByte(); } //flag on lookup lists. Unsure of function.
-            if (b0 < 0xC0) { return (ulong)b0; }
+            byte b0 = ReadByte();
+            if (b0 == 0xD2) { b0 = ReadByte(); } //flag on lookup lists. Unsure of function.
+            if (b0 < 0xC0) { return b0; }
             if (b0 < 0xC8)
             {
                 byte[] byteBuffer = new byte[b0 - 0xBF];
-                this.Read(byteBuffer, 0, byteBuffer.Length);
+                Read(byteBuffer, 0, byteBuffer.Length);
 
                 for (int i = 0; i < byteBuffer.Length; i++)
                 {
@@ -48,7 +48,7 @@ namespace GomLib
             else if (b0 < 0xD0)
             {
                 byte[] byteBuffer = new byte[b0 - 0xC7];
-                this.Read(byteBuffer, 0, byteBuffer.Length);
+                Read(byteBuffer, 0, byteBuffer.Length);
 
                 for (int i = 0; i < byteBuffer.Length; i++)
                 {
@@ -64,12 +64,12 @@ namespace GomLib
             }*/
             else if (b0 == 0xD0)
             {
-                return (ulong)this.ReadByte();
+                return ReadByte();
             }
             else if (b0 == 0xEF) //this is likely a bug due to not having a GomTypeId.RawData reader
             {
                 byte[] byteBuffer = new byte[4];//this is wrong, but it avoids the exception for now.
-                this.Read(byteBuffer, 0, byteBuffer.Length); // it's almost right, but the ctlCoverMovementDirection_c value isn't being read right, which throws the following values off.
+                Read(byteBuffer, 0, byteBuffer.Length); // it's almost right, but the ctlCoverMovementDirection_c value isn't being read right, which throws the following values off.
 
                 for (int i = 0; i < byteBuffer.Length; i++)
                 {
@@ -82,27 +82,27 @@ namespace GomLib
             }
             else
             {
-                throw new InvalidOperationException(String.Format("Unknown Number Prefix: 0x{0:X}", b0));
+                throw new InvalidOperationException(string.Format("Unknown Number Prefix: 0x{0:X}", b0));
             }
         }
 
         public long ReadSignedNumber()
         {
             long val = 0;
-            byte b0 = this.ReadByte();
+            byte b0 = ReadByte();
             if (b0 == 0xD2)
             {
-                int num = this.ReadByte();
-                string result = this.ReadFixedLengthString(num);
-                val = Int64.Parse(result);
+                int num = ReadByte();
+                string result = ReadFixedLengthString(num);
+                val = long.Parse(result);
             } //flag on lookup lists. Unsure of function.
             else
             {
-                if (b0 < 0xC0) { return (long)b0; }
+                if (b0 < 0xC0) { return b0; }
                 if (b0 < 0xC8)
                 {
                     byte[] byteBuffer = new byte[b0 - 0xBF];
-                    this.Read(byteBuffer, 0, byteBuffer.Length);
+                    Read(byteBuffer, 0, byteBuffer.Length);
 
                     for (int i = 0; i < byteBuffer.Length; i++)
                     {
@@ -114,7 +114,7 @@ namespace GomLib
                 else if (b0 < 0xD0)
                 {
                     byte[] byteBuffer = new byte[b0 - 0xC7];
-                    this.Read(byteBuffer, 0, byteBuffer.Length);
+                    Read(byteBuffer, 0, byteBuffer.Length);
 
                     for (int i = 0; i < byteBuffer.Length; i++)
                     {
@@ -128,7 +128,7 @@ namespace GomLib
                 }
                 else
                 {
-                    throw new InvalidOperationException(String.Format("Unknown Number Prefix: 0x{0:X}", b0));
+                    throw new InvalidOperationException(string.Format("Unknown Number Prefix: 0x{0:X}", b0));
                 }
             }
 
@@ -142,27 +142,27 @@ namespace GomLib
 
         public TypedValue ReadTypedValue()
         {
-            TypedValueType valType = (TypedValueType)this.ReadByte();
+            TypedValueType valType = (TypedValueType)ReadByte();
             TypedValue result = new TypedValue(valType);
             result.Parse(this);
 
             return result;
         }
 
-        public UInt64 ReadVariableWidthUInt64(int lengthInBytes)
+        public ulong ReadVariableWidthUInt64(int lengthInBytes)
         {
             if ((lengthInBytes < 1) || (lengthInBytes > 8))
             {
                 throw new ArgumentOutOfRangeException("lengthInBytes", "Length in bytes must be between 1 and 8");
             }
 
-            UInt64 result = 0;
+            ulong result = 0;
 
-            byte[] bytes = this.ReadBytes(lengthInBytes);
+            byte[] bytes = ReadBytes(lengthInBytes);
             int shiftAmt = lengthInBytes - 1;
             for (var i = 0; i < lengthInBytes; i++)
             {
-                UInt64 val = bytes[i];
+                ulong val = bytes[i];
                 val <<= (8 * shiftAmt);
                 shiftAmt--;
                 result += val;
@@ -178,18 +178,18 @@ namespace GomLib
 
         public string ReadNullTerminatedString()
         {
-            return this.ReadNullTerminatedString(Encoding.UTF8);
+            return ReadNullTerminatedString(Encoding.UTF8);
         }
 
         public string ReadNullTerminatedString(Encoding encoding)
         {
             List<byte> byteBuffer = new List<byte>();
-            byte b = this.ReadByte();
+            byte b = ReadByte();
             // Read until we encounter a null byte
             while (b != 0)
             {
                 byteBuffer.Add(b);
-                b = this.ReadByte();
+                b = ReadByte();
             }
 
             return encoding.GetString(byteBuffer.ToArray());
@@ -241,18 +241,18 @@ namespace GomLib
 
         public string ReadLengthPrefixString(Encoding encoding)
         {
-            int len = (int)this.ReadNumber();
+            int len = (int)ReadNumber();
             return ReadFixedLengthString(len, encoding);
         }
 
         public string ReadFixedLengthString(int length)
         {
-            return this.ReadFixedLengthString(length, Encoding.UTF8);
+            return ReadFixedLengthString(length, Encoding.UTF8);
         }
 
         public string ReadFixedLengthString(int length, Encoding encoding)
         {
-            byte[] buff = this.ReadBytes(length);
+            byte[] buff = ReadBytes(length);
             string result = encoding.GetString(buff);
             //if (result.Equals("plc.location.tatooine.item.treasure_chest.chest", StringComparison.InvariantCultureIgnoreCase))
             //{

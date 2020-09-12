@@ -58,7 +58,7 @@ namespace GomLib.Models
         public Npc Npc { get; set; }
         public string Portrait { get; set; }
         public List<CompanionProfessionModifier> ProfessionModifiers { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Ability SpaceAbility { get; set; }
         [JsonConverter(typeof(ULongConverter))]
         public ulong SpaceAbilityId { get; set; }
@@ -122,84 +122,84 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, cmp)) return true;
 
-            if (this.AffectionRanks != null)
+            if (AffectionRanks != null)
             {
                 if (cmp.AffectionRanks != null)
                 {
-                    if (!this.AffectionRanks.SequenceEqual(cmp.AffectionRanks))
+                    if (!AffectionRanks.SequenceEqual(cmp.AffectionRanks))
                         return false;
                 }
             }
-            if (!this.Classes.Equals(cmp.Classes, false))
+            if (!Classes.Equals(cmp.Classes, false))
                 return false;
-            if (this.ConversationMultiplier != cmp.ConversationMultiplier)
+            if (ConversationMultiplier != cmp.ConversationMultiplier)
                 return false;
-            if (this.CrewAbilities != null)
+            if (CrewAbilities != null)
             {
                 if (cmp.CrewAbilities != null)
                 {
-                    if (!this.CrewAbilities.SequenceEqual(cmp.CrewAbilities))
+                    if (!CrewAbilities.SequenceEqual(cmp.CrewAbilities))
                         return false;
                 }
             }
-            if (this.CrewPositions != null)
+            if (CrewPositions != null)
             {
                 if (cmp.CrewPositions != null)
                 {
-                    if (!this.CrewPositions.SequenceEqual(cmp.CrewPositions))
+                    if (!CrewPositions.SequenceEqual(cmp.CrewPositions))
                         return false;
                 }
             }
-            if (this.Description != cmp.Description)
+            if (Description != cmp.Description)
                 return false;
-            if (this.Faction != cmp.Faction)
+            if (Faction != cmp.Faction)
                 return false;
-            if (this.FactionId != cmp.FactionId)
+            if (FactionId != cmp.FactionId)
                 return false;
-            if (this.GiftInterest != null)
+            if (GiftInterest != null)
             {
                 if (cmp.GiftInterest != null)
                 {
-                    if (!this.GiftInterest.SequenceEqual(cmp.GiftInterest))
+                    if (!GiftInterest.SequenceEqual(cmp.GiftInterest))
                         return false;
                 }
             }
-            if (this.Id != cmp.Id)
+            if (Id != cmp.Id)
                 return false;
-            if (this.IsGenderMale != cmp.IsGenderMale)
+            if (IsGenderMale != cmp.IsGenderMale)
                 return false;
-            if (this.IsRomanceable != cmp.IsRomanceable)
+            if (IsRomanceable != cmp.IsRomanceable)
                 return false;
 
             var ssComp = new DictionaryComparer<string, string>();
-            if (!ssComp.Equals(this.LocalizedDescription, cmp.LocalizedDescription))
+            if (!ssComp.Equals(LocalizedDescription, cmp.LocalizedDescription))
                 return false;
 
-            if (this.Name != cmp.Name)
+            if (Name != cmp.Name)
                 return false;
-            if (!this.Npc.Equals(cmp.Npc))
+            if (!Npc.Equals(cmp.Npc))
                 return false;
-            if (this.Portrait != cmp.Portrait)
+            if (Portrait != cmp.Portrait)
                 return false;
-            if (this.ProfessionModifiers != null)
+            if (ProfessionModifiers != null)
             {
                 if (cmp.ProfessionModifiers != null)
                 {
-                    if (!this.ProfessionModifiers.SequenceEqual(cmp.ProfessionModifiers))
+                    if (!ProfessionModifiers.SequenceEqual(cmp.ProfessionModifiers))
                         return false;
                 }
             }
-            if (!this.SpaceAbility.Equals(cmp.SpaceAbility))
+            if (!SpaceAbility.Equals(cmp.SpaceAbility))
                 return false;
-            if (this.SpaceAbilityId != cmp.SpaceAbilityId)
+            if (SpaceAbilityId != cmp.SpaceAbilityId)
                 return false;
-            if (this.SpaceIcon != cmp.SpaceIcon)
+            if (SpaceIcon != cmp.SpaceIcon)
                 return false;
-            if (this.UId != cmp.UId)
+            if (UId != cmp.UId)
                 return false;
             if (NcoId != cmp.NcoId)
                 return false;
-            if (this.AllowedClasses != cmp.AllowedClasses)
+            if (AllowedClasses != cmp.AllowedClasses)
                 return false;
             return true;
         }
@@ -207,14 +207,14 @@ namespace GomLib.Models
         public override XElement ToXElement(bool verbose)
         {
             XElement companion = new XElement("Companion");
-            if (this.Id != 0)
+            if (Id != 0)
             {
                 companion.Add(new XAttribute("Id", UId),
                     new XElement("Name", Name),
                     new XElement("Description", Description),
                     new XElement("Faction", Faction));
                 if (AllowedClasses != null)
-                    companion.Add(new XElement("AvailableFor", String.Join(", ", AllowedClasses.Select(x => GomLib.ModelLoader.CompanionLoader.ClassFromId(x)).ToList())));
+                    companion.Add(new XElement("AvailableFor", string.Join(", ", AllowedClasses.Select(x => ModelLoader.CompanionLoader.ClassFromId(x)).ToList())));
                 int p = 1;
                 foreach (var prof in ProfessionModifiers)
                 {
@@ -277,7 +277,7 @@ namespace GomLib.Models
                     companion.Add(new XElement("SpaceIcon", SpaceIcon));
                     if (CrewPositions != null)
                     {
-                        companion.Add(new XElement("CrewPositions", String.Join(", ", (List<string>)CrewPositions)));
+                        companion.Add(new XElement("CrewPositions", string.Join(", ", CrewPositions)));
                     }
                     else
                     {
@@ -344,8 +344,8 @@ namespace GomLib.Models
         {
             get
             {
-                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/portraits/{0}.dds", this.Icon));
-                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+                var fileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/portraits/{0}.dds", Icon));
+                return string.Format("{0}_{1}", fileId.ph, fileId.sh);
             }
         }
         public string SubCategory { get; set; }
@@ -406,7 +406,7 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, cmp)) return true;
 
-            if (this.GetHashCode() != cmp.GetHashCode())
+            if (GetHashCode() != cmp.GetHashCode())
                 return false;
             return true;
         }
@@ -439,7 +439,7 @@ namespace GomLib.Models
         public override XElement ToXElement(bool verbose)
         {
             XElement companion = new XElement("NewCompanion");
-            if (this.Id != 0)
+            if (Id != 0)
             {
                 companion.Add(new XAttribute("Id", Id),
                     new XElement("Name", Name),

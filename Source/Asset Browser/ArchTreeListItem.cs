@@ -16,9 +16,9 @@ namespace PugTools
 
         public ArchTreeListItem(string id, string parent, string display, Archive arch)
         {
-            this.Id = id;
-            this.parentId = parent;
-            this.displayName = display;
+            Id = id;
+            parentId = parent;
+            displayName = display;
             this.arch = arch;
         }
     }

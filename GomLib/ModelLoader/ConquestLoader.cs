@@ -30,9 +30,9 @@ namespace GomLib.ModelLoader
         private Dictionary<long, List<ConquestData>> ActiveConquestData;
         private Dictionary<long, List<DateTime>> NewActiveConquestData;
 
-        public Models.PseudoGameObject CreateObject()
+        public PseudoGameObject CreateObject()
         {
-            return new Models.Conquest();
+            return new Conquest();
         }
 
         private readonly HashSet<string> fields = new HashSet<string>()
@@ -41,12 +41,12 @@ namespace GomLib.ModelLoader
 
         public HashSet<string> Fields => fields;
 
-        public Conquest Load(Models.PseudoGameObject obj, long id, GomObjectData gom)
+        public Conquest Load(PseudoGameObject obj, long id, GomObjectData gom)
         {
             if (gom == null) { return (Conquest)obj; }
             if (gom == null) { return null; }
 
-            var cnq = (Models.Conquest)obj;
+            var cnq = (Conquest)obj;
 
             cnq.Id = id;
             cnq.Dom_ = _dom;
@@ -88,13 +88,13 @@ namespace GomLib.ModelLoader
             cnq.Description = nameTable.GetText(cnq.DescId, "str.gui.planetaryconquest");
             cnq.LocalizedDescription = nameTable.GetLocalizedText(cnq.DescId, "str.gui.planetaryconquest");
 
-            cnq.Icon = gom.ValueOrDefault<string>("wevConquestIcon", "");
+            cnq.Icon = gom.ValueOrDefault("wevConquestIcon", "");
             if (cnq.Icon == "")
-                cnq.Icon = gom.ValueOrDefault<string>("cnqConquestIcon", "");
+                cnq.Icon = gom.ValueOrDefault("cnqConquestIcon", "");
             cnq.ParticipateGoal = gom.ValueOrDefault<long>("wevConquestParticipateGoal", 0);
             if (cnq.ParticipateGoal == 0)
                 cnq.ParticipateGoal = gom.ValueOrDefault<long>("cnqConquestParticipateGoal", 0);
-            cnq.RepeatableObjectivesIdList = gom.ValueOrDefault<List<object>>("wevConquestRepeatableObjectivesList", new List<object>()).ConvertAll(x => (long)x).ToList();
+            cnq.RepeatableObjectivesIdList = gom.ValueOrDefault("wevConquestRepeatableObjectivesList", new List<object>()).ConvertAll(x => (long)x).ToList();
             cnq.RepeatableObjectivesList = new List<ConquestObjectivePackage>();
             foreach (var key in cnq.RepeatableObjectivesIdList)
             {
@@ -104,7 +104,7 @@ namespace GomLib.ModelLoader
                 //else
                 //throw new IndexOutOfRangeException();
             }
-            cnq.OneTimeObjectiveIdList = gom.ValueOrDefault<List<object>>("wevConquestOneTimeObjectiveList", new List<object>()).ConvertAll(x => (long)x).ToList();
+            cnq.OneTimeObjectiveIdList = gom.ValueOrDefault("wevConquestOneTimeObjectiveList", new List<object>()).ConvertAll(x => (long)x).ToList();
             cnq.OneTimeObjectivesList = new List<ConquestObjectivePackage>();
             foreach (var key in cnq.OneTimeObjectiveIdList)
             {
@@ -114,7 +114,7 @@ namespace GomLib.ModelLoader
                 //else
                 //throw new IndexOutOfRangeException();
             }
-            var newObjectiveIdList = gom.ValueOrDefault<Dictionary<object, object>>("cnqConquestObjectivesList", new Dictionary<object, object>());
+            var newObjectiveIdList = gom.ValueOrDefault("cnqConquestObjectivesList", new Dictionary<object, object>());
             cnq.NewObjectivesList = new Dictionary<string, List<ulong>>();
             foreach (var kvp in newObjectiveIdList)
             {
@@ -133,10 +133,10 @@ namespace GomLib.ModelLoader
                 //throw new IndexOutOfRangeException();
             }
 
-            cnq.DesignName = gom.ValueOrDefault<string>("wevConquestDesignName", "");
+            cnq.DesignName = gom.ValueOrDefault("wevConquestDesignName", "");
             if (cnq.DesignName == "")
-                cnq.DesignName = gom.ValueOrDefault<string>("cnqConquestDesignName", "");
-            cnq.ActivePlanets = gom.ValueOrDefault<Dictionary<object, object>>("wevConquestActivePlanets", new Dictionary<object, object>()).ToDictionary(x => (ulong)x.Key, x => (bool)x.Value);
+                cnq.DesignName = gom.ValueOrDefault("cnqConquestDesignName", "");
+            cnq.ActivePlanets = gom.ValueOrDefault("wevConquestActivePlanets", new Dictionary<object, object>()).ToDictionary(x => (ulong)x.Key, x => (bool)x.Value);
             //if (cnq.ActivePlanets.Count == 0)
             //{
             //    gom.ValueOrDefault<Dictionary<object, object>>("cnqConquestActivePlanets", null);
@@ -163,16 +163,16 @@ namespace GomLib.ModelLoader
                 }
             }
             //new planets
-            var newActivePlanets = gom.ValueOrDefault<Dictionary<object, object>>("cnqConquestActivePlanets", new Dictionary<object, object>());
+            var newActivePlanets = gom.ValueOrDefault("cnqConquestActivePlanets", new Dictionary<object, object>());
             foreach (var nap in newActivePlanets)
             {
                 GomObjectData g = nap.Value as GomObjectData;
                 ulong cnqPlanetId = (ulong)nap.Key;
-                string cnqPlanetDesignName = g.ValueOrDefault<string>("cnqPlanetDesignName", "");
+                string cnqPlanetDesignName = g.ValueOrDefault("cnqPlanetDesignName", "");
                 //ulong cnqPlanetId = gom.ValueOrDefault<ulong>("cnqPlanetId", 0);
-                string cnqPlanetSize = g.ValueOrDefault<object>("cnqPlanetSize", new object()).ToString().Replace("cnqPlanetSize_", "");
+                string cnqPlanetSize = g.ValueOrDefault("cnqPlanetSize", new object()).ToString().Replace("cnqPlanetSize_", "");
                 ulong cnqPlanetQuestId = g.ValueOrDefault<ulong>("cnqPlanetQuestId", 0);
-                string cnqPlanetIcon = g.ValueOrDefault<string>("cnqPlanetIcon", "");
+                string cnqPlanetIcon = g.ValueOrDefault("cnqPlanetIcon", "");
 
                 PlanetList["Republic"].TryGetValue(cnqPlanetId, out Planet plt);
                 if (plt != null)
@@ -297,8 +297,8 @@ namespace GomLib.ModelLoader
             plt.Description = descTable.GetText(plt.DescId, "str.cdx");
             plt.LocalizedDescription = descTable.GetLocalizedText(plt.DescId, "str.cdx");
 
-            plt.Icon = gom.ValueOrDefault<string>("gldFlgDestIcon", "");
-            plt.ExitList = gom.ValueOrDefault<Dictionary<object, object>>("gldFlgDestExitList", new Dictionary<object, object>()).ToDictionary(x => (ulong)x.Key, x => x.Value); //TODO load subobjects
+            plt.Icon = gom.ValueOrDefault("gldFlgDestIcon", "");
+            plt.ExitList = gom.ValueOrDefault("gldFlgDestExitList", new Dictionary<object, object>()).ToDictionary(x => (ulong)x.Key, x => x.Value); //TODO load subobjects
             plt.PrimaryAreaId = gom.ValueOrDefault<ulong>("gldFlgDestPrimaryAreaId", 0);
             plt.OrbtSupportAblId = gom.ValueOrDefault<ulong>("gldFlgDestOrbtSupportAblId", 0);
             plt.OrbtSupportCost = gom.ValueOrDefault<long>("gldFlgDestOrbtSupportCost", 0);
@@ -421,7 +421,7 @@ namespace GomLib.ModelLoader
                 achProto = _dom.GetObject("cnqSchedulePrototype");
                 if (achProto == null)
                     return; //no conquest at all
-                var cnqLst = achProto.Data.ValueOrDefault<List<object>>("cnqScheduleTable", new List<object>());
+                var cnqLst = achProto.Data.ValueOrDefault("cnqScheduleTable", new List<object>());
                 foreach (var entry in cnqLst)
                 {
                     //ConquestData entryData = new ConquestData();
@@ -434,7 +434,7 @@ namespace GomLib.ModelLoader
                     var entryDataOrderId = (int)gomEnt.ValueOrDefault<long>("cnqScheduleStartOrderId", 0);
                     //entryData.RawStartTime = Convert.ToInt64(gomEnt.ValueOrDefault<object>("wevConquestsStartTime", 0));
 
-                    DateTime time = new DateTime(2017, 10, 10, 18, 0, 0, 0, System.DateTimeKind.Utc);
+                    DateTime time = new DateTime(2017, 10, 10, 18, 0, 0, 0, DateTimeKind.Utc);
                     time = time.AddDays((entryDataOrderId - 1001) * 7).ToLocalTime();
                     var startTime = time;
                     if (!NewActiveConquestData.ContainsKey(entryDataId))
@@ -465,7 +465,7 @@ namespace GomLib.ModelLoader
                 entryData.ActualOrderNum = Convert.ToInt32(actualOrdNum);
                 entryData.RawStartTime = Convert.ToInt64(gomEnt.ValueOrDefault<object>("wevConquestsStartTime", 0));
 
-                DateTime time = new DateTime(1601, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+                DateTime time = new DateTime(1601, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
                 time = time.AddSeconds(entryData.RawStartTime / 1000).ToLocalTime();
                 entryData.StartTime = time;
                 if (!ActiveConquestData.ContainsKey(entryData.Id))

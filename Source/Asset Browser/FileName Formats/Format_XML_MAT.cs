@@ -20,7 +20,7 @@ namespace PugTools
         public Format_XML_MAT(string dest, string ext)
         {
             this.dest = dest;
-            this.extension = ext;
+            extension = ext;
         }
 
         public void ParseXML(Stream fileStream, string fullFileName, string baseFolder = null)
@@ -38,7 +38,7 @@ namespace PugTools
                     string fileNameNoExtension = temp.Substring(3, (temp.IndexOf('.') - 3));
                     string fullDirectory = "";
                     if (baseFolder != null)
-                        fullDirectory = String.Format("/resources/{0}", baseFolder);
+                        fullDirectory = string.Format("/resources/{0}", baseFolder);
                     else
                         fullDirectory = directory + '/' + fileNameNoExtension + '/';
                     XElement aamElement = doc.Element("aam");
@@ -195,9 +195,9 @@ namespace PugTools
                             if (textureName != null && textureName != "")
                             {
                                 string scrubbedName = textureName.Replace("////", "//").Replace("\\art", "art").Replace(" #", "").Replace("#", "").Replace("+", "/").Replace(" ", "_");
-                                this.fileNames.Add("\\resources\\" + scrubbedName + ".dds");
-                                this.fileNames.Add("\\resources\\" + scrubbedName + ".tex");
-                                this.fileNames.Add("\\resources\\" + scrubbedName + ".tiny.dds");
+                                fileNames.Add("\\resources\\" + scrubbedName + ".dds");
+                                fileNames.Add("\\resources\\" + scrubbedName + ".tex");
+                                fileNames.Add("\\resources\\" + scrubbedName + ".tiny.dds");
                                 string[] fileName = scrubbedName.Split('\\');
                                 int startPosition = 0;
                                 if (scrubbedName.Contains('\\')) { startPosition = scrubbedName.LastIndexOf('\\') + 1; }
@@ -205,7 +205,7 @@ namespace PugTools
                                 List<object> tagsToRemove = new List<object> { "_d", "_n", "_s" };
                                 if (tagsToRemove.Any(name => scrubbedName.EndsWith(name.ToString()))) { length -= 2; }
                                 string primaryName = scrubbedName.Substring(startPosition, length);
-                                this.fileNames.Add("\\resources\\art\\shaders\\materials\\" + primaryName + ".mat");
+                                fileNames.Add("\\resources\\art\\shaders\\materials\\" + primaryName + ".mat");
                             }
                         }
                         /*else //catch types for analysis. Caught the following types: bool, uvscale, float, rgba, vector4
@@ -245,11 +245,11 @@ namespace PugTools
 
         public void WriteFile()
         {
-            if (!System.IO.Directory.Exists(this.dest + "\\File_Names"))
-                System.IO.Directory.CreateDirectory(this.dest + "\\File_Names");
-            if (this.fileNames.Count > 0)
+            if (!Directory.Exists(dest + "\\File_Names"))
+                Directory.CreateDirectory(dest + "\\File_Names");
+            if (fileNames.Count > 0)
             {
-                System.IO.StreamWriter outputNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_file_names.txt", false);
+                StreamWriter outputNames = new StreamWriter(dest + "\\File_Names\\" + extension + "_file_names.txt", false);
                 foreach (string file in fileNames)
                 {
                     outputNames.Write(file.Replace("\\", "/") + "\r\n");
@@ -258,9 +258,9 @@ namespace PugTools
                 fileNames.Clear();
             }
 
-            if (this.animFileNames.Count > 0)
+            if (animFileNames.Count > 0)
             {
-                System.IO.StreamWriter outputAnimNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_anim_file_names.txt", false);
+                StreamWriter outputAnimNames = new StreamWriter(dest + "\\File_Names\\" + extension + "_anim_file_names.txt", false);
                 foreach (string file in animFileNames)
                 {
                     outputAnimNames.Write(file.Replace("\\", "/") + "\r\n");
@@ -269,9 +269,9 @@ namespace PugTools
                 animFileNames.Clear();
             }
 
-            if (this.errors.Count > 0)
+            if (errors.Count > 0)
             {
-                System.IO.StreamWriter outputErrors = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_error_list.txt", false);
+                StreamWriter outputErrors = new StreamWriter(dest + "\\File_Names\\" + extension + "_error_list.txt", false);
                 foreach (string error in errors)
                 {
                     outputErrors.Write(error + "\r\n");

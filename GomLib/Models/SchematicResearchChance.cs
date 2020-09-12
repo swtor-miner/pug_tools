@@ -21,7 +21,7 @@ namespace GomLib.Models
     {
         public static SchematicResearchChance ToSchematicResearchChance(this string str)
         {
-            if (String.IsNullOrEmpty(str)) return SchematicResearchChance.Undefined;
+            if (string.IsNullOrEmpty(str)) return SchematicResearchChance.Undefined;
 
             switch (str)
             {
@@ -38,7 +38,7 @@ namespace GomLib.Models
 
         public static SchematicResearchChance ToSchematicResearchChance(this ScriptEnum val)
         {
-            if (val == null) { return ToSchematicResearchChance(String.Empty); }
+            if (val == null) { return ToSchematicResearchChance(string.Empty); }
             return ToSchematicResearchChance(val.ToString());
         }
     }

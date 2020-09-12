@@ -44,7 +44,7 @@ namespace PugTools
         {
             br.BaseStream.Seek(entry.Offset, SeekOrigin.Begin);
             byte[] b = br.ReadBytes(entry.Length);
-            entry.StringValue = System.Text.Encoding.UTF8.GetString(b);
+            entry.StringValue = Encoding.UTF8.GetString(b);
             return;
         }
 

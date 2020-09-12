@@ -173,7 +173,7 @@ namespace GomLib
             areaDatLoader = new FileLoaders.AreaDatLoader(this);
             roomDatLoader = new FileLoaders.RoomDatLoader(this);
 
-            GomLib.Models.Tooltip.Flush();
+            Models.Tooltip.Flush();
         }
 
         public void Dispose()
@@ -366,7 +366,7 @@ namespace GomLib
         }
         public void AddCrossLink(ulong id, string type, ulong reference)
         {
-            GomObject testNode = this.GetObjectNoLoad(id);
+            GomObject testNode = GetObjectNoLoad(id);
             if (testNode != null)
             {
                 if (testNode.References == null) testNode.References = new Dictionary<string, SortedSet<ulong>>();
@@ -376,7 +376,7 @@ namespace GomLib
         }
         public void AddCrossLink(string name, string type, ulong reference)
         {
-            GomObject testNode = this.GetObjectNoLoad(name);
+            GomObject testNode = GetObjectNoLoad(name);
             if (testNode != null)
             {
                 if (testNode.References == null) testNode.References = new Dictionary<string, SortedSet<ulong>>();
@@ -386,7 +386,7 @@ namespace GomLib
         }
         public void AddCrossLinkRange(ulong id, string type, List<ulong> reference)
         {
-            GomObject testNode = this.GetObjectNoLoad(id);
+            GomObject testNode = GetObjectNoLoad(id);
             if (testNode != null)
             {
                 if (testNode.References == null) testNode.References = new Dictionary<string, SortedSet<ulong>>();
@@ -397,7 +397,7 @@ namespace GomLib
         }
         public void AddProtoCrossLink(ulong protoId, ulong id, string type, ulong reference)
         {
-            GomObject testNode = this.GetObjectNoLoad(protoId);
+            GomObject testNode = GetObjectNoLoad(protoId);
             if (testNode != null)
             {
                 if (testNode.ProtoReferences == null) testNode.ProtoReferences = new Dictionary<ulong, Dictionary<string, SortedSet<ulong>>>();
@@ -557,7 +557,7 @@ namespace GomLib
 
         private void LoadPrototype(ulong id)
         {
-            string path = String.Format("/resources/systemgenerated/prototypes/{0}.node", id);
+            string path = string.Format("/resources/systemgenerated/prototypes/{0}.node", id);
             File protoFile = _assets.FindFile(path);
             if (protoFile == null)
             {
@@ -571,14 +571,14 @@ namespace GomLib
                 int magicNum = br.ReadInt32();
                 if (magicNum != 0x544F5250)
                 {
-                    throw new InvalidOperationException(String.Format("{0} does not begin with PROT", path));
+                    throw new InvalidOperationException(string.Format("{0} does not begin with PROT", path));
                 }
 
                 br.ReadInt32(); // Skip 4 bytes
 
                 var proto = (GomObject)prototypeLoader.Load(br);
                 proto.Dom_ = this;
-                proto.Checksum = (long)protoFile.FileInfo.Checksum;
+                proto.Checksum = protoFile.FileInfo.Checksum;
                 if (!DomTypeMap.ContainsKey(proto.Id))
                 {
                     DomTypeMap.Add(proto.Id, proto);
@@ -598,7 +598,7 @@ namespace GomLib
                 var c9 = br.ReadByte();
                 if (c9 != 0xC9)
                 {
-                    throw new InvalidOperationException(String.Format("Unexpected character in buckets.info @ offset 0x8 - expected 0xC9 found {0:X2}", c9));
+                    throw new InvalidOperationException(string.Format("Unexpected character in buckets.info @ offset 0x8 - expected 0xC9 found {0:X2}", c9));
                 }
 
                 short numEntries = br.ReadInt16(Endianness.BigEndian);
@@ -616,7 +616,7 @@ namespace GomLib
             //var bucketFileName = BucketFiles[0];
             foreach (var bucketFileName in BucketFiles)
             {
-                string path = String.Format("/resources/systemgenerated/buckets/{0}", bucketFileName);
+                string path = string.Format("/resources/systemgenerated/buckets/{0}", bucketFileName);
                 File bucketFile = _assets.FindFile(path);
                 using (var fs = bucketFile.Open())
                 using (var br = new GomBinaryReader(fs, Encoding.UTF8, this))
@@ -672,7 +672,7 @@ namespace GomLib
                             DomTypeMap.Add(domType.Id, domType);
                             string type = domType.GetType().ToString();
 
-                            if (String.IsNullOrEmpty(domType.Name))
+                            if (string.IsNullOrEmpty(domType.Name))
                             {
                                 if (StoredIdMap.TryGetValue(domType.Id, out string storedTypeName))
                                 {
@@ -690,7 +690,7 @@ namespace GomLib
                     }
                     else
                     {
-                        throw new InvalidOperationException(String.Format("No loader for DomType 0x{1:X} as offset 0x{0:X}", offset, defType));
+                        throw new InvalidOperationException(string.Format("No loader for DomType 0x{1:X} as offset 0x{0:X}", offset, defType));
                     }
                 }
 
@@ -707,7 +707,7 @@ namespace GomLib
 
         private void AddToNameLookup(DomType type)
         {
-            if (String.IsNullOrEmpty(type.Name)) { return; }
+            if (string.IsNullOrEmpty(type.Name)) { return; }
 
             Type typeType = type.GetType();
             if (!nodeLookup.TryGetValue(typeType, out _))

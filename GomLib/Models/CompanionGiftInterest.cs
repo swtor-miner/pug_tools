@@ -9,7 +9,7 @@ namespace GomLib.Models
 {
     public class CompanionGiftInterest : IEquatable<CompanionGiftInterest>
     {
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Companion Companion { get; set; }
         [JsonConverter(typeof(StringEnumConverter))]
         public GiftType GiftType { get; set; }
@@ -43,11 +43,11 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, cgi)) return true;
 
-            if (this.GiftType != cgi.GiftType)
+            if (GiftType != cgi.GiftType)
                 return false;
-            if (this.Reaction != cgi.Reaction)
+            if (Reaction != cgi.Reaction)
                 return false;
-            if (this.RomancedReaction != cgi.RomancedReaction)
+            if (RomancedReaction != cgi.RomancedReaction)
                 return false;
             return true;
         }

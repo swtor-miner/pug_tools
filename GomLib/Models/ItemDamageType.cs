@@ -23,7 +23,7 @@ namespace GomLib.Models
     {
         public static ItemDamageType ToItemDamageType(this string str)
         {
-            if (String.IsNullOrEmpty(str)) return ItemDamageType.None;
+            if (string.IsNullOrEmpty(str)) return ItemDamageType.None;
 
             switch (str)
             {

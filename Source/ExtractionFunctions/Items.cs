@@ -50,7 +50,7 @@ namespace PugTools
             EnableButtons();
         }
         #region SQL
-        public string ItemDataFromFqnListToSQL(IEnumerable<GomLib.GomObject> itmList)
+        public string ItemDataFromFqnListToSQL(IEnumerable<GomObject> itmList)
         {
             int i = 0;
             _ = Environment.NewLine;

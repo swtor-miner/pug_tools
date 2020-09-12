@@ -21,19 +21,19 @@ namespace PugTools
         public bool isCompressed;
         public ushort compressedMethod;
 
-        public FileListItem(HashFileInfo hashInfo, TorLib.FileInfo info)
+        public FileListItem(HashFileInfo hashInfo, FileInfo info)
         {
-            this.name = hashInfo.FileName;
-            this.extension = hashInfo.Extension.ToUpper();
+            name = hashInfo.FileName;
+            extension = hashInfo.Extension.ToUpper();
             if (hashInfo.IsNamed)
-                this.directory = hashInfo.Directory;
+                directory = hashInfo.Directory;
             else
-                this.directory = "Unknown";
-            this.offset = info.Offset;
-            this.sizeCompressed = info.CompressedSize;
-            this.sizeUncompressed = info.UncompressedSize;
-            this.isCompressed = info.IsCompressed;
-            this.compressedMethod = info.CompressionMethod;
+                directory = "Unknown";
+            offset = info.Offset;
+            sizeCompressed = info.CompressedSize;
+            sizeUncompressed = info.UncompressedSize;
+            isCompressed = info.IsCompressed;
+            compressedMethod = info.CompressionMethod;
         }
 
         public static void ResetTreeListViewColumns(TreeListView tlv)

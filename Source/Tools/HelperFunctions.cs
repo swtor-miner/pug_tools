@@ -14,7 +14,7 @@ namespace PugTools
     {
         public static string NullSafeToString(this object obj)
         {
-            return obj != null ? obj.ToString() : String.Empty;
+            return obj != null ? obj.ToString() : string.Empty;
         }
     }
 }

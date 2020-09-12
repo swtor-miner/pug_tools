@@ -129,24 +129,24 @@ namespace GomLib.Models
                 return false;
             if (ReferenceEquals(this, entry))
                 return true;
-            if (this.Id != entry.Id)
+            if (Id != entry.Id)
                 return false;
-            if (this.MaxItemCount != entry.MaxItemCount)
+            if (MaxItemCount != entry.MaxItemCount)
                 return false;
-            if (this.Sources.Count != entry.Sources.Count)
+            if (Sources.Count != entry.Sources.Count)
                 return false;
-            if (this.LocalizedNameStrings != null && entry.LocalizedNameStrings != null)
+            if (LocalizedNameStrings != null && entry.LocalizedNameStrings != null)
             {
-                if (!this.LocalizedNameStrings.SequenceEqual(entry.LocalizedNameStrings))
+                if (!LocalizedNameStrings.SequenceEqual(entry.LocalizedNameStrings))
                 {
                     return false;
                 }
             }
-            if (!this.Sources.SequenceEqual(entry.Sources))
+            if (!Sources.SequenceEqual(entry.Sources))
             {
                 return false;
             }
-            if (!this.BonusAbilityByNum.SequenceEqual(entry.BonusAbilityByNum))
+            if (!BonusAbilityByNum.SequenceEqual(entry.BonusAbilityByNum))
             {
                 return false;
             }

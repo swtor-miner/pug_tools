@@ -18,7 +18,7 @@ namespace GomLib.Models
     {
         public static QuestCredits ToQuestCredits(this string str)
         {
-            if (String.IsNullOrEmpty(str)) { return QuestCredits.None; }
+            if (string.IsNullOrEmpty(str)) { return QuestCredits.None; }
             str = str.ToLower();
 
             switch (str)

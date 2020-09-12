@@ -89,8 +89,8 @@ namespace BrightIdeasSoftware
         {
             if (objectsToExport == null) throw new ArgumentNullException("objectsToExport");
 
-            this.ListView = olv ?? throw new ArgumentNullException("olv");
-            this.ModelObjects = ObjectListView.EnumerableToArray(objectsToExport, true);
+            ListView = olv ?? throw new ArgumentNullException("olv");
+            ModelObjects = ObjectListView.EnumerableToArray(objectsToExport, true);
         }
 
         #endregion
@@ -155,7 +155,7 @@ namespace BrightIdeasSoftware
         public string ExportTo(ExportFormat format)
         {
             if (results == null)
-                this.Convert();
+                Convert();
 
             return results[format];
         }
@@ -166,14 +166,14 @@ namespace BrightIdeasSoftware
         public void Convert()
         {
 
-            IList<OLVColumn> columns = this.IncludeHiddenColumns ? this.ListView.AllColumns : this.ListView.ColumnsInDisplayOrder;
+            IList<OLVColumn> columns = IncludeHiddenColumns ? ListView.AllColumns : ListView.ColumnsInDisplayOrder;
 
             StringBuilder sbText = new StringBuilder();
             StringBuilder sbCsv = new StringBuilder();
             StringBuilder sbHtml = new StringBuilder("<table>");
 
             // Include column headers
-            if (this.IncludeColumnHeaders)
+            if (IncludeColumnHeaders)
             {
                 List<string> strings = new List<string>();
                 foreach (OLVColumn col in columns)
@@ -184,7 +184,7 @@ namespace BrightIdeasSoftware
                 WriteOneRow(sbCsv, strings, "", ",", "", CsvEncode);
             }
 
-            foreach (object modelObject in this.ModelObjects)
+            foreach (object modelObject in ModelObjects)
             {
                 List<string> strings = new List<string>();
                 foreach (OLVColumn col in columns)

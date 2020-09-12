@@ -16,7 +16,7 @@ namespace GomLib.Models
     {
         public static Workstation ToWorkstation(this string str)
         {
-            if (String.IsNullOrEmpty(str)) return Workstation.None;
+            if (string.IsNullOrEmpty(str)) return Workstation.None;
             switch (str)
             {
                 case "prfWorkstationNone": return Workstation.None;
@@ -28,7 +28,7 @@ namespace GomLib.Models
 
         public static Workstation ToWorkstation(this ScriptEnum val)
         {
-            if (val == null) { return ToWorkstation(String.Empty); }
+            if (val == null) { return ToWorkstation(string.Empty); }
             return ToWorkstation(val.ToString());
         }
     }

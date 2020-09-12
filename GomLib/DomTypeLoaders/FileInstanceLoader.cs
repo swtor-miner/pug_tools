@@ -22,7 +22,7 @@ namespace GomLib.DomTypeLoaders
             int nameLen = reader.ReadInt32();
             result.Name = reader.ReadFixedLengthString(nameLen - 1);
             reader.ReadByte();
-            result.Description = String.Empty;
+            result.Description = string.Empty;
 
             reader.ReadByte();
             reader.ReadInt32();

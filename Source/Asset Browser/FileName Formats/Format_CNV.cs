@@ -22,7 +22,7 @@ namespace PugTools
         public Format_CNV(string dest, string ext)
         {
             this.dest = dest;
-            this.extension = ext;
+            extension = ext;
         }
 
         public void ParseCNVNodes(List<GomObject> cnvNodes)
@@ -81,11 +81,11 @@ namespace PugTools
 
         public void WriteFile()
         {
-            if (!System.IO.Directory.Exists(this.dest + "\\File_Names"))
-                System.IO.Directory.CreateDirectory(this.dest + "\\File_Names");
-            if (this.fileNames.Count > 0)
+            if (!Directory.Exists(dest + "\\File_Names"))
+                Directory.CreateDirectory(dest + "\\File_Names");
+            if (fileNames.Count > 0)
             {
-                System.IO.StreamWriter outputNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_file_names.txt", false);
+                StreamWriter outputNames = new StreamWriter(dest + "\\File_Names\\" + extension + "_file_names.txt", false);
                 foreach (string file in fileNames)
                 {
                     outputNames.Write(file.Replace("\\", "/") + "\r\n");
@@ -94,9 +94,9 @@ namespace PugTools
                 fileNames.Clear();
             }
 
-            if (this.animNames.Count > 0)
+            if (animNames.Count > 0)
             {
-                System.IO.StreamWriter outputAnimNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_anim_names.txt", false);
+                StreamWriter outputAnimNames = new StreamWriter(dest + "\\File_Names\\" + extension + "_anim_names.txt", false);
                 foreach (string file in animNames)
                 {
                     outputAnimNames.Write(file.Replace("\\", "/") + "\r\n");
@@ -105,9 +105,9 @@ namespace PugTools
                 animNames.Clear();
             }
 
-            if (this.fxSpecNames.Count > 0)
+            if (fxSpecNames.Count > 0)
             {
-                System.IO.StreamWriter outputfxSpecNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_fxspec_names.txt", false);
+                StreamWriter outputfxSpecNames = new StreamWriter(dest + "\\File_Names\\" + extension + "_fxspec_names.txt", false);
                 foreach (string file in fxSpecNames)
                 {
                     outputfxSpecNames.Write(file.Replace("\\", "/") + "\r\n");
@@ -116,9 +116,9 @@ namespace PugTools
                 fxSpecNames.Clear();
             }
 
-            if (this.errors.Count > 0)
+            if (errors.Count > 0)
             {
-                System.IO.StreamWriter outputErrors = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_error_list.txt", false);
+                StreamWriter outputErrors = new StreamWriter(dest + "\\File_Names\\" + extension + "_error_list.txt", false);
                 foreach (string error in errors)
                 {
                     outputErrors.Write(error + "\r\n");

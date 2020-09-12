@@ -32,7 +32,7 @@ namespace GomLib.ModelLoader
             defaultLoadoutData = new Dictionary<object, object>();
         }
 
-        public Models.ScFFShip Load(Models.ScFFShip shp, long Id, GomObjectData obj)
+        public ScFFShip Load(ScFFShip shp, long Id, GomObjectData obj)
         {
             if (obj == null) { return shp; }
             if (shp == null) { return null; }
@@ -77,7 +77,7 @@ namespace GomLib.ModelLoader
             long shortId = obj.ValueOrDefault<long>("scFFShortId", 0); //scFFShortIdtoShipIdMap has a lookup list for these in the current prototype ex. 1682
             object id = new object();
             Dictionary<object, object> shipIdLookup = new Dictionary<object, object>();
-            _dom.GetObject("scFFShipsDataPrototype").Data.ValueOrDefault<Dictionary<object, object>>("scFFShortIdtoShipIdMap", shipIdLookup).TryGetValue(shortId, out id);
+            _dom.GetObject("scFFShipsDataPrototype").Data.ValueOrDefault("scFFShortIdtoShipIdMap", shipIdLookup).TryGetValue(shortId, out id);
             shp.LookupId = 0;
             if (id != null)
             {
@@ -167,7 +167,7 @@ namespace GomLib.ModelLoader
                             object colorData = new object();
                             ComponentColorUIData.TryGetValue(colorId, out colorData);
                             ScFFColorOption col = new ScFFColorOption();
-                            _dom.scFFColorOptionLoader.Load(col, (GomLib.GomObjectData)colorData);
+                            _dom.scFFColorOptionLoader.Load(col, (GomObjectData)colorData);
                             colorNames.Add(col);
                         }
                         shp.ColorOptions.Add(colorListName, colorNames);
@@ -254,7 +254,7 @@ namespace GomLib.ModelLoader
             shp.Stats = new Dictionary<string, float>();
             if (statPackage != null)
             {
-                Dictionary<object, object> statsObject = statPackage.Data.ValueOrDefault<Dictionary<object, object>>("scFFShipStatData", new Dictionary<object, object>());
+                Dictionary<object, object> statsObject = statPackage.Data.ValueOrDefault("scFFShipStatData", new Dictionary<object, object>());
                 statPackage.Unload();
                 foreach (var stat in statsObject)
                 {
@@ -319,7 +319,7 @@ namespace GomLib.ModelLoader
                 {
                     GomObjectData costData = (GomObjectData)costLookup[shp.Id];
                     shp.Cost = costData.ValueOrDefault<long>("scFFShipCost", 0);
-                    shp.IsPurchasedWithCC = costData.ValueOrDefault<bool>("scFFIsPurchasedWithCC", false);
+                    shp.IsPurchasedWithCC = costData.ValueOrDefault("scFFIsPurchasedWithCC", false);
                 }
                 else
                 {
@@ -334,7 +334,7 @@ namespace GomLib.ModelLoader
             return shp;
         }
 
-        private void CheckAvailability(Models.ScFFShip shp, ScriptEnum availability)
+        private void CheckAvailability(ScFFShip shp, ScriptEnum availability)
         {
             bool available = false;
             bool deprecated = false;

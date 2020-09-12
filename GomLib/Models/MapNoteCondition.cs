@@ -30,7 +30,7 @@ namespace GomLib.Models
     {
         public static MapNoteCondition ToMapNoteCondition(this string str)
         {
-            if (String.IsNullOrEmpty(str)) return MapNoteCondition.Unknown;
+            if (string.IsNullOrEmpty(str)) return MapNoteCondition.Unknown;
 
             switch (str)
             {

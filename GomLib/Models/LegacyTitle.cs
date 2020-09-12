@@ -34,11 +34,11 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, title)) return true;
 
-            if (this.LegacyTitleId != title.LegacyTitleId)
+            if (LegacyTitleId != title.LegacyTitleId)
                 return false;
-            if (this.LegacyTitleStringId != title.LegacyTitleStringId)
+            if (LegacyTitleStringId != title.LegacyTitleStringId)
                 return false;
-            if (this.LegacyTitleString != title.LegacyTitleString)
+            if (LegacyTitleString != title.LegacyTitleString)
                 return false;
 
             return true;

@@ -18,8 +18,8 @@ namespace GomLib.Models
 
         public override int GetHashCode()
         {
-            int hash = this.Name.GetHashCode();
-            hash ^= this.ClassSpec.Id.GetHashCode();
+            int hash = Name.GetHashCode();
+            hash ^= ClassSpec.Id.GetHashCode();
             return hash;
         }
 
@@ -50,46 +50,46 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, obj)) return true;
 
-            if (!this.AdvancedClassPkgIds.SequenceEqual(obj.AdvancedClassPkgIds))
+            if (!AdvancedClassPkgIds.SequenceEqual(obj.AdvancedClassPkgIds))
                 return false;
-            if (!this.AdvancedClassPkgs.SequenceEqual(obj.AdvancedClassPkgs))
+            if (!AdvancedClassPkgs.SequenceEqual(obj.AdvancedClassPkgs))
                 return false;
-            if (!this.BaseClassPkgIds.SequenceEqual(obj.BaseClassPkgIds))
+            if (!BaseClassPkgIds.SequenceEqual(obj.BaseClassPkgIds))
                 return false;
-            if (!this.BaseClassPkgs.SequenceEqual(obj.BaseClassPkgs))
+            if (!BaseClassPkgs.SequenceEqual(obj.BaseClassPkgs))
                 return false;
-            if (this.ClassBackground != obj.ClassBackground)
+            if (ClassBackground != obj.ClassBackground)
                 return false;
-            if (this.ClassSpecId != obj.ClassSpecId)
+            if (ClassSpecId != obj.ClassSpecId)
                 return false;
-            if (!this.ClassSpec.Equals(obj.ClassSpec))
+            if (!ClassSpec.Equals(obj.ClassSpec))
                 return false;
-            if (this.Description != obj.Description)
+            if (Description != obj.Description)
                 return false;
-            if (this.DescriptionId != obj.DescriptionId)
+            if (DescriptionId != obj.DescriptionId)
                 return false;
-            if (!this.Disciplines.SequenceEqual(obj.Disciplines))
+            if (!Disciplines.SequenceEqual(obj.Disciplines))
                 return false;
-            if (this.Fqn != obj.Fqn)
+            if (Fqn != obj.Fqn)
                 return false;
-            if (this.Id != obj.Id)
+            if (Id != obj.Id)
                 return false;
 
             var dComp = new DictionaryComparer<string, string>();
-            if (!dComp.Equals(this.LocalizedDescription, obj.LocalizedDescription))
+            if (!dComp.Equals(LocalizedDescription, obj.LocalizedDescription))
                 return false;
-            if (!dComp.Equals(this.LocalizedName, obj.LocalizedName))
+            if (!dComp.Equals(LocalizedName, obj.LocalizedName))
                 return false;
 
-            if (this.Name != obj.Name)
+            if (Name != obj.Name)
                 return false;
-            if (this.NameId != obj.NameId)
+            if (NameId != obj.NameId)
                 return false;
-            if (!this.UtilityPkg.Equals(obj.Name))
+            if (!UtilityPkg.Equals(obj.Name))
                 return false;
-            if (this.UtilPkgIsActive != obj.UtilPkgIsActive)
+            if (UtilPkgIsActive != obj.UtilPkgIsActive)
                 return false;
-            if (this.UtiltyPkgId != obj.UtiltyPkgId)
+            if (UtiltyPkgId != obj.UtiltyPkgId)
                 return false;
 
             return true;
@@ -98,7 +98,7 @@ namespace GomLib.Models
         [JsonConverter(typeof(ULongConverter))]
         public ulong UtiltyPkgId { get; set; }
         public string UtiltyPkgB62Id { get { if (UtiltyPkgId != 0) return UtiltyPkgId.ToMaskedBase62(); else return ""; } }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal AbilityPackage _UtilityPkg;
         public AbilityPackage UtilityPkg
         {
@@ -158,7 +158,7 @@ namespace GomLib.Models
                 return null;
             }
         }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal List<AbilityPackage> _BaseClassPkgs;
         public List<AbilityPackage> BaseClassPkgs
         {

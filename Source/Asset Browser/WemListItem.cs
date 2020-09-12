@@ -20,16 +20,16 @@ namespace PugTools
         public WemListItem(string name, WEM_File obj)
         {
             this.name = name;
-            this.obj = (WEM_File)obj;
-            this.size = (obj.Data.Count() / 1024);
-            this.value = "";
+            this.obj = obj;
+            size = (obj.Data.Count() / 1024);
+            value = "";
         }
 
         public WemListItem(string name, FileFormat_BNK_DIDX didx)
         {
             this.name = name;
-            this.size = 0;
-            this.value = "";
+            size = 0;
+            value = "";
             BnkIdDict dict = BnkIdDict.Instance;
             if (didx.wems.Count > 0)
             {
@@ -40,7 +40,7 @@ namespace PugTools
                     {
                         wem.Name = dict.Data[id] + ".wem";
                     }
-                    this.children.Add(new WemListItem(wem.Name.ToString(), wem));
+                    children.Add(new WemListItem(wem.Name.ToString(), wem));
                 }
             }
         }
@@ -53,7 +53,7 @@ namespace PugTools
             {
                 foreach (FileFormat_BNK_STID_SoundBank bnk in stid.soundBanks)
                 {
-                    this.children.Add(new WemListItem(bnk));
+                    children.Add(new WemListItem(bnk));
                 }
             }
         }
@@ -146,7 +146,7 @@ namespace PugTools
                             break;
 
                     }
-                    this.children.Add(new WemListItem(displayName, kvp.Value));
+                    children.Add(new WemListItem(displayName, kvp.Value));
                 }
                 //Console.WriteLine("pause here");
             }
@@ -158,8 +158,8 @@ namespace PugTools
             this.name = name;
             foreach (var obj in objList)
             {
-                FileFormat_BNK_HIRC_Object hircObj = (FileFormat_BNK_HIRC_Object)obj;
-                this.children.Add(new WemListItem(obj.id.ToString(), (FileFormat_BNK_HIRC_Object)hircObj));
+                FileFormat_BNK_HIRC_Object hircObj = obj;
+                children.Add(new WemListItem(obj.id.ToString(), hircObj));
             }
         }
 
@@ -175,13 +175,13 @@ namespace PugTools
             uint.TryParse(this.name, out uint id);
             if (dict.Data.Keys.Contains(id))
             {
-                this.value = dict.Data[id];
+                value = dict.Data[id];
             }
         }
 
         public WemListItem(FileFormat_BNK_STID_SoundBank bnk)
         {
-            this.name = bnk.name;
+            name = bnk.name;
         }
 
         public static void ResetTreeListViewColumns(BrightIdeasSoftware.TreeListView tlv)

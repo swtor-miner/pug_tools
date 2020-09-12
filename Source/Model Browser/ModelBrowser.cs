@@ -242,7 +242,7 @@ namespace PugTools
                 int intLength = temp.Length;
                 for (int intCount2 = 0; intCount2 <= intLength; intCount2++)
                 {
-                    string output = String.Join(".", temp, 0, intCount2);
+                    string output = string.Join(".", temp, 0, intCount2);
                     if (output != "")
                         allDirs.Add(output);
                 }
@@ -251,7 +251,7 @@ namespace PugTools
             foreach (var dir in allDirs)
             {
                 string[] temp = dir.ToString().Split('.');
-                string parentDir = String.Join(".", temp.Take(temp.Length - 1));
+                string parentDir = string.Join(".", temp.Take(temp.Length - 1));
                 if (parentDir == "")
                     parentDir = "/nodes";
                 string display = temp.Last();
@@ -305,7 +305,7 @@ namespace PugTools
 
                             if (hashInfo.FileState == HashFileInfo.State.New)
                             {
-                                string assetFilename = String.Format("{0}{1}/{2}", prefixNew, hashInfo.Directory, hashInfo.FileName);
+                                string assetFilename = string.Format("{0}{1}/{2}", prefixNew, hashInfo.Directory, hashInfo.FileName);
                                 if (!assetDict.ContainsKey(assetFilename))
                                 {
                                     NodeAsset assetNew = new NodeAsset(prefixNew + hashInfo.Directory + "/" + hashInfo.FileName, prefixNew + hashInfo.Directory, hashInfo.FileName, hashInfo);
@@ -315,7 +315,7 @@ namespace PugTools
                             }
                             if (hashInfo.FileState == HashFileInfo.State.Modified)
                             {
-                                string assetFilename = String.Format("{0}{1}/{2}", prefixMod, hashInfo.Directory, hashInfo.FileName);
+                                string assetFilename = string.Format("{0}{1}/{2}", prefixMod, hashInfo.Directory, hashInfo.FileName);
                                 if (!assetDict.ContainsKey(assetFilename))
                                 {
                                     NodeAsset assetMod = new NodeAsset(assetFilename, prefixMod + hashInfo.Directory, hashInfo.FileName, hashInfo);
@@ -357,7 +357,7 @@ namespace PugTools
                 int intLength = temp.Length;
                 for (int intCount2 = 0; intCount2 <= intLength; intCount2++)
                 {
-                    string output = String.Join("/", temp, 0, intCount2);
+                    string output = string.Join("/", temp, 0, intCount2);
                     if (output != "")
                         allDirs.Add(output);
                 }
@@ -370,7 +370,7 @@ namespace PugTools
             foreach (var dir in allDirs)
             {
                 string[] temp = dir.ToString().Split('/');
-                string parentDir = String.Join("/", temp.Take(temp.Length - 1));
+                string parentDir = string.Join("/", temp.Take(temp.Length - 1));
                 if (parentDir == "")
                     parentDir = "/assets";
                 string display = temp.Last();
@@ -1482,7 +1482,7 @@ namespace PugTools
                     }
                     if (model.Contains(".dds"))
                     {
-                        Stream inputStream = this.currentAssets.FindFile("/resources" + model).OpenCopyInMemory();
+                        Stream inputStream = currentAssets.FindFile("/resources" + model).OpenCopyInMemory();
                         if (inputStream != null)
                             resources.Add(model.Substring(model.LastIndexOf('/') + 1), inputStream);
                     }
@@ -1826,7 +1826,7 @@ namespace PugTools
                                 foreach (var attach in appSlot.Value[0].AttachedModels)
                                 {
                                     string attachFile = attach.Replace("[bt]", Bodytype);
-                                    var file = this.currentAssets.FindFile("/resources" + attachFile);
+                                    var file = currentAssets.FindFile("/resources" + attachFile);
 
                                     if (file != null)
                                     {

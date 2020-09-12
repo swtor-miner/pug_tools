@@ -36,9 +36,9 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, cpm)) return true;
 
-            if (this.Modifier != cpm.Modifier)
+            if (Modifier != cpm.Modifier)
                 return false;
-            if (this.Stat != cpm.Stat)
+            if (Stat != cpm.Stat)
                 return false;
             return true;
         }

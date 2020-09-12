@@ -216,12 +216,12 @@ namespace DevIL.Unmanaged
 
         public override string ToString()
         {
-            return String.Format("ImageID: {0}", m_id.ToString());
+            return string.Format("ImageID: {0}", m_id.ToString());
         }
 
     }
 
-    [StructLayoutAttribute(LayoutKind.Sequential)]
+    [StructLayout(LayoutKind.Sequential)]
     public struct ImageInfo
     {
         public DataFormat Format;
@@ -261,7 +261,7 @@ namespace DevIL.Unmanaged
         {
             get
             {
-                return PaletteType != DevIL.PaletteType.None;
+                return PaletteType != PaletteType.None;
             }
         }
 
@@ -282,7 +282,7 @@ namespace DevIL.Unmanaged
         }
     }
 
-    [StructLayoutAttribute(LayoutKind.Sequential)]
+    [StructLayout(LayoutKind.Sequential)]
     public struct PointF
     {
         readonly float X;
@@ -295,7 +295,7 @@ namespace DevIL.Unmanaged
         }
     }
 
-    [StructLayoutAttribute(LayoutKind.Sequential)]
+    [StructLayout(LayoutKind.Sequential)]
     public struct PointI
     {
         readonly int X;

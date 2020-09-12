@@ -22,7 +22,7 @@ namespace GomLib.ModelLoader
             IdLookup = new Dictionary<object, object>();
         }
 
-        public Models.Empty Load(Models.Empty model, GomObject gom)
+        public Empty Load(Empty model, GomObject gom)
         {
             if (gom == null) { return model; }
             if (model == null) { return null; }

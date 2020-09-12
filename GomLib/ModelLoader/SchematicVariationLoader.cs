@@ -48,11 +48,11 @@ namespace GomLib.ModelLoader
             {
                 //Load the modifier list
                 GomObject modpackTable = _dom.GetObject("itmModifierPackageTablePrototype");
-                _modifierDict = modpackTable.Data.ValueOrDefault<Dictionary<object, object>>("itmModifierNewPackagesList", new Dictionary<object, object>()); //I really should remove .Get()
+                _modifierDict = modpackTable.Data.ValueOrDefault("itmModifierNewPackagesList", new Dictionary<object, object>()); //I really should remove .Get()
                 modpackTable.Unload();
             }
 
-            GomLib.Models.Schematic baseSchem = _dom.schematicLoader.Load(id);
+            Models.Schematic baseSchem = _dom.schematicLoader.Load(id);
 
             string baseItemName;
             long baseItemLevel = 0;
@@ -87,7 +87,7 @@ namespace GomLib.ModelLoader
 
                         long min = modifierData.ValueOrDefault<long>("itmModPkgMinLevel", 0);
                         long max = modifierData.ValueOrDefault<long>("itmModPkgMaxLevel", 0);
-                        Dictionary<object, object> statModDict = modifierData.ValueOrDefault<Dictionary<object, object>>("itmModPkgAttributePercentages", new Dictionary<object, object>());
+                        Dictionary<object, object> statModDict = modifierData.ValueOrDefault("itmModPkgAttributePercentages", new Dictionary<object, object>());
 
                         //Key to stat enum, value is the percentage divided by 100.
                         Dictionary<Models.DetailedStat, float> statValuesByStat = statModDict.ToDictionary(x => _dom.statData.ToStat((ScriptEnum)x.Key),

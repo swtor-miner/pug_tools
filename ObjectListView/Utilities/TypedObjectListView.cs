@@ -92,7 +92,7 @@ namespace BrightIdeasSoftware
         /// </summary>
         public virtual T CheckedObject
         {
-            get { return (T)this.olv.CheckedObject; }
+            get { return (T)olv.CheckedObject; }
         }
 
         /// <summary>
@@ -102,14 +102,14 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                IList checkedObjects = this.olv.CheckedObjects;
+                IList checkedObjects = olv.CheckedObjects;
                 List<T> objects = new List<T>(checkedObjects.Count);
                 foreach (object x in checkedObjects)
                     objects.Add((T)x);
 
                 return objects;
             }
-            set { this.olv.CheckedObjects = (IList)value; }
+            set { olv.CheckedObjects = (IList)value; }
         }
 
         /// <summary>
@@ -129,13 +129,13 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                List<T> objects = new List<T>(this.olv.GetItemCount());
-                for (int i = 0; i < this.olv.GetItemCount(); i++)
-                    objects.Add(this.GetModelObject(i));
+                List<T> objects = new List<T>(olv.GetItemCount());
+                for (int i = 0; i < olv.GetItemCount(); i++)
+                    objects.Add(GetModelObject(i));
 
                 return objects;
             }
-            set { this.olv.SetObjects(value); }
+            set { olv.SetObjects(value); }
         }
 
         /// <summary>
@@ -144,8 +144,8 @@ namespace BrightIdeasSoftware
         /// </summary>
         public virtual T SelectedObject
         {
-            get { return (T)this.olv.SelectedObject; }
-            set { this.olv.SelectedObject = value; }
+            get { return (T)olv.SelectedObject; }
+            set { olv.SelectedObject = value; }
         }
 
         /// <summary>
@@ -155,13 +155,13 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                List<T> objects = new List<T>(this.olv.SelectedIndices.Count);
-                foreach (int index in this.olv.SelectedIndices)
-                    objects.Add((T)this.olv.GetModelObject(index));
+                List<T> objects = new List<T>(olv.SelectedIndices.Count);
+                foreach (int index in olv.SelectedIndices)
+                    objects.Add((T)olv.GetModelObject(index));
 
                 return objects;
             }
-            set { this.olv.SelectedObjects = (IList)value; }
+            set { olv.SelectedObjects = (IList)value; }
         }
 
         //--------------------------------------------------------------------------------------
@@ -174,7 +174,7 @@ namespace BrightIdeasSoftware
         /// <returns>A typed column or null</returns>
         public virtual TypedColumn<T> GetColumn(int i)
         {
-            return new TypedColumn<T>(this.olv.GetColumn(i));
+            return new TypedColumn<T>(olv.GetColumn(i));
         }
 
         /// <summary>
@@ -184,7 +184,7 @@ namespace BrightIdeasSoftware
         /// <returns>A typed column or null</returns>
         public virtual TypedColumn<T> GetColumn(string name)
         {
-            return new TypedColumn<T>(this.olv.GetColumn(name));
+            return new TypedColumn<T>(olv.GetColumn(name));
         }
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace BrightIdeasSoftware
         /// <returns>The model object or null</returns>
         public virtual T GetModelObject(int index)
         {
-            return (T)this.olv.GetModelObject(index);
+            return (T)olv.GetModelObject(index);
         }
 
         //--------------------------------------------------------------------------------------
@@ -215,13 +215,13 @@ namespace BrightIdeasSoftware
             get { return checkStateGetter; }
             set
             {
-                this.checkStateGetter = value;
+                checkStateGetter = value;
                 if (value == null)
-                    this.olv.CheckStateGetter = null;
+                    olv.CheckStateGetter = null;
                 else
-                    this.olv.CheckStateGetter = delegate (object x)
+                    olv.CheckStateGetter = delegate (object x)
                     {
-                        return this.checkStateGetter((T)x);
+                        return checkStateGetter((T)x);
                     };
             }
         }
@@ -242,9 +242,9 @@ namespace BrightIdeasSoftware
             set
             {
                 if (value == null)
-                    this.olv.BooleanCheckStateGetter = null;
+                    olv.BooleanCheckStateGetter = null;
                 else
-                    this.olv.BooleanCheckStateGetter = delegate (object x)
+                    olv.BooleanCheckStateGetter = delegate (object x)
                     {
                         return value((T)x);
                     };
@@ -267,13 +267,13 @@ namespace BrightIdeasSoftware
             get { return checkStatePutter; }
             set
             {
-                this.checkStatePutter = value;
+                checkStatePutter = value;
                 if (value == null)
-                    this.olv.CheckStatePutter = null;
+                    olv.CheckStatePutter = null;
                 else
-                    this.olv.CheckStatePutter = delegate (object x, CheckState newValue)
+                    olv.CheckStatePutter = delegate (object x, CheckState newValue)
                     {
-                        return this.checkStatePutter((T)x, newValue);
+                        return checkStatePutter((T)x, newValue);
                     };
             }
         }
@@ -295,9 +295,9 @@ namespace BrightIdeasSoftware
             set
             {
                 if (value == null)
-                    this.olv.BooleanCheckStatePutter = null;
+                    olv.BooleanCheckStatePutter = null;
                 else
-                    this.olv.BooleanCheckStatePutter = delegate (object x, bool newValue)
+                    olv.BooleanCheckStatePutter = delegate (object x, bool newValue)
                     {
                         return value((T)x, newValue);
                     };
@@ -310,7 +310,7 @@ namespace BrightIdeasSoftware
         /// <param name="column"></param>
         /// <param name="modelObject"></param>
         /// <returns></returns>
-        public delegate String TypedCellToolTipGetterDelegate(OLVColumn column, T modelObject);
+        public delegate string TypedCellToolTipGetterDelegate(OLVColumn column, T modelObject);
 
         /// <summary>
         /// Gets or sets the cell tooltip getter
@@ -320,9 +320,9 @@ namespace BrightIdeasSoftware
             set
             {
                 if (value == null)
-                    this.olv.CellToolTipGetter = null;
+                    olv.CellToolTipGetter = null;
                 else
-                    this.olv.CellToolTipGetter = delegate (OLVColumn col, Object x)
+                    olv.CellToolTipGetter = delegate (OLVColumn col, object x)
                     {
                         return value(col, (T)x);
                     };
@@ -334,8 +334,8 @@ namespace BrightIdeasSoftware
         /// </summary>
         public virtual HeaderToolTipGetterDelegate HeaderToolTipGetter
         {
-            get { return this.olv.HeaderToolTipGetter; }
-            set { this.olv.HeaderToolTipGetter = value; }
+            get { return olv.HeaderToolTipGetter; }
+            set { olv.HeaderToolTipGetter = value; }
         }
 
         //--------------------------------------------------------------------------------------
@@ -346,8 +346,8 @@ namespace BrightIdeasSoftware
         /// </summary>
         public virtual void GenerateAspectGetters()
         {
-            for (int i = 0; i < this.ListView.Columns.Count; i++)
-                this.GetColumn(i).GenerateAspectGetter();
+            for (int i = 0; i < ListView.Columns.Count; i++)
+                GetColumn(i).GenerateAspectGetter();
         }
     }
 
@@ -372,44 +372,44 @@ namespace BrightIdeasSoftware
         /// </summary>
         /// <param name="rowObject"></param>
         /// <returns></returns>
-        public delegate Object TypedAspectGetterDelegate(T rowObject);
+        public delegate object TypedAspectGetterDelegate(T rowObject);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="rowObject"></param>
         /// <param name="newValue"></param>
-        public delegate void TypedAspectPutterDelegate(T rowObject, Object newValue);
+        public delegate void TypedAspectPutterDelegate(T rowObject, object newValue);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="rowObject"></param>
         /// <returns></returns>
-        public delegate Object TypedGroupKeyGetterDelegate(T rowObject);
+        public delegate object TypedGroupKeyGetterDelegate(T rowObject);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="rowObject"></param>
         /// <returns></returns>
-        public delegate Object TypedImageGetterDelegate(T rowObject);
+        public delegate object TypedImageGetterDelegate(T rowObject);
 
         /// <summary>
         /// 
         /// </summary>
         public TypedAspectGetterDelegate AspectGetter
         {
-            get { return this.aspectGetter; }
+            get { return aspectGetter; }
             set
             {
-                this.aspectGetter = value;
+                aspectGetter = value;
                 if (value == null)
-                    this.column.AspectGetter = null;
+                    column.AspectGetter = null;
                 else
-                    this.column.AspectGetter = delegate (object x)
+                    column.AspectGetter = delegate (object x)
                     {
-                        return x == null ? null : this.aspectGetter((T)x);
+                        return x == null ? null : aspectGetter((T)x);
                     };
             }
         }
@@ -423,13 +423,13 @@ namespace BrightIdeasSoftware
             get { return aspectPutter; }
             set
             {
-                this.aspectPutter = value;
+                aspectPutter = value;
                 if (value == null)
-                    this.column.AspectPutter = null;
+                    column.AspectPutter = null;
                 else
-                    this.column.AspectPutter = delegate (object x, object newValue)
+                    column.AspectPutter = delegate (object x, object newValue)
                     {
-                        this.aspectPutter((T)x, newValue);
+                        aspectPutter((T)x, newValue);
                     };
             }
         }
@@ -443,13 +443,13 @@ namespace BrightIdeasSoftware
             get { return imageGetter; }
             set
             {
-                this.imageGetter = value;
+                imageGetter = value;
                 if (value == null)
-                    this.column.ImageGetter = null;
+                    column.ImageGetter = null;
                 else
-                    this.column.ImageGetter = delegate (object x)
+                    column.ImageGetter = delegate (object x)
                     {
-                        return this.imageGetter((T)x);
+                        return imageGetter((T)x);
                     };
             }
         }
@@ -463,13 +463,13 @@ namespace BrightIdeasSoftware
             get { return groupKeyGetter; }
             set
             {
-                this.groupKeyGetter = value;
+                groupKeyGetter = value;
                 if (value == null)
-                    this.column.GroupKeyGetter = null;
+                    column.GroupKeyGetter = null;
                 else
-                    this.column.GroupKeyGetter = delegate (object x)
+                    column.GroupKeyGetter = delegate (object x)
                     {
-                        return this.groupKeyGetter((T)x);
+                        return groupKeyGetter((T)x);
                     };
             }
         }
@@ -496,8 +496,8 @@ namespace BrightIdeasSoftware
         /// </remarks>
         public void GenerateAspectGetter()
         {
-            if (!String.IsNullOrEmpty(this.column.AspectName))
-                this.AspectGetter = this.GenerateAspectGetter(typeof(T), this.column.AspectName);
+            if (!string.IsNullOrEmpty(column.AspectName))
+                AspectGetter = GenerateAspectGetter(typeof(T), column.AspectName);
         }
 
         /// <summary>
@@ -510,9 +510,9 @@ namespace BrightIdeasSoftware
         /// <returns>A typed delegate</returns>
         private TypedAspectGetterDelegate GenerateAspectGetter(Type type, string path)
         {
-            DynamicMethod getter = new DynamicMethod(String.Empty,
-                typeof(Object), new Type[] { type }, type, true);
-            this.GenerateIL(type, path, getter.GetILGenerator());
+            DynamicMethod getter = new DynamicMethod(string.Empty,
+                typeof(object), new Type[] { type }, type, true);
+            GenerateIL(type, path, getter.GetILGenerator());
             return (TypedAspectGetterDelegate)getter.CreateDelegate(typeof(TypedAspectGetterDelegate));
         }
 
@@ -531,7 +531,7 @@ namespace BrightIdeasSoftware
             string[] parts = path.Split('.');
             for (int i = 0; i < parts.Length; i++)
             {
-                type = this.GeneratePart(il, type, parts[i], (i == parts.Length - 1));
+                type = GeneratePart(il, type, parts[i], (i == parts.Length - 1));
                 if (type == null)
                     break;
             }
@@ -567,7 +567,7 @@ namespace BrightIdeasSoftware
                 if (Munger.IgnoreMissingAspects)
                     il.Emit(OpCodes.Ldnull);
                 else
-                    il.Emit(OpCodes.Ldstr, String.Format("'{0}' is not a parameter-less method, property or field of type '{1}'", pathPart, type.FullName));
+                    il.Emit(OpCodes.Ldstr, string.Format("'{0}' is not a parameter-less method, property or field of type '{1}'", pathPart, type.FullName));
                 return null;
             }
 

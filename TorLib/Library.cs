@@ -44,7 +44,7 @@ namespace TorLib
     public class Library : IDisposable
     {
         // public static Library Current { get; private set; }
-        private readonly Object lockObject = new Object();
+        private readonly object lockObject = new object();
 
         private readonly Dictionary<ulong, MetadataEntry> metadataLookup = new Dictionary<ulong, MetadataEntry>();
         private readonly Dictionary<ulong, string> duplicateDict = new Dictionary<ulong, string>();
@@ -67,11 +67,11 @@ namespace TorLib
 
         public Library(string name, string dir)
         {
-            this.Name = name;
-            this.Location = dir;
+            Name = name;
+            Location = dir;
 
-            Boolean.TryParse(System.Configuration.ConfigurationManager.AppSettings["usePtrData"], out bool isPtr);
-            this.IsPtr = isPtr;
+            bool.TryParse(System.Configuration.ConfigurationManager.AppSettings["usePtrData"], out bool isPtr);
+            IsPtr = isPtr;
         }
 
         public void Dispose()
@@ -136,33 +136,33 @@ namespace TorLib
 
                 Archive archive = null;
                 bool hasFile;
-                string basePath = this.Location;
+                string basePath = Location;
                 for (var i = 1; ; i++)
                 {
                     string filePath = null;
                     //string filePath = Path.Combine(basePath, String.Format("assets_{0}_{1}.tor", this.Name, i));
                     if (IsPtr)
                     {
-                        filePath = Path.Combine(basePath, String.Format("swtor_test_{0}_{1}.tor", this.Name, i));
+                        filePath = Path.Combine(basePath, string.Format("swtor_test_{0}_{1}.tor", Name, i));
                         // Console.WriteLine("WARNING: USING PTR DATA");
                     }
                     else
                     {
-                        filePath = Path.Combine(basePath, String.Format("swtor_{0}_{1}.tor", this.Name, i));
+                        filePath = Path.Combine(basePath, string.Format("swtor_{0}_{1}.tor", Name, i));
                     }
 
                     hasFile = System.IO.File.Exists(filePath);
 
                     if (!hasFile)
                     {
-                        filePath = Path.Combine(basePath, String.Format("red_{0}.tor", this.Name, i));
+                        filePath = Path.Combine(basePath, string.Format("red_{0}.tor", Name, i));
                         hasFile = System.IO.File.Exists(filePath);
                         if (!hasFile)
                         {
                             if (archive == null)
                             {
                                 // Can't find a single file for this library?! Something is quite wrong with this.
-                                throw new InvalidOperationException("Cannot find any files for library named " + this.Name + " in " + this.Location);
+                                throw new InvalidOperationException("Cannot find any files for library named " + Name + " in " + Location);
                             }
 
                             // What is currently in 'archive' is the last archive in this library -- we need to get metadata from it!
@@ -172,7 +172,7 @@ namespace TorLib
                                 throw new InvalidOperationException("Cannot Load metadata.bin for this library from " + archive.FileName);
                             }
 
-                            this.LoadMetadataFromFile(metadataFile);
+                            LoadMetadataFromFile(metadataFile);
 
                             break;
                         }
@@ -186,7 +186,7 @@ namespace TorLib
                     archives[i] = archive;
                 }
 
-                this.Loaded = true;
+                Loaded = true;
                 return;
             }
         }
@@ -200,9 +200,9 @@ namespace TorLib
 
         public File FindFile(string path)
         {
-            if (!this.Loaded)
+            if (!Loaded)
             {
-                this.Load();
+                Load();
             }
 
             // path = String.Format("/resources{0}", path.Replace('\\', '/'));
@@ -249,7 +249,7 @@ namespace TorLib
                     };
 
                     //Considerably faster than throwing exceptions.
-                    UInt64 fid = fileId.AsUInt64();
+                    ulong fid = fileId.AsUInt64();
                     if (!metadataLookup.ContainsKey(fid))
                     {
                         metadataLookup.Add(fid, entry);

@@ -1,23 +1,12 @@
-﻿using System;
+﻿using GomLib;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.Net;
-using System.Windows;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Win32;
-using MySql.Data.MySqlClient;
-using System.Text.RegularExpressions;
 using System.Xml;
-using System.IO;
 using System.Xml.Linq;
-using System.Xml.Serialization;
-using GomLib;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace PugTools
@@ -31,14 +20,7 @@ namespace PugTools
         static bool removeUnchangedElements = true;
         static readonly string prefix = ""; //"Verbose";
         static bool Loaded = false;
-        private static bool formOpen = V;
-        private static readonly List<string> localizations = new List<string> {
-                "enMale",
-                "enFemale",
-                "frMale",
-                "frFemale",
-                "deMale",
-                "deFemale"};
+
         public Tools()
         {
             Config.Load();
@@ -81,7 +63,7 @@ namespace PugTools
                 "Set Bonuses",
                 "Codex Category Totals",
                 "Schematic Variations",
-				// "Build Bnk ID Dict",  // Broken, issue passed to Markus for investigation.
+                // "Build Bnk ID Dict",  // Broken, issue passed to Markus for investigation.
                 // "Dulfy"  // Dulfy's no longer active so...
             });
             comboBoxExtractTypes.SelectedIndex = 0;
@@ -99,7 +81,7 @@ namespace PugTools
             string subPath = "";
             if (filename.Contains('\\'))
                 subPath = filename.Substring(0, filename.LastIndexOf('\\'));
-            if (!System.IO.Directory.Exists(Config.ExtractPath + prefix + subPath)) { System.IO.Directory.CreateDirectory(Config.ExtractPath + prefix + subPath); }
+            if (!Directory.Exists(Config.ExtractPath + prefix + subPath)) { Directory.CreateDirectory(Config.ExtractPath + prefix + subPath); }
             return Config.ExtractPath + prefix + filename;
         }
 
@@ -108,8 +90,8 @@ namespace PugTools
             string subPath = "";
             if (filename.Contains('\\'))
                 subPath = filename.Substring(0, filename.LastIndexOf('\\'));
-            if (!System.IO.Directory.Exists(Config.ExtractPath + prefix + subPath)) { System.IO.Directory.CreateDirectory(Config.ExtractPath + prefix + subPath); }
-            using (System.IO.StreamWriter file2 = new System.IO.StreamWriter(Config.ExtractPath + prefix + filename, append))
+            if (!Directory.Exists(Config.ExtractPath + prefix + subPath)) { Directory.CreateDirectory(Config.ExtractPath + prefix + subPath); }
+            using (StreamWriter file2 = new StreamWriter(Config.ExtractPath + prefix + filename, append))
             {
                 file2.Write(content);
             }
@@ -127,7 +109,7 @@ namespace PugTools
             if (trimEmpty)
             {
                 content.Descendants()
-                    .Where(e => e.IsEmpty || String.IsNullOrWhiteSpace(e.Value))
+                    .Where(e => e.IsEmpty || string.IsNullOrWhiteSpace(e.Value))
                     .Remove();
             }
             if (content.Root.IsEmpty) return;
@@ -137,7 +119,7 @@ namespace PugTools
                     foreach (var child in content.Root.Elements())
                     {
                         if (child.Descendants().Count() >= 3 || (child.Descendants().Attributes("Status").Count() != 0 || child.Descendants().Attributes("OldValue").Count() != 0))
-                            WriteFile(new XDocument(child), String.Format("AdvancedClasses\\{0}{1}.xml", (chkBuildCompare.Checked ? "Changed" : ""), child.Element("Name").Value.Replace(" ", "_")), append, trimEmpty);
+                            WriteFile(new XDocument(child), string.Format("AdvancedClasses\\{0}{1}.xml", (chkBuildCompare.Checked ? "Changed" : ""), child.Element("Name").Value.Replace(" ", "_")), append, trimEmpty);
                     }
                     return;
             }
@@ -145,8 +127,8 @@ namespace PugTools
             filename = filename.Replace('/', '.');
             if (filename.Contains('\\'))
                 subPath = filename.Substring(0, filename.LastIndexOf('\\'));
-            if (!System.IO.Directory.Exists(Config.ExtractPath + prefix + subPath)) { System.IO.Directory.CreateDirectory(Config.ExtractPath + prefix + subPath); }
-            using (System.IO.StreamWriter file2 = new System.IO.StreamWriter(Config.ExtractPath + prefix + filename, append))
+            if (!Directory.Exists(Config.ExtractPath + prefix + subPath)) { Directory.CreateDirectory(Config.ExtractPath + prefix + subPath); }
+            using (StreamWriter file2 = new StreamWriter(Config.ExtractPath + prefix + filename, append))
             {
                 content.Save(file2, SaveOptions.None);
             }
@@ -158,8 +140,8 @@ namespace PugTools
             filename = filename.Replace('/', '\\');
             if (filename.Contains('\\'))
                 subPath = filename.Substring(0, filename.LastIndexOf('\\'));
-            if (!System.IO.Directory.Exists(Config.ExtractPath + prefix + subPath)) { System.IO.Directory.CreateDirectory(Config.ExtractPath + prefix + subPath); }
-            using (System.IO.FileStream file2 = new System.IO.FileStream(Config.ExtractPath + prefix + filename, FileMode.OpenOrCreate))
+            if (!Directory.Exists(Config.ExtractPath + prefix + subPath)) { Directory.CreateDirectory(Config.ExtractPath + prefix + subPath); }
+            using (FileStream file2 = new FileStream(Config.ExtractPath + prefix + filename, FileMode.OpenOrCreate))
             {
                 content.Position = 0;
                 content.CopyTo(file2); //this works when writeto doesn't for some streams.
@@ -169,11 +151,11 @@ namespace PugTools
 
         public void CreateGzip(string filename)
         {
-            string filepath = String.Join("", Config.ExtractPath, prefix, filename);
+            string filepath = string.Join("", Config.ExtractPath, prefix, filename);
             FlushTempTables(); //need to clear out memory
             Clearlist2();
             Addtolist2("Writing compressed data file");
-            if (!System.IO.File.Exists(filepath))
+            if (!File.Exists(filepath))
                 return;
             using (FileStream readstream = new FileStream(filepath, FileMode.Open, FileAccess.Read))
             {
@@ -181,7 +163,7 @@ namespace PugTools
                 if (readstream.Length == 0) return;
                 //byte[] byteArray = new byte[readstream.Length - 1];
                 //readstream.Read(byteArray, 0, byteArray.Length);     // Reading a 300mb+ files into memory caused issues
-                using (FileStream outFileStream = new FileStream(String.Join("", filepath, ".gz"), FileMode.Create, FileAccess.Write))
+                using (FileStream outFileStream = new FileStream(string.Join("", filepath, ".gz"), FileMode.Create, FileAccess.Write))
                 using (System.IO.Compression.GZipStream gzip = new System.IO.Compression.GZipStream(outFileStream, System.IO.Compression.CompressionMode.Compress))
                 {
                     //gzip.Write(byteArray, 0, byteArray.Length);
@@ -194,11 +176,11 @@ namespace PugTools
 
         public void DeleteEmptyFile(string filename, int count) //deletes empty files that were created for streaming output
         {
-            string filepath = String.Join("", Config.ExtractPath, prefix, filename);
+            string filepath = string.Join("", Config.ExtractPath, prefix, filename);
             FileInfo fInfo = new FileInfo(filepath);
             if (fInfo != null)
                 if (fInfo.Length == 0 || count == 0)
-                    System.IO.File.Delete(filepath);
+                    File.Delete(filepath);
         }
 
         #endregion
@@ -216,20 +198,20 @@ namespace PugTools
             double ttl = itmList.Count();
 
             var append = false;
-            string cleanedQuery = String.Join("_", itemid.Split(Path.GetInvalidFileNameChars())).TrimEnd('.');
+            string cleanedQuery = string.Join("_", itemid.Split(Path.GetInvalidFileNameChars())).TrimEnd('.');
             var filename = "searchOutput-" + cleanedQuery + ".xml";
             XElement root = new XElement("Root");
             ProcessList(ref itmList, ref root);
             XDocument xmlDoc = new XDocument(root);
             WriteFile(xmlDoc, filename, append);
 
-            if (MessageBox.Show("Output GOM files for analysis?", "GOm file Output", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+            if (MessageBox.Show("Output GOM files for analysis?", "GOm file Output", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 foreach (var gomItm in itmList)
                 {
                     string path = Config.ExtractPath;
                     string file = "\\GOM\\" + gomItm.ToString().Replace("/", ".") + ".xml";
-                    if (!System.IO.Directory.Exists(path + "GOM\\")) { System.IO.Directory.CreateDirectory(path + "GOM\\"); }
+                    if (!Directory.Exists(path + "GOM\\")) { Directory.CreateDirectory(path + "GOM\\"); }
                     WriteFile(new XDocument(gomItm.Print()), file, false, true);
                     i++;
                 }
@@ -240,7 +222,7 @@ namespace PugTools
             EnableButtons();
         }
 
-        private void ProcessList(ref IEnumerable<GomLib.GomObject> itmList, ref XElement root)
+        private void ProcessList(ref IEnumerable<GomObject> itmList, ref XElement root)
         {
 
             root.Add(new XElement("Abilities"),
@@ -359,7 +341,7 @@ namespace PugTools
                     break;
                 case "npp.":
                     //obj = new GomLib.Models.ItemAppearance();
-                    obj = (GomLib.Models.NpcAppearance)dom.appearanceLoader.LoadNpp(gObject);
+                    obj = dom.appearanceLoader.LoadNpp(gObject);
                     break;
                 case "dec.":
                     obj = new GomLib.Models.Decoration();
@@ -404,14 +386,13 @@ namespace PugTools
 
             ExtractCheckForm testFile = new ExtractCheckForm();
             DialogResult result = testFile.ShowDialog();
-            if (result == System.Windows.Forms.DialogResult.OK)
+            if (result == DialogResult.OK)
             {
                 //try
                 //{ 
                 LoadData();
 
                 DisableButtons();
-                _ = new List<string>();
                 List<string> extensions = testFile.GetTypes();
 
                 ExportICONS1 = extensions.Contains("ICONS");
@@ -605,7 +586,6 @@ namespace PugTools
             currentDom.OutputTypeNames(Config.ExtractPath + prefix);
 
             var itmList = currentDom.GetObjectsStartingWith("");//.Where(obj => obj.Name.Contains("."));
-            _ = itmList.Count();
             bool append = false;
             string changed = "";
             if (chkBuildCompare.Checked)
@@ -674,7 +654,7 @@ namespace PugTools
                 var gomList = currentDom.GetObjectsStartingWith(gameObj.Key).Where(x => !x.Name.Contains("/"));
                 var count = gomList.Count();
                 int i = 0;
-                Addtolist2(String.Format("Checking {0}", gameObj.Key));
+                Addtolist2(string.Format("Checking {0}", gameObj.Key));
                 foreach (var gom in gomList)
                 {
                     ProgressUpdate(i, count);
@@ -684,13 +664,13 @@ namespace PugTools
                     if (itm.GetHashCode() != itm2.GetHashCode())
                     {
                         gameObjects[gameObj.Key] = false;
-                        Addtolist2(String.Format("Failed: {0}", gameObj.Key));
+                        Addtolist2(string.Format("Failed: {0}", gameObj.Key));
                         break; //break inner loop
                     }
                     i++;
                 }
                 if (gameObjects[gameObj.Key])
-                    Addtolist2(String.Format("Passed: {0}", gameObj.Key));
+                    Addtolist2(string.Format("Passed: {0}", gameObj.Key));
             }
             string completeString = "Failed.";
             if (gameObjects.Values.ToList().TrueForAll(x => x))
@@ -723,7 +703,7 @@ namespace PugTools
                 ClearProgress();
                 var count = currentDataProto.Count();
                 int i = 0;
-                Addtolist2(String.Format("Checking {0}", gameObj.Key));
+                Addtolist2(string.Format("Checking {0}", gameObj.Key));
                 bool localfail = false;
                 foreach (var gom in currentDataProto)
                 {
@@ -733,7 +713,7 @@ namespace PugTools
                     if (itm == null) continue;
                     if (itm.GetHashCode() != itm2.GetHashCode())
                     {
-                        Addtolist2(String.Format("Failed: {0}", gameObj.Key));
+                        Addtolist2(string.Format("Failed: {0}", gameObj.Key));
                         failed = true;
                         localfail = true;
                         break; //break inner loop
@@ -741,7 +721,7 @@ namespace PugTools
                     i++;
                 }
                 if (!localfail)
-                    Addtolist2(String.Format("Passed: {0}", gameObj.Key));
+                    Addtolist2(string.Format("Passed: {0}", gameObj.Key));
             }
             completeString = "Passed.";
             if (failed)
@@ -808,9 +788,15 @@ namespace PugTools
         public TorLib.Assets previousAssets;
         public DataObjectModel previousDom;
 
-        public static bool FormOpen { get => formOpen; set => formOpen = value; }
+        public static bool FormOpen { get; set; } = V;
 
-        public static List<string> Localizations => localizations;
+        public static List<string> Localizations { get; } = new List<string> {
+                "enMale",
+                "enFemale",
+                "frMale",
+                "frFemale",
+                "deMale",
+                "deFemale"};
 
         public void LoadData()
         {
@@ -823,7 +809,7 @@ namespace PugTools
                 currentAssets = TorLib.AssetHandler.Instance.GetCurrentAssets(textBoxAssetsFolder.Text, usePTS);
                 //currentAssets = currentAssets.getCurrentAssets(textBoxAssetsFolder.Text, usePTS);                
                 currentDom = DomHandler.Instance.GetCurrentDOM(currentAssets);
-                currentDom.Version = Tools.patchVersion;
+                currentDom.Version = patchVersion;
                 Clearlist();
                 Addtolist("Loading Current Data Object Model. - Done");
                 if (chkBuildCompare.Checked && textBoxPrevAssetsFolder.Text != "")

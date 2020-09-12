@@ -37,8 +37,8 @@ namespace TorLib.FileReaders
 
         public RoomSpecification(File roomDat, string roomName, AreaSpecification area)
         {
-            this.Area = area;
-            this.RoomName = roomName;
+            Area = area;
+            RoomName = roomName;
             File = roomDat ?? throw new ArgumentNullException("roomDat", "File cannot be null");
             // Instances = new List<Dictionary<string, string>>();
             InstancesByAssetId = new Dictionary<long, List<AssetInstance>>();

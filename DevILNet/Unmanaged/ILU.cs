@@ -28,7 +28,7 @@ namespace DevIL.Unmanaged
     public static class ILU
     {
 
-        private const String ILUDLL = "ILU.dll";
+        private const string ILUDLL = "ILU.dll";
         private static bool _init = false;
 
         public static bool IsInitialized
@@ -108,7 +108,7 @@ namespace DevIL.Unmanaged
         [return: MarshalAs(UnmanagedType.U1)]
         public static extern bool Equalize();
 
-        public static String GetErrorString(ErrorType error)
+        public static string GetErrorString(ErrorType error)
         {
             //DevIL re-uses its error strings
             return Marshal.PtrToStringAnsi(IluGetErrorString((uint)error));
@@ -223,12 +223,12 @@ namespace DevIL.Unmanaged
         [return: MarshalAs(UnmanagedType.U1)]
         public static extern bool Wave(float angle);
 
-        public static String GetVendorName()
+        public static string GetVendorName()
         {
             return Marshal.PtrToStringAnsi(IluGetString(ILDefines.IL_VENDOR));
         }
 
-        public static String GetVersionNumber()
+        public static string GetVersionNumber()
         {
             return Marshal.PtrToStringAnsi(IluGetString(ILDefines.IL_VERSION_NUM));
         }

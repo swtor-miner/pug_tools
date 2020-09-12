@@ -40,7 +40,7 @@ namespace GomLib.ModelLoader
             get { return "cdxType"; }
         }
 
-        public Models.Codex Load(ulong nodeId)
+        public Codex Load(ulong nodeId)
         {
             if (idMap.TryGetValue(nodeId, out Codex result))
             {
@@ -52,7 +52,7 @@ namespace GomLib.ModelLoader
             return Load(cdx, obj);
         }
 
-        public Models.Codex Load(string fqn)
+        public Codex Load(string fqn)
         {
             if (nameMap.TryGetValue(fqn, out Codex result))
             {
@@ -64,25 +64,25 @@ namespace GomLib.ModelLoader
             return Load(cdx, obj);
         }
 
-        public Models.Codex Load(GomObject obj)
+        public Codex Load(GomObject obj)
         {
             Codex cdx = new Codex();
             return Load(cdx, obj);
         }
 
-        public Models.GameObject CreateObject()
+        public GameObject CreateObject()
         {
-            return new Models.Codex();
+            return new Codex();
         }
 
-        public Models.Codex Load(Models.GameObject obj, GomObject gom)
+        public Codex Load(GameObject obj, GomObject gom)
         {
             if (gom == null) { return (Codex)obj; }
 
             return Load(obj as Codex, gom);
         }
 
-        public Models.Codex Load(Models.Codex cdx, GomObject obj)
+        public Codex Load(Codex cdx, GomObject obj)
         {
             if (obj == null) { return null; }
             if (cdx == null) { return null; }
@@ -122,7 +122,7 @@ namespace GomLib.ModelLoader
             cdx.LocalizedDescription = _dom.stringTable.TryGetLocalizedStrings(cdx.Fqn, descLookup);
             cdx.Description = _dom.stringTable.TryGetString(cdx.Fqn, descLookup);
 
-            if (String.IsNullOrWhiteSpace(cdx.Name) && String.IsNullOrWhiteSpace(cdx.Description))
+            if (string.IsNullOrWhiteSpace(cdx.Name) && string.IsNullOrWhiteSpace(cdx.Description))
             {
                 DeprecatedCodices.Add(obj.Name);
                 cdx.Id = 0;
@@ -133,8 +133,8 @@ namespace GomLib.ModelLoader
             cdx.Level = (int)obj.Data.ValueOrDefault<long>("cdxLevel", 0);
             if (cdx.LocalizedName.Values.ToString() == "") { cdx.IsHidden = true; }
 
-            cdx.Faction = FactionExtensions.ToFaction((long)obj.Data.ValueOrDefault<long>("cdxFaction", 0));
-            cdx.IsPlanet = obj.Data.ValueOrDefault<bool>("cdxIsPlanetCodex", false);
+            cdx.Faction = FactionExtensions.ToFaction(obj.Data.ValueOrDefault<long>("cdxFaction", 0));
+            cdx.IsPlanet = obj.Data.ValueOrDefault("cdxIsPlanetCodex", false);
 
             Dictionary<object, object> classLookup = obj.Data.ValueOrDefault<Dictionary<object, object>>("cdxClassesLookupList", null);
             if (classLookup == null)
@@ -172,13 +172,13 @@ namespace GomLib.ModelLoader
             return cdx;
         }
 
-        public void LoadObject(Models.GameObject loadMe, GomObject obj)
+        public void LoadObject(GameObject loadMe, GomObject obj)
         {
-            GomLib.Models.Codex cdx = (Models.Codex)loadMe;
+            Codex cdx = (Codex)loadMe;
             Load(cdx, obj);
         }
 
-        public void LoadReferences(Models.GameObject obj, GomObject gom)
+        public void LoadReferences(GameObject obj, GomObject gom)
         {
             if (obj is null)
             {

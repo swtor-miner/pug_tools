@@ -24,7 +24,7 @@ namespace GomLib.ModelLoader
             CollectionItemsData = new Dictionary<object, object>();
         }
 
-        public Models.Collection Load(long id)
+        public Collection Load(long id)
         {
             if (CollectionItemsData.Count == 0)
             {
@@ -34,11 +34,11 @@ namespace GomLib.ModelLoader
             _ = new object();
             CollectionItemsData.TryGetValue(id, out object mtxData);
 
-            Models.Collection mtx = new Collection();
+            Collection mtx = new Collection();
             return Load(mtx, id, (GomObjectData)mtxData);
         }
 
-        public Models.Collection Load(Models.Collection col, long Id, GomObjectData obj)
+        public Collection Load(Collection col, long Id, GomObjectData obj)
         {
             if (obj == null) { return col; }
             if (col == null) { return null; }
@@ -66,7 +66,7 @@ namespace GomLib.ModelLoader
             col.RarityDesc = _dom.stringTable.TryGetString("str.gui.mtxstorefrontitems", rarityId);
             col.LocalizedRarityDesc = _dom.stringTable.TryGetLocalizedStrings("str.gui.mtxstorefrontitems", rarityId);
 
-            var bulletPointIds = ((GomObjectData)mtxData).ValueOrDefault<List<object>>("mtxBulletPointDescriptionIds", new List<object>()).ConvertAll(x => (long)x);
+            var bulletPointIds = ((GomObjectData)mtxData).ValueOrDefault("mtxBulletPointDescriptionIds", new List<object>()).ConvertAll(x => (long)x);
             col.BulletPoints = new List<string>();
             foreach (var bullet in bulletPointIds) { col.BulletPoints.Add(_dom.stringTable.TryGetString("str.gui.mtxstorefrontitems", bullet)); }
             col.LocalizedBulletPoints = new List<Dictionary<string, string>>();
@@ -81,9 +81,9 @@ namespace GomLib.ModelLoader
             col.Icon = obj.ValueOrDefault("colCollectionIcon", ""); // "Mtx.Season3.Bikini_V02"
             _dom._assets.icons.AddMtx(col.Icon);
 
-            col.IsFoundInPacks = obj.ValueOrDefault<bool>("colItemIsFoundInPacks", false); // True
+            col.IsFoundInPacks = obj.ValueOrDefault("colItemIsFoundInPacks", false); // True
 
-            col.LinkedId = (long)obj.ValueOrDefault<long>("colLinkedId", 0); // 1597
+            col.LinkedId = obj.ValueOrDefault<long>("colLinkedId", 0); // 1597
 
             List<object> unknownList = obj.ValueOrDefault<List<object>>("4611686297968184000", null); // seems to be always empty.
 
@@ -135,11 +135,11 @@ namespace GomLib.ModelLoader
                 List<long> linkedList = linkedListO.ConvertAll(x => (long)x);
             }
 
-            var unknownlong = (long)obj.ValueOrDefault<long>("4611686348190277001", 0); // -7824174851411027002 - not sure what this is
+            var unknownlong = obj.ValueOrDefault<long>("4611686348190277001", 0); // -7824174851411027002 - not sure what this is
 
-            col.RequiredLevel = (long)obj.ValueOrDefault<long>("colCollectionsRequiredLevel", 1); // 1
+            col.RequiredLevel = obj.ValueOrDefault<long>("colCollectionsRequiredLevel", 1); // 1
 
-            var alternateUnlocks = obj.ValueOrDefault<Dictionary<object, object>>("4611686348190657005", new Dictionary<object, object>());
+            var alternateUnlocks = obj.ValueOrDefault("4611686348190657005", new Dictionary<object, object>());
             col.HasAlternateUnlocks = (alternateUnlocks.Count > 0);
             col.AlternateUnlocksMap = new Dictionary<ulong, List<ulong>>();
 

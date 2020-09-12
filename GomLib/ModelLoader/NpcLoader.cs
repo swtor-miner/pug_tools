@@ -35,7 +35,7 @@ namespace GomLib.ModelLoader
             get { return "chrNonPlayerCharacter"; }
         }
 
-        public Models.Npc Load(ulong nodeId)
+        public Npc Load(ulong nodeId)
         {
             if (idMap.TryGetValue(nodeId, out Npc result))
             {
@@ -47,7 +47,7 @@ namespace GomLib.ModelLoader
             return Load(npc, obj);
         }
 
-        public Models.Npc Load(string fqn)
+        public Npc Load(string fqn)
         {
             if (nameMap.TryGetValue(fqn, out Npc result))
             {
@@ -59,25 +59,25 @@ namespace GomLib.ModelLoader
             return Load(npc, obj);
         }
 
-        public Models.Npc Load(GomObject obj)
+        public Npc Load(GomObject obj)
         {
             Npc npc = new Npc();
             return Load(npc, obj);
         }
 
-        public Models.GameObject CreateObject()
+        public GameObject CreateObject()
         {
-            return new Models.Npc();
+            return new Npc();
         }
 
-        public Models.Npc Load(Models.GameObject obj, GomObject gom)
+        public Npc Load(GameObject obj, GomObject gom)
         {
             if (gom == null) { return (Npc)obj; }
 
             return Load(obj as Npc, gom);
         }
 
-        public Models.Npc Load(Models.Npc npc, GomObject obj)
+        public Npc Load(Npc npc, GomObject obj)
         {
             if (obj == null) { return npc; }
             if (npc == null) { return null; }
@@ -121,7 +121,7 @@ namespace GomLib.ModelLoader
                 }
             }
             npc.ParentSpecId = obj.Data.ValueOrDefault<ulong>("npcParentSpecId", 0);
-            npc.CharRef = obj.Data.ValueOrDefault<string>("npcCharRef", "");
+            npc.CharRef = obj.Data.ValueOrDefault("npcCharRef", "");
             Npc baseNpc;
             if (npc.ParentSpecId > 0)
             {
@@ -167,11 +167,11 @@ namespace GomLib.ModelLoader
             //    objIdMap[npc.Id] = npc;
             //}
 
-            npc.MinLevel = (int)obj.Data.ValueOrDefault<long>("npcMinLevel", (long)baseNpc.MinLevel);
-            npc.MaxLevel = (int)obj.Data.ValueOrDefault<long>("npcMaxLevel", (long)baseNpc.MaxLevel);
+            npc.MinLevel = (int)obj.Data.ValueOrDefault("npcMinLevel", (long)baseNpc.MinLevel);
+            npc.MaxLevel = (int)obj.Data.ValueOrDefault("npcMaxLevel", (long)baseNpc.MaxLevel);
 
             // Load Toughness
-            var toughnessEnum = (ScriptEnum)obj.Data.ValueOrDefault<ScriptEnum>("npcToughness", null);
+            var toughnessEnum = obj.Data.ValueOrDefault<ScriptEnum>("npcToughness", null);
             if (toughnessEnum == null)
             {
                 npc.Toughness = baseNpc.Toughness;
@@ -185,10 +185,10 @@ namespace GomLib.ModelLoader
 
             // Load Packages
 
-            npc.MovementPackage = obj.Data.ValueOrDefault<string>("npcMovementPackage", "");
-            npc.CoverPackage = obj.Data.ValueOrDefault<string>("npcCoverPackage", "");
-            npc.WanderPackage = obj.Data.ValueOrDefault<string>("npcWanderPackage", "");
-            npc.AggroPackage = obj.Data.ValueOrDefault<string>("npcAggroPackage", "");
+            npc.MovementPackage = obj.Data.ValueOrDefault("npcMovementPackage", "");
+            npc.CoverPackage = obj.Data.ValueOrDefault("npcCoverPackage", "");
+            npc.WanderPackage = obj.Data.ValueOrDefault("npcWanderPackage", "");
+            npc.AggroPackage = obj.Data.ValueOrDefault("npcAggroPackage", "");
 
             // Load Visual Data
 
@@ -203,7 +203,7 @@ namespace GomLib.ModelLoader
 
                     NpcVisualData nvd = new NpcVisualData(_dom)
                     {
-                        CharSpec = visualData.ValueOrDefault<string>("npcTemplateVisualDataCharSpec", ""),
+                        CharSpec = visualData.ValueOrDefault("npcTemplateVisualDataCharSpec", ""),
                         ScaleAdjustment = visualData.ValueOrDefault<float>("npcTemplateVisualDataScaleAdjustment", 0),
                         MeleeWepId = visualData.ValueOrDefault<ulong>("npcTemplateVisualDataMeleeWeapon", 0),
                         //if (nvd.MeleeWepId != 0) nvd.MeleeWep = _dom.itemLoader.Load(nvd.MeleeWepId);
@@ -244,7 +244,7 @@ namespace GomLib.ModelLoader
 
             npc.DifficultyFlags = (int)obj.Data.ValueOrDefault<long>("spnDifficultyLevelFlags", baseNpc.DifficultyFlags);
 
-            npc.LootTableId = obj.Data.ValueOrDefault<long>("npclootPackage", baseNpc.LootTableId);
+            npc.LootTableId = obj.Data.ValueOrDefault("npclootPackage", baseNpc.LootTableId);
 
             npc.ClassId = obj.Data.ValueOrDefault<ulong>("npcClassPackage", 0);
             if (npc.ClassId == 0UL)
@@ -264,7 +264,7 @@ namespace GomLib.ModelLoader
             if (obj.Data.ContainsKey("npcApnList"))
             {
                 npc.AbilityPackageIdList = new HashSet<ulong>();
-                npc.AbilityPackageIdList.UnionWith(obj.Data.ValueOrDefault<List<object>>("npcApnList", new List<object>()).Select(x => (ulong)x));
+                npc.AbilityPackageIdList.UnionWith(obj.Data.ValueOrDefault("npcApnList", new List<object>()).Select(x => (ulong)x));
             }
 
             npc.CodexId = obj.Data.ValueOrDefault<ulong>("npcCodexSpec", 0);
@@ -277,7 +277,7 @@ namespace GomLib.ModelLoader
                 npc.Codex = baseNpc.Codex;
             }*/
 
-            var profTrained = (ScriptEnum)obj.Data.ValueOrDefault<ScriptEnum>("prfTrainerProfession", null);
+            var profTrained = obj.Data.ValueOrDefault<ScriptEnum>("prfTrainerProfession", null);
             if (profTrained == null)
             {
                 npc.ProfessionTrained = baseNpc.ProfessionTrained;
@@ -297,7 +297,7 @@ namespace GomLib.ModelLoader
                 npc.IsClassTrainer = trainedPackages.Count > 0;
             }
 
-            npc.CnvConversationName = obj.Data.ValueOrDefault<string>("cnvConversationName", baseNpc.CnvConversationName);
+            npc.CnvConversationName = obj.Data.ValueOrDefault("cnvConversationName", baseNpc.CnvConversationName);
 
             List<object> vendorPackages = obj.Data.ValueOrDefault<List<object>>("npcVendorPackages", null);
             if (vendorPackages != null)
@@ -309,7 +309,7 @@ namespace GomLib.ModelLoader
                 npc.VendorPackages = baseNpc.VendorPackages;
             }
 
-            var tgen = obj.Data.ValueOrDefault<ScriptEnum>("chrNPCGenderComplete", new ScriptEnum());
+            var tgen = obj.Data.ValueOrDefault("chrNPCGenderComplete", new ScriptEnum());
             //if (tgen.EnumType != null)
             //{
             //    string text = string.Join(",", tgen.EnumType.names);
@@ -323,13 +323,13 @@ namespace GomLib.ModelLoader
             return npc;
         }
 
-        public void LoadObject(Models.GameObject loadMe, GomObject obj)
+        public void LoadObject(GameObject loadMe, GomObject obj)
         {
-            GomLib.Models.Npc npc = (Models.Npc)loadMe;
+            Npc npc = (Npc)loadMe;
             Load(npc, obj);
         }
 
-        public void LoadReferences(Models.GameObject obj, GomObject gom)
+        public void LoadReferences(GameObject obj, GomObject gom)
         {
             var npc = (Npc)obj;
 

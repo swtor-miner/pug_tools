@@ -20,18 +20,18 @@ namespace FileFormats
 
         public GR2_Mesh_Bone(BinaryReader br)
         {
-            this.offsetName = br.ReadUInt32();
-            this.unknown1 = br.ReadSingle();
-            this.unknown2 = br.ReadSingle();
-            this.unknown3 = br.ReadSingle();
-            this.unknown4 = br.ReadSingle();
-            this.unknown5 = br.ReadSingle();
-            this.unknown6 = br.ReadSingle();
-            this.boneName = File_Helpers.ReadString(br, this.offsetName);
+            offsetName = br.ReadUInt32();
+            unknown1 = br.ReadSingle();
+            unknown2 = br.ReadSingle();
+            unknown3 = br.ReadSingle();
+            unknown4 = br.ReadSingle();
+            unknown5 = br.ReadSingle();
+            unknown6 = br.ReadSingle();
+            boneName = File_Helpers.ReadString(br, offsetName);
         }
         public override string ToString()
         {
-            return this.boneName;
+            return boneName;
         }
     }
 }

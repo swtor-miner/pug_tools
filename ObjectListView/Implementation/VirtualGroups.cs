@@ -187,13 +187,13 @@ namespace BrightIdeasSoftware
             foreach (object key in map.Keys)
             {
                 string title = parmameters.GroupByColumn.ConvertGroupKeyToTitle(key);
-                if (!String.IsNullOrEmpty(parmameters.TitleFormat))
+                if (!string.IsNullOrEmpty(parmameters.TitleFormat))
                 {
                     int count = map[key].Count;
                     string format = (count == 1 ? parmameters.TitleSingularFormat : parmameters.TitleFormat);
                     try
                     {
-                        title = String.Format(format, title, count);
+                        title = string.Format(format, title, count);
                     }
                     catch (FormatException)
                     {
@@ -205,7 +205,7 @@ namespace BrightIdeasSoftware
                     Collapsible = folv.HasCollapsibleGroups,
                     Key = key,
                     SortValue = key as IComparable,
-                    Contents = map[key].ConvertAll<int>(delegate (object x) { return folv.IndexOf(x); }),
+                    Contents = map[key].ConvertAll(delegate (object x) { return folv.IndexOf(x); }),
                     VirtualItemCount = map[key].Count
                 };
                 parmameters.GroupByColumn.GroupFormatter?.Invoke(lvg, parmameters);
@@ -217,15 +217,15 @@ namespace BrightIdeasSoftware
                 groups.Sort(parmameters.GroupComparer ?? new OLVGroupComparer(parmameters.GroupByOrder));
 
             // Build an array that remembers which group each item belongs to.
-            this.indexToGroupMap = new List<int>(objectCount);
-            this.indexToGroupMap.AddRange(new int[objectCount]);
+            indexToGroupMap = new List<int>(objectCount);
+            indexToGroupMap.AddRange(new int[objectCount]);
 
             for (int i = 0; i < groups.Count; i++)
             {
                 OLVGroup group = groups[i];
                 List<int> members = (List<int>)group.Contents;
                 foreach (int j in members)
-                    this.indexToGroupMap[j] = i;
+                    indexToGroupMap[j] = i;
             }
 
             return groups;
@@ -250,7 +250,7 @@ namespace BrightIdeasSoftware
         /// <returns></returns>
         public override int GetGroup(int itemIndex)
         {
-            return this.indexToGroupMap[itemIndex];
+            return indexToGroupMap[itemIndex];
         }
 
         /// <summary>
@@ -353,14 +353,14 @@ namespace BrightIdeasSoftware
         public void GetItemInGroup(int groupIndex, int n, out int itemIndex)
         {
             //System.Diagnostics.Debug.WriteLine(String.Format("-> GetItemInGroup({0}, {1})", groupIndex, n));
-            itemIndex = this.olv.GroupingStrategy.GetGroupMember(this.olv.OLVGroups[groupIndex], n);
+            itemIndex = olv.GroupingStrategy.GetGroupMember(olv.OLVGroups[groupIndex], n);
             //System.Diagnostics.Debug.WriteLine(String.Format("<- {0}", itemIndex));
         }
 
         public void GetItemGroup(int itemIndex, int occurrenceCount, out int groupIndex)
         {
             //System.Diagnostics.Debug.WriteLine(String.Format("GetItemGroup({0}, {1})", itemIndex, occurrenceCount));
-            groupIndex = this.olv.GroupingStrategy.GetGroup(itemIndex);
+            groupIndex = olv.GroupingStrategy.GetGroup(itemIndex);
             //System.Diagnostics.Debug.WriteLine(String.Format("<- {0}", groupIndex));
         }
 
@@ -373,7 +373,7 @@ namespace BrightIdeasSoftware
         public void OnCacheHint(NativeMethods.LVITEMINDEX from, NativeMethods.LVITEMINDEX to)
         {
             //System.Diagnostics.Debug.WriteLine(String.Format("OnCacheHint({0}, {1}, {2}, {3})", from.iGroup, from.iItem, to.iGroup, to.iItem));
-            this.olv.GroupingStrategy.CacheHint(from.iGroup, from.iItem, to.iGroup, to.iItem);
+            olv.GroupingStrategy.CacheHint(from.iGroup, from.iItem, to.iGroup, to.iItem);
         }
 
         #endregion

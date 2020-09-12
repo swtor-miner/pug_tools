@@ -25,7 +25,7 @@ namespace PugTools
         public Format_MISC(string dest, string ext)
         {
             this.dest = dest;
-            this.extension = ext;
+            extension = ext;
         }
 
         public void ParseMISC_LdnScn(GomObject ldnScreenNode)
@@ -35,13 +35,13 @@ namespace PugTools
             {
                 searched++;
                 GomObjectData areaLdgInfo = (GomObjectData)kvpLdgClass.Value;
-                string loadingScreen = areaLdgInfo.ValueOrDefault<string>("ldgScreenName", string.Empty);
+                string loadingScreen = areaLdgInfo.ValueOrDefault("ldgScreenName", string.Empty);
                 if (loadingScreen.Length > 0)
                 {
                     fileNames.Add("/resources/gfx/loadingscreen/" + loadingScreen + ".dds");
                 }
 
-                string loadingOverlay = areaLdgInfo.ValueOrDefault<string>("ldgOverlayName", string.Empty);
+                string loadingOverlay = areaLdgInfo.ValueOrDefault("ldgOverlayName", string.Empty);
                 if (loadingOverlay.Length > 0)
                 {
                     fileNames.Add("/resources/gfx/gfx_productions/" + loadingOverlay + ".gfx");
@@ -106,17 +106,17 @@ namespace PugTools
             foreach (GomObject obj in worldAreas)
             {
                 searched++;
-                UInt64 areaId = obj.Data.ValueOrDefault<ulong>("mapDataContainerAreaID", 0);
+                ulong areaId = obj.Data.ValueOrDefault<ulong>("mapDataContainerAreaID", 0);
                 if (areaId > 0)
                 {
-                    worldFileNames.Add(String.Format("/resources/world/areas/{0}/area.dat", areaId.ToString()));
-                    worldFileNames.Add(String.Format("/resources/world/areas/{0}/mapnotes.not", areaId.ToString()));
+                    worldFileNames.Add(string.Format("/resources/world/areas/{0}/area.dat", areaId.ToString()));
+                    worldFileNames.Add(string.Format("/resources/world/areas/{0}/mapnotes.not", areaId.ToString()));
 
                     List<object> mapPages = obj.Data.ValueOrDefault<List<object>>("mapDataContainerMapDataList", null);
 
                     if (mapPages != null)
                     {
-                        foreach (GomLib.GomObjectData mapPage in mapPages)
+                        foreach (GomObjectData mapPage in mapPages)
                         {
                             string mapName = mapPage.ValueOrDefault<string>("mapName", null);
                             if (!mapNames.ContainsKey(areaId.ToString()))
@@ -133,7 +133,7 @@ namespace PugTools
             foreach (var gomItm in worldAreasProto)
             {
                 GomLib.Models.Area area = new GomLib.Models.Area();
-                currentDom.areaLoader.Load(area, (GomLib.GomObjectData)gomItm.Value);
+                currentDom.areaLoader.Load(area, (GomObjectData)gomItm.Value);
                 if (area.Id == 0)
                 {
                     if (area.AreaId == 0)
@@ -222,13 +222,13 @@ namespace PugTools
 
         public void WriteFile()
         {
-            if (!System.IO.Directory.Exists(this.dest + "\\File_Names"))
-                System.IO.Directory.CreateDirectory(this.dest + "\\File_Names");
+            if (!Directory.Exists(dest + "\\File_Names"))
+                Directory.CreateDirectory(dest + "\\File_Names");
 
-            this.found = this.fileNames.Count();
-            if (this.fileNames.Count > 0)
+            found = fileNames.Count();
+            if (fileNames.Count > 0)
             {
-                System.IO.StreamWriter outputNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_file_names.txt", false);
+                StreamWriter outputNames = new StreamWriter(dest + "\\File_Names\\" + extension + "_file_names.txt", false);
                 foreach (string file in fileNames)
                 {
                     outputNames.Write(file.Replace("\\", "/") + "\r\n");
@@ -237,10 +237,10 @@ namespace PugTools
                 fileNames.Clear();
             }
 
-            this.found += this.worldFileNames.Count();
-            if (this.worldFileNames.Count > 0)
+            found += worldFileNames.Count();
+            if (worldFileNames.Count > 0)
             {
-                System.IO.StreamWriter outputNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_world_file_names_1.txt", false);
+                StreamWriter outputNames = new StreamWriter(dest + "\\File_Names\\" + extension + "_world_file_names_1.txt", false);
                 int fileCount = 1;
                 int lineCount = 1;
                 foreach (string file in worldFileNames)
@@ -249,7 +249,7 @@ namespace PugTools
                     {
                         outputNames.Close();
                         fileCount++;
-                        outputNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_world_file_names_" + fileCount + ".txt", false);
+                        outputNames = new StreamWriter(dest + "\\File_Names\\" + extension + "_world_file_names_" + fileCount + ".txt", false);
                         lineCount = 0;
                     }
                     outputNames.WriteLine(file.Replace("\\", "/"));
@@ -259,10 +259,10 @@ namespace PugTools
                 worldFileNames.Clear();
             }
 
-            this.found += this.mapNames.Count();
-            if (this.mapNames.Count > 0)
+            found += mapNames.Count();
+            if (mapNames.Count > 0)
             {
-                System.IO.StreamWriter outputMapNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_world_map_file_names_1.txt", false);
+                StreamWriter outputMapNames = new StreamWriter(dest + "\\File_Names\\" + extension + "_world_map_file_names_1.txt", false);
                 int fileCount = 1;
                 int lineCount = 1;
                 foreach (KeyValuePair<string, HashSet<string>> kvp in mapNames)
@@ -273,16 +273,16 @@ namespace PugTools
                         {
                             outputMapNames.Close();
                             fileCount++;
-                            outputMapNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_world_map_file_names_" + fileCount + ".txt", false);
+                            outputMapNames = new StreamWriter(dest + "\\File_Names\\" + extension + "_world_map_file_names_" + fileCount + ".txt", false);
                             lineCount = 0;
                         }
-                        outputMapNames.WriteLine(String.Format("/resources/world/areas/{0}/{1}_r.dds", kvp.Key, line).Replace("\\", "/").Replace("//", "/"));
+                        outputMapNames.WriteLine(string.Format("/resources/world/areas/{0}/{1}_r.dds", kvp.Key, line).Replace("\\", "/").Replace("//", "/"));
                         lineCount++;
                         for (int m = 0; m <= 50; m++)
                         {
                             for (int mm = 0; mm <= 50; mm++)
                             {
-                                outputMapNames.WriteLine(String.Format("/resources/world/areas/{0}/minimaps/{1}_{2:00}_{3:00}_r.dds", kvp.Key, line, m, mm).Replace("\\", "/").Replace("//", "/"));
+                                outputMapNames.WriteLine(string.Format("/resources/world/areas/{0}/minimaps/{1}_{2:00}_{3:00}_r.dds", kvp.Key, line, m, mm).Replace("\\", "/").Replace("//", "/"));
                                 lineCount++;
                             }
                         }
@@ -293,9 +293,9 @@ namespace PugTools
                 mapNames.Clear();
             }
 
-            if (this.errors.Count > 0)
+            if (errors.Count > 0)
             {
-                System.IO.StreamWriter outputErrors = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_error_list.txt", false);
+                StreamWriter outputErrors = new StreamWriter(dest + "\\File_Names\\" + extension + "_error_list.txt", false);
                 foreach (string error in errors)
                 {
                     outputErrors.Write(error + "\r\n");

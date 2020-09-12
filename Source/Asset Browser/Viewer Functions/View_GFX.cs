@@ -22,7 +22,7 @@ namespace PugTools
                 //Data Length
                 uint dataLength = br.ReadUInt32();
 
-                byte[] inflatedData = new Byte[dataLength];
+                byte[] inflatedData = new byte[dataLength];
 
                 Inflater inf = new Inflater();
                 inf.SetInput(br.ReadBytes((int)br.BaseStream.Length - 8));

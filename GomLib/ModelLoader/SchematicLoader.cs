@@ -41,7 +41,7 @@ namespace GomLib.ModelLoader
             get { return "prfSchematic"; }
         }
 
-        public Models.Schematic Load(ulong nodeId)
+        public Schematic Load(ulong nodeId)
         {
             if (idMap.TryGetValue(nodeId, out Schematic result))
             {
@@ -53,7 +53,7 @@ namespace GomLib.ModelLoader
             return Load(sch, obj);
         }
 
-        public Models.Schematic Load(string fqn)
+        public Schematic Load(string fqn)
         {
             if (nameMap.TryGetValue(fqn, out Schematic result))
             {
@@ -65,18 +65,18 @@ namespace GomLib.ModelLoader
             return Load(sch, obj);
         }
 
-        public Models.Schematic Load(GomObject obj)
+        public Schematic Load(GomObject obj)
         {
             Schematic sch = new Schematic();
             return Load(sch, obj);
         }
 
-        public Models.GameObject CreateObject()
+        public GameObject CreateObject()
         {
-            return new Models.Schematic();
+            return new Schematic();
         }
 
-        public Models.Schematic Load(Models.Schematic schem, GomObject obj)
+        public Schematic Load(Schematic schem, GomObject obj)
         {
             if (obj == null) { return schem; }
             if (schem == null) { return null; }
@@ -102,11 +102,11 @@ namespace GomLib.ModelLoader
             schem.Fqn = obj.Name;
             schem.Dom_ = _dom;
             schem.References = obj.References;
-            schem.Deprecated = obj.Data.ValueOrDefault<bool>("prfSchematicDeprecated", false);
-            schem.DisableCritical = obj.Data.ValueOrDefault<bool>("prfDisableCritical", false);
-            schem.DisableDisassemble = obj.Data.ValueOrDefault<bool>("prfDisableDisassemble", false);
+            schem.Deprecated = obj.Data.ValueOrDefault("prfSchematicDeprecated", false);
+            schem.DisableCritical = obj.Data.ValueOrDefault("prfDisableCritical", false);
+            schem.DisableDisassemble = obj.Data.ValueOrDefault("prfDisableDisassemble", false);
 
-            schem.ItemId = (ulong)obj.Data.ValueOrDefault<ulong>("prfSchematicItemSpec", 0);
+            schem.ItemId = obj.Data.ValueOrDefault<ulong>("prfSchematicItemSpec", 0);
             /*if (itemId > 0)
             {
                 schem.Item = _dom.itemLoader.Load(itemId);
@@ -121,8 +121,8 @@ namespace GomLib.ModelLoader
             }*/
 
             schem.MissionCost = (int)obj.Data.ValueOrDefault<long>("prfMissionCost", 0);
-            schem.MissionFaction = FactionExtensions.ToFaction((long)obj.Data.ValueOrDefault<long>("prfMissionFaction", 0));
-            schem.MissionUnlockable = obj.Data.ValueOrDefault<bool>("prfMissionUnlockable", false);
+            schem.MissionFaction = FactionExtensions.ToFaction(obj.Data.ValueOrDefault<long>("prfMissionFaction", 0));
+            schem.MissionUnlockable = obj.Data.ValueOrDefault("prfMissionUnlockable", false);
             schem.MissionLight = (int)obj.Data.ValueOrDefault<long>("prfMissionRewardLight", 0);
             schem.MissionLightCrit = (int)obj.Data.ValueOrDefault<long>("prfMissionRewardLightCritical", 0);
             schem.MissionDark = (int)obj.Data.ValueOrDefault<long>("prfMissionRewardDark", 0);
@@ -136,7 +136,7 @@ namespace GomLib.ModelLoader
                 //schem.Id = schem.NameId;
             }
 
-            if (String.IsNullOrEmpty(schem.Name) && (schem.Item != null))
+            if (string.IsNullOrEmpty(schem.Name) && (schem.Item != null))
             {
                 //schem.Name = schem.Item.LocalizedName["enMale"];
                 schem.LocalizedName = schem.Item.LocalizedName;
@@ -157,13 +157,13 @@ namespace GomLib.ModelLoader
                 schem.MissionDescription = missionStrTable.GetText(schem.MissionDescriptionId + strOffset, schem.Fqn);
                 schem.LocalizedMissionDescription = missionStrTable.GetLocalizedText(schem.MissionDescriptionId + strOffset, schem.Fqn);
             }
-            schem.CrewSkillId = 836161413054464 + obj.Data.ValueOrDefault<ScriptEnum>("prfProfessionRequired", new ScriptEnum()).Value;
-            schem.CrewSkill = ProfessionExtensions.ToProfession((ScriptEnum)obj.Data.ValueOrDefault<ScriptEnum>("prfProfessionRequired", null));
+            schem.CrewSkillId = 836161413054464 + obj.Data.ValueOrDefault("prfProfessionRequired", new ScriptEnum()).Value;
+            schem.CrewSkill = ProfessionExtensions.ToProfession(obj.Data.ValueOrDefault<ScriptEnum>("prfProfessionRequired", null));
             schem.CrewSkillName = prfStrTable.GetText(schem.CrewSkillId, "str.prf.professions");
             schem.LocalizedCrewSkillName = prfStrTable.GetLocalizedText(schem.CrewSkillId, "str.prf.professions");
 
-            schem.SubTypeId = 966840088002561 + obj.Data.ValueOrDefault<ScriptEnum>("prfProfessionSubtype", new ScriptEnum()).Value;
-            schem.Subtype = ProfessionSubtypeExtensions.ToProfessionSubtype((ScriptEnum)obj.Data.ValueOrDefault<ScriptEnum>("prfProfessionSubtype", null));
+            schem.SubTypeId = 966840088002561 + obj.Data.ValueOrDefault("prfProfessionSubtype", new ScriptEnum()).Value;
+            schem.Subtype = ProfessionSubtypeExtensions.ToProfessionSubtype(obj.Data.ValueOrDefault<ScriptEnum>("prfProfessionSubtype", null));
             schem.SubTypeName = prfSubStrTable.GetText(schem.SubTypeId, "str.prf.subtypes");
             schem.LocalizedSubTypeName = prfSubStrTable.GetLocalizedText(schem.SubTypeId, "str.prf.subtypes");
 
@@ -173,9 +173,9 @@ namespace GomLib.ModelLoader
             schem.SkillOrange = (int)obj.Data.ValueOrDefault<long>("prfProfessionLevelRequired", 0);
 
             schem.TrainingCost = (int)obj.Data.ValueOrDefault<long>("prfTrainingCost", 0);
-            schem.Workstation = WorkstationExtensions.ToWorkstation((ScriptEnum)obj.Data.ValueOrDefault<ScriptEnum>("prfWorkstationRequired", null));
+            schem.Workstation = WorkstationExtensions.ToWorkstation(obj.Data.ValueOrDefault<ScriptEnum>("prfWorkstationRequired", null));
 
-            var materials = (Dictionary<object, object>)obj.Data.ValueOrDefault<Dictionary<object, object>>("prfSchematicMaterials", null);
+            var materials = obj.Data.ValueOrDefault<Dictionary<object, object>>("prfSchematicMaterials", null);
             if (materials != null)
             {
                 int matIdx = 1;
@@ -188,7 +188,7 @@ namespace GomLib.ModelLoader
                 //if (materials.Count > maxMats) maxMats = materials.Count;
             }
 
-            var researchChance = (Dictionary<object, object>)obj.Data.ValueOrDefault<Dictionary<object, object>>("prfSchematicResearchChances", null);
+            var researchChance = obj.Data.ValueOrDefault<Dictionary<object, object>>("prfSchematicResearchChances", null);
             if (researchChance != null)
             {
                 int rLvl = 1;
@@ -206,7 +206,7 @@ namespace GomLib.ModelLoader
                 }
             }
 
-            var craftTime = (List<object>)obj.Data.ValueOrDefault<List<object>>("prfSchematicCraftingTime", null);
+            var craftTime = obj.Data.ValueOrDefault<List<object>>("prfSchematicCraftingTime", null);
             if (craftTime != null)
             {
                 int timeIdx = 0;
@@ -225,7 +225,7 @@ namespace GomLib.ModelLoader
                 }
             }
 
-            var researchMaterials = (Dictionary<object, object>)obj.Data.ValueOrDefault<Dictionary<object, object>>("prfSchematicResearchMaterials", null);
+            var researchMaterials = obj.Data.ValueOrDefault<Dictionary<object, object>>("prfSchematicResearchMaterials", null);
             if (researchMaterials != null)
             {
                 int idx = 1;
@@ -328,13 +328,13 @@ namespace GomLib.ModelLoader
             return schem;
         }
 
-        public void LoadObject(Models.GameObject loadMe, GomObject obj)
+        public void LoadObject(GameObject loadMe, GomObject obj)
         {
-            GomLib.Models.Schematic sch = (Models.Schematic)loadMe;
+            Schematic sch = (Schematic)loadMe;
             Load(sch, obj);
         }
 
-        public void LoadReferences(Models.GameObject obj, GomObject gom)
+        public void LoadReferences(GameObject obj, GomObject gom)
         {
             if (obj is null)
             {

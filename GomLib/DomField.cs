@@ -12,12 +12,12 @@ namespace GomLib
         public override void Print(System.IO.TextWriter writer)
         {
             writer.WriteLine("Field: {0} - {2} - 0x{1:X}", Name, Id, GomType);
-            if (!String.IsNullOrEmpty(Description)) writer.WriteLine("\t{0}", Description);
+            if (!string.IsNullOrEmpty(Description)) writer.WriteLine("\t{0}", Description);
         }
 
         public override void Link(DataObjectModel dom)
         {
-            this.Dom_ = dom;
+            Dom_ = dom;
             GomType.Link(dom);
         }
 

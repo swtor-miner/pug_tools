@@ -14,14 +14,14 @@ namespace GomLib.GomTypes
 
         internal override void Link(DataObjectModel dom)
         {
-            this._dom = dom;
+            _dom = dom;
             KeyType.Link(dom);
             ValueType.Link(dom);
         }
 
         public override string ToString()
         {
-            return System.String.Format("Map<{0}, {1}>", KeyType, ValueType);
+            return string.Format("Map<{0}, {1}>", KeyType, ValueType);
         }
 
         public override bool ConfirmType(GomBinaryReader reader)

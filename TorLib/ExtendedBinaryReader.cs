@@ -19,18 +19,18 @@ namespace TorLib
 
         public string ReadNullTerminatedString()
         {
-            return this.ReadNullTerminatedString(Encoding.UTF8);
+            return ReadNullTerminatedString(Encoding.UTF8);
         }
 
         public string ReadNullTerminatedString(Encoding encoding)
         {
             List<byte> byteBuffer = new List<byte>();
-            byte b = this.ReadByte();
+            byte b = ReadByte();
             // Read until we encounter a null byte
             while (b != 0)
             {
                 byteBuffer.Add(b);
-                b = this.ReadByte();
+                b = ReadByte();
             }
 
             return encoding.GetString(byteBuffer.ToArray());
@@ -77,12 +77,12 @@ namespace TorLib
 
         public string ReadFixedLengthString(int length)
         {
-            return this.ReadFixedLengthString(length, Encoding.UTF8);
+            return ReadFixedLengthString(length, Encoding.UTF8);
         }
 
         public string ReadFixedLengthString(int length, Encoding encoding)
         {
-            byte[] buff = this.ReadBytes(length);
+            byte[] buff = ReadBytes(length);
             return encoding.GetString(buff);
         }
     }

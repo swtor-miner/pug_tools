@@ -37,15 +37,15 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, title)) return true;
 
-            if (this.TitleId != title.TitleId)
+            if (TitleId != title.TitleId)
                 return false;
-            if (this.TitleStringId != title.TitleStringId)
+            if (TitleStringId != title.TitleStringId)
                 return false;
-            if (this.TitleString != title.TitleString)
+            if (TitleString != title.TitleString)
                 return false;
-            if (this.TitleCodexNode != title.TitleCodexNode)
+            if (TitleCodexNode != title.TitleCodexNode)
                 return false;
-            if (this.TitleLegacyPrefix != title.TitleLegacyPrefix)
+            if (TitleLegacyPrefix != title.TitleLegacyPrefix)
                 return false;
 
             return true;

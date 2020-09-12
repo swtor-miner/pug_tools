@@ -22,7 +22,7 @@ namespace GomLib.ModelLoader
             achCategoriesData = new Dictionary<object, object>();
         }
 
-        public Models.AchievementCategory Load(long id)
+        public AchievementCategory Load(long id)
         {
             if (achCategoriesData.Count == 0)
             {
@@ -32,11 +32,11 @@ namespace GomLib.ModelLoader
             _ = new object();
             achCategoriesData.TryGetValue(id, out object achData);
 
-            Models.AchievementCategory ach = new AchievementCategory();
+            AchievementCategory ach = new AchievementCategory();
             return Load(ach, id, (GomObjectData)achData);
         }
 
-        public Models.AchievementCategory Load(Models.AchievementCategory model, long Id, GomObjectData obj)
+        public AchievementCategory Load(AchievementCategory model, long Id, GomObjectData obj)
         {
             if (obj == null) { return model; }
             if (model == null) { return null; }
@@ -44,8 +44,8 @@ namespace GomLib.ModelLoader
             //model.NodeId = obj.ValueOrDefault<long>("repGroupInfoId", 0);
 
             model.CatId = Id;
-            model.Icon = obj.ValueOrDefault<string>("achCategoriesIcon", "");
-            model.CodexIcon = obj.ValueOrDefault<string>("achCategoriesCodexIcon", "");
+            model.Icon = obj.ValueOrDefault("achCategoriesIcon", "");
+            model.CodexIcon = obj.ValueOrDefault("achCategoriesCodexIcon", "");
             model.NameId = obj.ValueOrDefault<ulong>("achCategoriesStrRetrID");
             model.Name = _dom.stringTable.TryGetString("str.gui.achievementcategories", (long)(model.NameId), "enMale");
             model.LocalizedName = _dom.stringTable.TryGetLocalizedStrings("str.gui.achievementcategories", (long)(model.NameId));

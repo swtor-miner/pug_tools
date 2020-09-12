@@ -32,12 +32,12 @@ namespace GomLib.ModelLoader
             var qstTaskMapNoteList = obj.ValueOrDefault<List<object>>("qstTaskMapNoteList", null);
             if (qstTaskMapNoteList != null)
                 task.MapNoteFqnList = qstTaskMapNoteList.Cast<string>().ToList();
-            var bonusMissions = (List<object>)obj.ValueOrDefault<List<object>>("qstBonusMissions", null);
+            var bonusMissions = obj.ValueOrDefault<List<object>>("qstBonusMissions", null);
             task.BonusMissionsIds = _dom.questLoader.LoadBonusMissions(bonusMissions);
 
             task.CountMax = (int)obj.ValueOrDefault<long>("qstTaskCountMax", 0);
-            task.ShowTracking = obj.ValueOrDefault<bool>("qstTaskShowTracking", false);
-            task.ShowCount = obj.ValueOrDefault<bool>("qstTaskShowTrackingCount", false);
+            task.ShowTracking = obj.ValueOrDefault("qstTaskShowTracking", false);
+            task.ShowCount = obj.ValueOrDefault("qstTaskShowTrackingCount", false);
             task.Hook = obj.ValueOrDefault<string>("qstHook", null);
             long.TryParse(obj.ValueOrDefault<string>("qstTaskStringid", null), out long stringId);
 
@@ -51,7 +51,7 @@ namespace GomLib.ModelLoader
 
             task.TaskQuests = new List<Quest>();
             task.TaskNpcs = new List<Npc>();
-            var qstTaskObjects = (Dictionary<object, object>)obj.ValueOrDefault<Dictionary<object, object>>("qstTaskTriggerIdMap", null);
+            var qstTaskObjects = obj.ValueOrDefault<Dictionary<object, object>>("qstTaskTriggerIdMap", null);
             if (qstTaskObjects != null)
             {
                 foreach (var taskObj in qstTaskObjects)
@@ -96,10 +96,10 @@ namespace GomLib.ModelLoader
                 }
             }
 
-            var itemsGiven = (List<object>)obj.ValueOrDefault<List<object>>("qstItemsGivenOnCompletion", null);
+            var itemsGiven = obj.ValueOrDefault<List<object>>("qstItemsGivenOnCompletion", null);
             task.ItemsGiven = _dom.questLoader.LoadGivenOrTakenItems(task.Step.Branch.Quest, itemsGiven);
 
-            var itemsTaken = (List<object>)obj.ValueOrDefault<List<object>>("qstItemsTakenOnCompletion", null);
+            var itemsTaken = obj.ValueOrDefault<List<object>>("qstItemsTakenOnCompletion", null);
             task.ItemsTaken = _dom.questLoader.LoadGivenOrTakenItems(task.Step.Branch.Quest, itemsTaken);
 
             return task;

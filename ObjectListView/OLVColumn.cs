@@ -102,8 +102,8 @@ namespace BrightIdeasSoftware
         public OLVColumn(string title, string aspect)
             : this()
         {
-            this.Text = title;
-            this.AspectName = aspect;
+            Text = title;
+            AspectName = aspect;
         }
 
         #endregion 
@@ -155,7 +155,7 @@ namespace BrightIdeasSoftware
             set
             {
                 aspectName = value;
-                this.aspectMunger = null;
+                aspectMunger = null;
             }
         }
         private string aspectName;
@@ -213,16 +213,16 @@ namespace BrightIdeasSoftware
          DefaultValue(true)]
         public bool AutoCompleteEditor
         {
-            get { return this.AutoCompleteEditorMode != AutoCompleteMode.None; }
+            get { return AutoCompleteEditorMode != AutoCompleteMode.None; }
             set
             {
                 if (value)
                 {
-                    if (this.AutoCompleteEditorMode == AutoCompleteMode.None)
-                        this.AutoCompleteEditorMode = AutoCompleteMode.Append;
+                    if (AutoCompleteEditorMode == AutoCompleteMode.None)
+                        AutoCompleteEditorMode = AutoCompleteMode.Append;
                 }
                 else
-                    this.AutoCompleteEditorMode = AutoCompleteMode.None;
+                    AutoCompleteEditorMode = AutoCompleteMode.None;
             }
         }
 
@@ -249,7 +249,7 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                return this.Hideable && (this.Index != 0);
+                return Hideable && (Index != 0);
             }
         }
 
@@ -259,8 +259,8 @@ namespace BrightIdeasSoftware
         /// <remarks>This setting only takes effect when the control is owner drawn.</remarks>
         public Rectangle? CellPadding
         {
-            get { return this.cellPadding; }
-            set { this.cellPadding = value; }
+            get { return cellPadding; }
+            set { cellPadding = value; }
         }
         private Rectangle? cellPadding;
 
@@ -280,8 +280,8 @@ namespace BrightIdeasSoftware
          DefaultValue(null)]
         public virtual StringAlignment? CellVerticalAlignment
         {
-            get { return this.cellVerticalAlignment; }
-            set { this.cellVerticalAlignment = value; }
+            get { return cellVerticalAlignment; }
+            set { cellVerticalAlignment = value; }
         }
         private StringAlignment? cellVerticalAlignment;
 
@@ -300,19 +300,19 @@ namespace BrightIdeasSoftware
             get { return checkBoxes; }
             set
             {
-                if (this.checkBoxes == value)
+                if (checkBoxes == value)
                     return;
 
-                this.checkBoxes = value;
-                if (this.checkBoxes)
+                checkBoxes = value;
+                if (checkBoxes)
                 {
-                    if (this.Renderer == null)
-                        this.Renderer = new CheckStateRenderer();
+                    if (Renderer == null)
+                        Renderer = new CheckStateRenderer();
                 }
                 else
                 {
-                    if (this.Renderer is CheckStateRenderer)
-                        this.Renderer = null;
+                    if (Renderer is CheckStateRenderer)
+                        Renderer = null;
                 }
             }
         }
@@ -340,15 +340,15 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                if (this.clusteringStrategy == null)
-                    this.ClusteringStrategy = this.DecideDefaultClusteringStrategy();
+                if (clusteringStrategy == null)
+                    ClusteringStrategy = DecideDefaultClusteringStrategy();
                 return clusteringStrategy;
             }
             set
             {
-                this.clusteringStrategy = value;
-                if (this.clusteringStrategy != null)
-                    this.clusteringStrategy.Column = this;
+                clusteringStrategy = value;
+                if (clusteringStrategy != null)
+                    clusteringStrategy.Column = this;
             }
         }
         private IClusteringStrategy clusteringStrategy;
@@ -371,8 +371,8 @@ namespace BrightIdeasSoftware
          DefaultValue(false)]
         public bool FillsFreeSpace
         {
-            get { return this.FreeSpaceProportion > 0; }
-            set { this.FreeSpaceProportion = value ? 1 : 0; }
+            get { return FreeSpaceProportion > 0; }
+            set { FreeSpaceProportion = value ? 1 : 0; }
         }
 
         /// <summary>
@@ -511,12 +511,12 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                if (!String.IsNullOrEmpty(this.GroupWithItemCountFormat))
-                    return this.GroupWithItemCountFormat;
+                if (!string.IsNullOrEmpty(GroupWithItemCountFormat))
+                    return GroupWithItemCountFormat;
 
-                if (this.ListView != null)
+                if (ListView != null)
                 {
-                    cachedGroupWithItemCountFormat = ((ObjectListView)this.ListView).GroupWithItemCountFormatOrDefault;
+                    cachedGroupWithItemCountFormat = ((ObjectListView)ListView).GroupWithItemCountFormatOrDefault;
                     return cachedGroupWithItemCountFormat;
                 }
 
@@ -562,12 +562,12 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                if (!String.IsNullOrEmpty(this.GroupWithItemCountSingularFormat))
-                    return this.GroupWithItemCountSingularFormat;
+                if (!string.IsNullOrEmpty(GroupWithItemCountSingularFormat))
+                    return GroupWithItemCountSingularFormat;
 
-                if (this.ListView != null)
+                if (ListView != null)
                 {
-                    cachedGroupWithItemCountSingularFormat = ((ObjectListView)this.ListView).GroupWithItemCountSingularFormatOrDefault;
+                    cachedGroupWithItemCountSingularFormat = ((ObjectListView)ListView).GroupWithItemCountSingularFormatOrDefault;
                     return cachedGroupWithItemCountSingularFormat;
                 }
 
@@ -587,7 +587,7 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                return this.UseFiltering && this.ValuesChosenForFiltering != null && this.ValuesChosenForFiltering.Count > 0;
+                return UseFiltering && ValuesChosenForFiltering != null && ValuesChosenForFiltering.Count > 0;
             }
         }
 
@@ -612,8 +612,8 @@ namespace BrightIdeasSoftware
          DefaultValue(null)]
         public HeaderFormatStyle HeaderFormatStyle
         {
-            get { return this.headerFormatStyle; }
-            set { this.headerFormatStyle = value; }
+            get { return headerFormatStyle; }
+            set { headerFormatStyle = value; }
         }
         private HeaderFormatStyle headerFormatStyle;
 
@@ -626,16 +626,16 @@ namespace BrightIdeasSoftware
         [DefaultValue(null)]
         public Font HeaderFont
         {
-            get { return this.HeaderFormatStyle?.Normal.Font; }
+            get { return HeaderFormatStyle?.Normal.Font; }
             set
             {
-                if (value == null && this.HeaderFormatStyle == null)
+                if (value == null && HeaderFormatStyle == null)
                     return;
 
-                if (this.HeaderFormatStyle == null)
-                    this.HeaderFormatStyle = new HeaderFormatStyle();
+                if (HeaderFormatStyle == null)
+                    HeaderFormatStyle = new HeaderFormatStyle();
 
-                this.HeaderFormatStyle.SetFont(value);
+                HeaderFormatStyle.SetFont(value);
             }
         }
 
@@ -648,16 +648,16 @@ namespace BrightIdeasSoftware
         [DefaultValue(typeof(Color), "")]
         public Color HeaderForeColor
         {
-            get { return this.HeaderFormatStyle == null ? Color.Empty : this.HeaderFormatStyle.Normal.ForeColor; }
+            get { return HeaderFormatStyle == null ? Color.Empty : HeaderFormatStyle.Normal.ForeColor; }
             set
             {
-                if (value.IsEmpty && this.HeaderFormatStyle == null)
+                if (value.IsEmpty && HeaderFormatStyle == null)
                     return;
 
-                if (this.HeaderFormatStyle == null)
-                    this.HeaderFormatStyle = new HeaderFormatStyle();
+                if (HeaderFormatStyle == null)
+                    HeaderFormatStyle = new HeaderFormatStyle();
 
-                this.HeaderFormatStyle.SetForeColor(value);
+                HeaderFormatStyle.SetForeColor(value);
             }
         }
 
@@ -687,7 +687,7 @@ namespace BrightIdeasSoftware
          DefaultValue(HorizontalAlignment.Left)]
         public HorizontalAlignment HeaderTextAlign
         {
-            get { return headerTextAlign ?? this.TextAlign; }
+            get { return headerTextAlign ?? TextAlign; }
             set { headerTextAlign = value; }
         }
         private HorizontalAlignment? headerTextAlign;
@@ -700,7 +700,7 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                switch (this.HeaderTextAlign)
+                switch (HeaderTextAlign)
                 {
                     case HorizontalAlignment.Left: return StringAlignment.Near;
                     case HorizontalAlignment.Center: return StringAlignment.Center;
@@ -718,9 +718,9 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                return (this.ListView != null &&
-                    this.ListView.SmallImageList != null &&
-                    this.ListView.SmallImageList.Images.ContainsKey(this.HeaderImageKey));
+                return (ListView != null &&
+                    ListView.SmallImageList != null &&
+                    ListView.SmallImageList.Images.ContainsKey(HeaderImageKey));
             }
         }
 
@@ -823,7 +823,7 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                return (this.MinimumWidth != -1 && this.MaximumWidth != -1 && this.MinimumWidth >= this.MaximumWidth);
+                return (MinimumWidth != -1 && MaximumWidth != -1 && MinimumWidth >= MaximumWidth);
             }
         }
 
@@ -885,8 +885,8 @@ namespace BrightIdeasSoftware
          DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int LastDisplayIndex
         {
-            get { return this.lastDisplayIndex; }
-            set { this.lastDisplayIndex = value; }
+            get { return lastDisplayIndex; }
+            set { lastDisplayIndex = value; }
         }
         private int lastDisplayIndex = -1;
 
@@ -903,8 +903,8 @@ namespace BrightIdeasSoftware
             set
             {
                 maxWidth = value;
-                if (maxWidth != -1 && this.Width > maxWidth)
-                    this.Width = maxWidth;
+                if (maxWidth != -1 && Width > maxWidth)
+                    Width = maxWidth;
             }
         }
         private int maxWidth = -1;
@@ -922,8 +922,8 @@ namespace BrightIdeasSoftware
             set
             {
                 minWidth = value;
-                if (this.Width < minWidth)
-                    this.Width = minWidth;
+                if (Width < minWidth)
+                    Width = minWidth;
             }
         }
         private int minWidth = -1;
@@ -952,14 +952,14 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                if (this.Renderer is Version1Renderer renderer1)
+                if (Renderer is Version1Renderer renderer1)
                     return renderer1.RenderDelegate;
                 else
                     return null;
             }
             set
             {
-                this.Renderer = value == null ? null : new Version1Renderer(value);
+                Renderer = value == null ? null : new Version1Renderer(value);
             }
         }
 
@@ -1033,11 +1033,11 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                return this.textAlign ?? base.TextAlign;
+                return textAlign ?? base.TextAlign;
             }
             set
             {
-                this.textAlign = value;
+                textAlign = value;
                 base.TextAlign = value;
             }
         }
@@ -1051,7 +1051,7 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                switch (this.TextAlign)
+                switch (TextAlign)
                 {
                     case HorizontalAlignment.Center:
                         return StringAlignment.Center;
@@ -1072,14 +1072,14 @@ namespace BrightIdeasSoftware
         /// value will be ignored.</remarks>
         [Category("ObjectListView"),
          Description("The tooltip to show when the mouse is hovered over the header of this column"),
-         DefaultValue((String)null),
+         DefaultValue(null),
          Localizable(true)]
-        public String ToolTipText
+        public string ToolTipText
         {
             get { return toolTipText; }
             set { toolTipText = value; }
         }
-        private String toolTipText;
+        private string toolTipText;
 
         /// <summary>
         /// Should this column have a tri-state checkbox?
@@ -1096,8 +1096,8 @@ namespace BrightIdeasSoftware
             set
             {
                 triStateCheckBoxes = value;
-                if (value && !this.CheckBoxes)
-                    this.CheckBoxes = true;
+                if (value && !CheckBoxes)
+                    CheckBoxes = true;
             }
         }
         private bool triStateCheckBoxes;
@@ -1142,19 +1142,19 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                if (!this.UseFiltering)
+                if (!UseFiltering)
                     return null;
 
                 if (valueBasedFilter != null)
                     return valueBasedFilter;
 
-                if (this.ClusteringStrategy == null)
+                if (ClusteringStrategy == null)
                     return null;
 
-                if (this.ValuesChosenForFiltering == null || this.ValuesChosenForFiltering.Count == 0)
+                if (ValuesChosenForFiltering == null || ValuesChosenForFiltering.Count == 0)
                     return null;
 
-                return this.ClusteringStrategy.CreateFilter(this.ValuesChosenForFiltering);
+                return ClusteringStrategy.CreateFilter(ValuesChosenForFiltering);
             }
             set { valueBasedFilter = value; }
         }
@@ -1170,8 +1170,8 @@ namespace BrightIdeasSoftware
          DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IList ValuesChosenForFiltering
         {
-            get { return this.valuesChosenForFiltering; }
-            set { this.valuesChosenForFiltering = value; }
+            get { return valuesChosenForFiltering; }
+            set { valuesChosenForFiltering = value; }
         }
         private IList valuesChosenForFiltering = new ArrayList();
 
@@ -1186,10 +1186,10 @@ namespace BrightIdeasSoftware
             get { return base.Width; }
             set
             {
-                if (this.MaximumWidth != -1 && value > this.MaximumWidth)
-                    base.Width = this.MaximumWidth;
+                if (MaximumWidth != -1 && value > MaximumWidth)
+                    base.Width = MaximumWidth;
                 else
-                    base.Width = Math.Max(this.MinimumWidth, value);
+                    base.Width = Math.Max(MinimumWidth, value);
             }
         }
 
@@ -1209,16 +1209,16 @@ namespace BrightIdeasSoftware
                 wordWrap = value;
 
                 // If there isn't a renderer and they are turning word wrap off, we don't need to do anything
-                if (this.Renderer == null && !wordWrap)
+                if (Renderer == null && !wordWrap)
                     return;
 
                 // All other cases require a renderer of some sort
-                if (this.Renderer == null)
-                    this.Renderer = new HighlightTextRenderer();
+                if (Renderer == null)
+                    Renderer = new HighlightTextRenderer();
 
                 // If there is a custom renderer (not descended from BaseRenderer), 
                 // we leave it up to them to implement wrapping
-                if (!(this.Renderer is BaseRenderer baseRenderer))
+                if (!(Renderer is BaseRenderer baseRenderer))
                     return;
 
                 baseRenderer.CanWrap = wordWrap;
@@ -1237,10 +1237,10 @@ namespace BrightIdeasSoftware
         /// <returns>string</returns>
         public string ConvertGroupKeyToTitle(object value)
         {
-            if (this.groupKeyToTitleConverter != null)
-                return this.groupKeyToTitleConverter(value);
+            if (groupKeyToTitleConverter != null)
+                return groupKeyToTitleConverter(value);
 
-            return value == null ? ObjectListView.GroupTitleDefault : this.ValueToString(value);
+            return value == null ? ObjectListView.GroupTitleDefault : ValueToString(value);
         }
 
         /// <summary>
@@ -1250,10 +1250,10 @@ namespace BrightIdeasSoftware
         /// <returns>The checkedness of the object</returns>
         public CheckState GetCheckState(object rowObject)
         {
-            if (!this.CheckBoxes)
+            if (!CheckBoxes)
                 return CheckState.Unchecked;
 
-            bool? aspectAsBool = this.GetValue(rowObject) as bool?;
+            bool? aspectAsBool = GetValue(rowObject) as bool?;
             if (aspectAsBool.HasValue)
             {
                 if (aspectAsBool.Value)
@@ -1274,12 +1274,12 @@ namespace BrightIdeasSoftware
         public void PutCheckState(object rowObject, CheckState newState)
         {
             if (newState == CheckState.Checked)
-                this.PutValue(rowObject, true);
+                PutValue(rowObject, true);
             else
                 if (newState == CheckState.Unchecked)
-                this.PutValue(rowObject, false);
+                PutValue(rowObject, false);
             else
-                this.PutValue(rowObject, null);
+                PutValue(rowObject, null);
         }
 
         /// <summary>
@@ -1289,10 +1289,10 @@ namespace BrightIdeasSoftware
         /// <returns>An object, which is the aspect named by AspectName</returns>
         public object GetAspectByName(object rowObject)
         {
-            if (this.aspectMunger == null)
-                this.aspectMunger = new Munger(this.AspectName);
+            if (aspectMunger == null)
+                aspectMunger = new Munger(AspectName);
 
-            return this.aspectMunger.GetValue(rowObject);
+            return aspectMunger.GetValue(rowObject);
         }
         private Munger aspectMunger;
 
@@ -1303,10 +1303,10 @@ namespace BrightIdeasSoftware
         /// <returns>Group key object</returns>
         public object GetGroupKey(object rowObject)
         {
-            if (this.groupKeyGetter == null)
+            if (groupKeyGetter == null)
             {
-                object key = this.GetValue(rowObject);
-                if (key is String keyAsString && this.UseInitialLetterForGroup)
+                object key = GetValue(rowObject);
+                if (key is string keyAsString && UseInitialLetterForGroup)
                 {
                     if (keyAsString.Length > 0)
                         key = keyAsString.Substring(0, 1).ToUpper();
@@ -1314,7 +1314,7 @@ namespace BrightIdeasSoftware
                 return key;
             }
             else
-                return this.groupKeyGetter(rowObject);
+                return groupKeyGetter(rowObject);
         }
 
         /// <summary>
@@ -1322,27 +1322,27 @@ namespace BrightIdeasSoftware
         /// </summary>
         /// <param name="rowObject">The row object that is being displayed</param>
         /// <returns>int or string or Image. int or string will be used as index into image list. null or -1 means no image</returns>
-        public Object GetImage(object rowObject)
+        public object GetImage(object rowObject)
         {
-            if (this.CheckBoxes)
-                return this.GetCheckStateImage(rowObject);
+            if (CheckBoxes)
+                return GetCheckStateImage(rowObject);
 
-            if (this.ImageGetter != null)
-                return this.ImageGetter(rowObject);
+            if (ImageGetter != null)
+                return ImageGetter(rowObject);
 
-            if (!String.IsNullOrEmpty(this.ImageAspectName))
+            if (!string.IsNullOrEmpty(ImageAspectName))
             {
-                if (this.imageAspectMunger == null)
-                    this.imageAspectMunger = new Munger(this.ImageAspectName);
+                if (imageAspectMunger == null)
+                    imageAspectMunger = new Munger(ImageAspectName);
 
-                return this.imageAspectMunger.GetValue(rowObject);
+                return imageAspectMunger.GetValue(rowObject);
             }
 
             // I think this is wrong. ImageKey is meant for the image in the header, not in the rows
-            if (!String.IsNullOrEmpty(this.ImageKey))
-                return this.ImageKey;
+            if (!string.IsNullOrEmpty(ImageKey))
+                return ImageKey;
 
-            return this.ImageIndex;
+            return ImageIndex;
         }
         private Munger imageAspectMunger;
 
@@ -1351,9 +1351,9 @@ namespace BrightIdeasSoftware
         /// </summary>
         /// <param name="rowObject"></param>
         /// <returns></returns>
-        public string GetCheckStateImage(Object rowObject)
+        public string GetCheckStateImage(object rowObject)
         {
-            CheckState checkState = this.GetCheckState(rowObject);
+            CheckState checkState = GetCheckState(rowObject);
 
             if (checkState == CheckState.Checked)
                 return ObjectListView.CHECKED_KEY;
@@ -1375,7 +1375,7 @@ namespace BrightIdeasSoftware
         /// <returns></returns>
         public string GetStringValue(object rowObject)
         {
-            return this.ValueToString(this.GetValue(rowObject));
+            return ValueToString(GetValue(rowObject));
         }
 
         /// <summary>
@@ -1385,10 +1385,10 @@ namespace BrightIdeasSoftware
         /// <returns>An object, which is the aspect to be displayed</returns>
         public object GetValue(object rowObject)
         {
-            if (this.AspectGetter == null)
-                return this.GetAspectByName(rowObject);
+            if (AspectGetter == null)
+                return GetAspectByName(rowObject);
             else
-                return this.AspectGetter(rowObject);
+                return AspectGetter(rowObject);
         }
 
         /// <summary>
@@ -1397,12 +1397,12 @@ namespace BrightIdeasSoftware
         /// </summary>
         /// <param name="rowObject">The model object to be updated</param>
         /// <param name="newValue">The value to be put into the model</param>
-        public void PutAspectByName(Object rowObject, Object newValue)
+        public void PutAspectByName(object rowObject, object newValue)
         {
-            if (this.aspectMunger == null)
-                this.aspectMunger = new Munger(this.AspectName);
+            if (aspectMunger == null)
+                aspectMunger = new Munger(AspectName);
 
-            this.aspectMunger.PutValue(rowObject, newValue);
+            aspectMunger.PutValue(rowObject, newValue);
         }
 
         /// <summary>
@@ -1410,12 +1410,12 @@ namespace BrightIdeasSoftware
         /// </summary>
         /// <param name="rowObject">The model object to be updated</param>
         /// <param name="newValue">The value to be put into the model</param>
-        public void PutValue(Object rowObject, Object newValue)
+        public void PutValue(object rowObject, object newValue)
         {
-            if (this.aspectPutter == null)
-                this.PutAspectByName(rowObject, newValue);
+            if (aspectPutter == null)
+                PutAspectByName(rowObject, newValue);
             else
-                this.aspectPutter(rowObject, newValue);
+                aspectPutter(rowObject, newValue);
         }
 
         /// <summary>
@@ -1432,18 +1432,18 @@ namespace BrightIdeasSoftware
         public string ValueToString(object value)
         {
             // Give the installed converter a chance to work (even if the value is null)
-            if (this.AspectToStringConverter != null)
-                return this.AspectToStringConverter(value) ?? String.Empty;
+            if (AspectToStringConverter != null)
+                return AspectToStringConverter(value) ?? string.Empty;
 
             // Without a converter, nulls become simple empty strings
             if (value == null)
-                return String.Empty;
+                return string.Empty;
 
-            string fmt = this.AspectToStringFormat;
-            if (String.IsNullOrEmpty(fmt))
+            string fmt = AspectToStringFormat;
+            if (string.IsNullOrEmpty(fmt))
                 return value.ToString();
             else
-                return String.Format(fmt, value);
+                return string.Format(fmt, value);
         }
 
         #endregion
@@ -1456,10 +1456,10 @@ namespace BrightIdeasSoftware
         /// <returns></returns>
         private IClusteringStrategy DecideDefaultClusteringStrategy()
         {
-            if (!this.UseFiltering)
+            if (!UseFiltering)
                 return null;
 
-            if (this.DataType == typeof(DateTime))
+            if (DataType == typeof(DateTime))
                 return new DateTimeClusteringStrategy();
 
             return new ClustersFromGroupsStrategy();
@@ -1476,20 +1476,20 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                if (this.dataType == null)
+                if (dataType == null)
                 {
-                    if (this.ListView is ObjectListView olv)
+                    if (ListView is ObjectListView olv)
                     {
                         object value = olv.GetFirstNonNullValue(this);
                         if (value != null)
                             return value.GetType(); // THINK: Should we cache this?
                     }
                 }
-                return this.dataType;
+                return dataType;
             }
             set
             {
-                this.dataType = value;
+                dataType = value;
             }
         }
         private Type dataType;
@@ -1502,7 +1502,7 @@ namespace BrightIdeasSoftware
         /// <param name="descriptions"></param>
         public void MakeGroupies(object[] values, string[] descriptions)
         {
-            this.MakeGroupies(values, descriptions, null, null, null);
+            MakeGroupies(values, descriptions, null, null, null);
         }
 
         /// <summary>
@@ -1513,7 +1513,7 @@ namespace BrightIdeasSoftware
         /// <param name="descriptions"></param>
         public void MakeGroupies<T>(T[] values, string[] descriptions)
         {
-            this.MakeGroupies(values, descriptions, null, null, null);
+            MakeGroupies(values, descriptions, null, null, null);
         }
 
         /// <summary>
@@ -1525,7 +1525,7 @@ namespace BrightIdeasSoftware
         /// <param name="images"></param>
         public void MakeGroupies<T>(T[] values, string[] descriptions, object[] images)
         {
-            this.MakeGroupies(values, descriptions, images, null, null);
+            MakeGroupies(values, descriptions, images, null, null);
         }
 
         /// <summary>
@@ -1538,7 +1538,7 @@ namespace BrightIdeasSoftware
         /// <param name="subtitles"></param>
         public void MakeGroupies<T>(T[] values, string[] descriptions, object[] images, string[] subtitles)
         {
-            this.MakeGroupies(values, descriptions, images, subtitles, null);
+            MakeGroupies(values, descriptions, images, subtitles, null);
         }
 
         /// <summary>
@@ -1572,10 +1572,10 @@ namespace BrightIdeasSoftware
                 throw new ArgumentException("descriptions must have one more element than values.");
 
             // Install a delegate that returns the index of the description to be shown
-            this.GroupKeyGetter = delegate (object row)
+            GroupKeyGetter = delegate (object row)
             {
-                Object aspect = this.GetValue(row);
-                if (aspect == null || aspect == System.DBNull.Value)
+                object aspect = GetValue(row);
+                if (aspect == null || aspect == DBNull.Value)
                     return -1;
                 IComparable comparable = (IComparable)aspect;
                 for (int i = 0; i < values.Length; i++)
@@ -1589,7 +1589,7 @@ namespace BrightIdeasSoftware
             };
 
             // Install a delegate that simply looks up the given index in the descriptions.
-            this.GroupKeyToTitleConverter = delegate (object key)
+            GroupKeyToTitleConverter = delegate (object key)
             {
                 if ((int)key < 0)
                     return "";
@@ -1598,7 +1598,7 @@ namespace BrightIdeasSoftware
             };
 
             // Install one delegate that does all the other formatting
-            this.GroupFormatter = delegate (OLVGroup group, GroupingParameters parms)
+            GroupFormatter = delegate (OLVGroup group, GroupingParameters parms)
             {
                 int key = (int)group.Key; // we know this is an int since we created it in GroupKeyGetter
 
@@ -1648,20 +1648,20 @@ namespace BrightIdeasSoftware
             ArrayList valuesArray = new ArrayList(values);
 
             // Install a delegate that returns the index of the description to be shown
-            this.GroupKeyGetter = delegate (object row)
+            GroupKeyGetter = delegate (object row)
             {
-                return valuesArray.IndexOf(this.GetValue(row));
+                return valuesArray.IndexOf(GetValue(row));
             };
 
             // Install a delegate that simply looks up the given index in the descriptions.
-            this.GroupKeyToTitleConverter = delegate (object key)
+            GroupKeyToTitleConverter = delegate (object key)
             {
                 int intKey = (int)key; // we know this is an int since we created it in GroupKeyGetter
                 return (intKey < 0) ? "[other]" : descriptions[intKey];
             };
 
             // Install one delegate that does all the other formatting
-            this.GroupFormatter = delegate (OLVGroup group, GroupingParameters parms)
+            GroupFormatter = delegate (OLVGroup group, GroupingParameters parms)
             {
                 int key = (int)group.Key; // we know this is an int since we created it in GroupKeyGetter
 

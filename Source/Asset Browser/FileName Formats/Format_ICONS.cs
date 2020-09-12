@@ -20,7 +20,7 @@ namespace PugTools
         public Format_ICONS(string dest, string ext)
         {
             this.dest = dest;
-            this.extension = ext;
+            extension = ext;
         }
 
         public void ParseICONS(DataObjectModel currentDom)
@@ -158,16 +158,16 @@ namespace PugTools
             }
             spvpIcons.Clear();
 
-            GomLib.GomObject shipDataProto = currentDom.GetObject("scFFShipsDataPrototype");
+            GomObject shipDataProto = currentDom.GetObject("scFFShipsDataPrototype");
             if (shipDataProto != null)
             {
                 Dictionary<object, object> shipData = shipDataProto.Data.ValueOrDefault<Dictionary<object, object>>("scFFShipsData", null);
                 if (shipData != null)
                 {
-                    foreach (var item in (Dictionary<object, object>)shipData)
+                    foreach (var item in shipData)
                     {
                         searched++;
-                        var item2 = (GomLib.GomObjectData)item.Value;
+                        var item2 = (GomObjectData)item.Value;
                         item2.Dictionary.TryGetValue("scFFShipHullIcon", out object icon1_string);
                         item2.Dictionary.TryGetValue("scFFShipIcon", out object icon2_string);
                         if (icon1_string != null)
@@ -186,16 +186,16 @@ namespace PugTools
                 shipDataProto.Unload();
             }
 
-            GomLib.GomObject shipColorOptionProto = currentDom.GetObject("scFFColorOptionMasterPrototype");
+            GomObject shipColorOptionProto = currentDom.GetObject("scFFColorOptionMasterPrototype");
             if (shipColorOptionProto != null)
             {
                 Dictionary<object, object> shipColors = shipColorOptionProto.Data.ValueOrDefault<Dictionary<object, object>>("scFFComponentColorUIData", null);
                 if (shipColors != null)
                 {
-                    foreach (var item in (Dictionary<object, object>)shipColors)
+                    foreach (var item in shipColors)
                     {
                         searched++;
-                        var item2 = (GomLib.GomObjectData)item.Value;
+                        var item2 = (GomObjectData)item.Value;
                         item2.Dictionary.TryGetValue("scFFComponentColorIcon", out object icon_string);
                         if (icon_string != null)
                         {
@@ -208,16 +208,16 @@ namespace PugTools
                 shipColorOptionProto.Unload();
             }
 
-            GomLib.GomObject scffCrewProto = currentDom.GetObject("scffCrewPrototype");
+            GomObject scffCrewProto = currentDom.GetObject("scffCrewPrototype");
             if (scffCrewProto != null)
             {
                 Dictionary<object, object> shipCrew = scffCrewProto.Data.ValueOrDefault<Dictionary<object, object>>("scFFShipsCrewAndPatternData", null);
                 if (shipCrew != null)
                 {
-                    foreach (var item in (Dictionary<object, object>)shipCrew)
+                    foreach (var item in shipCrew)
                     {
                         searched++;
-                        var item2 = (GomLib.GomObjectData)item.Value;
+                        var item2 = (GomObjectData)item.Value;
                         item2.Dictionary.TryGetValue("scFFCrewIcon", out object icon_string);
                         if (icon_string != null)
                         {
@@ -230,16 +230,16 @@ namespace PugTools
                 scffCrewProto.Unload();
             }
 
-            GomLib.GomObject mtxStore = currentDom.GetObject("mtxStorefrontInfoPrototype");
+            GomObject mtxStore = currentDom.GetObject("mtxStorefrontInfoPrototype");
             if (mtxStore != null)
             {
                 Dictionary<object, object> mtxItems = mtxStore.Data.ValueOrDefault<Dictionary<object, object>>("mtxStorefrontData", null);
                 if (mtxItems != null)
                 {
-                    foreach (var item in (Dictionary<object, object>)mtxItems)
+                    foreach (var item in mtxItems)
                     {
                         searched++;
-                        var item2 = (GomLib.GomObjectData)item.Value;
+                        var item2 = (GomObjectData)item.Value;
                         item2.Dictionary.TryGetValue("mtxStorefrontIcon", out object icon_string);
                         if (icon_string != null)
                         {
@@ -257,16 +257,16 @@ namespace PugTools
                 mtxStore.Unload();
             }
 
-            GomLib.GomObject colCategoriesProto = currentDom.GetObject("colCollectionCategoriesPrototype");
+            GomObject colCategoriesProto = currentDom.GetObject("colCollectionCategoriesPrototype");
             if (colCategoriesProto != null)
             {
                 Dictionary<object, object> colCats = colCategoriesProto.Data.ValueOrDefault<Dictionary<object, object>>("colCollectionCategoryData", null);
                 if (colCats != null)
                 {
-                    foreach (var item in (Dictionary<object, object>)colCats)
+                    foreach (var item in colCats)
                     {
                         searched++;
-                        var item2 = (GomLib.GomObjectData)item.Value;
+                        var item2 = (GomObjectData)item.Value;
                         item2.Dictionary.TryGetValue("colCollectionCategoryIcon", out object icon_string);
                         if (icon_string != null)
                         {
@@ -284,16 +284,16 @@ namespace PugTools
                 colCategoriesProto.Unload();
             }
 
-            GomLib.GomObject colCollectionItemsProto = currentDom.GetObject("colCollectionItemsPrototype");
+            GomObject colCollectionItemsProto = currentDom.GetObject("colCollectionItemsPrototype");
             if (colCollectionItemsProto != null)
             {
                 Dictionary<object, object> colItems = colCollectionItemsProto.Data.ValueOrDefault<Dictionary<object, object>>("colCollectionItemsData", null);
                 if (colItems != null)
                 {
-                    foreach (var item in (Dictionary<object, object>)colItems)
+                    foreach (var item in colItems)
                     {
                         searched++;
-                        var item2 = (GomLib.GomObjectData)item.Value;
+                        var item2 = (GomObjectData)item.Value;
                         item2.Dictionary.TryGetValue("colCollectionIcon", out object icon_string);
                         if (icon_string != null)
                         {
@@ -311,16 +311,16 @@ namespace PugTools
                 colCollectionItemsProto.Unload();
             }
 
-            GomLib.GomObject achCategoriesTable_Proto = currentDom.GetObject("achCategoriesTable_Prototype");
+            GomObject achCategoriesTable_Proto = currentDom.GetObject("achCategoriesTable_Prototype");
             if (achCategoriesTable_Proto != null)
             {
                 Dictionary<object, object> achCategories = achCategoriesTable_Proto.Data.ValueOrDefault<Dictionary<object, object>>("achCategoriesData", null);
                 if (achCategories != null)
                 {
-                    foreach (var item in (Dictionary<object, object>)achCategories)
+                    foreach (var item in achCategories)
                     {
                         searched++;
-                        var item2 = (GomLib.GomObjectData)item.Value;
+                        var item2 = (GomObjectData)item.Value;
                         item2.Dictionary.TryGetValue("achCategoriesIcon", out object icon_string1);
                         if (icon_string1 != null)
                         {
@@ -342,11 +342,11 @@ namespace PugTools
 
         public void WriteFile(bool _ = false)
         {
-            if (!System.IO.Directory.Exists(this.dest + "\\File_Names"))
-                System.IO.Directory.CreateDirectory(this.dest + "\\File_Names");
-            if (this.fileNames.Count > 0)
+            if (!Directory.Exists(dest + "\\File_Names"))
+                Directory.CreateDirectory(dest + "\\File_Names");
+            if (fileNames.Count > 0)
             {
-                System.IO.StreamWriter outputAnimFileNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_file_names.txt", false);
+                StreamWriter outputAnimFileNames = new StreamWriter(dest + "\\File_Names\\" + extension + "_file_names.txt", false);
                 foreach (string item in fileNames)
                 {
                     if (item != "")
@@ -355,9 +355,9 @@ namespace PugTools
                 outputAnimFileNames.Close();
             }
 
-            if (this.errors.Count > 0)
+            if (errors.Count > 0)
             {
-                System.IO.StreamWriter outputErrors = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_error_list.txt", false);
+                StreamWriter outputErrors = new StreamWriter(dest + "\\File_Names\\" + extension + "_error_list.txt", false);
                 foreach (string error in errors)
                 {
                     outputErrors.Write(error + "\r\n");

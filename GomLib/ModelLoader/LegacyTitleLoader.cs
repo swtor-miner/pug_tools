@@ -22,7 +22,7 @@ namespace GomLib.ModelLoader
             idLookup = new Dictionary<long, LegacyTitle>();
         }
 
-        public Models.LegacyTitle Load(long id)
+        public LegacyTitle Load(long id)
         {
             if (idLookup.Count == 0)
             {
@@ -33,7 +33,7 @@ namespace GomLib.ModelLoader
             return data;
         }
 
-        public Models.LegacyTitle Load(Models.LegacyTitle title, GomObjectData obj)
+        public LegacyTitle Load(LegacyTitle title, GomObjectData obj)
         {
             if (obj == null) { return title; }
             if (title == null) { return null; }

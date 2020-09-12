@@ -14,11 +14,11 @@ namespace GomLib
         {
             if (EnumType != null)
             {
-                return EnumType.ValueString(this.Value);
+                return EnumType.ValueString(Value);
             }
             else
             {
-                return String.Format("0x{0:X2}", Value);
+                return string.Format("0x{0:X2}", Value);
             }
         }
     }

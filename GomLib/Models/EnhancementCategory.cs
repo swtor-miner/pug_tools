@@ -19,13 +19,13 @@ namespace GomLib.Models
     {
         public static EnhancementCategory ToEnhancementCategory(this ScriptEnum val)
         {
-            if (val == null) { return ToEnhancementCategory(String.Empty); }
+            if (val == null) { return ToEnhancementCategory(string.Empty); }
             return ToEnhancementCategory(val.ToString());
         }
 
         public static EnhancementCategory ToEnhancementCategory(this string str)
         {
-            if (String.IsNullOrEmpty(str)) return EnhancementCategory.None;
+            if (string.IsNullOrEmpty(str)) return EnhancementCategory.None;
 
             switch (str)
             {

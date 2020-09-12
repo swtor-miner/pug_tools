@@ -30,7 +30,7 @@ namespace GomLib
         public override void Print(System.IO.TextWriter writer)
         {
             writer.WriteLine("Enum: {0} - 0x{1:X}", Name, Id);
-            if (!String.IsNullOrEmpty(Description)) writer.WriteLine("\t{0}", Description);
+            if (!string.IsNullOrEmpty(Description)) writer.WriteLine("\t{0}", Description);
             for (var i = 0; i < vals.Count; i++)
             {
                 writer.WriteLine("\t0x{0:X}: {1} - 0x{2:X}", i + 1, names[i], vals[i]);
@@ -39,8 +39,8 @@ namespace GomLib
 
         public DomEnum()
         {
-            this.names = new List<string>();
-            this.vals = new List<short>();
+            names = new List<string>();
+            vals = new List<short>();
         }
 
         public string ValueString(int idx)

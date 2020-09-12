@@ -19,7 +19,7 @@ namespace PugTools
         public Format_BNK(string dest, string ext)
         {
             this.dest = dest;
-            this.extension = ext;
+            extension = ext;
         }
 
         public void ParseBNK(Stream fileStream, string _)
@@ -69,12 +69,12 @@ namespace PugTools
 
         public void WriteFile()
         {
-            if (!System.IO.Directory.Exists(this.dest + "\\File_Names"))
-                System.IO.Directory.CreateDirectory(this.dest + "\\File_Names");
-            found = this.fileNames.Count();
-            if (this.fileNames.Count > 0)
+            if (!Directory.Exists(dest + "\\File_Names"))
+                Directory.CreateDirectory(dest + "\\File_Names");
+            found = fileNames.Count();
+            if (fileNames.Count > 0)
             {
-                System.IO.StreamWriter outputNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_file_names.txt", false);
+                StreamWriter outputNames = new StreamWriter(dest + "\\File_Names\\" + extension + "_file_names.txt", false);
                 foreach (string file in fileNames)
                 {
                     outputNames.Write(file.Replace("\\", "/") + "\r\n");
@@ -83,9 +83,9 @@ namespace PugTools
                 fileNames.Clear();
             }
 
-            if (this.errors.Count > 0)
+            if (errors.Count > 0)
             {
-                System.IO.StreamWriter outputErrors = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_error_list.txt", false);
+                StreamWriter outputErrors = new StreamWriter(dest + "\\File_Names\\" + extension + "_error_list.txt", false);
                 foreach (string error in errors)
                 {
                     outputErrors.Write(error + "\r\n");
@@ -116,19 +116,19 @@ namespace PugTools
                 switch (header_str)
                 {
                     case "BKHD":
-                        this.bkhd = new FileFormat_BNK_BKHD(br);
+                        bkhd = new FileFormat_BNK_BKHD(br);
                         break;
                     case "DIDX":
-                        this.didx = new FileFormat_BNK_DIDX(br);
+                        didx = new FileFormat_BNK_DIDX(br);
                         break;
                     case "DATA":
-                        this.data = new FileFormat_BNK_DATA(br);
+                        data = new FileFormat_BNK_DATA(br);
                         break;
                     case "HIRC":
-                        this.hirc = new FileFormat_BNK_HIRC(br);
+                        hirc = new FileFormat_BNK_HIRC(br);
                         break;
                     case "STID":
-                        this.stid = new FileFormat_BNK_STID(br);
+                        stid = new FileFormat_BNK_STID(br);
                         break;
                     default:
                         uint length = br.ReadUInt32();
@@ -139,11 +139,11 @@ namespace PugTools
 
             if (loadWEMs)
             {
-                if (this.didx != null && this.data != null)
+                if (didx != null && data != null)
                 {
-                    foreach (WEM_File wem in this.didx.wems)
+                    foreach (WEM_File wem in didx.wems)
                     {
-                        br.BaseStream.Seek(this.data.offset + 4, SeekOrigin.Begin);
+                        br.BaseStream.Seek(data.offset + 4, SeekOrigin.Begin);
                         br.BaseStream.Seek(wem.Offset, SeekOrigin.Current);
                         wem.Data = br.ReadBytes((int)wem.Length);
                     }
@@ -161,13 +161,13 @@ namespace PugTools
 
         public FileFormat_BNK_BKHD(BinaryReader br)
         {
-            this.offset = br.BaseStream.Position;
-            this.length = br.ReadUInt32();
-            this.version = br.ReadUInt32();
-            this.id = br.ReadUInt32();
+            offset = br.BaseStream.Position;
+            length = br.ReadUInt32();
+            version = br.ReadUInt32();
+            id = br.ReadUInt32();
             br.ReadUInt32();
             br.ReadUInt32();
-            br.BaseStream.Seek(this.length - 0x10, SeekOrigin.Current);
+            br.BaseStream.Seek(length - 0x10, SeekOrigin.Current);
         }
     }
 
@@ -179,13 +179,13 @@ namespace PugTools
 
         public FileFormat_BNK_DIDX(BinaryReader br)
         {
-            this.offset = br.BaseStream.Position;
-            this.length = br.ReadUInt32();
-            int intFileCount = (int)this.length / 12;
+            offset = br.BaseStream.Position;
+            length = br.ReadUInt32();
+            int intFileCount = (int)length / 12;
             for (int intCount = 0; intCount < intFileCount; intCount++)
             {
                 WEM_File wem = new WEM_File(br);
-                this.wems.Add(wem);
+                wems.Add(wem);
             }
         }
     }
@@ -197,9 +197,9 @@ namespace PugTools
 
         public FileFormat_BNK_DATA(BinaryReader br)
         {
-            this.offset = br.BaseStream.Position;
-            this.length = br.ReadUInt32();
-            br.BaseStream.Seek(this.length, SeekOrigin.Current);
+            offset = br.BaseStream.Position;
+            length = br.ReadUInt32();
+            br.BaseStream.Seek(length, SeekOrigin.Current);
         }
     }
 
@@ -212,12 +212,12 @@ namespace PugTools
 
         public FileFormat_BNK_HIRC(BinaryReader br)
         {
-            this.length = br.ReadUInt32();
-            this.numObject = br.ReadUInt32();
-            for (int intCount = 0; intCount < this.numObject; intCount++)
+            length = br.ReadUInt32();
+            numObject = br.ReadUInt32();
+            for (int intCount = 0; intCount < numObject; intCount++)
             {
                 FileFormat_BNK_HIRC_Object obj = new FileFormat_BNK_HIRC_Object(br);
-                this.objects.Add(obj);
+                objects.Add(obj);
             }
         }
     }
@@ -246,33 +246,33 @@ namespace PugTools
 
         public FileFormat_BNK_HIRC_Object(BinaryReader br)
         {
-            this.type = br.ReadByte();
-            this.length = br.ReadUInt32();
-            this.id = br.ReadUInt32();
+            type = br.ReadByte();
+            length = br.ReadUInt32();
+            id = br.ReadUInt32();
 
-            switch (this.type)
+            switch (type)
             {
                 case 2:
                     br.ReadBytes(4);
-                    this.embed = br.ReadUInt32();
-                    this.audio_id = br.ReadUInt32();
-                    this.audio_source_id = br.ReadUInt32();
-                    if (this.embed == 0)
+                    embed = br.ReadUInt32();
+                    audio_id = br.ReadUInt32();
+                    audio_source_id = br.ReadUInt32();
+                    if (embed == 0)
                     {
                         br.ReadUInt32(); // offset
                         br.ReadUInt32(); // length
                     }
                     br.ReadByte();
-                    if (this.embed == 0)
-                        br.BaseStream.Seek((this.length - 29), SeekOrigin.Current);
+                    if (embed == 0)
+                        br.BaseStream.Seek((length - 29), SeekOrigin.Current);
                     else
-                        br.BaseStream.Seek((this.length - 21), SeekOrigin.Current);
+                        br.BaseStream.Seek((length - 21), SeekOrigin.Current);
                     break;
                 case 3:
                     _ = br.ReadByte();
                     _ = br.ReadByte();
-                    this.actionObjectID = br.ReadUInt32();
-                    br.BaseStream.Seek((this.length - 10), SeekOrigin.Current);
+                    actionObjectID = br.ReadUInt32();
+                    br.BaseStream.Seek((length - 10), SeekOrigin.Current);
 
                     // Disable this for now
                     /*
@@ -314,11 +314,11 @@ namespace PugTools
                     }*/
                     break;
                 case 4:
-                    this.numEvents = br.ReadUInt32();
+                    numEvents = br.ReadUInt32();
                     if (numEvents > 0)
                     {
                         eventActions = new List<uint>();
-                        for (int count = 0; count < this.numEvents; count++)
+                        for (int count = 0; count < numEvents; count++)
                         {
                             eventActions.Add(br.ReadUInt32());
                         }
@@ -330,27 +330,27 @@ namespace PugTools
                     uint numChild = br.ReadUInt32();
                     if (numChild > 0)
                     {
-                        this.audioIDs = new List<uint>();
+                        audioIDs = new List<uint>();
                         for (int count = 0; count < numChild; count++)
                         {
-                            this.audioIDs.Add(br.ReadUInt32());
+                            audioIDs.Add(br.ReadUInt32());
                         }
                     }
                     long after = br.BaseStream.Position;
                     long diff = (after - before) + 4;
-                    br.BaseStream.Seek((this.length - diff), SeekOrigin.Current);
+                    br.BaseStream.Seek((length - diff), SeekOrigin.Current);
                     break;
                 case 11:
                     br.ReadBytes(8);
                     br.ReadBoolean();
                     br.ReadBytes(3);
-                    this.audio_source_id = br.ReadUInt32();
-                    this.audio_id = br.ReadUInt32();
-                    br.BaseStream.Seek((this.length - 24), SeekOrigin.Current);
+                    audio_source_id = br.ReadUInt32();
+                    audio_id = br.ReadUInt32();
+                    br.BaseStream.Seek((length - 24), SeekOrigin.Current);
                     break;
                 default:
                     //Skipping other HIRC Types
-                    br.BaseStream.Seek((this.length - 4), SeekOrigin.Current);
+                    br.BaseStream.Seek((length - 4), SeekOrigin.Current);
                     break;
             }
         }
@@ -531,13 +531,13 @@ namespace PugTools
 
         public FileFormat_BNK_STID(BinaryReader br)
         {
-            this.length = br.ReadUInt32();
-            this.unknown = br.ReadUInt32();
-            this.numSoundBanks = br.ReadUInt32();
-            for (int intCount = 0; intCount < this.numSoundBanks; intCount++)
+            length = br.ReadUInt32();
+            unknown = br.ReadUInt32();
+            numSoundBanks = br.ReadUInt32();
+            for (int intCount = 0; intCount < numSoundBanks; intCount++)
             {
                 FileFormat_BNK_STID_SoundBank obj = new FileFormat_BNK_STID_SoundBank(br);
-                this.soundBanks.Add(obj);
+                soundBanks.Add(obj);
             }
         }
     }
@@ -551,10 +551,10 @@ namespace PugTools
 
         public FileFormat_BNK_STID_SoundBank(BinaryReader br)
         {
-            this.id = br.ReadUInt32();
-            this.nameLength = br.ReadByte();
-            this.nameTemp = br.ReadChars(this.nameLength);
-            this.name = String.Join("", this.nameTemp);
+            id = br.ReadUInt32();
+            nameLength = br.ReadByte();
+            nameTemp = br.ReadChars(nameLength);
+            name = string.Join("", nameTemp);
         }
     }
 }

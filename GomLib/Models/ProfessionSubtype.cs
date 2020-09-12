@@ -73,13 +73,13 @@ namespace GomLib.Models
     {
         public static ProfessionSubtype ToProfessionSubtype(this ScriptEnum val)
         {
-            if (val == null) { return ToProfessionSubtype(String.Empty); }
+            if (val == null) { return ToProfessionSubtype(string.Empty); }
             return ToProfessionSubtype(val.ToString());
         }
 
         public static ProfessionSubtype ToProfessionSubtype(this string str)
         {
-            if (String.IsNullOrEmpty(str)) return ProfessionSubtype.None;
+            if (string.IsNullOrEmpty(str)) return ProfessionSubtype.None;
 
             switch (str)
             {

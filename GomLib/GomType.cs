@@ -45,7 +45,7 @@ namespace GomLib
 
         protected GomType(GomTypeId typeId)
         {
-            this.TypeId = typeId;
+            TypeId = typeId;
         }
 
         internal virtual void Link(DataObjectModel _dom) { }
@@ -53,7 +53,7 @@ namespace GomLib
         public virtual bool ConfirmType(GomBinaryReader reader)
         {
             byte typeByte = reader.ReadByte();
-            return typeByte == (byte)this.TypeId;
+            return typeByte == (byte)TypeId;
         }
 
         public abstract object ReadData(DataObjectModel dom, GomBinaryReader reader);

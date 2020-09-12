@@ -36,7 +36,7 @@ namespace GomLib
         public int NumFields { get; internal set; }
 
         private GomObjectData _data;
-        public GomObjectData Data { get { if (!IsLoaded) { this.Load(); } return _data; } }
+        public GomObjectData Data { get { if (!IsLoaded) { Load(); } return _data; } }
 
         internal bool IsCompressed { get; set; }
         internal int NodeDataOffset { get; set; }
@@ -59,7 +59,7 @@ namespace GomLib
 
         public override void Link(DataObjectModel dom)
         {
-            this.Dom_ = dom;
+            Dom_ = dom;
             base.Link(dom);
             DomClass = Dom_.Get<DomClass>(ClassId);
         }
@@ -74,7 +74,7 @@ namespace GomLib
                 domClass = "None";
             XElement root = new XElement(domClass, new XAttribute("Id", Id), //writer.WriteLine("<{0}>", domClass);
                 new XAttribute("Name", Name)); //writer.WriteLine("  <node name=\"{0}\" nodeid=\"{1}\">", Name, Id);
-            if (!String.IsNullOrEmpty(Description))
+            if (!string.IsNullOrEmpty(Description))
             {
                 root.Add(new XElement("Description", Description)); //writer.WriteLine("<description text=\"{0}\" />", Description);
             }
@@ -205,7 +205,7 @@ namespace GomLib
                 }
                 foreach (ulong refe in references.Distinct().ToList())
                 {
-                    if (refe != this.Id)
+                    if (refe != Id)
                     {
                         if (Dom_.DomTypeMap.ContainsKey(refe))
                         {
@@ -213,10 +213,10 @@ namespace GomLib
                             {
                                 GomObject gObj = Dom_.DomTypeMap[refe] as GomObject;
                                 if (gObj.FullReferences == null) gObj.FullReferences = new Dictionary<ulong, string>();
-                                if (!gObj.FullReferences.ContainsKey(this.Id)) gObj.FullReferences.Add(this.Id, this.Name);
+                                if (!gObj.FullReferences.ContainsKey(Id)) gObj.FullReferences.Add(Id, Name);
 
-                                if (this.FullReferences == null) this.FullReferences = new Dictionary<ulong, string>();
-                                if (!this.FullReferences.ContainsKey(gObj.Id)) this.FullReferences.Add(gObj.Id, gObj.Name);
+                                if (FullReferences == null) FullReferences = new Dictionary<ulong, string>();
+                                if (!FullReferences.ContainsKey(gObj.Id)) FullReferences.Add(gObj.Id, gObj.Name);
                             }
                         }
                     }
@@ -236,8 +236,8 @@ namespace GomLib
 
             if (key.StartsWith("1614") && key.Length == 20) { references.Add(Convert.ToUInt64(key)); }
             ulong unsignedLong;
-            Int64.TryParse(key, out long signedLong);
-            unsignedLong = Convert.ToUInt64(String.Format("{0:x8}", signedLong), 16);
+            long.TryParse(key, out long signedLong);
+            unsignedLong = Convert.ToUInt64(string.Format("{0:x8}", signedLong), 16);
             string unsignedString = unsignedLong.ToString();
             if (unsignedString.StartsWith("1614") && unsignedString.Length == 20) { references.Add(unsignedLong); }
 
@@ -292,8 +292,8 @@ namespace GomLib
                     if (val.ToString().Length == 20)
                     {
                         if (val.ToString().StartsWith("1614") && val.ToString().Length == 20) { references.Add(Convert.ToUInt64(val)); }
-                        Int64.TryParse(val.ToString(), out long valParsed);
-                        ulong valU = Convert.ToUInt64(String.Format("{0:x8}", valParsed), 16);
+                        long.TryParse(val.ToString(), out long valParsed);
+                        ulong valU = Convert.ToUInt64(string.Format("{0:x8}", valParsed), 16);
                         if (valU.ToString().StartsWith("1614"))
                         {
                             references.Add(valU);
@@ -321,15 +321,15 @@ namespace GomLib
                 {
                     //System.IO.File.WriteAllBytes("j://tempfile.txt", buffer);
                     ms.Position = Zeroes;
-                    this.GlommedClasses = new List<DomClass>();
+                    GlommedClasses = new List<DomClass>();
                     for (var glomIdx = 0; glomIdx < NumGlommed; glomIdx++)
                     {
                         var glomClassId = br.ReadUInt64();
                         var glomClass = Dom_.Get<DomClass>(glomClassId);
-                        this.GlommedClasses.Add(glomClass);
+                        GlommedClasses.Add(glomClass);
                     }
 
-                    this._data = Dom_.scriptObjectReader.ReadObject(this.DomClass, br, Dom_);
+                    _data = Dom_.scriptObjectReader.ReadObject(DomClass, br, Dom_);
                 }
                 //if(this.Id == 16141050636868461855)
                 //{
@@ -375,7 +375,7 @@ namespace GomLib
             }
             else
             {
-                string path = String.Format("/resources/systemgenerated/prototypes/{0}.node", this.Id);
+                string path = string.Format("/resources/systemgenerated/prototypes/{0}.node", Id);
                 TorLib.File protoFile = Dom_._assets.FindFile(path);
                 using (var fs = protoFile.Open())
                 using (var br = new GomBinaryReader(fs, Encoding.UTF8, Dom_))
@@ -391,8 +391,8 @@ namespace GomLib
 
         public void Unload()
         {
-            this._data = null;
-            this.GlommedClasses = new List<DomClass>();
+            _data = null;
+            GlommedClasses = new List<DomClass>();
             IsLoaded = false;
             SetIsUnloaded(true);
         }
@@ -407,7 +407,7 @@ namespace GomLib
             return hash;
         }
 
-        public override bool Equals(Object obj)
+        public override bool Equals(object obj)
         {
             if (!(obj is GomObject other)) return false;
 

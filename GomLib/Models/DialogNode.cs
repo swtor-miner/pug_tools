@@ -136,20 +136,20 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, dln)) return true;
 
-            if (this.AbortsConversation != dln.AbortsConversation)
+            if (AbortsConversation != dln.AbortsConversation)
                 return false;
-            if (this.ActionHook != dln.ActionHook)
+            if (ActionHook != dln.ActionHook)
                 return false;
-            if (this.ActionQuest != dln.ActionQuest)
+            if (ActionQuest != dln.ActionQuest)
                 return false;
 
-            if (this.AffectionRewardEvents != null)
+            if (AffectionRewardEvents != null)
             {
                 if (dln.AffectionRewardEvents == null)
                     return false;
-                if (this.AffectionRewardEvents.Count != dln.AffectionRewardEvents.Count || !this.AffectionRewardEvents.Keys.SequenceEqual(dln.AffectionRewardEvents.Keys))
+                if (AffectionRewardEvents.Count != dln.AffectionRewardEvents.Count || !AffectionRewardEvents.Keys.SequenceEqual(dln.AffectionRewardEvents.Keys))
                     return false;
-                foreach (var kvp in this.AffectionRewardEvents)
+                foreach (var kvp in AffectionRewardEvents)
                 {
                     if (!dln.AffectionRewardEvents.TryGetValue(kvp.Key, out KeyValuePair<int, string> prevAff))
                         return false;
@@ -160,9 +160,9 @@ namespace GomLib.Models
             else if (dln.AffectionRewardEvents != null)
                 return false;
 
-            if (this.AlignmentGain != dln.AlignmentGain)
+            if (AlignmentGain != dln.AlignmentGain)
                 return false;
-            if (this.ChildIds != null)
+            if (ChildIds != null)
             {
                 if (dln.ChildIds == null)
                 {
@@ -170,14 +170,14 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<int>(this.ChildIds, dln.ChildIds))
+                    if (!Enumerable.SequenceEqual(ChildIds, dln.ChildIds))
                         return false;
                 }
             }
             else if (dln.ChildIds != null)
                 return false;
 
-            if (this.ChildNodes != null)
+            if (ChildNodes != null)
             {
                 if (dln.ChildNodes == null)
                 {
@@ -185,39 +185,39 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<DialogNode>(this.ChildNodes, dln.ChildNodes))
+                    if (!Enumerable.SequenceEqual(ChildNodes, dln.ChildNodes))
                         return false;
                 }
             }
             else if (dln.ChildNodes != null)
                 return false;
 
-            if (this.ChoiceDisabledForHolocom != dln.ChoiceDisabledForHolocom)
+            if (ChoiceDisabledForHolocom != dln.ChoiceDisabledForHolocom)
                 return false;
-            if (this.CreditsGained != dln.CreditsGained)
+            if (CreditsGained != dln.CreditsGained)
                 return false;
-            if (this.IsAmbient != dln.IsAmbient)
+            if (IsAmbient != dln.IsAmbient)
                 return false;
-            if (this.IsEmpty != dln.IsEmpty)
+            if (IsEmpty != dln.IsEmpty)
                 return false;
-            if (this.IsPlayerNode != dln.IsPlayerNode)
+            if (IsPlayerNode != dln.IsPlayerNode)
                 return false;
-            if (this.JoinDisabledForHolocom != dln.JoinDisabledForHolocom)
+            if (JoinDisabledForHolocom != dln.JoinDisabledForHolocom)
                 return false;
 
             var ssComp = new DictionaryComparer<string, string>();
-            if (!ssComp.Equals(this.LocalizedText, dln.LocalizedText))
+            if (!ssComp.Equals(LocalizedText, dln.LocalizedText))
                 return false;
 
-            if (this.MaxLevel != dln.MaxLevel)
+            if (MaxLevel != dln.MaxLevel)
                 return false;
-            if (this.MinLevel != dln.MinLevel)
+            if (MinLevel != dln.MinLevel)
                 return false;
-            if (this.NodeId != dln.NodeId)
+            if (NodeId != dln.NodeId)
                 return false;
-            if (this.QuestReward != dln.QuestReward)
+            if (QuestReward != dln.QuestReward)
                 return false;
-            if (this.QuestsEnded != null)
+            if (QuestsEnded != null)
             {
                 if (dln.QuestsEnded == null)
                 {
@@ -225,14 +225,14 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<ulong>(this.QuestsEnded, dln.QuestsEnded))
+                    if (!Enumerable.SequenceEqual(QuestsEnded, dln.QuestsEnded))
                         return false;
                 }
             }
             else if (dln.QuestsEnded != null)
                 return false;
 
-            if (this.QuestsGranted != null)
+            if (QuestsGranted != null)
             {
                 if (dln.QuestsGranted == null)
                 {
@@ -240,14 +240,14 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<ulong>(this.QuestsGranted, dln.QuestsGranted))
+                    if (!Enumerable.SequenceEqual(QuestsGranted, dln.QuestsGranted))
                         return false;
                 }
             }
             else if (dln.QuestsGranted != null)
                 return false;
 
-            if (this.QuestsProgressed != null)
+            if (QuestsProgressed != null)
             {
                 if (dln.QuestsProgressed == null)
                 {
@@ -255,16 +255,16 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<ulong>(this.QuestsProgressed, dln.QuestsProgressed))
+                    if (!Enumerable.SequenceEqual(QuestsProgressed, dln.QuestsProgressed))
                         return false;
                 }
             }
             else if (dln.QuestsProgressed != null)
                 return false;
 
-            if (this.SpeakerId != dln.SpeakerId)
+            if (SpeakerId != dln.SpeakerId)
                 return false;
-            if (this.Text != dln.Text)
+            if (Text != dln.Text)
                 return false;
             return true;
         }
@@ -287,14 +287,14 @@ namespace GomLib.Models
                         switch (Conversation.Speakers[speakerId].Fqn.Substring(0, 3))
                         {
                             case "npc":
-                                string name = ((GomLib.Models.Npc)Conversation.Speakers[speakerId]).Name;
+                                string name = ((Npc)Conversation.Speakers[speakerId]).Name;
                                 if (name.Length == 0) { name = Conversation.Speakers[speakerId].Fqn; }
-                                dNode.Add(new XElement("Speaker", new XAttribute("Id", ((GomLib.Models.Npc)Conversation.Speakers[speakerId]).NodeId >> 32), name));
+                                dNode.Add(new XElement("Speaker", new XAttribute("Id", ((Npc)Conversation.Speakers[speakerId]).NodeId >> 32), name));
                                 break;
                             case "plc":
-                                string plcName = ((GomLib.Models.Placeable)Conversation.Speakers[speakerId]).Name;
+                                string plcName = ((Placeable)Conversation.Speakers[speakerId]).Name;
                                 if (plcName.Length == 0) { plcName = Conversation.Speakers[speakerId].Fqn; }
-                                dNode.Add(new XElement("Speaker", new XAttribute("Id", ((GomLib.Models.Placeable)Conversation.Speakers[speakerId]).Id >> 32), plcName));
+                                dNode.Add(new XElement("Speaker", new XAttribute("Id", ((Placeable)Conversation.Speakers[speakerId]).Id >> 32), plcName));
                                 break;
                             default:
                                 throw new Exception("Unaccounted for speaker type");

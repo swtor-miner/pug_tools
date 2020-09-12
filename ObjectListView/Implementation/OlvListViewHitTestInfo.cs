@@ -133,30 +133,30 @@ namespace BrightIdeasSoftware
         /// </summary>
         public OlvListViewHitTestInfo(OLVListItem olvListItem, OLVListSubItem subItem, int flags, OLVGroup group)
         {
-            this.item = olvListItem;
+            item = olvListItem;
             this.subItem = subItem;
-            this.location = ConvertNativeFlagsToDotNetLocation(olvListItem, flags);
-            this.HitTestLocationEx = (HitTestLocationEx)flags;
-            this.Group = group;
+            location = ConvertNativeFlagsToDotNetLocation(olvListItem, flags);
+            HitTestLocationEx = (HitTestLocationEx)flags;
+            Group = group;
 
             switch (location)
             {
                 case ListViewHitTestLocations.StateImage:
-                    this.HitTestLocation = HitTestLocation.CheckBox;
+                    HitTestLocation = HitTestLocation.CheckBox;
                     break;
                 case ListViewHitTestLocations.Image:
-                    this.HitTestLocation = HitTestLocation.Image;
+                    HitTestLocation = HitTestLocation.Image;
                     break;
                 case ListViewHitTestLocations.Label:
-                    this.HitTestLocation = HitTestLocation.Text;
+                    HitTestLocation = HitTestLocation.Text;
                     break;
                 default:
-                    if ((this.HitTestLocationEx & HitTestLocationEx.LVHT_EX_GROUP_COLLAPSE) == HitTestLocationEx.LVHT_EX_GROUP_COLLAPSE)
-                        this.HitTestLocation = HitTestLocation.GroupExpander;
-                    else if ((this.HitTestLocationEx & HitTestLocationEx.LVHT_EX_GROUP_MINUS_FOOTER_AND_BKGRD) != 0)
-                        this.HitTestLocation = HitTestLocation.Group;
+                    if ((HitTestLocationEx & HitTestLocationEx.LVHT_EX_GROUP_COLLAPSE) == HitTestLocationEx.LVHT_EX_GROUP_COLLAPSE)
+                        HitTestLocation = HitTestLocation.GroupExpander;
+                    else if ((HitTestLocationEx & HitTestLocationEx.LVHT_EX_GROUP_MINUS_FOOTER_AND_BKGRD) != 0)
+                        HitTestLocation = HitTestLocation.Group;
                     else
-                        this.HitTestLocation = HitTestLocation.Nothing;
+                        HitTestLocation = HitTestLocation.Nothing;
                     break;
             }
         }
@@ -199,7 +199,7 @@ namespace BrightIdeasSoftware
         /// <summary>
         /// Custom renderers can use this information to supply more details about the hit location
         /// </summary>
-        public Object UserData;
+        public object UserData;
 
         #endregion
 
@@ -240,17 +240,17 @@ namespace BrightIdeasSoftware
         /// </summary>
         public ObjectListView ListView
         {
-            get { return this.Item == null ? null : (ObjectListView)this.Item.ListView; }
+            get { return Item == null ? null : (ObjectListView)Item.ListView; }
         }
 
         /// <summary>
         /// Gets the model object that was hit
         /// </summary>
-        public Object RowObject
+        public object RowObject
         {
             get
             {
-                return this.Item?.RowObject;
+                return Item?.RowObject;
             }
         }
 
@@ -259,7 +259,7 @@ namespace BrightIdeasSoftware
         /// </summary>
         public int RowIndex
         {
-            get { return this.Item == null ? -1 : this.Item.Index; }
+            get { return Item == null ? -1 : Item.Index; }
         }
 
         /// <summary>
@@ -269,10 +269,10 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                if (this.Item == null || this.SubItem == null)
+                if (Item == null || SubItem == null)
                     return -1;
 
-                return this.Item.SubItems.IndexOf(this.SubItem);
+                return Item.SubItems.IndexOf(SubItem);
             }
         }
 
@@ -283,8 +283,8 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                int index = this.ColumnIndex;
-                return index < 0 ? null : this.ListView.GetColumn(index);
+                int index = ColumnIndex;
+                return index < 0 ? null : ListView.GetColumn(index);
             }
         }
 
@@ -292,7 +292,7 @@ namespace BrightIdeasSoftware
 
         public override string ToString()
         {
-            return string.Format("HitTestLocation: {0}, HitTestLocationEx: {1}, Item: {2}, SubItem: {3}, Location: {4}, Group: {5}", this.HitTestLocation, this.HitTestLocationEx, this.item, this.subItem, this.location, this.Group);
+            return string.Format("HitTestLocation: {0}, HitTestLocationEx: {1}, Item: {2}, SubItem: {3}, Location: {4}, Group: {5}", HitTestLocation, HitTestLocationEx, item, subItem, location, Group);
         }
     }
 }

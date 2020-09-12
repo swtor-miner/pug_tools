@@ -1,0 +1,10 @@
+C:\Users\Lee\Development\PugTools\PugTools.git\SlimDXNet\Bin\SlimDXNet.dll
+C:\Users\Lee\Development\PugTools\PugTools.git\SlimDXNet\Bin\SlimDXNet.pdb
+C:\Users\Lee\Development\PugTools\PugTools.git\SlimDXNet\Bin\AssimpNet.dll
+C:\Users\Lee\Development\PugTools\PugTools.git\SlimDXNet\Bin\SlimDX.dll
+C:\Users\Lee\Development\PugTools\PugTools.git\SlimDXNet\Bin\SpriteTextRenderer.dll
+C:\Users\Lee\Development\PugTools\PugTools.git\SlimDXNet\obj\x64\Debug\SlimDXNet.csprojAssemblyReference.cache
+C:\Users\Lee\Development\PugTools\PugTools.git\SlimDXNet\obj\x64\Debug\SlimDXNet.csproj.CoreCompileInputs.cache
+C:\Users\Lee\Development\PugTools\PugTools.git\SlimDXNet\obj\x64\Debug\SlimDXNet.csproj.CopyComplete
+C:\Users\Lee\Development\PugTools\PugTools.git\SlimDXNet\obj\x64\Debug\SlimDXNet.dll
+C:\Users\Lee\Development\PugTools\PugTools.git\SlimDXNet\obj\x64\Debug\SlimDXNet.pdb

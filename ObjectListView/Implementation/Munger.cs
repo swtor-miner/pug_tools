@@ -73,9 +73,9 @@ namespace BrightIdeasSoftware
         /// Create a Munger that works on the given aspect name
         /// </summary>
         /// <param name="aspectName">The name of the </param>
-        public Munger(String aspectName)
+        public Munger(string aspectName)
         {
-            this.AspectName = aspectName;
+            AspectName = aspectName;
         }
 
         #endregion
@@ -172,17 +172,17 @@ namespace BrightIdeasSoftware
         /// <remarks>If the aspect name is null or empty, this will return null.</remarks>
         /// <param name="target">The object that will be peeked</param>
         /// <returns>The value read from the target</returns>
-        public Object GetValue(Object target) {
-            if (this.Parts.Count == 0)
+        public object GetValue(object target) {
+            if (Parts.Count == 0)
                 return null;
 
             try {
-                return this.EvaluateParts(target, this.Parts);
+                return EvaluateParts(target, Parts);
             } catch (MungerException ex) {
-                if (Munger.IgnoreMissingAspects) 
+                if (IgnoreMissingAspects) 
                     return null;
                 
-                return String.Format("'{0}' is not a parameter-less method, property or field of type '{1}'",
+                return string.Format("'{0}' is not a parameter-less method, property or field of type '{1}'",
                                          ex.Munger.AspectName, ex.Target.GetType());
             }
         }
@@ -194,11 +194,11 @@ namespace BrightIdeasSoftware
         /// <remarks>If the aspect name is null or empty, this will return null.</remarks>
         /// <param name="target">The object that will be peeked</param>
         /// <returns>The value read from the target</returns>
-        public Object GetValueEx(Object target) {
-            if (this.Parts.Count == 0)
+        public object GetValueEx(object target) {
+            if (Parts.Count == 0)
                 return null;
 
-            return this.EvaluateParts(target, this.Parts);
+            return EvaluateParts(target, Parts);
         }
 
         /// <summary>
@@ -219,20 +219,20 @@ namespace BrightIdeasSoftware
         /// <param name="target">The object that will be poked</param>
         /// <param name="value">The value that will be poked into the target</param>
         /// <returns>bool indicating whether the put worked</returns>
-        public bool PutValue(Object target, Object value)
+        public bool PutValue(object target, object value)
         {
-            if (this.Parts.Count == 0)
+            if (Parts.Count == 0)
                 return false;
 
-            SimpleMunger lastPart = this.Parts[this.Parts.Count - 1];
+            SimpleMunger lastPart = Parts[Parts.Count - 1];
 
-            if (this.Parts.Count > 1) {
-                List<SimpleMunger> parts = new List<SimpleMunger>(this.Parts);
+            if (Parts.Count > 1) {
+                List<SimpleMunger> parts = new List<SimpleMunger>(Parts);
                 parts.RemoveAt(parts.Count - 1);
                 try {
-                    target = this.EvaluateParts(target, parts);
+                    target = EvaluateParts(target, parts);
                 } catch (MungerException ex) {
-                    this.ReportPutValueException(ex);
+                    ReportPutValueException(ex);
                     return false;
                 }
             }
@@ -241,7 +241,7 @@ namespace BrightIdeasSoftware
                 try {
                     return lastPart.PutValue(target, value);
                 } catch (MungerException ex) {
-                    this.ReportPutValueException(ex);
+                    ReportPutValueException(ex);
                 }
             }
 
@@ -258,7 +258,7 @@ namespace BrightIdeasSoftware
         private IList<SimpleMunger> Parts {
             get {
                 if (aspectParts == null)
-                    aspectParts = BuildParts(this.AspectName);
+                    aspectParts = BuildParts(AspectName);
                 return aspectParts;
             }
         }
@@ -271,7 +271,7 @@ namespace BrightIdeasSoftware
         /// <returns></returns>
         private IList<SimpleMunger> BuildParts(string aspect) {
             List<SimpleMunger> parts = new List<SimpleMunger>();
-            if (!String.IsNullOrEmpty(aspect)) {
+            if (!string.IsNullOrEmpty(aspect)) {
                 foreach (string part in aspect.Split('.')) {
                     parts.Add(new SimpleMunger(part.Trim()));
                 }
@@ -297,9 +297,9 @@ namespace BrightIdeasSoftware
         private void ReportPutValueException(MungerException ex) {
             //TODO: How should we report this error?
             System.Diagnostics.Debug.WriteLine("PutValue failed");
-            System.Diagnostics.Debug.WriteLine(String.Format("- Culprit aspect: {0}", ex.Munger.AspectName));
-            System.Diagnostics.Debug.WriteLine(String.Format("- Target: {0} of type {1}", ex.Target, ex.Target.GetType()));
-            System.Diagnostics.Debug.WriteLine(String.Format("- Inner exception: {0}", ex.InnerException));
+            System.Diagnostics.Debug.WriteLine(string.Format("- Culprit aspect: {0}", ex.Munger.AspectName));
+            System.Diagnostics.Debug.WriteLine(string.Format("- Target: {0} of type {1}", ex.Target, ex.Target.GetType()));
+            System.Diagnostics.Debug.WriteLine(string.Format("- Inner exception: {0}", ex.InnerException));
         }
 
         #endregion
@@ -319,7 +319,7 @@ namespace BrightIdeasSoftware
         /// Create a SimpleMunger
         /// </summary>
         /// <param name="aspectName"></param>
-        public SimpleMunger(String aspectName)
+        public SimpleMunger(string aspectName)
         {
             this.aspectName = aspectName;
         }
@@ -355,26 +355,26 @@ namespace BrightIdeasSoftware
         /// </summary>
         /// <param name="target"></param>
         /// <returns></returns>
-        public Object GetValue(Object target) {
+        public object GetValue(object target) {
             if (target == null)
                 return null;
 
-            this.ResolveName(target, this.AspectName, 0);
+            ResolveName(target, AspectName, 0);
 
             try {
-                if (this.resolvedPropertyInfo != null)
-                    return this.resolvedPropertyInfo.GetValue(target, null);
+                if (resolvedPropertyInfo != null)
+                    return resolvedPropertyInfo.GetValue(target, null);
 
-                if (this.resolvedMethodInfo != null)
-                    return this.resolvedMethodInfo.Invoke(target, null);
+                if (resolvedMethodInfo != null)
+                    return resolvedMethodInfo.Invoke(target, null);
 
-                if (this.resolvedFieldInfo != null)
-                    return this.resolvedFieldInfo.GetValue(target);
+                if (resolvedFieldInfo != null)
+                    return resolvedFieldInfo.GetValue(target);
 
                 // If that didn't work, try to use the indexer property. 
                 // This covers things like dictionaries and DataRows.
-                if (this.indexerPropertyInfo != null)
-                    return this.indexerPropertyInfo.GetValue(target, new object[] { this.AspectName });
+                if (indexerPropertyInfo != null)
+                    return indexerPropertyInfo.GetValue(target, new object[] { AspectName });
             } catch (Exception ex) {
                 // Lots of things can do wrong in these invocations
                 throw new MungerException(this, target, ex);
@@ -394,28 +394,28 @@ namespace BrightIdeasSoftware
             if (target == null)
                 return false;
 
-            this.ResolveName(target, this.AspectName, 1);
+            ResolveName(target, AspectName, 1);
 
             try {
-                if (this.resolvedPropertyInfo != null) {
-                    this.resolvedPropertyInfo.SetValue(target, value, null);
+                if (resolvedPropertyInfo != null) {
+                    resolvedPropertyInfo.SetValue(target, value, null);
                     return true;
                 }
 
-                if (this.resolvedMethodInfo != null) {
-                    this.resolvedMethodInfo.Invoke(target, new object[] { value });
+                if (resolvedMethodInfo != null) {
+                    resolvedMethodInfo.Invoke(target, new object[] { value });
                     return true;
                 }
 
-                if (this.resolvedFieldInfo != null) {
-                    this.resolvedFieldInfo.SetValue(target, value);
+                if (resolvedFieldInfo != null) {
+                    resolvedFieldInfo.SetValue(target, value);
                     return true;
                 }
 
                 // If that didn't work, try to use the indexer property. 
                 // This covers things like dictionaries and DataRows.
-                if (this.indexerPropertyInfo != null) {
-                    this.indexerPropertyInfo.SetValue(target, value, new object[] { this.AspectName });
+                if (indexerPropertyInfo != null) {
+                    indexerPropertyInfo.SetValue(target, value, new object[] { AspectName });
                     return true;
                 }
             } catch (Exception ex) {

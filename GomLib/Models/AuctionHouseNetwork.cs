@@ -18,7 +18,7 @@ namespace GomLib.Models
     {
         public static AuctionHouseNetwork ToAuctionHouseNetwork(this string str)
         {
-            if (String.IsNullOrEmpty(str)) return AuctionHouseNetwork.None;
+            if (string.IsNullOrEmpty(str)) return AuctionHouseNetwork.None;
 
             switch (str)
             {

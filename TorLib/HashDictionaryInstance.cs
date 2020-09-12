@@ -20,7 +20,7 @@ namespace TorLib
 
         HashDictionaryInstance()
         {
-            this.dictionary.LoadHashList();
+            dictionary.LoadHashList();
             Loaded = true;
         }
 

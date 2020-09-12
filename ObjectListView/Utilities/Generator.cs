@@ -100,8 +100,8 @@ namespace BrightIdeasSoftware
         /// you should install an instance of your subclass/implementation here.</remarks>
         public static IGenerator Instance
         {
-            get { return Generator.instance ?? (Generator.instance = new Generator()); }
-            set { Generator.instance = value; }
+            get { return instance ?? (instance = new Generator()); }
+            set { instance = value; }
         }
         private static IGenerator instance;
 
@@ -114,7 +114,7 @@ namespace BrightIdeasSoftware
         /// <param name="enumerable">The collection whose first element will be used to generate columns.</param>
         static public void GenerateColumns(ObjectListView olv, IEnumerable enumerable)
         {
-            Generator.GenerateColumns(olv, enumerable, false);
+            GenerateColumns(olv, enumerable, false);
         }
 
         /// <summary>
@@ -132,13 +132,13 @@ namespace BrightIdeasSoftware
             {
                 foreach (object model in enumerable)
                 {
-                    Generator.Instance.GenerateAndReplaceColumns(olv, model.GetType(), allProperties);
+                    Instance.GenerateAndReplaceColumns(olv, model.GetType(), allProperties);
                     return;
                 }
             }
 
             // If we reach here, the collection was empty, so we clear the list
-            Generator.Instance.GenerateAndReplaceColumns(olv, null, allProperties);
+            Instance.GenerateAndReplaceColumns(olv, null, allProperties);
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace BrightIdeasSoftware
         /// <param name="type">The model type whose attributes will be considered.</param>
         static public void GenerateColumns(ObjectListView olv, Type type)
         {
-            Generator.Instance.GenerateAndReplaceColumns(olv, type, false);
+            Instance.GenerateAndReplaceColumns(olv, type, false);
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace BrightIdeasSoftware
         /// <param name="allProperties">Will columns be generated for properties that are not marked with [OLVColumn].</param>
         static public void GenerateColumns(ObjectListView olv, Type type, bool allProperties)
         {
-            Generator.Instance.GenerateAndReplaceColumns(olv, type, allProperties);
+            Instance.GenerateAndReplaceColumns(olv, type, allProperties);
         }
 
         /// <summary>
@@ -172,7 +172,7 @@ namespace BrightIdeasSoftware
         /// <returns>A collection of OLVColumns matching the attributes of Type that have OLVColumnAttributes.</returns>
         static public IList<OLVColumn> GenerateColumns(Type type)
         {
-            return Generator.Instance.GenerateColumns(type, false);
+            return Instance.GenerateColumns(type, false);
         }
 
         #endregion
@@ -188,10 +188,10 @@ namespace BrightIdeasSoftware
         /// <param name="allProperties">Will columns be generated for properties that are not marked with [OLVColumn].</param>
         public virtual void GenerateAndReplaceColumns(ObjectListView olv, Type type, bool allProperties)
         {
-            IList<OLVColumn> columns = this.GenerateColumns(type, allProperties);
+            IList<OLVColumn> columns = GenerateColumns(type, allProperties);
             if (olv is TreeListView tlv)
-                this.TryGenerateChildrenDelegates(tlv, type);
-            this.ReplaceColumns(olv, columns);
+                TryGenerateChildrenDelegates(tlv, type);
+            ReplaceColumns(olv, columns);
         }
 
         /// <summary>
@@ -220,11 +220,11 @@ namespace BrightIdeasSoftware
                 if (!(Attribute.GetCustomAttribute(pinfo, typeof(OLVColumnAttribute)) is OLVColumnAttribute attr))
                 {
                     if (allProperties)
-                        columns.Add(this.MakeColumnFromPropertyInfo(pinfo));
+                        columns.Add(MakeColumnFromPropertyInfo(pinfo));
                 }
                 else
                 {
-                    columns.Add(this.MakeColumnFromAttribute(pinfo, attr));
+                    columns.Add(MakeColumnFromAttribute(pinfo, attr));
                 }
             }
 
@@ -269,7 +269,7 @@ namespace BrightIdeasSoftware
 
             // Setup the columns
             olv.AllColumns.AddRange(columns);
-            this.PostCreateColumns(olv);
+            PostCreateColumns(olv);
         }
 
         /// <summary>
@@ -280,7 +280,7 @@ namespace BrightIdeasSoftware
         {
             if (olv.AllColumns.Exists(delegate (OLVColumn x) { return x.CheckBoxes; }))
                 olv.UseSubItemCheckBoxes = true;
-            if (olv.AllColumns.Exists(delegate (OLVColumn x) { return x.Index > 0 && (x.ImageGetter != null || !String.IsNullOrEmpty(x.ImageAspectName)); }))
+            if (olv.AllColumns.Exists(delegate (OLVColumn x) { return x.Index > 0 && (x.ImageGetter != null || !string.IsNullOrEmpty(x.ImageAspectName)); }))
                 olv.ShowImagesOnSubItems = true;
             olv.RebuildColumns();
             olv.AutoSizeColumns();
@@ -321,9 +321,9 @@ namespace BrightIdeasSoftware
         protected virtual OLVColumn MakeColumn(string aspectName, string title, bool editable, Type propertyType, OLVColumnAttribute attr)
         {
 
-            OLVColumn column = this.MakeColumn(aspectName, title, attr);
-            column.Name = (attr == null || String.IsNullOrEmpty(attr.Name)) ? aspectName : attr.Name;
-            this.ConfigurePossibleBooleanColumn(column, propertyType);
+            OLVColumn column = MakeColumn(aspectName, title, attr);
+            column.Name = (attr == null || string.IsNullOrEmpty(attr.Name)) ? aspectName : attr.Name;
+            ConfigurePossibleBooleanColumn(column, propertyType);
 
             if (attr == null)
             {
@@ -369,7 +369,7 @@ namespace BrightIdeasSoftware
         /// <returns></returns>
         protected virtual OLVColumn MakeColumn(string aspectName, string title, OLVColumnAttribute attr)
         {
-            string columnTitle = (attr == null || String.IsNullOrEmpty(attr.Title)) ? title : attr.Title;
+            string columnTitle = (attr == null || string.IsNullOrEmpty(attr.Title)) ? title : attr.Title;
             return new OLVColumn(columnTitle, aspectName);
         }
 
@@ -414,7 +414,7 @@ namespace BrightIdeasSoftware
             {
                 if (Attribute.GetCustomAttribute(pinfo, typeof(OLVChildrenAttribute)) is OLVChildrenAttribute)
                 {
-                    this.GenerateChildrenDelegates(tlv, pinfo);
+                    GenerateChildrenDelegates(tlv, pinfo);
                     return;
                 }
             }

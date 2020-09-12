@@ -41,7 +41,7 @@ namespace GomLib.Models
         {
             get
             {
-                if (String.IsNullOrEmpty(FqnCategory_))
+                if (string.IsNullOrEmpty(FqnCategory_))
                 {
                     string[] fqnParts = Fqn.Substring(4).Split('.');
                     FqnCategory_ = fqnParts[0];
@@ -55,7 +55,7 @@ namespace GomLib.Models
         {
             get
             {
-                if (String.IsNullOrEmpty(FqnSubCategory_))
+                if (string.IsNullOrEmpty(FqnSubCategory_))
                 {
                     string[] fqnParts = Fqn.Substring(4).Split('.');
                     FqnCategory_ = fqnParts[0];
@@ -104,19 +104,19 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, plc)) return true;
 
-            if (this.AuctionNetwork != plc.AuctionNetwork)
+            if (AuctionNetwork != plc.AuctionNetwork)
                 return false;
-            if (this.Category != plc.Category)
+            if (Category != plc.Category)
                 return false;
-            if (this.CodexId != plc.CodexId)
+            if (CodexId != plc.CodexId)
                 return false;
-            if (this.ConversationFqn != plc.ConversationFqn)
+            if (ConversationFqn != plc.ConversationFqn)
                 return false;
-            if (this.DifficultyFlags != plc.DifficultyFlags)
+            if (DifficultyFlags != plc.DifficultyFlags)
                 return false;
-            if (this.Faction != plc.Faction)
+            if (Faction != plc.Faction)
                 return false;
-            if (this.Fqn != plc.Fqn)
+            if (Fqn != plc.Fqn)
                 return false;
             /*if (this.HydraScript != null)
             {
@@ -133,32 +133,32 @@ namespace GomLib.Models
             else if (plc.HydraScript != null)
                 return false;*/
 
-            if (this.Id != plc.Id)
+            if (Id != plc.Id)
                 return false;
-            if (this.IsAuctionHouse != plc.IsAuctionHouse)
+            if (IsAuctionHouse != plc.IsAuctionHouse)
                 return false;
-            if (this.IsBank != plc.IsBank)
+            if (IsBank != plc.IsBank)
                 return false;
-            if (this.IsEnhancementStation != plc.IsEnhancementStation)
+            if (IsEnhancementStation != plc.IsEnhancementStation)
                 return false;
-            if (this.IsMailbox != plc.IsMailbox)
+            if (IsMailbox != plc.IsMailbox)
                 return false;
 
             var dComp = new DictionaryComparer<string, string>();
-            if (!dComp.Equals(this.LocalizedName, plc.LocalizedName))
+            if (!dComp.Equals(LocalizedName, plc.LocalizedName))
                 return false;
 
-            if (this.LootLevel != plc.LootLevel)
+            if (LootLevel != plc.LootLevel)
                 return false;
-            if (this.LootPackageId != plc.LootPackageId)
+            if (LootPackageId != plc.LootPackageId)
                 return false;
-            if (this.Name != plc.Name)
+            if (Name != plc.Name)
                 return false;
-            if (this.RequiredProfession != plc.RequiredProfession)
+            if (RequiredProfession != plc.RequiredProfession)
                 return false;
-            if (this.RequiredProfessionLevel != plc.RequiredProfessionLevel)
+            if (RequiredProfessionLevel != plc.RequiredProfessionLevel)
                 return false;
-            if (this.WonkaPackageId != plc.WonkaPackageId)
+            if (WonkaPackageId != plc.WonkaPackageId)
                 return false;
             return true;
         }

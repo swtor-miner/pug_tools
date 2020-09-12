@@ -25,7 +25,7 @@ namespace GomLib.ModelLoader
             SetBonusEntryData = new Dictionary<object, object>();
         }
 
-        public Models.SetBonusEntry Load(long id)
+        public SetBonusEntry Load(long id)
         {
             if (SetBonusEntryData.Count == 0)
             {
@@ -39,7 +39,7 @@ namespace GomLib.ModelLoader
             return Load(set, id, (GomObjectData)setData);
         }
 
-        public Models.SetBonusEntry Load(Models.SetBonusEntry setEntry, long Id, GomObjectData objData)
+        public SetBonusEntry Load(SetBonusEntry setEntry, long Id, GomObjectData objData)
         {
             if (objData == null)
                 return setEntry;
@@ -71,7 +71,7 @@ namespace GomLib.ModelLoader
 
             //Dictionary<long, Models.Ability> setAblsByNum = new Dictionary<long, Models.Ability>();
             Dictionary<long, ulong> setAblsByNum = new Dictionary<long, ulong>();
-            Dictionary<object, object> setAblData = objData.ValueOrDefault<Dictionary<object, object>>("itmSetBonusBonuses", new Dictionary<object, object>());
+            Dictionary<object, object> setAblData = objData.ValueOrDefault("itmSetBonusBonuses", new Dictionary<object, object>());
             foreach (KeyValuePair<object, object> kvp in setAblData)
             {
                 long setNum = (long)kvp.Key;
@@ -85,7 +85,7 @@ namespace GomLib.ModelLoader
 
             //List<Models.Item> setSourceItmList = new List<Models.Item>();
             List<ulong> setSourceItmList = new List<ulong>();
-            Dictionary<object, object> setSources = objData.ValueOrDefault<Dictionary<object, object>>("itmSetBonusSetItems", new Dictionary<object, object>());
+            Dictionary<object, object> setSources = objData.ValueOrDefault("itmSetBonusSetItems", new Dictionary<object, object>());
             foreach (KeyValuePair<object, object> kvp in setSources)
             {
                 ulong itmNodeId = (ulong)kvp.Key;

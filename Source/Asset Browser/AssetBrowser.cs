@@ -1,31 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Be.HexEditor;
+using Be.Windows.Forms;
+using ColorCode;
+using DevIL;
+using GomLib;
+using NAudio.Wave;
+using nsHashDictionary;
+using nsHasherFunctions;
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO;
 using System.Xml;
-using System.Windows.Forms.Integration;
-using GomLib;
 using TorLib;
-using nsHashDictionary;
-using DevIL;
-using Be.HexEditor;
-using Be.Windows.Forms;
-using nsHasherFunctions;
-using ColorCode;
-using NAudio;
-using NAudio.Wave;
-using NVorbis;
-using NVorbis.NAudioSupport;
-using NVorbis.Ogg;
-using System.Diagnostics;
 
 namespace PugTools
 {
@@ -89,7 +83,7 @@ namespace PugTools
 
             Config.Load();
             txtExtractPath.Text = Config.ExtractAssetsPath;
-            this.extractPath = txtExtractPath.Text;
+            extractPath = txtExtractPath.Text;
 
             List<object> args = new List<object>
             {
@@ -208,7 +202,7 @@ namespace PugTools
                             if (hashInfo.FileState == HashFileInfo.State.New)
                             {
                                 TreeListItem assetNew = new TreeListItem(prefixNew + hashInfo.Directory + "/" + hashInfo.FileName, prefixNew + hashInfo.Directory, hashInfo.FileName, hashInfo);
-                                string filename = String.Format("{0}{1}/{2}", prefixNew, hashInfo.Directory, hashInfo.FileName);
+                                string filename = string.Format("{0}{1}/{2}", prefixNew, hashInfo.Directory, hashInfo.FileName);
                                 if (!assetDict.ContainsKey(filename))
                                 {
                                     assetDict.Add(prefixNew + hashInfo.Directory + "/" + hashInfo.FileName, assetNew);
@@ -219,7 +213,7 @@ namespace PugTools
                             if (hashInfo.FileState == HashFileInfo.State.Modified)
                             {
                                 TreeListItem assetMod = new TreeListItem(prefixMod + hashInfo.Directory + "/" + hashInfo.FileName, prefixMod + hashInfo.Directory, hashInfo.FileName, hashInfo);
-                                string filename = String.Format("{0}{1}/{2}", prefixMod, hashInfo.Directory, hashInfo.FileName);
+                                string filename = string.Format("{0}{1}/{2}", prefixMod, hashInfo.Directory, hashInfo.FileName);
                                 if (!assetDict.ContainsKey(filename))
                                 {
                                     assetDict.Add(prefixMod + hashInfo.Directory + "/" + hashInfo.FileName, assetMod);
@@ -258,7 +252,7 @@ namespace PugTools
                 backgroundWorker2.ReportProgress(libsDone * 100 / maxLibs);
             }
 
-            this.modNewCount = (ulong)(intModCount + intNewCount);
+            modNewCount = (ulong)(intModCount + intNewCount);
 
             HashFileInfo empty = new HashFileInfo(0, 0, null);
             assetDict.Add("/root", new TreeListItem("/root", string.Empty, "Root", empty));
@@ -273,7 +267,7 @@ namespace PugTools
                 int intLength = temp.Length;
                 for (int intCount2 = 0; intCount2 <= intLength; intCount2++)
                 {
-                    string output = String.Join("/", temp, 0, intCount2);
+                    string output = string.Join("/", temp, 0, intCount2);
                     if (output.Length > 0)
                         allDirs.Add(output);
                 }
@@ -281,7 +275,7 @@ namespace PugTools
             foreach (var dir in allDirs)
             {
                 string[] temp = dir.Split('/');
-                string parentDir = String.Join("/", temp.Take(temp.Length - 1));
+                string parentDir = string.Join("/", temp.Take(temp.Length - 1));
                 if (parentDir.Length == 0)
                     parentDir = "/root";
                 string display = temp.Last();
@@ -330,7 +324,7 @@ namespace PugTools
             treeViewList.EndUpdate();
             toolStripStatusLabelLeft1.Text = "Loading Complete";
             treeViewList.Visible = true;
-            panelRender = new View_GR2(this.Handle, this, "renderPanel");
+            panelRender = new View_GR2(Handle, this, "renderPanel");
             panelRender.Init();
 
             System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.Interactive;
@@ -361,7 +355,7 @@ namespace PugTools
 
                 if (asset.hashInfo.File != null)
                 {
-                    if (this.extractByExtensions)
+                    if (extractByExtensions)
                     {
                         if (extractExtensions.Contains(asset.hashInfo.Extension.ToUpper()))
                         {
@@ -387,12 +381,12 @@ namespace PugTools
             string fileName;
             string directory;
             if (assetFile.IsNamed)
-                fileName = this.extractPath + String.Join("\\", assetFile.Directory, assetFile.FileName).Replace("/", "\\");
+                fileName = extractPath + string.Join("\\", assetFile.Directory, assetFile.FileName).Replace("/", "\\");
             else
-                fileName = this.extractPath + assetFile.Directory.Replace("/", "\\") + "\\" + assetFile.Extension.ToLower() + "\\" + assetFile.FileName + "." + assetFile.Extension;
+                fileName = extractPath + assetFile.Directory.Replace("/", "\\") + "\\" + assetFile.Extension.ToLower() + "\\" + assetFile.FileName + "." + assetFile.Extension;
             fileName = fileName.Replace("\\\\", "\\");
             directory = Path.GetDirectoryName(fileName);
-            if (!System.IO.Directory.Exists(directory)) { System.IO.Directory.CreateDirectory(directory); }
+            if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
 
             using (Stream file = assetFile.File.Open())
             {
@@ -411,7 +405,7 @@ namespace PugTools
         // private async void SearchTreeNodes()
         private void SearchTreeNodes()
         {
-            this.nodeMatch = treeViewList.Nodes.Find(this.searchNodes[this.searchIndex], true);
+            nodeMatch = treeViewList.Nodes.Find(searchNodes[searchIndex], true);
         }
         // #pragma warning restore CS1998, CS4014
 
@@ -422,15 +416,15 @@ namespace PugTools
         {
             TreeNode node = treeViewList.SelectedNode;
             TreeListItem asset = (TreeListItem)node.Tag;
-            this.Text = "Asset Browser - " + asset.Id.ToString();
+            Text = "Asset Browser - " + asset.Id.ToString();
             if (asset.hashInfo.File != null)
             {
                 DataTable dt = new DataTable();
-                HashFileInfo info = (HashFileInfo)asset.hashInfo;
+                HashFileInfo info = asset.hashInfo;
                 dt.Columns.Add("Property");
                 dt.Columns.Add("Value");
                 dt.Rows.Add(new string[] { "Archive", info.Source.ToString() });
-                dt.Rows.Add(new string[] { "File ID", String.Format("{0:X16}", info.File.FileInfo.FileId) });
+                dt.Rows.Add(new string[] { "File ID", string.Format("{0:X16}", info.File.FileInfo.FileId) });
                 if (info.IsNamed)
                     dt.Rows.Add(new string[] { "File Name", info.FileName });
                 else
@@ -442,14 +436,14 @@ namespace PugTools
                 dt.Rows.Add(new string[] { "Uncompressed Size", info.File.FileInfo.UncompressedSize.ToString() });
                 dt.Rows.Add(new string[] { "Header Size", info.File.FileInfo.HeaderSize.ToString() });
                 dt.Rows.Add(new string[] { "Offset", ((long)info.File.FileInfo.Offset).ToString() });
-                dt.Rows.Add(new string[] { "Primary Hash", String.Format("{0:X8}", info.File.FileInfo.PrimaryHash) });
-                dt.Rows.Add(new string[] { "Secondary Hash", String.Format("{0:X8}", info.File.FileInfo.SecondaryHash) });
-                dt.Rows.Add(new string[] { "Checksum", String.Format("{0:X8}", info.File.FileInfo.Checksum) });
+                dt.Rows.Add(new string[] { "Primary Hash", string.Format("{0:X8}", info.File.FileInfo.PrimaryHash) });
+                dt.Rows.Add(new string[] { "Secondary Hash", string.Format("{0:X8}", info.File.FileInfo.SecondaryHash) });
+                dt.Rows.Add(new string[] { "Checksum", string.Format("{0:X8}", info.File.FileInfo.Checksum) });
                 dt.Rows.Add(new string[] { "Is Compressed", info.File.FileInfo.IsCompressed.ToString() });
                 dataGridView1.DataSource = dt;
                 dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
 
-                if (this.autoPreview)
+                if (autoPreview)
                 {
                     PreviewAsset(asset);
                 }
@@ -472,7 +466,7 @@ namespace PugTools
 
         private void ExtractToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.extractByExtensions = false;
+            extractByExtensions = false;
             BtnExtract_Click(this, null);
         }
 
@@ -501,49 +495,49 @@ namespace PugTools
 
         private void EnableUI()
         {
-            this.txtSearch.Enabled = true;
-            this.btnSearch.Enabled = true;
-            this.treeViewList.Enabled = true;
-            this.treeItemView.Enabled = true;
-            this.dataGridView1.Enabled = true;
-            this.txtExtractPath.Enabled = true;
-            this.btnChooseExtract.Enabled = true;
-            this.btnPreview.Enabled = true;
-            this.btnExtract.Enabled = true;
-            this.btnSaveTxtHash.Enabled = true;
-            this.btnViewRaw.Enabled = true;
-            this.btnViewHex.Enabled = true;
-            this.btnFindFileNames.Enabled = true;
-            this.btnTestFile.Enabled = true;
-            this.btnFileTable.Enabled = true;
-            this.btnHashStatus.Enabled = true;
-            this.btnHelp.Enabled = true;
+            txtSearch.Enabled = true;
+            btnSearch.Enabled = true;
+            treeViewList.Enabled = true;
+            treeItemView.Enabled = true;
+            dataGridView1.Enabled = true;
+            txtExtractPath.Enabled = true;
+            btnChooseExtract.Enabled = true;
+            btnPreview.Enabled = true;
+            btnExtract.Enabled = true;
+            btnSaveTxtHash.Enabled = true;
+            btnViewRaw.Enabled = true;
+            btnViewHex.Enabled = true;
+            btnFindFileNames.Enabled = true;
+            btnTestFile.Enabled = true;
+            btnFileTable.Enabled = true;
+            btnHashStatus.Enabled = true;
+            btnHelp.Enabled = true;
         }
 
         private void DisableUI()
         {
-            this.txtSearch.Enabled = false;
-            this.btnSearch.Enabled = false;
-            this.treeViewList.Enabled = false;
-            this.treeItemView.Enabled = false;
-            this.dataGridView1.Enabled = false;
-            this.txtExtractPath.Enabled = false;
-            this.btnChooseExtract.Enabled = false;
-            this.btnPreview.Enabled = false;
-            this.btnExtract.Enabled = false;
-            this.btnSaveTxtHash.Enabled = false;
-            this.btnViewRaw.Enabled = false;
-            this.btnViewHex.Enabled = false;
-            this.btnFindFileNames.Enabled = false;
-            this.btnTestFile.Enabled = false;
-            this.btnFileTable.Enabled = false;
-            this.btnHashStatus.Enabled = false;
-            this.btnHelp.Enabled = false;
+            txtSearch.Enabled = false;
+            btnSearch.Enabled = false;
+            treeViewList.Enabled = false;
+            treeItemView.Enabled = false;
+            dataGridView1.Enabled = false;
+            txtExtractPath.Enabled = false;
+            btnChooseExtract.Enabled = false;
+            btnPreview.Enabled = false;
+            btnExtract.Enabled = false;
+            btnSaveTxtHash.Enabled = false;
+            btnViewRaw.Enabled = false;
+            btnViewHex.Enabled = false;
+            btnFindFileNames.Enabled = false;
+            btnTestFile.Enabled = false;
+            btnFileTable.Enabled = false;
+            btnHashStatus.Enabled = false;
+            btnHelp.Enabled = false;
         }
 
         private void Position_Changed(object sender, EventArgs e)
         {
-            this.toolStripStatusLabelLeft1.Text = string.Format("Ln {0}    Col {1}", hexBox1.CurrentLine, hexBox1.CurrentPositionInLine);
+            toolStripStatusLabelLeft1.Text = string.Format("Ln {0}    Col {1}", hexBox1.CurrentLine, hexBox1.CurrentPositionInLine);
 
             string bitPresentation = string.Empty;
 
@@ -560,10 +554,10 @@ namespace PugTools
                     , bitInfo.ToString()
                     );
 
-                this.toolStripStatusLabelLeft2.Text = bitInfo.ToString();
+                toolStripStatusLabelLeft2.Text = bitInfo.ToString();
             }
 
-            this.toolStripStatusLabelRight.Text = bitPresentation;
+            toolStripStatusLabelRight.Text = bitPresentation;
         }
 
         private void BackgroundWorker2_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -575,7 +569,7 @@ namespace PugTools
         {
             if (InvokeRequired)
             {
-                this.Invoke(new Action<int>(SetStripProgressBarValue), new object[] { prog });
+                Invoke(new Action<int>(SetStripProgressBarValue), new object[] { prog });
                 return;
             }
 
@@ -586,7 +580,7 @@ namespace PugTools
         {
             if (InvokeRequired)
             {
-                this.Invoke(new Action<int>(SetStripProgressBarMax), new object[] { prog });
+                Invoke(new Action<int>(SetStripProgressBarMax), new object[] { prog });
                 return;
             }
 
@@ -597,7 +591,7 @@ namespace PugTools
         {
             if (InvokeRequired)
             {
-                this.Invoke(new Action<ProgressBarStyle>(SetStripProgressBarStyle), new object[] { style });
+                Invoke(new Action<ProgressBarStyle>(SetStripProgressBarStyle), new object[] { style });
                 return;
             }
 
@@ -614,10 +608,10 @@ namespace PugTools
             {
                 HideViewers();
                 ShowLoader();
-                this.toolStripStatusLabelLeft1.Text = "Loading File";
-                this.toolStripStatusLabelRight.Text = "";
-                this.toolStripStatusLabelLeft2.Text = "";
-                this.treeItemView.SelectedIndices.Clear();
+                toolStripStatusLabelLeft1.Text = "Loading File";
+                toolStripStatusLabelRight.Text = "";
+                toolStripStatusLabelLeft2.Text = "";
+                treeItemView.SelectedIndices.Clear();
                 if (render != null)
                 {
                     panelRender.StopRender();
@@ -709,24 +703,24 @@ namespace PugTools
                             break;
                         case "WAV":
                         case "WEM":
-                            this.treeViewList.Enabled = false;
-                            this.toolStripStatusLabelLeft1.Text = "Playing Audio...";
-                            this.toolStripProgressBar1.Visible = true;
-                            this.audioState = false;
+                            treeViewList.Enabled = false;
+                            toolStripStatusLabelLeft1.Text = "Playing Audio...";
+                            toolStripProgressBar1.Visible = true;
+                            audioState = false;
                             await Task.Run(() => PreviewWEM(asset.hashInfo.FileName));
-                            this.toolStripStatusLabelLeft1.Text = "Audio Stopped";
-                            this.toolStripProgressBar1.Visible = false;
-                            this.treeViewList.Enabled = true;
+                            toolStripStatusLabelLeft1.Text = "Audio Stopped";
+                            toolStripProgressBar1.Visible = false;
+                            treeViewList.Enabled = true;
                             break;
                         case "DEP":
-                            this.toolStripStatusLabelLeft1.Text = "Parsing DEP...";
-                            this.toolStripProgressBar1.Visible = true;
+                            toolStripStatusLabelLeft1.Text = "Parsing DEP...";
+                            toolStripProgressBar1.Visible = true;
                             await Task.Run(() => PreviewDEP());
                             treeItemView.Roots = rootList;
                             treeItemView.ExpandAll();
                             HideLoader();
                             treeItemView.Visible = true;
-                            this.toolStripProgressBar1.Visible = false;
+                            toolStripProgressBar1.Visible = false;
                             break;
                         case "SCPT":
                             await Task.Run(() => PreviewSCPT());
@@ -741,10 +735,10 @@ namespace PugTools
                             break;
                     }
                 }
-                this.treeItemView.TopItemIndex = 0;
-                this.toolStripStatusLabelLeft1.Text = "File Loaded";
-                this.toolStripStatusLabelRight.Text = "";
-                this.toolStripStatusLabelLeft2.Text = "";
+                treeItemView.TopItemIndex = 0;
+                toolStripStatusLabelLeft1.Text = "File Loaded";
+                toolStripStatusLabelRight.Text = "";
+                toolStripStatusLabelLeft2.Text = "";
                 HideLoader();
             }
         }
@@ -758,12 +752,12 @@ namespace PugTools
             }
             else
             {
-                this.memStream = new MemoryStream();
-                DevIL.ImageImporter imp = new ImageImporter();
-                DevIL.ImageExporter exp = new ImageExporter();
-                DevIL.Image dds = imp.LoadImageFromStream(DevIL.ImageType.Dds, this.inputStream);
-                exp.SaveImageToStream(dds, ImageType.Png, this.memStream);
-                Bitmap bm = new Bitmap(this.memStream);
+                memStream = new MemoryStream();
+                ImageImporter imp = new ImageImporter();
+                ImageExporter exp = new ImageExporter();
+                DevIL.Image dds = imp.LoadImageFromStream(ImageType.Dds, inputStream);
+                exp.SaveImageToStream(dds, ImageType.Png, memStream);
+                Bitmap bm = new Bitmap(memStream);
                 pictureBox1.Image = bm;
             }
         }
@@ -783,7 +777,7 @@ namespace PugTools
             {
                 pictureBox1.BackgroundImageLayout = ImageLayout.Tile;
                 pictureBox1.BackColor = System.Drawing.Color.White;
-                pictureBox1.BackgroundImage = global::PugTools.Properties.Resources.Transparent;
+                pictureBox1.BackgroundImage = Properties.Resources.Transparent;
             }
         }
 
@@ -796,7 +790,7 @@ namespace PugTools
             }
             else
             {
-                BinaryReader br = new BinaryReader(this.inputStream);
+                BinaryReader br = new BinaryReader(inputStream);
                 List<DEP_Entry> entires = View_DEP.Read(br, hashData.dictionary);
                 NodeListItem.ResetTreeListViewColumns(treeItemView);
                 foreach (DEP_Entry entry in entires)
@@ -814,12 +808,12 @@ namespace PugTools
             }
             else
             {
-                this.memStream = new MemoryStream();
-                DevIL.ImageImporter imp = new ImageImporter();
-                DevIL.ImageExporter exp = new ImageExporter();
-                DevIL.Image png = imp.LoadImageFromStream(DevIL.ImageType.Png, this.inputStream);
-                exp.SaveImageToStream(png, ImageType.Bmp, this.memStream);
-                Bitmap bm = new Bitmap(this.memStream);
+                memStream = new MemoryStream();
+                ImageImporter imp = new ImageImporter();
+                ImageExporter exp = new ImageExporter();
+                DevIL.Image png = imp.LoadImageFromStream(ImageType.Png, inputStream);
+                exp.SaveImageToStream(png, ImageType.Bmp, memStream);
+                Bitmap bm = new Bitmap(memStream);
                 pictureBox1.Image = bm;
             }
         }
@@ -832,14 +826,14 @@ namespace PugTools
             }
             else
             {
-                this.xmlDoc = new XmlDocument();
-                StreamReader reader = new StreamReader(this.inputStream);
+                xmlDoc = new XmlDocument();
+                StreamReader reader = new StreamReader(inputStream);
                 string output = reader.ReadToEnd();
                 output = output.Replace("&lt;", "<").Replace("&gt;", ">").Replace("&amp;lt;", "<").Replace("&amp;gt;", ">").Replace("&amp;apos;", "'").Replace("\0", "");
-                this.xmlDoc.LoadXml(output);
+                xmlDoc.LoadXml(output);
                 txtRawView.ReadOnly = false;
                 txtRawView.Text = output;
-                webBrowser1.DocumentText = new CodeColorizer().Colorize(Beautify(this.xmlDoc), Languages.Xml);
+                webBrowser1.DocumentText = new CodeColorizer().Colorize(Beautify(xmlDoc), Languages.Xml);
                 txtRawView.ReadOnly = true;
             }
         }
@@ -852,13 +846,13 @@ namespace PugTools
             }
             else
             {
-                this.xmlDoc = new XmlDocument();
-                StreamReader reader = new StreamReader(this.inputStream);
+                xmlDoc = new XmlDocument();
+                StreamReader reader = new StreamReader(inputStream);
                 string output = reader.ReadToEnd();
                 output = output.Replace("&lt;", "<").Replace("&gt;", ">").Replace("&amp;lt;", "<").Replace("&amp;gt;", ">").Replace("&amp;apos;", "'").Replace("\0", "");
-                this.xmlDoc.LoadXml(output);
+                xmlDoc.LoadXml(output);
                 txtRawView.ReadOnly = false;
-                webBrowser1.DocumentText = new CodeColorizer().Colorize(Beautify(this.xmlDoc), Languages.Xml);
+                webBrowser1.DocumentText = new CodeColorizer().Colorize(Beautify(xmlDoc), Languages.Xml);
                 txtRawView.Text = output;
                 txtRawView.ReadOnly = true;
             }
@@ -872,7 +866,7 @@ namespace PugTools
             }
             else
             {
-                var sr = new StreamReader(this.inputStream);
+                var sr = new StreamReader(inputStream);
                 var myStr = sr.ReadToEnd();
                 txtRawView.ReadOnly = false;
                 txtRawView.Text = myStr;
@@ -888,7 +882,7 @@ namespace PugTools
             }
             else
             {
-                BinaryReader br = new BinaryReader(this.inputStream);
+                BinaryReader br = new BinaryReader(inputStream);
                 MemoryStream ms = View_SCPT.DecryptSCPT(br);
                 DynamicFileByteProvider byteProvider = new DynamicFileByteProvider(ms);
                 hexBox1.ByteProvider = byteProvider;
@@ -904,7 +898,7 @@ namespace PugTools
             }
             else
             {
-                BinaryReader br = new BinaryReader(this.inputStream);
+                BinaryReader br = new BinaryReader(inputStream);
                 MemoryStream ms = View_GFX.DecompressGFX(br);
                 DynamicFileByteProvider byteProvider = new DynamicFileByteProvider(ms);
                 hexBox1.ByteProvider = byteProvider;
@@ -939,10 +933,10 @@ namespace PugTools
             }
             else
             {
-                DynamicFileByteProvider byteProvider = new DynamicFileByteProvider(this.inputStream);
+                DynamicFileByteProvider byteProvider = new DynamicFileByteProvider(inputStream);
                 hexBox1.ByteProvider = byteProvider;
                 hexBox1.Visible = true;
-                var sr = new StreamReader(this.inputStream);
+                var sr = new StreamReader(inputStream);
                 var myStr = sr.ReadToEnd();
                 txtRawView.ReadOnly = false;
                 txtRawView.Text = myStr;
@@ -1022,7 +1016,7 @@ namespace PugTools
             }
             else
             {
-                BinaryReader br = new BinaryReader(this.inputStream);
+                BinaryReader br = new BinaryReader(inputStream);
                 View_STB stb = new View_STB();
                 List<STB_Entry> entries = stb.ParseSTB(br);
                 NodeListItem.ResetTreeListViewColumns(treeItemView);
@@ -1041,7 +1035,7 @@ namespace PugTools
             }
             else
             {
-                StreamReader sr = new StreamReader(this.inputStream);
+                StreamReader sr = new StreamReader(inputStream);
                 var myStr = sr.ReadToEnd();
                 txtRawView.ReadOnly = false;
                 txtRawView.Text = myStr;
@@ -1060,7 +1054,7 @@ namespace PugTools
             }
             else
             {
-                BinaryReader br = new BinaryReader(this.inputStream);
+                BinaryReader br = new BinaryReader(inputStream);
                 View_ACB acb = new View_ACB();
                 List<WEM_File> wems = acb.ParseACB(br);
                 WemListItem.ResetTreeListViewColumns(treeItemView);
@@ -1082,7 +1076,7 @@ namespace PugTools
             }
             else
             {
-                BinaryReader br = new BinaryReader(this.inputStream);
+                BinaryReader br = new BinaryReader(inputStream);
                 FileFormat_BNK bnk = new FileFormat_BNK(br, true);
                 List<WEM_File> wems = new List<WEM_File>();
                 if (bnk.didx != null && bnk.didx.wems.Count() > 0)
@@ -1115,15 +1109,15 @@ namespace PugTools
             }
             else
             {
-                WEM_File wem = new WEM_File(fileName, this.inputStream);
+                WEM_File wem = new WEM_File(fileName, inputStream);
                 await Task.Run(() => wem.ConvertWEM());
-                this.btnAudioStop.Enabled = true;
-                this.toolStripStatusLabelLeft1.Text = "Playing Audio...";
-                this.toolStripProgressBar1.Visible = true;
+                btnAudioStop.Enabled = true;
+                toolStripStatusLabelLeft1.Text = "Playing Audio...";
+                toolStripProgressBar1.Visible = true;
                 await Task.Run(() => PlayOgg(wem));
-                this.audioState = false;
-                this.toolStripStatusLabelLeft1.Text = "Audio Stopped.";
-                this.toolStripProgressBar1.Visible = false;
+                audioState = false;
+                toolStripStatusLabelLeft1.Text = "Audio Stopped.";
+                toolStripProgressBar1.Visible = false;
             }
 
         }
@@ -1132,23 +1126,23 @@ namespace PugTools
         #region Buttton Methods
         private void BtnPreview_Click(object sender, EventArgs e)
         {
-            if (this.autoPreview)
+            if (autoPreview)
             {
-                this.autoPreview = false;
-                this.btnPreview.Text = "Auto Preview Off";
+                autoPreview = false;
+                btnPreview.Text = "Auto Preview Off";
             }
             else
             {
-                this.autoPreview = true;
-                this.btnPreview.Text = "Auto Preview On";
+                autoPreview = true;
+                btnPreview.Text = "Auto Preview On";
             }
 
         }
 
         private async void BtnExtract_Click(object sender, EventArgs e)
         {
-            this.extractCount = 0;
-            this.extractPath = txtExtractPath.Text;
+            extractCount = 0;
+            extractPath = txtExtractPath.Text;
 
             TreeNode node = treeViewList.SelectedNode;
             if (node == null)
@@ -1170,9 +1164,9 @@ namespace PugTools
                     if (node.Nodes.Count > 0)
                     {
                         string messageText = "";
-                        if (this.extractByExtensions)
+                        if (extractByExtensions)
                         {
-                            string temp = String.Join(", ", this.extractExtensions);
+                            string temp = string.Join(", ", extractExtensions);
                             messageText = "Extract (" + temp + ") objects from " + node.Name + "?";
                         }
                         else
@@ -1184,7 +1178,7 @@ namespace PugTools
                             ShowLoader();
                             await Task.Run(() => ExtractByNode(node.Nodes));
                             HideLoader();
-                            MessageBox.Show("Extracted " + String.Format("{0:n0}", this.extractCount) + " objects", "Extraction Completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show("Extracted " + string.Format("{0:n0}", extractCount) + " objects", "Extraction Completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                     }
                 }
@@ -1205,57 +1199,57 @@ namespace PugTools
 
         private async void BtnSearch_Click(object sender, EventArgs e)
         {
-            this.toolStripStatusLabelLeft1.Text = "Performing Search ...";
-            this.searchNodes = this.assetDict.Keys.Where(d => d.Contains(txtSearch.Text)).ToList();
-            if (this.searchNodes.Count() > 0)
+            toolStripStatusLabelLeft1.Text = "Performing Search ...";
+            searchNodes = assetDict.Keys.Where(d => d.Contains(txtSearch.Text)).ToList();
+            if (searchNodes.Count() > 0)
             {
-                this.btnClearSearch.Enabled = true;
-                this.btnSearch.Enabled = false;
-                this.txtSearch.Enabled = false;
-                this.btnFindNext.Enabled = true;
-                this.toolStripStatusLabelLeft1.Text = "Found " + (this.searchNodes.Count() + 1) + " Matches";
+                btnClearSearch.Enabled = true;
+                btnSearch.Enabled = false;
+                txtSearch.Enabled = false;
+                btnFindNext.Enabled = true;
+                toolStripStatusLabelLeft1.Text = "Found " + (searchNodes.Count() + 1) + " Matches";
                 ShowLoader();
                 await Task.Run(() => SearchTreeNodes());
                 HideLoader();
-                treeViewList.SelectedNode = this.nodeMatch[0];
+                treeViewList.SelectedNode = nodeMatch[0];
                 treeViewList.Focus();
-                this.toolStripStatusLabelRight.Text = "Item " + (this.searchIndex + 1) + " of " + this.searchNodes.Count();
-                this.searchIndex++;
+                toolStripStatusLabelRight.Text = "Item " + (searchIndex + 1) + " of " + searchNodes.Count();
+                searchIndex++;
             }
             else
             {
-                this.toolStripStatusLabelLeft1.Text = "Search complete";
+                toolStripStatusLabelLeft1.Text = "Search complete";
                 MessageBox.Show("Search term not found.");
             }
         }
 
         private async void BtnFindNext_Click(object sender, EventArgs e)
         {
-            if (this.searchNodes.ElementAtOrDefault(this.searchIndex) != null)
+            if (searchNodes.ElementAtOrDefault(searchIndex) != null)
             {
                 await Task.Run(() => SearchTreeNodes());
-                treeViewList.SelectedNode = this.nodeMatch[0];
+                treeViewList.SelectedNode = nodeMatch[0];
                 treeViewList.Focus();
-                this.toolStripStatusLabelRight.Text = "Item " + (this.searchIndex + 1) + " of " + this.searchNodes.Count();
-                this.searchIndex++;
+                toolStripStatusLabelRight.Text = "Item " + (searchIndex + 1) + " of " + searchNodes.Count();
+                searchIndex++;
             }
             else
             {
-                this.toolStripStatusLabelLeft1.Text = "Search complete";
+                toolStripStatusLabelLeft1.Text = "Search complete";
                 MessageBox.Show("No more search terms found");
             }
         }
 
         private void BtnClearSearch_Click(object sender, EventArgs e)
         {
-            this.searchNodes = new List<string>();
-            this.searchIndex = 0;
-            this.txtSearch.Enabled = true;
-            this.txtSearch.Text = "";
-            this.btnFindNext.Enabled = false;
-            this.btnSearch.Enabled = true;
-            this.btnClearSearch.Enabled = false;
-            this.toolStripStatusLabelRight.Text = "";
+            searchNodes = new List<string>();
+            searchIndex = 0;
+            txtSearch.Enabled = true;
+            txtSearch.Text = "";
+            btnFindNext.Enabled = false;
+            btnSearch.Enabled = true;
+            btnClearSearch.Enabled = false;
+            toolStripStatusLabelRight.Text = "";
         }
 
         private void BtnChooseExtract_Click(object sender, EventArgs e)
@@ -1281,17 +1275,17 @@ namespace PugTools
         // private async void ParseFiles(string extension)
         private void ParseFiles(string extension)
         {
-            List<string> assetDictKeys = this.assetDict.Keys.Where(d => d.Contains("." + extension.ToLower())).ToList();
+            List<string> assetDictKeys = assetDict.Keys.Where(d => d.Contains("." + extension.ToLower())).ToList();
             List<TreeListItem> matches = new List<TreeListItem>();
             DataObjectModel dom = DomHandler.Instance.GetCurrentDOM();
 
-            this.filesSearched = 0;
+            filesSearched = 0;
 
             foreach (string assetKey in assetDictKeys)
             {
                 if (assetKey.Split('.').Last().ToUpper() != extension)
                     continue;
-                if (this.assetDict.TryGetValue(assetKey, out TreeListItem asset))
+                if (assetDict.TryGetValue(assetKey, out TreeListItem asset))
                 {
                     matches.Add(asset);
                 }
@@ -1301,86 +1295,86 @@ namespace PugTools
             {
                 case "XML":
                 case "MAT":
-                    Format_XML_MAT xml_mat_reader = new Format_XML_MAT(this.extractPath, extension);
+                    Format_XML_MAT xml_mat_reader = new Format_XML_MAT(extractPath, extension);
                     foreach (TreeListItem asset in matches)
                     {
-                        this.filesSearched++;
+                        filesSearched++;
                         Stream assetStream = asset.hashInfo.File.OpenCopyInMemory();
                         xml_mat_reader.ParseXML(assetStream, asset.hashInfo.Directory + "/" + asset.hashInfo.FileName);
                     }
-                    this.namesFound = xml_mat_reader.fileNames.Count + xml_mat_reader.animFileNames.Count;
+                    namesFound = xml_mat_reader.fileNames.Count + xml_mat_reader.animFileNames.Count;
                     xml_mat_reader.WriteFile();
                     break;
                 case "EPP":
-                    Format_EPP epp_reader = new Format_EPP(this.extractPath, extension);
+                    Format_EPP epp_reader = new Format_EPP(extractPath, extension);
                     List<GomObject> eppNodes = dom.GetObjectsStartingWith("epp.");
                     foreach (TreeListItem asset in matches)
                     {
-                        this.filesSearched++;
+                        filesSearched++;
                         Stream assetStream = asset.hashInfo.File.OpenCopyInMemory();
                         epp_reader.ParseEPP(assetStream, asset.hashInfo.Directory + "/" + asset.hashInfo.FileName);
                     }
                     epp_reader.ParseEPPNodes(eppNodes);
-                    this.namesFound = epp_reader.fileNames.Count;
+                    namesFound = epp_reader.fileNames.Count;
                     epp_reader.WriteFile();
                     break;
                 case "PRT":
-                    Format_PRT prt_reader = new Format_PRT(this.extractPath, extension);
+                    Format_PRT prt_reader = new Format_PRT(extractPath, extension);
                     foreach (TreeListItem asset in matches)
                     {
-                        this.filesSearched++;
+                        filesSearched++;
                         Stream assetStream = asset.hashInfo.File.OpenCopyInMemory();
                         prt_reader.ParsePRT(assetStream, asset.hashInfo.Directory + "/" + asset.hashInfo.FileName);
                     }
-                    this.namesFound = prt_reader.fileNames.Count;
+                    namesFound = prt_reader.fileNames.Count;
                     prt_reader.WriteFile();
                     break;
                 case "GR2":
-                    Format_GR2 gr2_reader = new Format_GR2(this.extractPath, extension);
+                    Format_GR2 gr2_reader = new Format_GR2(extractPath, extension);
                     foreach (TreeListItem asset in matches)
                     {
                         if (asset.hashInfo.IsNamed)
                             continue;
-                        this.filesSearched++;
+                        filesSearched++;
                         Stream assetStream = asset.hashInfo.File.OpenCopyInMemory();
                         gr2_reader.ParseGR2(assetStream, asset.hashInfo.Directory + "/" + asset.hashInfo.FileName, asset.hashInfo.File.Archive);
                     }
-                    this.namesFound = gr2_reader.matNames.Count + gr2_reader.meshNames.Count;
+                    namesFound = gr2_reader.matNames.Count + gr2_reader.meshNames.Count;
                     gr2_reader.WriteFile(true);
                     break;
                 case "BNK":
-                    Format_BNK bnk_reader = new Format_BNK(this.extractPath, extension);
+                    Format_BNK bnk_reader = new Format_BNK(extractPath, extension);
                     foreach (TreeListItem asset in matches)
                     {
-                        this.filesSearched++;
+                        filesSearched++;
                         Stream assetStream = asset.hashInfo.File.OpenCopyInMemory();
                         bnk_reader.ParseBNK(assetStream, asset.hashInfo.Directory + "/" + asset.hashInfo.FileName);
                     }
-                    this.namesFound = bnk_reader.found;
+                    namesFound = bnk_reader.found;
                     bnk_reader.WriteFile();
                     break;
                 case "DAT":
-                    Format_DAT dat_reader = new Format_DAT(this.extractPath, extension);
+                    Format_DAT dat_reader = new Format_DAT(extractPath, extension);
                     foreach (TreeListItem asset in matches)
                     {
-                        this.filesSearched++;
+                        filesSearched++;
                         Stream assetStream = asset.hashInfo.File.OpenCopyInMemory();
                         dat_reader.ParseDAT(assetStream, asset.hashInfo.Directory + "/" + asset.hashInfo.FileName, this);
                     }
-                    this.namesFound = dat_reader.fileNames.Count;
+                    namesFound = dat_reader.fileNames.Count;
                     dat_reader.WriteFile();
                     break;
                 case "CNV":
                     List<GomObject> cnvNodes = dom.GetObjectsStartingWith("cnv.");
-                    Format_CNV cnv_node_parser = new Format_CNV(this.extractPath, extension);
+                    Format_CNV cnv_node_parser = new Format_CNV(extractPath, extension);
                     cnv_node_parser.ParseCNVNodes(cnvNodes);
-                    this.namesFound = cnv_node_parser.fileNames.Count + cnv_node_parser.animNames.Count + cnv_node_parser.fxSpecNames.Count;
-                    this.filesSearched += cnvNodes.Count();
+                    namesFound = cnv_node_parser.fileNames.Count + cnv_node_parser.animNames.Count + cnv_node_parser.fxSpecNames.Count;
+                    filesSearched += cnvNodes.Count();
                     cnv_node_parser.WriteFile();
                     cnvNodes.Clear();
                     break;
                 case "MISC":
-                    Format_MISC misc_parser = new Format_MISC(this.extractPath, extension);
+                    Format_MISC misc_parser = new Format_MISC(extractPath, extension);
                     List<GomObject> ippNodes = dom.GetObjectsStartingWith("ipp.");
                     misc_parser.ParseMISC_IPP(ippNodes);
                     List<GomObject> cdxNodes = dom.GetObjectsStartingWith("cdx.");
@@ -1395,95 +1389,95 @@ namespace PugTools
                     misc_parser.ParseMISC_ITEM(itemApperances);
                     misc_parser.ParseMISC_TUTORIAL(dom);
                     misc_parser.WriteFile();
-                    this.namesFound = misc_parser.found;
-                    this.filesSearched += misc_parser.searched;
+                    namesFound = misc_parser.found;
+                    filesSearched += misc_parser.searched;
                     break;
                 case "MISC_WORLD":
-                    Format_MISC misc_world_parser = new Format_MISC(this.extractPath, extension);
+                    Format_MISC misc_world_parser = new Format_MISC(extractPath, extension);
                     Dictionary<object, object> areaList = dom.GetObject("mapAreasDataProto").Data.Get<Dictionary<object, object>>("mapAreasDataObjectList");
                     List<GomObject> areaList2 = dom.GetObjectsStartingWith("world.areas.");
                     misc_world_parser.ParseMISC_WORLD(areaList2, areaList, dom);
                     areaList.Clear();
                     areaList2.Clear();
                     misc_world_parser.WriteFile();
-                    this.namesFound = misc_world_parser.found;
+                    namesFound = misc_world_parser.found;
                     break;
                 case "FXSPEC":
-                    Format_FXSPEC fxspec_parser = new Format_FXSPEC(this.extractPath, extension);
+                    Format_FXSPEC fxspec_parser = new Format_FXSPEC(extractPath, extension);
                     foreach (TreeListItem asset in matches)
                     {
-                        this.filesSearched++;
+                        filesSearched++;
                         Stream assetStream = asset.hashInfo.File.OpenCopyInMemory();
                         fxspec_parser.ParseFXSPEC(assetStream, asset.hashInfo.Directory + "/" + asset.hashInfo.FileName);
                     }
-                    this.namesFound = fxspec_parser.fileNames.Count();
+                    namesFound = fxspec_parser.fileNames.Count();
                     fxspec_parser.WriteFile();
                     break;
                 case "AMX":
-                    Format_AMX amx_parser = new Format_AMX(this.extractPath, extension);
+                    Format_AMX amx_parser = new Format_AMX(extractPath, extension);
                     foreach (TreeListItem asset in matches)
                     {
-                        this.filesSearched++;
+                        filesSearched++;
                         Stream assetStream = asset.hashInfo.File.OpenCopyInMemory();
                         amx_parser.ParseAMX(assetStream, asset.hashInfo.Directory + "/" + asset.hashInfo.FileName);
                     }
-                    this.namesFound = amx_parser.fileNames.Count();
+                    namesFound = amx_parser.fileNames.Count();
                     amx_parser.WriteFile();
                     break;
                 case "SDEF":
-                    Format_SDEF sdef_parser = new Format_SDEF(this.extractPath, extension);
+                    Format_SDEF sdef_parser = new Format_SDEF(extractPath, extension);
                     TorLib.File sdef = AssetHandler.Instance.GetCurrentAssets().FindFile("/resources/systemgenerated/scriptdef.list");
                     sdef_parser.ParseSDEF(sdef.OpenCopyInMemory());
                     sdef_parser.WriteFile();
-                    this.namesFound = sdef_parser.found;
-                    this.filesSearched = 1;
+                    namesFound = sdef_parser.found;
+                    filesSearched = 1;
                     break;
                 case "HYD":
                     List<GomObject> hydNodes = dom.GetObjectsStartingWith("hyd.");
-                    Format_HYD hyd_parser = new Format_HYD(this.extractPath, extension);
+                    Format_HYD hyd_parser = new Format_HYD(extractPath, extension);
                     hyd_parser.ParseHYD(hydNodes);
-                    this.namesFound = hyd_parser.animFileNames.Count + hyd_parser.vfxFileNames.Count;
-                    this.filesSearched += hydNodes.Count();
+                    namesFound = hyd_parser.animFileNames.Count + hyd_parser.vfxFileNames.Count;
+                    filesSearched += hydNodes.Count();
                     hyd_parser.WriteFile();
                     hydNodes.Clear();
                     break;
                 case "DYN":
                     List<GomObject> dynNodes = dom.GetObjectsStartingWith("dyn.");
-                    Format_DYN dyn_parser = new Format_DYN(this.extractPath, extension);
+                    Format_DYN dyn_parser = new Format_DYN(extractPath, extension);
                     dyn_parser.ParseDYN(dynNodes);
-                    this.namesFound = dyn_parser.fileNames.Count + dyn_parser.unknownFileNames.Count;
-                    this.filesSearched += dynNodes.Count();
+                    namesFound = dyn_parser.fileNames.Count + dyn_parser.unknownFileNames.Count;
+                    filesSearched += dynNodes.Count();
                     dyn_parser.WriteFile();
                     break;
                 case "ICONS":
-                    Format_ICONS icon_parser = new Format_ICONS(this.extractPath, extension);
+                    Format_ICONS icon_parser = new Format_ICONS(extractPath, extension);
                     icon_parser.ParseICONS(dom);
-                    this.namesFound = icon_parser.fileNames.Count;
-                    this.filesSearched += icon_parser.searched;
+                    namesFound = icon_parser.fileNames.Count;
+                    filesSearched += icon_parser.searched;
                     icon_parser.WriteFile();
                     break;
                 case "PLC":
                     List<GomObject> plcNodes = dom.GetObjectsStartingWith("plc.");
-                    Format_PLC plc_parser = new Format_PLC(this.extractPath, extension);
+                    Format_PLC plc_parser = new Format_PLC(extractPath, extension);
                     plc_parser.ParsePLC(plcNodes);
-                    this.namesFound = plc_parser.fileNames.Count;
-                    this.filesSearched += plcNodes.Count();
+                    namesFound = plc_parser.fileNames.Count;
+                    filesSearched += plcNodes.Count();
                     plc_parser.WriteFile();
                     break;
                 case "STB":
-                    Format_STB stb_parser = new Format_STB(this.extractPath, extension);
+                    Format_STB stb_parser = new Format_STB(extractPath, extension);
                     TorLib.File manifest = AssetHandler.Instance.GetCurrentAssets().FindFile("/resources/gamedata/str/stb.manifest");
                     stb_parser.ParseSTBManifest(manifest.OpenCopyInMemory());
-                    this.namesFound = stb_parser.fileNames.Count;
-                    this.filesSearched += 1;
+                    namesFound = stb_parser.fileNames.Count;
+                    filesSearched += 1;
                     stb_parser.WriteFile();
                     break;
                 default:
                     break;
 
             }
-            this.totalFilesSearched += this.filesSearched;
-            this.totalNamesFound += this.namesFound;
+            totalFilesSearched += filesSearched;
+            totalNamesFound += namesFound;
             return;
         }
         // #pragma warning restore CS1998, CS4014
@@ -1492,16 +1486,16 @@ namespace PugTools
         {
             AssetBrowserTestFile testFile = new AssetBrowserTestFile();
             DialogResult result = testFile.ShowDialog(this);
-            if (result == System.Windows.Forms.DialogResult.OK)
+            if (result == DialogResult.OK)
             {
                 DisableUI();
-                this.totalFilesSearched = 0;
-                this.totalNamesFound = 0;
-                this.dataGridView1.Enabled = true;
+                totalFilesSearched = 0;
+                totalNamesFound = 0;
+                dataGridView1.Enabled = true;
                 List<string> extensions = new List<string>();
                 extensions = testFile.GetTypes();
                 ShowLoader();
-                this.toolStripStatusLabelLeft1.Text = "Running File Name Finders ...";
+                toolStripStatusLabelLeft1.Text = "Running File Name Finders ...";
                 DataTable dt = new DataTable();
                 dt.Columns.Add("File Type");
                 dt.Columns.Add("# Searched");
@@ -1510,30 +1504,30 @@ namespace PugTools
                 dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
                 foreach (string ext in extensions)
                 {
-                    this.toolStripStatusLabelRight.Text = "Looking for " + ext + " Files";
+                    toolStripStatusLabelRight.Text = "Looking for " + ext + " Files";
                     await Task.Run(() => ParseFiles(ext));
-                    dt.Rows.Add(new string[] { ext, this.filesSearched.ToString("n0"), this.namesFound.ToString("n0") });
-                    this.toolStripStatusLabelRight.Text = "Found " + this.namesFound.ToString("n0") + " File Names From " + ext + " Files";
+                    dt.Rows.Add(new string[] { ext, filesSearched.ToString("n0"), namesFound.ToString("n0") });
+                    toolStripStatusLabelRight.Text = "Found " + namesFound.ToString("n0") + " File Names From " + ext + " Files";
                 }
-                dt.Rows.Add(new string[] { "Total Parsed", this.totalFilesSearched.ToString("n0"), this.totalNamesFound.ToString("n0") });
-                this.toolStripStatusLabelRight.Text = "";
-                this.toolStripStatusLabelLeft1.Text = "Finding Files Complete";
-                this.Refresh();
-                this.toolStripStatusLabelLeft1.Text = "Testing Parsed Files...";
+                dt.Rows.Add(new string[] { "Total Parsed", totalFilesSearched.ToString("n0"), totalNamesFound.ToString("n0") });
+                toolStripStatusLabelRight.Text = "";
+                toolStripStatusLabelLeft1.Text = "Finding Files Complete";
+                Refresh();
+                toolStripStatusLabelLeft1.Text = "Testing Parsed Files...";
                 await Task.Run(() => TestHashFiles());
                 HideViewers();
                 EnableUI();
                 if (foundFiles.Count() > 0)
                 {
                     txtRawView.Text = "Found Files\r\n\r\n";
-                    txtRawView.Text += String.Join("\r\n", foundFiles);
+                    txtRawView.Text += string.Join("\r\n", foundFiles);
                     txtRawView.Visible = true;
                 }
-                dt.Rows.Add(new string[] { "Total Files Found", this.foundFiles.Count().ToString("n0") });
+                dt.Rows.Add(new string[] { "Total Files Found", foundFiles.Count().ToString("n0") });
                 HideLoader();
-                string finished = "Parsed " + this.totalNamesFound.ToString("n0") + " Potential File Names\r\n\r\nFound " + this.foundFiles.Count().ToString("n0") + " New Files";
-                this.foundNewFileCount += this.foundFiles.Count();
-                this.toolStripStatusLabelLeft1.Text = finished;
+                string finished = "Parsed " + totalNamesFound.ToString("n0") + " Potential File Names\r\n\r\nFound " + foundFiles.Count().ToString("n0") + " New Files";
+                foundNewFileCount += foundFiles.Count();
+                toolStripStatusLabelLeft1.Text = finished;
                 MessageBox.Show(finished, "File Finder Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
@@ -1543,9 +1537,9 @@ namespace PugTools
             System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.LowLatency;
             _closing = true;
 
-            if (hashData.dictionary.needsSave && (this.modNewCount > 2 || this.foundNewFileCount > 0))
+            if (hashData.dictionary.needsSave && (modNewCount > 2 || foundNewFileCount > 0))
             {
-                DialogResult save = MessageBox.Show("The hash dictionary needs to be saved. \nThere were " + this.foundNewFileCount.ToString() + " new files found this session.\n\nSave the dictionary changes?", "Save Dictionary?", MessageBoxButtons.YesNo);
+                DialogResult save = MessageBox.Show("The hash dictionary needs to be saved. \nThere were " + foundNewFileCount.ToString() + " new files found this session.\n\nSave the dictionary changes?", "Save Dictionary?", MessageBoxButtons.YesNo);
                 if (save == DialogResult.Yes)
                 {
                     hashData.dictionary.SaveBinHashList();
@@ -1580,9 +1574,9 @@ namespace PugTools
             }
             assetDict = null;
 
-            if (System.IO.Directory.Exists(@".\Temp\"))
+            if (Directory.Exists(@".\Temp\"))
             {
-                var list = System.IO.Directory.GetFiles(@".\Temp\", "*.ogg");
+                var list = Directory.GetFiles(@".\Temp\", "*.ogg");
                 foreach (var item in list)
                 {
                     try
@@ -1591,7 +1585,7 @@ namespace PugTools
                     }
                     catch (IOException) { }
                 }
-                list = System.IO.Directory.GetFiles(@".\Temp\", "*.wem");
+                list = Directory.GetFiles(@".\Temp\", "*.wem");
                 foreach (var item in list)
                 {
                     try
@@ -1615,13 +1609,13 @@ namespace PugTools
         // private async void TestHashFiles(string singleFile = null)
         private void TestHashFiles(string singleFile = null)
         {
-            this.hashData.dictionary.SaveBinHashList();
+            hashData.dictionary.SaveBinHashList();
             foundFiles.Clear();
             string[] testFiles;
             if (singleFile != null)
                 testFiles = new[] { singleFile };
             else
-                testFiles = Directory.GetFiles(this.extractPath + "\\File_Names\\");
+                testFiles = Directory.GetFiles(extractPath + "\\File_Names\\");
             if (testFiles.Count() > 0)
             {
                 foreach (string file in testFiles)
@@ -1629,7 +1623,7 @@ namespace PugTools
                     HashSet<string> testLines = new HashSet<string>();
                     if (file.EndsWith(".bin")) //import jedipedia hashes.bin format
                     {
-                        using (System.IO.FileStream fs = new FileStream(file, FileMode.Open))
+                        using (FileStream fs = new FileStream(file, FileMode.Open))
                         {
                             using (BinaryReader br = new BinaryReader(fs))
                             {
@@ -1643,7 +1637,7 @@ namespace PugTools
                                     {
                                         // string second_len = "????";
                                     }
-                                    var filename = System.Text.Encoding.Default.GetString(br.ReadBytes(len));
+                                    var filename = Encoding.Default.GetString(br.ReadBytes(len));
                                     testLines.Add(filename.ToLower());
                                 }
                             }
@@ -1677,13 +1671,13 @@ namespace PugTools
                             }
                         }
                     }
-                    this.hashData.dictionary.CreateArchiveHashMasterList();
+                    hashData.dictionary.CreateArchiveHashMasterList();
                     foreach (string line in testLines)
                     {
                         hasher.Hash(line, 0xdeadbeef);
-                        IEnumerable<UpdateResults> results = this.hashData.dictionary.UpdateHash(hasher.ph, hasher.sh, line, 0, true);
+                        IEnumerable<UpdateResults> results = hashData.dictionary.UpdateHash(hasher.ph, hasher.sh, line, 0, true);
                         if (results.Count() > 0)
-                            this.foundFiles.Add(line);
+                            foundFiles.Add(line);
                         //results.Clear();
                     }
                     testLines.Clear();
@@ -1703,7 +1697,7 @@ namespace PugTools
             if (result == DialogResult.OK)
             {
                 ShowLoader();
-                this.toolStripStatusLabelLeft1.Text = "Testing Hash File...";
+                toolStripStatusLabelLeft1.Text = "Testing Hash File...";
                 await Task.Run(() => TestHashFiles(ofd.FileName));
                 HideViewers();
                 if (foundFiles.Count() > 0)
@@ -1719,9 +1713,9 @@ namespace PugTools
                     txtRawView.Visible = true;
                 }
                 HideLoader();
-                string finished = "Found " + this.foundFiles.Count().ToString("n0") + " New Files";
-                this.foundNewFileCount += this.foundFiles.Count();
-                this.toolStripStatusLabelLeft1.Text = finished;
+                string finished = "Found " + foundFiles.Count().ToString("n0") + " New Files";
+                foundNewFileCount += foundFiles.Count();
+                toolStripStatusLabelLeft1.Text = finished;
                 MessageBox.Show(finished, "Test Hash File Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 EnableUI();
             }
@@ -1731,12 +1725,12 @@ namespace PugTools
 
         private async void TreeItemView_ItemSelectionChanged(object sender, EventArgs e)
         {
-            this.audioState = false;
+            audioState = false;
             if (treeItemView.SelectedObjects != null && treeItemView.SelectedObjects.Count > 1)
             {
                 //Don't preview audio if we selected multiple files.
-                this.audioState = false;
-                this.btnAudioStop.Enabled = false;
+                audioState = false;
+                btnAudioStop.Enabled = false;
                 return;
             }
 
@@ -1747,40 +1741,40 @@ namespace PugTools
             }
             object selectedRow = selectedItem.RowObject;
 
-            if (!this.audioState && selectedRow.GetType() == typeof(WemListItem))
+            if (!audioState && selectedRow.GetType() == typeof(WemListItem))
             {
                 WemListItem row = (WemListItem)selectedRow;
-                WEM_File wem = (WEM_File)row.obj;
+                WEM_File wem = row.obj;
                 if (wem != null && wem.Data.Count() > 0)
                 {
                     await Task.Run(() => wem.ConvertWEM());
-                    this.toolStripStatusLabelLeft1.Text = "Playing Audio...";
-                    this.toolStripProgressBar1.Visible = true;
-                    this.treeItemView.Enabled = false;
-                    this.btnAudioStop.Enabled = true;
+                    toolStripStatusLabelLeft1.Text = "Playing Audio...";
+                    toolStripProgressBar1.Visible = true;
+                    treeItemView.Enabled = false;
+                    btnAudioStop.Enabled = true;
                     await Task.Run(() => PlayOgg(wem));
-                    this.btnAudioStop.Enabled = false;
-                    this.treeItemView.Enabled = true;
-                    this.toolStripProgressBar1.Visible = false;
-                    this.toolStripStatusLabelLeft1.Text = "Audio Stopped";
+                    btnAudioStop.Enabled = false;
+                    treeItemView.Enabled = true;
+                    toolStripProgressBar1.Visible = false;
+                    toolStripStatusLabelLeft1.Text = "Audio Stopped";
                 }
             }
         }
 
         private void PlayOgg(WEM_File wem)
         {
-            if (this.waveOut == null)
-                this.waveOut = new NAudio.Wave.WaveOutEvent();
-            this.waveOut.Init(wem.Vorbis);
-            if (this.audioState == false)
+            if (waveOut == null)
+                waveOut = new WaveOutEvent();
+            waveOut.Init(wem.Vorbis);
+            if (audioState == false)
             {
-                this.audioState = true;
+                audioState = true;
                 SetStripProgressBarStyle(ProgressBarStyle.Continuous);
                 SetStripProgressBarMax((int)wem.Vorbis.TotalTime.TotalMilliseconds);
                 waveOut.Play();
-                while (waveOut.PlaybackState != NAudio.Wave.PlaybackState.Stopped)
+                while (waveOut.PlaybackState != PlaybackState.Stopped)
                 {
-                    if (this.audioState == false)
+                    if (audioState == false)
                     {
                         waveOut.Stop();
                         break;
@@ -1800,8 +1794,8 @@ namespace PugTools
 
         private void BtnAudioStop_Click(object sender, EventArgs e)
         {
-            this.audioState = false;
-            this.btnAudioStop.Enabled = false;
+            audioState = false;
+            btnAudioStop.Enabled = false;
         }
 
         private void BtnHelp_Click(object sender, EventArgs e)
@@ -1812,13 +1806,13 @@ namespace PugTools
 
         public void SetStatusLabel(string message)
         {
-            if (this.statusStrip1.InvokeRequired)
+            if (statusStrip1.InvokeRequired)
             {
-                this.statusStrip1.Invoke(new Action(() => SetStatusLabel(message)));
+                statusStrip1.Invoke(new Action(() => SetStatusLabel(message)));
             }
             else
             {
-                this.toolStripStatusLabelLeft1.Text = message;
+                toolStripStatusLabelLeft1.Text = message;
             }
         }
 
@@ -1843,8 +1837,8 @@ namespace PugTools
             DialogResult result = frmExt.ShowDialog(this);
             if (result == DialogResult.OK)
             {
-                this.extractByExtensions = true;
-                this.extractExtensions = frmExt.GetExtensions();
+                extractByExtensions = true;
+                extractExtensions = frmExt.GetExtensions();
                 BtnExtract_Click(this, null);
             }
         }

@@ -113,7 +113,7 @@ namespace GomLib.Models
             if (obj == null) return false;
             if (ReferenceEquals(this, obj)) return true;
 
-            if (this.GetHashCode() != obj.GetHashCode())
+            if (GetHashCode() != obj.GetHashCode())
                 return false;
             return true;
         }
@@ -146,7 +146,7 @@ namespace GomLib.Models
             itm.Name = itm.Dom_.stringTable.TryGetString("str.gui.tooltips", itm.NameId);
 
             itm.ReqAbilityId = gom.ValueOrDefault<ulong>("cbtArmorRequiredAbility", 0);
-            itm.DebugSpecName = gom.ValueOrDefault<string>("cbtArmorDebugSpecName", "");
+            itm.DebugSpecName = gom.ValueOrDefault("cbtArmorDebugSpecName", "");
             return itm;
         }
     }

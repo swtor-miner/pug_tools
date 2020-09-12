@@ -43,7 +43,7 @@ namespace GomLib.ModelLoader
             get { return "qstQuestDefinition"; }
         }
 
-        public Models.Quest Load(ulong nodeId)
+        public Quest Load(ulong nodeId)
         {
             if (idMap.TryGetValue(nodeId, out Quest result))
             {
@@ -55,7 +55,7 @@ namespace GomLib.ModelLoader
             return Load(qst, obj);
         }
 
-        public Models.Quest Load(string fqn)
+        public Quest Load(string fqn)
         {
             if (nameMap.TryGetValue(fqn, out Quest result))
             {
@@ -67,25 +67,25 @@ namespace GomLib.ModelLoader
             return Load(qst, obj);
         }
 
-        public Models.Quest Load(GomObject obj)
+        public Quest Load(GomObject obj)
         {
             Quest qst = new Quest();
             return Load(qst, obj);
         }
 
-        public Models.GameObject CreateObject()
+        public GameObject CreateObject()
         {
-            return new Models.Quest();
+            return new Quest();
         }
 
-        public Models.Quest Load(Models.GameObject obj, GomObject gom)
+        public Quest Load(GameObject obj, GomObject gom)
         {
             if (gom == null) { return (Quest)obj; }
 
             return Load(obj as Quest, gom);
         }
 
-        public Models.Quest Load(Models.Quest qst, GomObject obj)
+        public Quest Load(Quest qst, GomObject obj)
         {
             if (obj == null) { return qst; }
             if (qst == null) { return null; }
@@ -94,23 +94,23 @@ namespace GomLib.ModelLoader
             qst.NodeId = obj.Id;
             qst.Dom_ = _dom;
             qst.References = obj.References;
-            var textMap = (Dictionary<object, object>)obj.Data.ValueOrDefault<Dictionary<object, object>>("locTextRetrieverMap", null);
+            var textMap = obj.Data.ValueOrDefault<Dictionary<object, object>>("locTextRetrieverMap", null);
             qst.TextLookup = textMap;
 
             long questGuid = obj.Data.ValueOrDefault<long>("qstQuestDefinitionGUID", 0);
             //qst.Id = (ulong)(questGuid >> 32);
             qst.Id = obj.Id;
             qst.RequiredLevel = (int)obj.Data.ValueOrDefault<long>("qstReqMinLevel", 0);
-            qst.IsRepeatable = obj.Data.ValueOrDefault<bool>("qstIsRepeatable", false);
+            qst.IsRepeatable = obj.Data.ValueOrDefault("qstIsRepeatable", false);
             qst.XpLevel = (int)obj.Data.ValueOrDefault<long>("qstXpLevel", 0);
-            qst.Difficulty = (((ScriptEnum)obj.Data.ValueOrDefault<ScriptEnum>("qstDifficulty", null)) ?? new ScriptEnum()).ToString();
-            qst.ReqPrivacy = obj.Data.ValueOrDefault<object>("qstReqPrivacy", (object)"").ToString().Replace("qstPrivacy", "");
-            qst.CanAbandon = obj.Data.ValueOrDefault<bool>("qstAllowAbandonment", false);
-            qst.Icon = obj.Data.ValueOrDefault<string>("qstMissionIcon", "").Replace(" ", "");
-            qst.IsHidden = obj.Data.ValueOrDefault<bool>("qstIsHiddenQuest", false);
-            qst.IsClassQuest = obj.Data.ValueOrDefault<bool>("qstIsClassQuest", false);
-            qst.IsBonus = obj.Data.ValueOrDefault<bool>("qstIsBonusQuest", false);
-            qst.BonusShareable = obj.Data.ValueOrDefault<bool>("qstIsBonusQuestShareable", false);
+            qst.Difficulty = (obj.Data.ValueOrDefault<ScriptEnum>("qstDifficulty", null) ?? new ScriptEnum()).ToString();
+            qst.ReqPrivacy = obj.Data.ValueOrDefault("qstReqPrivacy", (object)"").ToString().Replace("qstPrivacy", "");
+            qst.CanAbandon = obj.Data.ValueOrDefault("qstAllowAbandonment", false);
+            qst.Icon = obj.Data.ValueOrDefault("qstMissionIcon", "").Replace(" ", "");
+            qst.IsHidden = obj.Data.ValueOrDefault("qstIsHiddenQuest", false);
+            qst.IsClassQuest = obj.Data.ValueOrDefault("qstIsClassQuest", false);
+            qst.IsBonus = obj.Data.ValueOrDefault("qstIsBonusQuest", false);
+            qst.BonusShareable = obj.Data.ValueOrDefault("qstIsBonusQuestShareable", false);
             qst.CategoryId = obj.Data.ValueOrDefault<long>("qstCategoryDisplayName", 0);
             //if (qst.CategoryId == 2466269005611293) { throw new IndexOutOfRangeException(); } // enable/disable to catch the data in the qst variable when QuestCategory.ToQuestCategory throws it's exception. To figure out which category it belongs to.
             StringTable Categories = _dom.stringTable.Find("str.gui.questcategories");
@@ -118,13 +118,13 @@ namespace GomLib.ModelLoader
             qst.Category = Categories.GetText(qst.CategoryId, "str.gui.questcategories"); //QuestCategoryExtensions.ToQuestCategory(qst.CategoryId);
             qst.LocalizedCategory = Categories.GetLocalizedText(qst.CategoryId, "str.gui.questcategories");
 
-            qst.ItemMap = (List<object>)obj.Data.ValueOrDefault<List<object>>("qstItemVariableDefinition_ProtoVarList", null);
+            qst.ItemMap = obj.Data.ValueOrDefault<List<object>>("qstItemVariableDefinition_ProtoVarList", null);
             qst.Items = LoadItems(qst.ItemMap);
 
             LoadRewards(ref qst, obj);
             LoadBranches(ref qst, obj);
-            _ = (List<object>)obj.Data.ValueOrDefault<List<object>>("qstSimpleBoolVariableDefinition_ProtoVarList", null);
-            _ = (List<object>)obj.Data.ValueOrDefault<List<object>>("qstStringIdVariableDefinition_ProtoVarList", null);
+            _ = obj.Data.ValueOrDefault<List<object>>("qstSimpleBoolVariableDefinition_ProtoVarList", null);
+            _ = obj.Data.ValueOrDefault<List<object>>("qstStringIdVariableDefinition_ProtoVarList", null);
             LoadRequiredClasses(qst, obj);
 
             qst.NameId = questGuid + 0x58;
@@ -174,7 +174,7 @@ namespace GomLib.ModelLoader
                     parsedItem.Id = item.ValueOrDefault<ulong>("qstItemSpecId", 0);
                     parsedItem.Fqn = _dom.GetStoredTypeName(parsedItem.Id);
 
-                    parsedItem.Name = item.ValueOrDefault<string>("qstVariableName", "");
+                    parsedItem.Name = item.ValueOrDefault("qstVariableName", "");
                     parsedItem.GUID = item.ValueOrDefault<long>("qstVariableGUID", 0);
                     parsedItem.VariableId = item.ValueOrDefault<ulong>("qstVariableFqnId", 0);
 
@@ -216,7 +216,7 @@ namespace GomLib.ModelLoader
         private void LoadRequiredClasses(Quest qst, GomObject obj)
         {
             qst.Classes = new ClassSpecList();
-            var reqClasses = (Dictionary<object, object>)obj.Data.ValueOrDefault<Dictionary<object, object>>("qstReqClasses", null);
+            var reqClasses = obj.Data.ValueOrDefault<Dictionary<object, object>>("qstReqClasses", null);
             if (reqClasses != null)
             {
                 foreach (var kvp in reqClasses)
@@ -254,8 +254,8 @@ namespace GomLib.ModelLoader
                 var proto = _dom.GetObject("qstRewardsInfoPrototype");
                 if (proto != null)
                 {
-                    fullQuestRewardsTable = proto.Data.ValueOrDefault<Dictionary<object, object>>("qstRewardsInfoData", new Dictionary<object, object>());
-                    newfullQuestRewardsTable = proto.Data.ValueOrDefault<Dictionary<object, object>>("qstRewardsNewInfoData", new Dictionary<object, object>());
+                    fullQuestRewardsTable = proto.Data.ValueOrDefault("qstRewardsInfoData", new Dictionary<object, object>());
+                    newfullQuestRewardsTable = proto.Data.ValueOrDefault("qstRewardsNewInfoData", new Dictionary<object, object>());
                 }
                 proto = _dom.GetObject("qstrewardscreditsData");
                 if (proto != null)
@@ -306,7 +306,7 @@ namespace GomLib.ModelLoader
                 }*/
                 reward.UnknownNum = unknownNum;
 
-                bool isAlwaysProvided = qReward.ValueOrDefault<bool>("qstRewardIsAlwaysProvided", false);
+                bool isAlwaysProvided = qReward.ValueOrDefault("qstRewardIsAlwaysProvided", false);
                 reward.IsAlwaysProvided = isAlwaysProvided;
 
                 GomObjectData rewardLookup;
@@ -352,7 +352,7 @@ namespace GomLib.ModelLoader
 
         private void LoadBranches(ref Quest qst, GomObject obj)
         {
-            var branches = (List<object>)obj.Data.ValueOrDefault<List<object>>("qstBranches", null);
+            var branches = obj.Data.ValueOrDefault<List<object>>("qstBranches", null);
             qst.Branches = new List<QuestBranch>();
             if (branches != null)
             {
@@ -476,13 +476,13 @@ namespace GomLib.ModelLoader
             return itemsGivenOrTaken;
         }
 
-        public void LoadObject(Models.GameObject loadMe, GomObject obj)
+        public void LoadObject(GameObject loadMe, GomObject obj)
         {
-            GomLib.Models.Quest qst = (Models.Quest)loadMe;
+            Quest qst = (Quest)loadMe;
             Load(qst, obj);
         }
 
-        public void LoadReferences(Models.GameObject obj, GomObject gom)
+        public void LoadReferences(GameObject obj, GomObject gom)
         {
             if (obj is null)
             {

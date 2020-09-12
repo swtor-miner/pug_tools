@@ -28,7 +28,7 @@ namespace GomLib.Models
     {
         public static Profession ToProfession(this ScriptEnum val)
         {
-            if (val == null) { return ToProfession(String.Empty); }
+            if (val == null) { return ToProfession(string.Empty); }
             return ToProfession(val.ToString());
         }
 

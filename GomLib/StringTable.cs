@@ -27,7 +27,7 @@ namespace GomLib
 
         public StringTable Find(string fqn)
         {
-            if (String.IsNullOrEmpty(fqn)) { return null; }
+            if (string.IsNullOrEmpty(fqn)) { return null; }
 
             if (failedFqns.ContainsKey(fqn)) { return null; }
 
@@ -64,8 +64,8 @@ namespace GomLib
 
         private StringTable(string fqn, DataObjectModel dom)
         {
-            this.Dom_ = dom;
-            this.Fqn = fqn;
+            Dom_ = dom;
+            Fqn = fqn;
         }
 
         public StringTableEntry GetEntry(long id)
@@ -100,7 +100,7 @@ namespace GomLib
             }
 
             //Console.WriteLine("Cannot find String {0} in StringTable {1} for {2}", id, this.Fqn, forFqn);
-            return String.Empty;
+            return string.Empty;
         }
 
         public Dictionary<string, string> GetLocalizedText(long id, string _)
@@ -143,7 +143,7 @@ namespace GomLib
 
             foreach (string localization in localizations)
             {
-                var path = String.Format("/resources/" + localization + "/{0}.stb", this.Fqn.Replace('.', '/'));
+                var path = string.Format("/resources/" + localization + "/{0}.stb", Fqn.Replace('.', '/'));
                 if (Dom_._assets.HasFile(path))
                 {
                     return true;
@@ -204,7 +204,7 @@ namespace GomLib
             foreach (var localization in localizations)
             {
                 // Version with String Tables as unique file format contained in swtor_en-us_global_1.tor
-                var path = String.Format("/resources/" + localization + "/{0}.stb", this.Fqn.Replace('.', '/'));
+                var path = string.Format("/resources/" + localization + "/{0}.stb", Fqn.Replace('.', '/'));
                 var file = Dom_._assets.FindFile(path);
                 if (file == null) { continue; } //throw new Exception("File not found"); }
                 foundAtLeastOneTable = true;
@@ -323,7 +323,7 @@ namespace GomLib
         {
             string locBucket = textRetriever.ValueOrDefault<string>("strLocalizedTextRetrieverBucket", null);
             long strId = textRetriever.ValueOrDefault<long>("strLocalizedTextRetrieverStringID", -1);
-            string defaultStr = textRetriever.ValueOrDefault<string>("strLocalizedTextRetrieverDesignModeText", String.Empty);
+            string defaultStr = textRetriever.ValueOrDefault("strLocalizedTextRetrieverDesignModeText", string.Empty);
 
             if ((locBucket == null) || (strId == -1))
             {
@@ -333,7 +333,7 @@ namespace GomLib
             StringTable strTable;
             try
             {
-                strTable = this.Find(locBucket);
+                strTable = Find(locBucket);
             }
             catch
             {
@@ -368,7 +368,7 @@ namespace GomLib
             StringTable strTable;
             try
             {
-                strTable = this.Find(locBucket);
+                strTable = Find(locBucket);
             }
             catch
             {
@@ -389,7 +389,7 @@ namespace GomLib
             string locBucket = textRetriever.ValueOrDefault<string>("strLocalizedTextRetrieverBucket", null);
             long strId = textRetriever.ValueOrDefault<long>("strLocalizedTextRetrieverStringID", -1);
             Dictionary<string, string> defaultStr = new Dictionary<string, string> {
-            { "enMale", textRetriever.ValueOrDefault<string>("strLocalizedTextRetrieverDesignModeText", String.Empty) },
+            { "enMale", textRetriever.ValueOrDefault("strLocalizedTextRetrieverDesignModeText", string.Empty) },
             //{ "enFemale", "" },
             { "frMale", "" },
             { "frFemale", "" },
@@ -405,7 +405,7 @@ namespace GomLib
             StringTable strTable;
             try
             {
-                strTable = this.Find(locBucket);
+                strTable = Find(locBucket);
             }
             catch
             {
@@ -434,7 +434,7 @@ namespace GomLib
             StringTable strTable;
             try
             {
-                strTable = this.Find(locBucket);
+                strTable = Find(locBucket);
             }
             catch
             {
@@ -462,7 +462,7 @@ namespace GomLib
             StringTable strTable;
             try
             {
-                strTable = this.Find(locBucket);
+                strTable = Find(locBucket);
             }
             catch
             {
@@ -495,11 +495,11 @@ namespace GomLib
 
             if (ReferenceEquals(this, stb)) return true;
 
-            if (this.Fqn != stb.Fqn)
+            if (Fqn != stb.Fqn)
                 return false;
 
             var ssComp = new Models.DictionaryComparer<long, StringTableEntry>();
-            if (!ssComp.Equals(this.data, stb.data))
+            if (!ssComp.Equals(data, stb.data))
                 return false;
 
             //foreach (var entry in data)

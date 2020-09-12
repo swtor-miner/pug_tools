@@ -2,6 +2,8 @@
 .vscode/
 BeWindowsFormsHexBox/Bin/
 BeWindowsFormsHexBox/obj/
+ConsoleTools/Bin/
+ConsoleTools/obj/
 DevILNet/Bin/
 DevILNet/obj/
 glMatrixNet/Bin/

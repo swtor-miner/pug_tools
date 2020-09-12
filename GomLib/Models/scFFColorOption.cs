@@ -38,25 +38,25 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, sco)) return true;
 
-            if (this.Availability != sco.Availability)
+            if (Availability != sco.Availability)
                 return false;
-            if (this.ColorCode != sco.ColorCode)
+            if (ColorCode != sco.ColorCode)
                 return false;
-            if (this.Icon != sco.Icon)
+            if (Icon != sco.Icon)
                 return false;
-            if (this.IsAvailable != sco.IsAvailable)
+            if (IsAvailable != sco.IsAvailable)
                 return false;
-            if (this.IsDeprecated != sco.IsDeprecated)
+            if (IsDeprecated != sco.IsDeprecated)
                 return false;
-            if (this.Name != sco.Name)
+            if (Name != sco.Name)
                 return false;
-            if (this.NameId != sco.NameId)
+            if (NameId != sco.NameId)
                 return false;
-            if (this.ShipId != sco.ShipId)
+            if (ShipId != sco.ShipId)
                 return false;
-            if (this.ShortId != sco.ShortId)
+            if (ShortId != sco.ShortId)
                 return false;
-            if (this.Type != sco.Type)
+            if (Type != sco.Type)
                 return false;
 
             return true;

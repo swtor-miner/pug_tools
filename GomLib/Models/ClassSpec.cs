@@ -26,8 +26,8 @@ namespace GomLib.Models
             {
                 if (Icon == null)
                     return null;
-                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", this.Icon));
-                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+                var fileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/icons/{0}.dds", Icon));
+                return string.Format("{0}_{1}", fileId.ph, fileId.sh);
             }
         }
         public int AlignmentLight { get; set; }
@@ -48,8 +48,8 @@ namespace GomLib.Models
         {
             get
             {
-                if (this.B62References != null && this.B62References.ContainsKey("npcsWithThisClass"))
-                    return this.B62References["npcsWithThisClass"].Count;
+                if (B62References != null && B62References.ContainsKey("npcsWithThisClass"))
+                    return B62References["npcsWithThisClass"].Count;
                 return 0;
             }
         }
@@ -127,17 +127,17 @@ namespace GomLib.Models
 
         public override int GetHashCode()
         {
-            int hash = this.Name.GetHashCode();
-            hash ^= this.AlignmentDark.GetHashCode();
-            hash ^= this.AlignmentLight.GetHashCode();
-            hash ^= this.AbilityPackageId.GetHashCode();
-            if (this.Icon != null)
+            int hash = Name.GetHashCode();
+            hash ^= AlignmentDark.GetHashCode();
+            hash ^= AlignmentLight.GetHashCode();
+            hash ^= AbilityPackageId.GetHashCode();
+            if (Icon != null)
             {
-                hash ^= this.Icon.GetHashCode();
+                hash ^= Icon.GetHashCode();
             }
-            hash ^= this.Fqn.GetHashCode();
-            hash ^= this.Id.GetHashCode();
-            hash ^= this.IsPlayerAdvancedClass.GetHashCode();
+            hash ^= Fqn.GetHashCode();
+            hash ^= Id.GetHashCode();
+            hash ^= IsPlayerAdvancedClass.GetHashCode();
 
             return hash;
         }
@@ -159,30 +159,30 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, itm)) return true;
 
-            if (this.AbilityPackageId != itm.AbilityPackageId)
+            if (AbilityPackageId != itm.AbilityPackageId)
                 return false;
-            if (this.AlignmentDark != itm.AlignmentDark)
+            if (AlignmentDark != itm.AlignmentDark)
                 return false;
-            if (this.AlignmentLight != itm.AlignmentLight)
+            if (AlignmentLight != itm.AlignmentLight)
                 return false;
-            if (this.Fqn != itm.Fqn)
+            if (Fqn != itm.Fqn)
                 return false;
-            if (this.Icon != itm.Icon)
+            if (Icon != itm.Icon)
                 return false;
-            if (this.Id != itm.Id)
+            if (Id != itm.Id)
                 return false;
-            if (this.IsPlayerClass != itm.IsPlayerClass)
+            if (IsPlayerClass != itm.IsPlayerClass)
                 return false;
-            if (this.IsPlayerAdvancedClass != itm.IsPlayerAdvancedClass)
+            if (IsPlayerAdvancedClass != itm.IsPlayerAdvancedClass)
                 return false;
             var dComp = new DictionaryComparer<string, string>();
-            if (!dComp.Equals(this.LocalizedName, itm.LocalizedName))
+            if (!dComp.Equals(LocalizedName, itm.LocalizedName))
                 return false;
-            if (this.Name != itm.Name)
+            if (Name != itm.Name)
                 return false;
-            if (this.NameId != itm.NameId)
+            if (NameId != itm.NameId)
                 return false;
-            if (this.Id != itm.Id)
+            if (Id != itm.Id)
                 return false;
 
             return true;
@@ -194,32 +194,32 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, itm)) return true;
 
-            if (this.AbilityPackageId != itm.AbilityPackageId)
+            if (AbilityPackageId != itm.AbilityPackageId)
                 return false;
-            if (this.AlignmentDark != itm.AlignmentDark)
+            if (AlignmentDark != itm.AlignmentDark)
                 return false;
-            if (this.AlignmentLight != itm.AlignmentLight)
+            if (AlignmentLight != itm.AlignmentLight)
                 return false;
-            if (this.Fqn != itm.Fqn)
+            if (Fqn != itm.Fqn)
                 return false;
-            if (this.Icon != itm.Icon)
+            if (Icon != itm.Icon)
                 return false;
-            if (this.Id != itm.Id)
+            if (Id != itm.Id)
                 return false;
-            if (this.IsPlayerClass != itm.IsPlayerClass)
+            if (IsPlayerClass != itm.IsPlayerClass)
                 return false;
             var dComp = new DictionaryComparer<string, string>();
-            if (!dComp.Equals(this.LocalizedName, itm.LocalizedName))
+            if (!dComp.Equals(LocalizedName, itm.LocalizedName))
                 return false;
-            if (this.Name != itm.Name)
+            if (Name != itm.Name)
                 return false;
-            if (this.NameId != itm.NameId)
+            if (NameId != itm.NameId)
                 return false;
-            if (this.Id != itm.Id)
+            if (Id != itm.Id)
                 return false;
-            if (this.AbilityPackage != null)
+            if (AbilityPackage != null)
             {
-                if (!this.AbilityPackage.Equals(itm.AbilityPackage))
+                if (!AbilityPackage.Equals(itm.AbilityPackage))
                     return false;
             }
             else if (itm.AbilityPackage != null)

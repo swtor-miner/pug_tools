@@ -57,7 +57,7 @@ namespace GomLib.Models
                 List<object> chrForceAlignmentTiers = chrForceAlignmentData.Data.Get<List<object>>(align.Value);
                 for (int i = 0; i < chrForceAlignmentTiers.Count; i++)
                 {
-                    AlignmentTier socTier = LoadAlignmentTier(((GomLib.GomObjectData)chrForceAlignmentTiers[i]), i);
+                    AlignmentTier socTier = LoadAlignmentTier(((GomObjectData)chrForceAlignmentTiers[i]), i);
                     localDict.Add(i + 1, socTier);
                 }
                 AlignmentTierLookup.Add(align.Key, localDict);
@@ -76,19 +76,19 @@ namespace GomLib.Models
         {
             AlignmentTier socTier = new AlignmentTier(i);
             StringTable table = _dom.stringTable.Find("str.gui.alignment");
-            socTier.Threshold = gom.ValueOrDefault<float>("chrForceAlignmentTierThreshold", 0f);
+            socTier.Threshold = gom.ValueOrDefault("chrForceAlignmentTierThreshold", 0f);
             socTier.NameId = gom.ValueOrDefault<long>("chrForceAlignmentTierName", 0) + 1331070494572544;
             socTier.LocalizedName = table.GetLocalizedText(socTier.NameId, "str.gui.alignment");
             socTier.Name = socTier.LocalizedName["enMale"];
 
             socTier.AchieveAppearance = gom.ValueOrDefault<ulong>("chrForceAlignmentTierAchieveAppearance", 0);
-            socTier.AchieveMessageColor = gom.ValueOrDefault<string>("chrForceAlignmentTierAchieveMessageColor", "");
+            socTier.AchieveMessageColor = gom.ValueOrDefault("chrForceAlignmentTierAchieveMessageColor", "");
             socTier.AchieveMessageId = gom.ValueOrDefault<long>("chrForceAlignmentTierAchieveMessage", 0) + 1331070494572544;
             socTier.LocalizedAchieveMessage = table.GetLocalizedText(socTier.AchieveMessageId, "str.gui.tooltips");
             socTier.AchieveMessage = socTier.LocalizedAchieveMessage["enMale"];
 
             socTier.RelinquishAppearance = gom.ValueOrDefault<ulong>("chrForceAlignmentTierRelinquishAppearance", 0);
-            socTier.RelinquishMessageColor = gom.ValueOrDefault<string>("chrForceAlignmentTierRelinquishMessageColor", "");
+            socTier.RelinquishMessageColor = gom.ValueOrDefault("chrForceAlignmentTierRelinquishMessageColor", "");
             socTier.RelinquishMessageId = gom.ValueOrDefault<long>("chrForceAlignmentTierRelinquishMessage", 0) + 1331070494572544;
             socTier.LocalizedRelinquishMessage = table.GetLocalizedText(socTier.RelinquishMessageId, "str.gui.tooltips");
             socTier.RelinquishMessage = socTier.LocalizedRelinquishMessage["enMale"];

@@ -26,14 +26,14 @@ namespace PugTools
             {
                 if (!name.Contains(".wem"))
                     name += ".wem";
-                this.Name = name;
-                this.OggName = name.Replace(".wem", ".ogg");
+                Name = name;
+                OggName = name.Replace(".wem", ".ogg");
             }
             if (inputStream != null)
             {
                 MemoryStream memStream = new MemoryStream();
                 inputStream.CopyTo(memStream);
-                this.Data = memStream.ToArray();
+                Data = memStream.ToArray();
                 memStream.Close();
                 inputStream.Close();
             }
@@ -41,23 +41,23 @@ namespace PugTools
 
         public WEM_File(BinaryReader br)
         {
-            this.Id = br.ReadUInt32();
-            this.Offset = br.ReadUInt32();
-            this.Length = br.ReadUInt32();
-            this.Name = this.Id.ToString() + ".wem";
-            this.OggName = this.Id.ToString() + ".ogg";
+            Id = br.ReadUInt32();
+            Offset = br.ReadUInt32();
+            Length = br.ReadUInt32();
+            Name = Id.ToString() + ".wem";
+            OggName = Id.ToString() + ".ogg";
         }
 
 #pragma warning disable CS1998, CS4014
         public async void ConvertWEM()
         {
-            if (!System.IO.Directory.Exists(@".\Temp"))
+            if (!Directory.Exists(@".\Temp"))
             {
-                System.IO.Directory.CreateDirectory(@".\Temp");
+                Directory.CreateDirectory(@".\Temp");
             }
 
-            FileStream fs = new FileStream(@".\Temp\" + this.Name, FileMode.Create, FileAccess.Write);
-            fs.Write(this.Data, 0, this.Data.Count());
+            FileStream fs = new FileStream(@".\Temp\" + Name, FileMode.Create, FileAccess.Write);
+            fs.Write(Data, 0, Data.Count());
             fs.Close();
 
             ProcessStartInfo convertWEMInfo = new ProcessStartInfo
@@ -66,7 +66,7 @@ namespace PugTools
                 UseShellExecute = false,
                 FileName = @".\Tools\ww2ogg.exe",
                 WindowStyle = ProcessWindowStyle.Hidden,
-                Arguments = @".\Temp\" + this.Name + @" --pcb .\Tools\packed_codebooks_aoTuV_603.bin"
+                Arguments = @".\Temp\" + Name + @" --pcb .\Tools\packed_codebooks_aoTuV_603.bin"
             };
 
             ProcessStartInfo convertOGGInfo = new ProcessStartInfo
@@ -75,7 +75,7 @@ namespace PugTools
                 UseShellExecute = false,
                 FileName = @".\Tools\revorb.exe",
                 WindowStyle = ProcessWindowStyle.Hidden,
-                Arguments = @".\Temp\" + this.OggName
+                Arguments = @".\Temp\" + OggName
             };
 
             try
@@ -84,13 +84,13 @@ namespace PugTools
                 {
                     convertWEM.WaitForExit();
                 }
-                System.IO.File.Delete(@".\Temp\" + this.Name);
+                File.Delete(@".\Temp\" + Name);
 
                 using (Process convertOGG = Process.Start(convertOGGInfo))
                 {
                     convertOGG.WaitForExit();
                 }
-                this.Vorbis = new NVorbis.NAudioSupport.VorbisFileReader(@".\Temp\" + this.OggName);
+                Vorbis = new NVorbis.NAudioSupport.VorbisFileReader(@".\Temp\" + OggName);
             }
             catch
             {

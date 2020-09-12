@@ -89,7 +89,7 @@ namespace TorLib
 
         public File FindFile(ulong fileId)
         {
-            if (!Initialized) { this.Initialize(); }
+            if (!Initialized) { Initialize(); }
 
             if (!fileLookup.TryGetValue(fileId, out FileInfo fileInfo))
             {
@@ -102,7 +102,7 @@ namespace TorLib
 
         internal FileStream OpenStreamAt(long offset)
         {
-            var fs = System.IO.File.Open(this.FileName, FileMode.Open, FileAccess.Read, FileShare.Read);
+            var fs = System.IO.File.Open(FileName, FileMode.Open, FileAccess.Read, FileShare.Read);
             fs.Seek(offset, SeekOrigin.Begin);
             return fs;
         }
@@ -116,15 +116,15 @@ namespace TorLib
         /// <summary>Load file tables and fill-in fileLookup dictionary</summary>
         private void Initialize()
         {
-            this.Initialized = true;
+            Initialized = true;
 
-            using (var fs = this.OpenStreamAt(0))
+            using (var fs = OpenStreamAt(0))
             using (var reader = new BinaryReader(fs))
             {
                 int magicNumber = reader.ReadInt32();
                 if (magicNumber != 0x50594D)
                 {
-                    throw new InvalidOperationException("Wait a minute! " + this.FileName + " isn't a MYP file!");
+                    throw new InvalidOperationException("Wait a minute! " + FileName + " isn't a MYP file!");
                 }
 
                 fs.Seek(12, SeekOrigin.Begin);
@@ -163,8 +163,8 @@ namespace TorLib
                         info.CompressionMethod = reader.ReadUInt16();
                         info.CRC = (int)info.Checksum;
 
-                        this.files.Add(new File(this, info));
-                        this.fileLookup.Add(info.FileId, info);
+                        files.Add(new File(this, info));
+                        fileLookup.Add(info.FileId, info);
                     }
                 }
             }

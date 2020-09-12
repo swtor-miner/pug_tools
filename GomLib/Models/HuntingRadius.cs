@@ -23,7 +23,7 @@ namespace GomLib.Models
         {
             GomObject table = _dom.GetObject(tablePath);
             if (table == null) return;
-            Dictionary<object, object> tableData = table.Data.ValueOrDefault<Dictionary<object, object>>("qstHuntingRadiusNameMap", new Dictionary<object, object>());
+            Dictionary<object, object> tableData = table.Data.ValueOrDefault("qstHuntingRadiusNameMap", new Dictionary<object, object>());
 
             table_data = tableData.ToDictionary(x => (long)x.Key, x => (long)x.Value);
         }

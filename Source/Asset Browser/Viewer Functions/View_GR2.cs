@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Drawing;
-using System.Windows.Forms;
+﻿using FileFormats;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
+using SlimDXNet;
+using SlimDXNet.Camera;
+using SlimDXNet.FX;
+using SlimDXNet.Vertex;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
 using Buffer = SlimDX.Direct3D11.Buffer;
-using SlimDX_Framework;
-using SlimDX_Framework.Camera;
-using SlimDX_Framework.FX;
-using SlimDX_Framework.Vertex;
-using FileFormats;
 
 namespace PugTools
 {

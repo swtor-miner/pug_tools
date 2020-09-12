@@ -36,8 +36,8 @@ namespace GomLib.Models
         {
             get
             {
-                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", this.Icon));
-                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+                var fileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/icons/{0}.dds", Icon));
+                return string.Format("{0}_{1}", fileId.ph, fileId.sh);
             }
         }
         [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
@@ -80,7 +80,7 @@ namespace GomLib.Models
             {
                 if (Rewards != null)
                 {
-                    if (!String.IsNullOrEmpty(Rewards.LegacyTitle))
+                    if (!string.IsNullOrEmpty(Rewards.LegacyTitle))
                         return true;
                 }
                 return false;
@@ -144,72 +144,72 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, ach)) return true;
 
-            if (this.AchId != ach.AchId)
+            if (AchId != ach.AchId)
                 return false;
-            if (this.Description != ach.Description)
+            if (Description != ach.Description)
                 return false;
-            if (this.DescriptionId != ach.DescriptionId)
+            if (DescriptionId != ach.DescriptionId)
                 return false;
-            if (this.Fqn != ach.Fqn)
+            if (Fqn != ach.Fqn)
                 return false;
-            if (this.Icon != ach.Icon)
+            if (Icon != ach.Icon)
                 return false;
-            if (this.Id != ach.Id)
+            if (Id != ach.Id)
                 return false;
-            if (this.Level != ach.Level)
+            if (Level != ach.Level)
                 return false;
 
             var ssComp = new DictionaryComparer<string, string>();
-            if (!ssComp.Equals(this.LocalizedDescription, ach.LocalizedDescription))
+            if (!ssComp.Equals(LocalizedDescription, ach.LocalizedDescription))
                 return false;
-            if (!ssComp.Equals(this.LocalizedName, ach.LocalizedName))
+            if (!ssComp.Equals(LocalizedName, ach.LocalizedName))
                 return false;
-            if (!ssComp.Equals(this.LocalizedNonSpoilerDesc, ach.LocalizedNonSpoilerDesc))
-                return false;
-
-
-            if (this.Name != ach.Name)
-                return false;
-            if (this.NameId != ach.NameId)
-                return false;
-            if (this.NodeId != ach.NodeId)
+            if (!ssComp.Equals(LocalizedNonSpoilerDesc, ach.LocalizedNonSpoilerDesc))
                 return false;
 
 
-            if (this.NonSpoilerDesc != ach.NonSpoilerDesc)
+            if (Name != ach.Name)
                 return false;
-            if (this.NonSpoilerId != ach.NonSpoilerId)
+            if (NameId != ach.NameId)
                 return false;
-            if (this.Rewards != null)
+            if (NodeId != ach.NodeId)
+                return false;
+
+
+            if (NonSpoilerDesc != ach.NonSpoilerDesc)
+                return false;
+            if (NonSpoilerId != ach.NonSpoilerId)
+                return false;
+            if (Rewards != null)
             {
                 if (ach.Rewards == null)
                     return false;
-                if (!this.Rewards.Equals(ach.Rewards))
+                if (!Rewards.Equals(ach.Rewards))
                     return false;
             }
             else if (ach.Rewards != null)
                 return false;
-            if (this.RewardsId != ach.RewardsId)
+            if (RewardsId != ach.RewardsId)
                 return false;
-            if (this.Tasks != null)
+            if (Tasks != null)
             {
                 if (ach.Tasks == null)
                     return false;
-                if (!this.Tasks.SequenceEqual(ach.Tasks))
+                if (!Tasks.SequenceEqual(ach.Tasks))
                     return false;
             }
             else if (ach.Tasks != null)
                 return false;
-            if (this.Conditions != null)
+            if (Conditions != null)
             {
                 if (ach.Conditions == null)
                     return false;
-                if (!this.Conditions.SequenceEqual(ach.Conditions))
+                if (!Conditions.SequenceEqual(ach.Conditions))
                     return false;
             }
             else if (ach.Conditions != null)
                 return false;
-            if (this.Visibility != ach.Visibility)
+            if (Visibility != ach.Visibility)
                 return false;
             return true;
         }
@@ -422,24 +422,24 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, rwd)) return true;
 
-            if (this.AchievementPoints != rwd.AchievementPoints)
+            if (AchievementPoints != rwd.AchievementPoints)
                 return false;
-            if (this.CartelCoins != rwd.CartelCoins)
+            if (CartelCoins != rwd.CartelCoins)
                 return false;
-            if (this.Id != rwd.Id)
+            if (Id != rwd.Id)
                 return false;
-            if (this.LegacyTitle != rwd.LegacyTitle)
+            if (LegacyTitle != rwd.LegacyTitle)
                 return false;
 
             var ssComp = new DictionaryComparer<string, string>();
-            if (!ssComp.Equals(this.LocalizedLegacyTitle, rwd.LocalizedLegacyTitle))
+            if (!ssComp.Equals(LocalizedLegacyTitle, rwd.LocalizedLegacyTitle))
                 return false;
 
-            if (this.Requisition != rwd.Requisition)
+            if (Requisition != rwd.Requisition)
                 return false;
 
             var ulComp = new DictionaryComparer<ulong, long>();
-            if (!ulComp.Equals(this.ItemRewardList, rwd.ItemRewardList))
+            if (!ulComp.Equals(ItemRewardList, rwd.ItemRewardList))
                 return false;
             return true;
         }
@@ -488,17 +488,17 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, rwd)) return true;
 
-            if (this.Index != rwd.Index)
+            if (Index != rwd.Index)
                 return false;
-            if (this.Index2 != rwd.Index2)
+            if (Index2 != rwd.Index2)
                 return false;
-            if (this.Count != rwd.Count)
+            if (Count != rwd.Count)
                 return false;
-            if (this.Name != rwd.Name)
+            if (Name != rwd.Name)
                 return false;
 
             var ssComp = new DictionaryComparer<string, string>();
-            if (!ssComp.Equals(this.LocalizedNames, rwd.LocalizedNames))
+            if (!ssComp.Equals(LocalizedNames, rwd.LocalizedNames))
                 return false;
 
             //var ulComp = new DictionaryComparer<AchEvent, AchEvent>();
@@ -558,9 +558,9 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, rwd)) return true;
 
-            if (this.Id != rwd.Id)
+            if (Id != rwd.Id)
                 return false;
-            if (this.Value != rwd.Value)
+            if (Value != rwd.Value)
                 return false;
 
             return true;
@@ -606,11 +606,11 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, rwd)) return true;
 
-            if (this.UnknownBoolean != rwd.UnknownBoolean)
+            if (UnknownBoolean != rwd.UnknownBoolean)
                 return false;
-            if (this.Type != rwd.Type)
+            if (Type != rwd.Type)
                 return false;
-            if (this.Target != rwd.Target)
+            if (Target != rwd.Target)
                 return false;
 
             return true;

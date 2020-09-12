@@ -271,11 +271,11 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, shp)) return true;
 
-            if (this.GetAbilityPackage() != null)
+            if (GetAbilityPackage() != null)
             {
                 if (shp.GetAbilityPackage() != null)
                 {
-                    if (!this.GetAbilityPackage().Equals(shp.GetAbilityPackage()))
+                    if (!GetAbilityPackage().Equals(shp.GetAbilityPackage()))
                         return false;
                 }
                 else
@@ -283,15 +283,15 @@ namespace GomLib.Models
             }
             else if (shp.GetAbilityPackage() != null)
                 return false;
-            if (this.Category != shp.Category)
+            if (Category != shp.Category)
                 return false;
-            if (this.ColorOptions != null)
+            if (ColorOptions != null)
             {
                 if (shp.ColorOptions != null)
                 {
-                    if (!this.ColorOptions.Keys.SequenceEqual(shp.ColorOptions.Keys))
+                    if (!ColorOptions.Keys.SequenceEqual(shp.ColorOptions.Keys))
                         return false;
-                    foreach (var kvp in this.ColorOptions)
+                    foreach (var kvp in ColorOptions)
                     {
                         if (!kvp.Value.SequenceEqual(shp.ColorOptions[kvp.Key]))
                             return false;
@@ -300,13 +300,13 @@ namespace GomLib.Models
                 else
                     return false;
             }
-            if (this.ComponentMap != null)
+            if (ComponentMap != null)
             {
                 if (shp.ComponentMap != null)
                 {
-                    if (!this.ComponentMap.Keys.SequenceEqual(shp.ComponentMap.Keys))
+                    if (!ComponentMap.Keys.SequenceEqual(shp.ComponentMap.Keys))
                         return false;
-                    foreach (var kvp in this.ComponentMap)
+                    foreach (var kvp in ComponentMap)
                     {
                         shp.ComponentMap.TryGetValue(kvp.Key, out List<ScFFComponent> oldSlot);
                         if (kvp.Value.Count != oldSlot.Count)
@@ -325,98 +325,98 @@ namespace GomLib.Models
                 else
                     return false;
             }
-            if (this.Cost != shp.Cost)
+            if (Cost != shp.Cost)
                 return false;
-            if (this.GetDamagedPackageNodeId() != shp.GetDamagedPackageNodeId())
+            if (GetDamagedPackageNodeId() != shp.GetDamagedPackageNodeId())
                 return false;
 
             var suComp = new DictionaryComparer<string, ulong>();
-            if (!suComp.Equals(this.DefaultLoadout, shp.DefaultLoadout))
+            if (!suComp.Equals(DefaultLoadout, shp.DefaultLoadout))
                 return false;
 
-            if (this.Description != shp.Description)
+            if (Description != shp.Description)
                 return false;
-            if (this.DescriptionId != shp.DescriptionId)
+            if (DescriptionId != shp.DescriptionId)
                 return false;
-            if (this.GetEngStatsNodeId() != shp.GetEngStatsNodeId())
+            if (GetEngStatsNodeId() != shp.GetEngStatsNodeId())
                 return false;
-            if (this.EppDynamicCollectionId != shp.EppDynamicCollectionId)
+            if (EppDynamicCollectionId != shp.EppDynamicCollectionId)
                 return false;
-            if (this.Faction != shp.Faction)
+            if (Faction != shp.Faction)
                 return false;
-            if (this.Icon != shp.Icon)
+            if (Icon != shp.Icon)
                 return false;
-            if (this.Id != shp.Id)
+            if (Id != shp.Id)
                 return false;
-            if (this.IsAvailable != shp.IsAvailable)
+            if (IsAvailable != shp.IsAvailable)
                 return false;
-            if (this.IsDeprecated != shp.IsDeprecated)
+            if (IsDeprecated != shp.IsDeprecated)
                 return false;
-            if (this.IsHidden != shp.IsHidden)
+            if (IsHidden != shp.IsHidden)
                 return false;
-            if (this.IsPurchasedWithCC != shp.IsPurchasedWithCC)
+            if (IsPurchasedWithCC != shp.IsPurchasedWithCC)
                 return false;
-            if (this.LookupId != shp.LookupId)
+            if (LookupId != shp.LookupId)
                 return false;
-            if (this.GetMajorComponentsContainerId() != shp.GetMajorComponentsContainerId())
+            if (GetMajorComponentsContainerId() != shp.GetMajorComponentsContainerId())
                 return false;
 
             var slComp = new DictionaryComparer<string, long>();
-            if (!slComp.Equals(this.MajorComponentSlots, shp.MajorComponentSlots))
+            if (!slComp.Equals(MajorComponentSlots, shp.MajorComponentSlots))
                 return false;
 
-            if (this.GetMajorEquipType() != shp.GetMajorEquipType())
+            if (GetMajorEquipType() != shp.GetMajorEquipType())
                 return false;
-            if (this.GetMinorComponentsContainerId() != shp.GetMinorComponentsContainerId())
+            if (GetMinorComponentsContainerId() != shp.GetMinorComponentsContainerId())
                 return false;
-            if (!slComp.Equals(this.MinorComponentSlots, shp.MinorComponentSlots))
+            if (!slComp.Equals(MinorComponentSlots, shp.MinorComponentSlots))
                 return false;
-            if (this.GetMinorEquipType() != shp.GetMinorEquipType())
+            if (GetMinorEquipType() != shp.GetMinorEquipType())
                 return false;
-            if (this.Model != shp.Model)
+            if (Model != shp.Model)
                 return false;
-            if (this.Name != shp.Name)
+            if (Name != shp.Name)
                 return false;
-            if (this.NameId != shp.NameId)
+            if (NameId != shp.NameId)
                 return false;
-            if (this.PatternOptions != null)
+            if (PatternOptions != null)
             {
                 if (shp.PatternOptions != null)
                 {
-                    if (this.PatternOptions.Count != shp.PatternOptions.Count)
+                    if (PatternOptions.Count != shp.PatternOptions.Count)
                         return false;
-                    for (int i = 0; i < this.PatternOptions.Count; i++)
+                    for (int i = 0; i < PatternOptions.Count; i++)
                     {
-                        var pat = shp.PatternOptions.Where(x => x.Id == this.PatternOptions[i].Id);
-                        if (!this.PatternOptions[i].Equals(pat.Single()))
+                        var pat = shp.PatternOptions.Where(x => x.Id == PatternOptions[i].Id);
+                        if (!PatternOptions[i].Equals(pat.Single()))
                             return false;
                     }
                 }
                 else
                     return false;
             }
-            if (this.ShipIcon != shp.ShipIcon)
+            if (ShipIcon != shp.ShipIcon)
                 return false;
 
             var sfComp = new DictionaryComparer<string, float>();
-            if (!sfComp.Equals(this.Stats, shp.Stats))
+            if (!sfComp.Equals(Stats, shp.Stats))
                 return false;
 
-            if (this.GetUnknownStat1() != shp.GetUnknownStat1())
+            if (GetUnknownStat1() != shp.GetUnknownStat1())
                 return false;
-            if (this.GetUnknownStat2() != shp.GetUnknownStat2())
+            if (GetUnknownStat2() != shp.GetUnknownStat2())
                 return false;
-            if (this.GetUnknownStat3() != shp.GetUnknownStat3())
+            if (GetUnknownStat3() != shp.GetUnknownStat3())
                 return false;
-            if (this.GetUnknownStat4() != shp.GetUnknownStat4())
+            if (GetUnknownStat4() != shp.GetUnknownStat4())
                 return false;
-            if (this.GetUnknownStat5() != shp.GetUnknownStat5())
+            if (GetUnknownStat5() != shp.GetUnknownStat5())
                 return false;
-            if (this.GetUnknownStat6() != shp.GetUnknownStat6())
+            if (GetUnknownStat6() != shp.GetUnknownStat6())
                 return false;
-            if (this.GetUnknownStat7() != shp.GetUnknownStat7())
+            if (GetUnknownStat7() != shp.GetUnknownStat7())
                 return false;
-            if (this.GetUnknownStat8() != shp.GetUnknownStat8())
+            if (GetUnknownStat8() != shp.GetUnknownStat8())
                 return false;
             return true;
         }
@@ -444,7 +444,7 @@ namespace GomLib.Models
         public override XElement ToXElement(bool verbose)
         {
             XElement shipContainer = new XElement("Ship");
-            if (this.Id != 0)
+            if (Id != 0)
             {
                 string currency = " Fleet Requisition";
                 if (IsPurchasedWithCC) currency = " ???";
@@ -526,7 +526,7 @@ namespace GomLib.Models
         }
 
         private XElement ContainerToXElement(Dictionary<string, long> containerMap,
-            Dictionary<string, List<GomLib.Models.ScFFComponent>> componentMap,
+            Dictionary<string, List<ScFFComponent>> componentMap,
             string containerName,
             Dictionary<string, ulong> defaultLoadoutMap,
             bool verbose)
@@ -542,9 +542,9 @@ namespace GomLib.Models
                     {
                         if (componentMap.ContainsKey(containerMapSlot.Key))
                         {
-                            foreach (GomLib.Models.ScFFComponent comp in componentMap[containerMapSlot.Key])
+                            foreach (ScFFComponent comp in componentMap[containerMapSlot.Key])
                             {
-                                bool isDefault = ((ulong)defaultLoadoutMap[containerMapSlot.Key] == comp.Id);
+                                bool isDefault = (defaultLoadoutMap[containerMapSlot.Key] == comp.Id);
                                 /* code moved to GomLib.Models.scFFComponent.cs */
                                 subContainer.Add(comp.ToXElement(isDefault, verbose));
                             }

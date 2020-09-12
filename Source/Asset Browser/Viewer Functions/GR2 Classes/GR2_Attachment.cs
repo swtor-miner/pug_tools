@@ -19,12 +19,12 @@ namespace FileFormats
 
         public GR2_Attachment(BinaryReader br)
         {
-            this.offsetAttachName = br.ReadUInt32();
-            this.offsetAttachBoneName = br.ReadUInt32();
-            this.attach_matrix = File_Helpers.ReadMatrix(br);
+            offsetAttachName = br.ReadUInt32();
+            offsetAttachBoneName = br.ReadUInt32();
+            attach_matrix = File_Helpers.ReadMatrix(br);
 
-            this.attachName = File_Helpers.ReadString(br, this.offsetAttachName);
-            this.boneName = File_Helpers.ReadString(br, this.offsetAttachBoneName);
+            attachName = File_Helpers.ReadString(br, offsetAttachName);
+            boneName = File_Helpers.ReadString(br, offsetAttachBoneName);
         }
 
     }

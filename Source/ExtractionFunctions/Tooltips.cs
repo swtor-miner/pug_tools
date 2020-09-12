@@ -52,7 +52,7 @@ namespace PugTools
                 var gomList = currentDom.GetObjectsStartingWith(gameObj.Key).Where(x => !x.Name.Contains("/"));
                 var count = gomList.Count();
                 int i = 0;
-                Addtolist2(String.Format("Checking {0}", gameObj.Key));
+                Addtolist2(string.Format("Checking {0}", gameObj.Key));
                 List<GomLib.Models.Tooltip> iList = new List<GomLib.Models.Tooltip>();
                 //List<GomLib.Models.Tooltip> frList = new List<GomLib.Models.Tooltip>();
                 //List<GomLib.Models.Tooltip> deList = new List<GomLib.Models.Tooltip>();
@@ -139,7 +139,7 @@ namespace PugTools
                 ClearProgress();
                 var count = currentDataProto.Count();
                 int i = 0;
-                Addtolist2(String.Format("Checking {0}", gameObj.Key));
+                Addtolist2(string.Format("Checking {0}", gameObj.Key));
                 List<GomLib.Models.Tooltip> iList = new List<GomLib.Models.Tooltip>();
                 foreach (var gom in currentDataProto)
                 {
@@ -181,7 +181,7 @@ namespace PugTools
 
         public void CreatCompressedOutput(string xmlRoot, IEnumerable<GomLib.Models.Tooltip> itmList, string language)
         {
-            string file = String.Format("tooltips\\{0}tips({1}).zip", xmlRoot, language);
+            string file = string.Format("tooltips\\{0}tips({1}).zip", xmlRoot, language);
             WriteFile("", file, false);
             HashSet<string> iconNames = new HashSet<string>();
             using (var compressStream = new MemoryStream())
@@ -203,7 +203,7 @@ namespace PugTools
                     }
                     foreach (var t in itmList)
                     {
-                        var torcEntry = zipArchive.CreateEntry(String.Format("{0}{1}.torctip", compressedFolder, t.Base62Id), CompressionLevel.Fastest);
+                        var torcEntry = zipArchive.CreateEntry(string.Format("{0}{1}.torctip", compressedFolder, t.Base62Id), CompressionLevel.Fastest);
                         using (StreamWriter writer = new StreamWriter(torcEntry.Open(), Encoding.UTF8)) //old method. Race conditions led to Central Directory corruption.
                             writer.Write(t.HTML);
                         /*using (MemoryStream htmlStream = new MemoryStream(Encoding.UTF8.GetBytes(t.HTML ?? ""))) //see if this solves the Central Directory corruption.
@@ -219,28 +219,28 @@ namespace PugTools
                             switch (t.Obj.GetType().ToString())
                             {
                                 case "GomLib.Models.Item":
-                                    icon = String.Format("icons/{0}", ((GomLib.Models.Item)t.Obj).Icon);
-                                    secondaryicon = String.Format("icons/{0}", ((GomLib.Models.Item)t.Obj).RepublicIcon);
+                                    icon = string.Format("icons/{0}", ((GomLib.Models.Item)t.Obj).Icon);
+                                    secondaryicon = string.Format("icons/{0}", ((GomLib.Models.Item)t.Obj).RepublicIcon);
                                     break;
                                 case "GomLib.Models.Ability":
-                                    icon = String.Format("icons/{0}", ((GomLib.Models.Ability)t.Obj).Icon);
+                                    icon = string.Format("icons/{0}", ((GomLib.Models.Ability)t.Obj).Icon);
                                     break;
                                 case "GomLib.Models.Quest":
-                                    icon = String.Format("codex/{0}", ((GomLib.Models.Quest)t.Obj).Icon);
+                                    icon = string.Format("codex/{0}", ((GomLib.Models.Quest)t.Obj).Icon);
                                     break;
                                 case "GomLib.Models.Talent":
-                                    icon = String.Format("icons/{0}", ((GomLib.Models.Talent)t.Obj).Icon);
+                                    icon = string.Format("icons/{0}", ((GomLib.Models.Talent)t.Obj).Icon);
                                     break;
                                 case "GomLib.Models.Achievement":
-                                    icon = String.Format("icons/{0}", ((GomLib.Models.Achievement)t.Obj).Icon);
+                                    icon = string.Format("icons/{0}", ((GomLib.Models.Achievement)t.Obj).Icon);
                                     break;
                                 case "GomLib.Models.Codex":
                                     //break;
-                                    icon = String.Format("codex/{0}", ((GomLib.Models.Codex)t.Obj).Image);
+                                    icon = string.Format("codex/{0}", ((GomLib.Models.Codex)t.Obj).Image);
                                     break;
                                 case "GomLib.Models.NewCompanion":
                                     //break;
-                                    icon = String.Format("portraits/{0}", ((GomLib.Models.NewCompanion)t.Obj).Icon);
+                                    icon = string.Format("portraits/{0}", ((GomLib.Models.NewCompanion)t.Obj).Icon);
                                     break;
                             }
                         }
@@ -249,16 +249,16 @@ namespace PugTools
                             switch (t.PObj.GetType().ToString())
                             {
                                 case "GomLib.Models.Discipline":
-                                    icon = String.Format("icons/{0}", ((GomLib.Models.Item)t.Obj).Icon);
+                                    icon = string.Format("icons/{0}", ((GomLib.Models.Item)t.Obj).Icon);
                                     break;
                                 case "GomLib.Models.Collection":
                                     break;
                                 case "GomLib.Models.MtxStorefrontEntry":
-                                    icon = String.Format("mtxstore/{0}_260x260", ((GomLib.Models.MtxStorefrontEntry)t.PObj).Icon);
+                                    icon = string.Format("mtxstore/{0}_260x260", ((GomLib.Models.MtxStorefrontEntry)t.PObj).Icon);
                                     break;
                             }
                         }
-                        if (!String.IsNullOrEmpty(icon))
+                        if (!string.IsNullOrEmpty(icon))
                         {
                             if (iconNames.Contains(icon))
                                 continue;
@@ -274,14 +274,14 @@ namespace PugTools
                                     ZipArchiveEntry iconEntry;
                                     if (icon.StartsWith("codex/"))
                                     {
-                                        iconEntry = zipArchive.CreateEntry(String.Format("codex/{0}.jpg", GetIconFilename(icon)), CompressionLevel.Fastest);
+                                        iconEntry = zipArchive.CreateEntry(string.Format("codex/{0}.jpg", GetIconFilename(icon)), CompressionLevel.Fastest);
                                     }
                                     else if (icon.StartsWith("portraits/"))
-                                        iconEntry = zipArchive.CreateEntry(String.Format("portraits/{0}.png", GetIconFilename(icon)), CompressionLevel.Fastest);
+                                        iconEntry = zipArchive.CreateEntry(string.Format("portraits/{0}.png", GetIconFilename(icon)), CompressionLevel.Fastest);
                                     else if (icon.StartsWith("mtxstore/"))
-                                        iconEntry = zipArchive.CreateEntry(String.Format("{0}.jpg", icon.ToLower()), CompressionLevel.Fastest);
+                                        iconEntry = zipArchive.CreateEntry(string.Format("{0}.jpg", icon.ToLower()), CompressionLevel.Fastest);
                                     else
-                                        iconEntry = zipArchive.CreateEntry(String.Format("icons/{0}.jpg", GetIconFilename(icon)), CompressionLevel.Fastest);
+                                        iconEntry = zipArchive.CreateEntry(string.Format("icons/{0}.jpg", GetIconFilename(icon)), CompressionLevel.Fastest);
                                     using (var a = iconEntry.Open())
                                         iconStream.WriteTo(a);
                                     //using (Writer writer = new BinaryWriter(iconEntry.Open()))
@@ -295,7 +295,7 @@ namespace PugTools
                                     if (iconStream != null)
                                     {
                                         ZipArchiveEntry iconEntry;
-                                        iconEntry = zipArchive.CreateEntry(String.Format("codex/{0}_thumb.jpg", GetIconFilename(icon)), CompressionLevel.Fastest);
+                                        iconEntry = zipArchive.CreateEntry(string.Format("codex/{0}_thumb.jpg", GetIconFilename(icon)), CompressionLevel.Fastest);
                                         using (var a = iconEntry.Open())
                                             iconStream.WriteTo(a);
                                     }
@@ -308,7 +308,7 @@ namespace PugTools
                                     if (iconStream != null)
                                     {
                                         ZipArchiveEntry iconEntry;
-                                        iconEntry = zipArchive.CreateEntry(String.Format("portraits/{0}_thumb.png", GetIconFilename(icon)), CompressionLevel.Fastest);
+                                        iconEntry = zipArchive.CreateEntry(string.Format("portraits/{0}_thumb.png", GetIconFilename(icon)), CompressionLevel.Fastest);
                                         using (var a = iconEntry.Open())
                                             iconStream.WriteTo(a);
                                     }
@@ -325,7 +325,7 @@ namespace PugTools
                                         if (iconStream != null)
                                         {
                                             ZipArchiveEntry iconEntry;
-                                            iconEntry = zipArchive.CreateEntry(String.Format("{0}.jpg", sizedIcon.ToLower()), CompressionLevel.Fastest);
+                                            iconEntry = zipArchive.CreateEntry(string.Format("{0}.jpg", sizedIcon.ToLower()), CompressionLevel.Fastest);
                                             using (var a = iconEntry.Open())
                                                 iconStream.WriteTo(a);
                                         }
@@ -334,7 +334,7 @@ namespace PugTools
                             }
 
                         }
-                        if (!String.IsNullOrEmpty(secondaryicon))
+                        if (!string.IsNullOrEmpty(secondaryicon))
                         {
                             if (iconNames.Contains(secondaryicon))
                                 continue;
@@ -347,12 +347,12 @@ namespace PugTools
                                     ZipArchiveEntry iconEntry;
                                     if (icon.StartsWith("codex/"))
                                     {
-                                        iconEntry = zipArchive.CreateEntry(String.Format("codex/{0}.jpg", GetIconFilename(secondaryicon)), CompressionLevel.Fastest);
+                                        iconEntry = zipArchive.CreateEntry(string.Format("codex/{0}.jpg", GetIconFilename(secondaryicon)), CompressionLevel.Fastest);
                                     }
                                     else if (icon.StartsWith("mtxstore/"))
-                                        iconEntry = zipArchive.CreateEntry(String.Format("{0}.jpg", secondaryicon.ToLower()), CompressionLevel.Fastest);
+                                        iconEntry = zipArchive.CreateEntry(string.Format("{0}.jpg", secondaryicon.ToLower()), CompressionLevel.Fastest);
                                     else
-                                        iconEntry = zipArchive.CreateEntry(String.Format("icons/{0}.jpg", GetIconFilename(secondaryicon)), CompressionLevel.Fastest);
+                                        iconEntry = zipArchive.CreateEntry(string.Format("icons/{0}.jpg", GetIconFilename(secondaryicon)), CompressionLevel.Fastest);
                                     using (var a = iconEntry.Open())
                                         iconStream.WriteTo(a);
                                     //using (Writer writer = new BinaryWriter(iconEntry.Open()))
@@ -366,7 +366,7 @@ namespace PugTools
                                     if (iconStream != null)
                                     {
                                         ZipArchiveEntry iconEntry;
-                                        iconEntry = zipArchive.CreateEntry(String.Format("codex/{0}_thumb.jpg", GetIconFilename(secondaryicon)), CompressionLevel.Fastest);
+                                        iconEntry = zipArchive.CreateEntry(string.Format("codex/{0}_thumb.jpg", GetIconFilename(secondaryicon)), CompressionLevel.Fastest);
                                         using (var a = iconEntry.Open())
                                             iconStream.WriteTo(a);
                                     }
@@ -388,10 +388,10 @@ namespace PugTools
         private MemoryStream GetIcon(string icon, bool generateThumb, params IconParamter[] encodingParams)
         {
             if (icon == null) return null;
-            using (var file = currentDom._assets.FindFile(String.Format("/resources/gfx/{0}.dds", icon)))
+            using (var file = currentDom._assets.FindFile(string.Format("/resources/gfx/{0}.dds", icon)))
             {
                 if (file == null) return null;
-                var filename = String.Join("_", file.FileInfo.PrimaryHash, file.FileInfo.SecondaryHash);
+                var filename = string.Join("_", file.FileInfo.PrimaryHash, file.FileInfo.SecondaryHash);
                 return GetIcon(filename, file, generateThumb, encodingParams);
             }
         }
@@ -430,7 +430,7 @@ namespace PugTools
             {
                 var iconData = dds.GetImageData(0);
 
-                System.Drawing.Bitmap iconBM = new System.Drawing.Bitmap(iconData.Width, iconData.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                Bitmap iconBM = new Bitmap(iconData.Width, iconData.Height, PixelFormat.Format32bppArgb);
 
                 for (int k = 0; k < iconData.Height * iconData.Width; k++) // loop through image data
                 {
@@ -439,7 +439,7 @@ namespace PugTools
                                 iconData.Data[k * 4 + 1],
                                 iconData.Data[k * 4 + 2]);
 
-                    iconBM.SetPixel(k % iconData.Width, (int)k / iconData.Width, iconPixel); //save pixel in new bitmap
+                    iconBM.SetPixel(k % iconData.Width, k / iconData.Width, iconPixel); //save pixel in new bitmap
                 }
 
                 Bitmap croppedIconBM = iconBM.Clone(new Rectangle(0, 0, 50, 50), iconBM.PixelFormat); // crop Bitmap
@@ -478,7 +478,7 @@ namespace PugTools
                     {
 
                         exp.SaveImageToStream(dds, DevIL.ImageType.Bmp, taco); //save DDS to stream in jpg format
-                        System.Drawing.Bitmap iconBM = new System.Drawing.Bitmap(taco);
+                        Bitmap iconBM = new Bitmap(taco);
                         if (generateThumb)
                         {
                             Bitmap resized = new Bitmap(iconBM, new System.Drawing.Size(iconBM.Width / 4, iconBM.Height / 4));
@@ -498,17 +498,17 @@ namespace PugTools
         private void OutputIcon(string icon, string directory)
         {
             if (icon == null) return;
-            using (var file = currentDom._assets.FindFile(String.Format("/resources/gfx/icons/{0}.dds", icon)))
+            using (var file = currentDom._assets.FindFile(string.Format("/resources/gfx/icons/{0}.dds", icon)))
             {
                 if (file == null) return;
-                var filename = String.Join("_", file.FileInfo.PrimaryHash, file.FileInfo.SecondaryHash);
+                var filename = string.Join("_", file.FileInfo.PrimaryHash, file.FileInfo.SecondaryHash);
                 OutputIcon(filename, file, directory);
             }
         }
 
         private void OutputIcon(string filename, TorLib.File file, string directory)
         {
-            if (!File.Exists(String.Format("{0}{1}/{2}/Images/{3}.dds", Config.ExtractPath, prefix, directory, filename)))
+            if (!File.Exists(string.Format("{0}{1}/{2}/Images/{3}.dds", Config.ExtractPath, prefix, directory, filename)))
             {
                 if (file != null)
                 {
@@ -525,7 +525,7 @@ namespace PugTools
                         {
                             var iconData = dds.GetImageData(0);
 
-                            System.Drawing.Bitmap iconBM = new System.Drawing.Bitmap(iconData.Width, iconData.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                            Bitmap iconBM = new Bitmap(iconData.Width, iconData.Height, PixelFormat.Format32bppArgb);
 
                             for (int k = 0; k < iconData.Height * iconData.Width; k++) // loop through image data
                             {
@@ -534,11 +534,11 @@ namespace PugTools
                                             iconData.Data[k * 4 + 1],
                                             iconData.Data[k * 4 + 2]);
 
-                                iconBM.SetPixel(k % iconData.Width, (int)k / iconData.Width, iconPixel); //save pixel in new bitmap
+                                iconBM.SetPixel(k % iconData.Width, k / iconData.Width, iconPixel); //save pixel in new bitmap
                             }
 
                             Bitmap croppedIconBM = iconBM.Clone(new Rectangle(0, 0, 50, 50), iconBM.PixelFormat); // crop Bitmap
-                            croppedIconBM.Save(outputStream, System.Drawing.Imaging.ImageFormat.Png); //Bitmap to PNG Stream
+                            croppedIconBM.Save(outputStream, ImageFormat.Png); //Bitmap to PNG Stream
                         }
                         else
                         {
@@ -546,7 +546,7 @@ namespace PugTools
                             exp.SaveImageToStream(dds, DevIL.ImageType.Png, outputStream); //save DDS to stream in PNG format
                         }
 
-                        WriteFile(outputStream, String.Format("/{0}/Images/{1}.png", directory, filename));
+                        WriteFile(outputStream, string.Format("/{0}/Images/{1}.png", directory, filename));
                     }
                 }
             }
@@ -555,16 +555,16 @@ namespace PugTools
         private string GetIconFilename(string icon)
         {
             if (icon == null) return "";
-            using (var file = currentDom._assets.FindFile(String.Format("/resources/gfx/{0}.dds", icon)))
+            using (var file = currentDom._assets.FindFile(string.Format("/resources/gfx/{0}.dds", icon)))
             {
                 if (file == null)
-                    using (var file2 = currentDom._assets.FindFile(String.Format("/resources/gfx/icons/{0}.dds", icon)))
+                    using (var file2 = currentDom._assets.FindFile(string.Format("/resources/gfx/icons/{0}.dds", icon)))
                     {
                         if (file2 == null)
                             return "";
-                        return String.Join("_", file2.FileInfo.PrimaryHash, file2.FileInfo.SecondaryHash);
+                        return string.Join("_", file2.FileInfo.PrimaryHash, file2.FileInfo.SecondaryHash);
                     }
-                return String.Join("_", file.FileInfo.PrimaryHash, file.FileInfo.SecondaryHash);
+                return string.Join("_", file.FileInfo.PrimaryHash, file.FileInfo.SecondaryHash);
             }
         }
 
@@ -603,13 +603,13 @@ namespace PugTools
                 ClearProgress();
                 var count = currentDataProto.Count();
                 int i = 0;
-                Addtolist2(String.Format("Checking {0}", gameObj.Key));
+                Addtolist2(string.Format("Checking {0}", gameObj.Key));
                 List<GomLib.Models.Discipline> iList = new List<GomLib.Models.Discipline>();
 
                 foreach (var gom in currentDataProto)
                 {
                     ProgressUpdate(i, count);
-                    var discData = (List<GomObjectData>)((List<object>)gom.Value).ConvertAll(x => (GomObjectData)x);
+                    var discData = ((List<object>)gom.Value).ConvertAll(x => (GomObjectData)x);
 
                     foreach (var disc in discData)
                     {
@@ -631,7 +631,7 @@ namespace PugTools
                         {
                             string icon = "icons/" + t.Icon;
 
-                            if (!String.IsNullOrEmpty(icon))
+                            if (!string.IsNullOrEmpty(icon))
                             {
                                 if (iconNames.Contains(icon))
                                     continue;
@@ -641,7 +641,7 @@ namespace PugTools
                                 {
                                     if (iconStream != null)
                                     {
-                                        var iconEntry = zipArchive.CreateEntry(String.Format("icons/{0}.jpg", GetIconFilename(icon)), CompressionLevel.Fastest);
+                                        var iconEntry = zipArchive.CreateEntry(string.Format("icons/{0}.jpg", GetIconFilename(icon)), CompressionLevel.Fastest);
                                         using (var a = iconEntry.Open())
                                             iconStream.WriteTo(a);
                                         //using (Writer writer = new BinaryWriter(iconEntry.Open()))

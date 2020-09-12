@@ -20,7 +20,7 @@ namespace TorLib
         public uint Checksum { get; set; }
         public int CRC { get; set; }
         public ushort CompressionMethod { get; set; }
-        public bool IsCompressed { get { return this.CompressionMethod != 0; } }
+        public bool IsCompressed { get { return CompressionMethod != 0; } }
         private bool disposed = false;
 
         public void Dispose()
@@ -65,8 +65,8 @@ namespace TorLib
 
         public File(Archive arch, FileInfo info)
         {
-            this.Archive = arch;
-            this.FileInfo = info;
+            Archive = arch;
+            FileInfo = info;
         }
 
         public void Dispose()
@@ -93,9 +93,9 @@ namespace TorLib
         public Stream Open()
         {
             //var archiveStream = this.Archive.OpenStreamAt(this.FileInfo.Offset);
-            var archiveStream = this.Archive.OpenStreamAt((long)this.FileInfo.Offset + this.FileInfo.HeaderSize);
+            var archiveStream = Archive.OpenStreamAt((long)FileInfo.Offset + FileInfo.HeaderSize);
 
-            if (this.FileInfo.IsCompressed)
+            if (FileInfo.IsCompressed)
             {
                 // Wrap stream in a a sharpziplib inflater
                 var inflaterStream = new InflaterInputStream(archiveStream);
@@ -110,9 +110,9 @@ namespace TorLib
         public Stream OpenCopyInMemory()
         {
             var fs = Open();
-            var buffer = new byte[this.FileInfo.UncompressedSize];
+            var buffer = new byte[FileInfo.UncompressedSize];
             //This will screw up if we have a single file greater than 2.1 GB.. probably not an issue.
-            fs.Read(buffer, 0, (int)this.FileInfo.UncompressedSize);
+            fs.Read(buffer, 0, (int)FileInfo.UncompressedSize);
             var memStream = new MemoryStream(buffer)
             {
                 //fs.CopyTo(memStream);
@@ -126,8 +126,8 @@ namespace TorLib
             var fs = Open();
             var buffer = new byte[bytes];
             //This will screw up if we have a single file greater than 2.1 GB.. probably not an issue.
-            if (this.FileInfo.UncompressedSize < bytes)
-                fs.Read(buffer, 0, (int)this.FileInfo.UncompressedSize);
+            if (FileInfo.UncompressedSize < bytes)
+                fs.Read(buffer, 0, (int)FileInfo.UncompressedSize);
             else
                 fs.Read(buffer, 0, bytes);
             return buffer;

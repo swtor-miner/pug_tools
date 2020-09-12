@@ -21,7 +21,7 @@ namespace GomLib.ModelLoader
 
         }
 
-        public Models.Discipline Load(Models.Discipline model, GomObjectData gom)
+        public Discipline Load(Discipline model, GomObjectData gom)
         {
             if (gom == null) { return model; }
             if (model == null) { return null; }
@@ -44,7 +44,7 @@ namespace GomLib.ModelLoader
             model.ClassName = nameTable.GetText(model.ClassNameId, "str.gui.abl.player.skill_trees");
             model.LocalizedClassName = nameTable.GetLocalizedText(model.ClassNameId, "str.gui.abl.player.skill_trees");
 
-            model.Role = gom.ValueOrDefault<ScriptEnum>("disRole", new ScriptEnum()).ToString().Replace("chrRole", "");
+            model.Role = gom.ValueOrDefault("disRole", new ScriptEnum()).ToString().Replace("chrRole", "");
 
             var disDisciplnePreviews = _dom.GetObject("disDisicplinePreviews");
             var disDescBaseTable = disDisciplnePreviews.Data.ValueOrDefault<Dictionary<object, object>>("disDescBaseTable");
@@ -62,7 +62,7 @@ namespace GomLib.ModelLoader
             model.BaseAbilityIds = new Dictionary<ulong, int>();
             for (int i = 1; i < 5; i++)
             {
-                ulong baseId = ((GomObjectData)disPrevObj).ValueOrDefault<ulong>(String.Format("disBaseAbl{0}", i));
+                ulong baseId = ((GomObjectData)disPrevObj).ValueOrDefault<ulong>(string.Format("disBaseAbl{0}", i));
                 int lvl = 0;
                 try
                 {

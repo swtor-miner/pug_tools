@@ -604,13 +604,13 @@ namespace DevIL
 
     public sealed class TgaSaveState : SaveState
     {
-        private String m_tgaId = String.Empty;
-        private String m_tgaAuthName = String.Empty;
-        private String m_tgaAuthComment = String.Empty;
+        private string m_tgaId = string.Empty;
+        private string m_tgaAuthName = string.Empty;
+        private string m_tgaAuthComment = string.Empty;
         private bool m_useTgaRle = false;
         private readonly bool m_tgaCreateTimeStamp = false;
 
-        public String TgaID
+        public string TgaID
         {
             get
             {
@@ -622,7 +622,7 @@ namespace DevIL
             }
         }
 
-        public String TgaAuthorName
+        public string TgaAuthorName
         {
             get
             {
@@ -634,7 +634,7 @@ namespace DevIL
             }
         }
 
-        public String TgaAuthorComment
+        public string TgaAuthorComment
         {
             get
             {
@@ -676,12 +676,12 @@ namespace DevIL
 
     public sealed class TiffSaveState : SaveState
     {
-        private String m_tifAuthName = String.Empty;
-        private String m_tifDescription = String.Empty;
-        private String m_tifDocumentName = String.Empty;
-        private String m_tifHostComputer = String.Empty;
+        private string m_tifAuthName = string.Empty;
+        private string m_tifDescription = string.Empty;
+        private string m_tifDocumentName = string.Empty;
+        private string m_tifHostComputer = string.Empty;
 
-        public String TifAuthorName
+        public string TifAuthorName
         {
             get
             {
@@ -693,7 +693,7 @@ namespace DevIL
             }
         }
 
-        public String TifDescription
+        public string TifDescription
         {
             get
             {
@@ -705,7 +705,7 @@ namespace DevIL
             }
         }
 
-        public String TifDocumentName
+        public string TifDocumentName
         {
             get
             {
@@ -717,7 +717,7 @@ namespace DevIL
             }
         }
 
-        public String TifHostComputer
+        public string TifHostComputer
         {
             get
             {
@@ -747,9 +747,9 @@ namespace DevIL
     public sealed class PngSaveState : SaveState
     {
         private int m_pngAlphaIndex = -1;
-        private String m_pngAuthName = String.Empty;
-        private String m_pngTitle = String.Empty;
-        private String m_pngDescription = String.Empty;
+        private string m_pngAuthName = string.Empty;
+        private string m_pngTitle = string.Empty;
+        private string m_pngDescription = string.Empty;
         private bool m_usePngInterlace = false;
 
         public int PngAlphaIndex
@@ -764,7 +764,7 @@ namespace DevIL
             }
         }
 
-        public String PngAuthorName
+        public string PngAuthorName
         {
             get
             {
@@ -776,7 +776,7 @@ namespace DevIL
             }
         }
 
-        public String PngTitle
+        public string PngTitle
         {
             get
             {
@@ -788,7 +788,7 @@ namespace DevIL
             }
         }
 
-        public String PngDescription
+        public string PngDescription
         {
             get
             {

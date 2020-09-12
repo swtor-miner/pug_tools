@@ -19,10 +19,10 @@ namespace GomLib.Models
 
         public Item Clone()
         {
-            Item clone = this.MemberwiseClone() as Item;
+            Item clone = MemberwiseClone() as Item;
             //
             ItemStatList ar = new ItemStatList();
-            foreach (ItemStat istat in this.StatModifiers)
+            foreach (ItemStat istat in StatModifiers)
             {
                 ar.Add(istat.Clone());
             }
@@ -76,26 +76,26 @@ namespace GomLib.Models
         {
             get
             {
-                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", this.Icon));
-                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+                var fileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/icons/{0}.dds", Icon));
+                return string.Format("{0}_{1}", fileId.ph, fileId.sh);
             }
         }
         public string HashedImperialIcon
         {
             get
             {
-                if (String.IsNullOrEmpty(RepublicIcon)) return "";
-                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", this.ImperialIcon));
-                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+                if (string.IsNullOrEmpty(RepublicIcon)) return "";
+                var fileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/icons/{0}.dds", ImperialIcon));
+                return string.Format("{0}_{1}", fileId.ph, fileId.sh);
             }
         }
         public string HashedRepublicIcon
         {
             get
             {
-                if (String.IsNullOrEmpty(RepublicIcon)) return "";
-                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", this.RepublicIcon));
-                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+                if (string.IsNullOrEmpty(RepublicIcon)) return "";
+                var fileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/icons/{0}.dds", RepublicIcon));
+                return string.Format("{0}_{1}", fileId.ph, fileId.sh);
             }
         }
         [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
@@ -209,7 +209,7 @@ namespace GomLib.Models
                 {
                     if (RequiredReputation.GroupEmpireTitle != RequiredReputation.GroupRepublicTitle)
                     {
-                        return String.Join(" / ", RequiredReputation.GroupEmpireTitle, RequiredReputation.GroupRepublicTitle);
+                        return string.Join(" / ", RequiredReputation.GroupEmpireTitle, RequiredReputation.GroupRepublicTitle);
                     }
                     else
                         return RequiredReputation.GroupEmpireTitle;
@@ -430,7 +430,7 @@ namespace GomLib.Models
                     if (Faction != null)
                     {
                         if (Faction.GroupRepublicTitle != Faction.GroupEmpireTitle)
-                            RepFactionName_ = String.Format("{0} / {1}", Faction.GroupRepublicTitle, Faction.GroupEmpireTitle);
+                            RepFactionName_ = string.Format("{0} / {1}", Faction.GroupRepublicTitle, Faction.GroupEmpireTitle);
                         else
                             RepFactionName_ = Faction.GroupEmpireTitle;
                     }
@@ -905,7 +905,7 @@ namespace GomLib.Models
                             }
                             catch (Exception) { } //this is here to catch errors for adaptive implants and such.
                         }
-                        itm.AdaptiveArmor = String.Format("[{0}]", String.Join(",", armorValues));
+                        itm.AdaptiveArmor = string.Format("[{0}]", string.Join(",", armorValues));
                     }
                     else
                     {
@@ -956,14 +956,14 @@ namespace GomLib.Models
 
         public void AddStat(Stat stat, int modifier)
         {
-            var s = this.CombinedStatModifiers.Where(x => x.Stat == stat).FirstOrDefault();
+            var s = CombinedStatModifiers.Where(x => x.Stat == stat).FirstOrDefault();
             if (s != null)
             {
                 s.Modifier += modifier;
             }
             else
             {
-                this.CombinedStatModifiers.Add(new ItemStat
+                CombinedStatModifiers.Add(new ItemStat
                 {
                     Modifier = modifier,
                     Stat = stat
@@ -975,9 +975,9 @@ namespace GomLib.Models
         {
             HashSet<string> returnList = new HashSet<string>
             {
-                String.Format("/resources/gfx/icons/{0}.dds", this.Icon)
+                string.Format("/resources/gfx/icons/{0}.dds", Icon)
             };
-            var distinct = this.ClassAppearance.Values.Distinct();
+            var distinct = ClassAppearance.Values.Distinct();
             foreach (var distApp in distinct)
             {
                 var appearance = Dom_.appearanceLoader.Load(distApp);
@@ -1070,174 +1070,174 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, itm)) return true;
 
-            if (this.AppearanceColor != itm.AppearanceColor)
+            if (AppearanceColor != itm.AppearanceColor)
                 return false;
-            if (this.ArmorSpec != itm.ArmorSpec)
+            if (ArmorSpec != itm.ArmorSpec)
                 return false;
-            if (this.Binding != itm.Binding)
+            if (Binding != itm.Binding)
                 return false;
-            if (this.Category != itm.Category)
+            if (Category != itm.Category)
                 return false;
-            if (this.CombinedRating != itm.CombinedRating)
+            if (CombinedRating != itm.CombinedRating)
                 return false;
-            if (this.CombinedRequiredLevel != itm.CombinedRequiredLevel)
+            if (CombinedRequiredLevel != itm.CombinedRequiredLevel)
                 return false;
-            if (!this.CombinedStatModifiers.Equals(itm.CombinedStatModifiers))
+            if (!CombinedStatModifiers.Equals(itm.CombinedStatModifiers))
                 return false;
-            if (this.ConsumedOnUse != itm.ConsumedOnUse)
+            if (ConsumedOnUse != itm.ConsumedOnUse)
                 return false;
-            if (this.Conversation != itm.Conversation)
+            if (Conversation != itm.Conversation)
                 return false;
-            if (this.ConversationFqn != itm.ConversationFqn)
+            if (ConversationFqn != itm.ConversationFqn)
                 return false;
-            if (this.DamageType != itm.DamageType)
+            if (DamageType != itm.DamageType)
                 return false;
-            if (this.Description != itm.Description)
+            if (Description != itm.Description)
                 return false;
-            if (this.DescriptionId != itm.DescriptionId)
+            if (DescriptionId != itm.DescriptionId)
                 return false;
-            if (this.DisassembleCategory != itm.DisassembleCategory)
+            if (DisassembleCategory != itm.DisassembleCategory)
                 return false;
-            if (this.Durability != itm.Durability)
+            if (Durability != itm.Durability)
                 return false;
-            if (this.EnhancementCategory != itm.EnhancementCategory)
+            if (EnhancementCategory != itm.EnhancementCategory)
                 return false;
-            if (!this.EnhancementSlots.Equals(itm.EnhancementSlots))
+            if (!EnhancementSlots.Equals(itm.EnhancementSlots))
                 return false;
-            if (this.EnhancementSubCategory != itm.EnhancementSubCategory)
+            if (EnhancementSubCategory != itm.EnhancementSubCategory)
                 return false;
-            if (this.EnhancementType != itm.EnhancementType)
+            if (EnhancementType != itm.EnhancementType)
                 return false;
-            if (!this.EquipAbility.Equals(itm.EquipAbility))
+            if (!EquipAbility.Equals(itm.EquipAbility))
                 return false;
-            if (this.EquipAbilityId != itm.EquipAbilityId)
+            if (EquipAbilityId != itm.EquipAbilityId)
                 return false;
-            if (this.Fqn != itm.Fqn)
+            if (Fqn != itm.Fqn)
                 return false;
-            if (this.GiftRank != itm.GiftRank)
+            if (GiftRank != itm.GiftRank)
                 return false;
-            if (this.AuctionCategoryId != itm.AuctionCategoryId)
+            if (AuctionCategoryId != itm.AuctionCategoryId)
                 return false;
-            if (this.AuctionSubCategoryId != itm.AuctionSubCategoryId)
+            if (AuctionSubCategoryId != itm.AuctionSubCategoryId)
                 return false;
-            if (this.GiftType != itm.GiftType)
+            if (GiftType != itm.GiftType)
                 return false;
-            if (this.Icon != itm.Icon)
+            if (Icon != itm.Icon)
                 return false;
-            if (this.Id != itm.Id)
+            if (Id != itm.Id)
                 return false;
-            if (this.ImperialAppearanceTag != itm.ImperialAppearanceTag)
+            if (ImperialAppearanceTag != itm.ImperialAppearanceTag)
                 return false;
-            if (this.VOModulationImperial != itm.VOModulationImperial)
+            if (VOModulationImperial != itm.VOModulationImperial)
                 return false;
-            if (this.IsUnknownBool != itm.IsUnknownBool)
+            if (IsUnknownBool != itm.IsUnknownBool)
                 return false;
-            if (this.ItemLevel != itm.ItemLevel)
+            if (ItemLevel != itm.ItemLevel)
                 return false;
-            if (this.ItmCraftedCategory != itm.ItmCraftedCategory)
+            if (ItmCraftedCategory != itm.ItmCraftedCategory)
                 return false;
 
             var dComp = new DictionaryComparer<string, string>();
-            if (!dComp.Equals(this.LocalizedDescription, itm.LocalizedDescription))
+            if (!dComp.Equals(LocalizedDescription, itm.LocalizedDescription))
                 return false;
-            if (!dComp.Equals(this.LocalizedName, itm.LocalizedName))
+            if (!dComp.Equals(LocalizedName, itm.LocalizedName))
                 return false;
 
-            if (this.MaxDurability != itm.MaxDurability)
+            if (MaxDurability != itm.MaxDurability)
                 return false;
-            if (this.MaxStack != itm.MaxStack)
+            if (MaxStack != itm.MaxStack)
                 return false;
-            if (this.Model != itm.Model)
+            if (Model != itm.Model)
                 return false;
-            if (this.ModifierSpec != itm.ModifierSpec)
+            if (ModifierSpec != itm.ModifierSpec)
                 return false;
-            if (this.MountSpec != itm.MountSpec)
+            if (MountSpec != itm.MountSpec)
                 return false;
-            if (this.Name != itm.Name)
+            if (Name != itm.Name)
                 return false;
-            if (this.NameId != itm.NameId)
+            if (NameId != itm.NameId)
                 return false;
-            if (this.ShortId != itm.ShortId)
+            if (ShortId != itm.ShortId)
                 return false;
-            if (this.Quality != itm.Quality)
+            if (Quality != itm.Quality)
                 return false;
-            if (this.Rating != itm.Rating)
+            if (Rating != itm.Rating)
                 return false;
-            if (this.RepublicAppearanceTag != itm.RepublicAppearanceTag)
+            if (RepublicAppearanceTag != itm.RepublicAppearanceTag)
                 return false;
-            if (this.VOModulationRepublic != itm.VOModulationRepublic)
+            if (VOModulationRepublic != itm.VOModulationRepublic)
                 return false;
-            if (this.RequiredAlignmentInverted != itm.RequiredAlignmentInverted)
+            if (RequiredAlignmentInverted != itm.RequiredAlignmentInverted)
                 return false;
-            if (this.RequiredAlignmentTier != itm.RequiredAlignmentTier)
+            if (RequiredAlignmentTier != itm.RequiredAlignmentTier)
                 return false;
-            if (!this.RequiredClasses.Equals(itm.RequiredClasses, false))
+            if (!RequiredClasses.Equals(itm.RequiredClasses, false))
                 return false;
-            if (this.RequiredGender != itm.RequiredGender)
+            if (RequiredGender != itm.RequiredGender)
                 return false;
-            if (this.RequiredLevel != itm.RequiredLevel)
+            if (RequiredLevel != itm.RequiredLevel)
                 return false;
-            if (this.RequiredProfession != itm.RequiredProfession)
+            if (RequiredProfession != itm.RequiredProfession)
                 return false;
-            if (this.RequiredProfessionLevel != itm.RequiredProfessionLevel)
+            if (RequiredProfessionLevel != itm.RequiredProfessionLevel)
                 return false;
-            if (this.RequiredSocialTier != itm.RequiredSocialTier)
+            if (RequiredSocialTier != itm.RequiredSocialTier)
                 return false;
-            if (this.RequiredValorRank != itm.RequiredValorRank)
+            if (RequiredValorRank != itm.RequiredValorRank)
                 return false;
-            if (this.RequiresAlignment != itm.RequiresAlignment)
+            if (RequiresAlignment != itm.RequiresAlignment)
                 return false;
-            if (this.RequiresSocial != itm.RequiresSocial)
+            if (RequiresSocial != itm.RequiresSocial)
                 return false;
-            if (this.Schematic != null)
+            if (Schematic != null)
             {
-                if (!this.Schematic.Equals(itm.Schematic))
+                if (!Schematic.Equals(itm.Schematic))
                     return false;
             }
             else if (itm.Schematic != null)
                 return false;
-            if (this.SchematicId != itm.SchematicId)
+            if (SchematicId != itm.SchematicId)
                 return false;
-            if (this.ShieldSpec != itm.ShieldSpec)
+            if (ShieldSpec != itm.ShieldSpec)
                 return false;
-            if (!this.Slots.Equals(itm.Slots))
+            if (!Slots.Equals(itm.Slots))
                 return false;
-            if (this.SoundType != itm.SoundType)
+            if (SoundType != itm.SoundType)
                 return false;
-            if (this.StackCount != itm.StackCount)
+            if (StackCount != itm.StackCount)
                 return false;
-            if (!this.StatModifiers.Equals(itm.StatModifiers))
+            if (!StatModifiers.Equals(itm.StatModifiers))
                 return false;
-            if (!this.StrongholdSourceList.SequenceEqual(itm.StrongholdSourceList))
+            if (!StrongholdSourceList.SequenceEqual(itm.StrongholdSourceList))
                 return false;
-            if (this.SubCategory != itm.SubCategory)
+            if (SubCategory != itm.SubCategory)
                 return false;
-            if (this.TeachesRef != itm.TeachesRef)
+            if (TeachesRef != itm.TeachesRef)
                 return false;
-            if (this.TreasurePackageId != itm.TreasurePackageId)
+            if (TreasurePackageId != itm.TreasurePackageId)
                 return false;
             //if (this.TreasurePackageSpec != itm.TreasurePackageSpec)
             //return false;
-            if (this.TypeBitSet != itm.TypeBitSet)
+            if (TypeBitSet != itm.TypeBitSet)
                 return false;
-            if (this.UniqueLimit != itm.UniqueLimit)
+            if (UniqueLimit != itm.UniqueLimit)
                 return false;
-            if (this.UseAbility != null)
+            if (UseAbility != null)
             {
-                if (!this.UseAbility.Equals(itm.UseAbility))
+                if (!UseAbility.Equals(itm.UseAbility))
                     return false;
             }
             else if (itm.UseAbility != null)
                 return false;
-            if (this.UseAbilityId != itm.UseAbilityId)
+            if (UseAbilityId != itm.UseAbilityId)
                 return false;
-            if (this.Value != itm.Value)
+            if (Value != itm.Value)
                 return false;
-            if (this.VendorStackSize != itm.VendorStackSize)
+            if (VendorStackSize != itm.VendorStackSize)
                 return false;
-            if (this.WeaponAppSpec != itm.WeaponAppSpec)
+            if (WeaponAppSpec != itm.WeaponAppSpec)
                 return false;
-            if (this.WeaponSpec != itm.WeaponSpec)
+            if (WeaponSpec != itm.WeaponSpec)
                 return false;
             return true;
         }
@@ -1647,8 +1647,8 @@ namespace GomLib.Models
                 item.Add(new XElement("ShieldSpec", ShieldSpec),
                     new XElement("Slots", Slots),
                     new XElement("SubCategory", SubCategory),
-                    (this.AuctionCategory != null) ? new XElement("AuctionCat", AuctionCategory.Name) : new XElement("AuctionCat"),
-                    (this.AuctionSubCategory != null) ? new XElement("AuctionSubCat", AuctionSubCategory.Name) : new XElement("AuctionSubCat"),
+                    (AuctionCategory != null) ? new XElement("AuctionCat", AuctionCategory.Name) : new XElement("AuctionCat"),
+                    (AuctionSubCategory != null) ? new XElement("AuctionSubCat", AuctionSubCategory.Name) : new XElement("AuctionSubCat"),
                     //new XElement("TreasurePackageSpec", TreasurePackageSpec,
                     //new XAttribute("Id", TreasurePackageId)),
                     new XElement("TypeBitSet", TypeBitSet),
@@ -1708,7 +1708,7 @@ namespace GomLib.Models
         public override string ToString()
         {
             if (this == null) { return "null"; }
-            if (this.Count <= 0) { return "Empty List"; }
+            if (Count <= 0) { return "Empty List"; }
             string retVal = "";
             foreach (ItemStat i in this) { retVal += string.Format("{0},", i); }
             return retVal;
@@ -1735,7 +1735,7 @@ namespace GomLib.Models
         {
             if (itmSList == null) return false;
 
-            if (!Enumerable.SequenceEqual<ItemStat>(this, itmSList)) return false;
+            if (!Enumerable.SequenceEqual(this, itmSList)) return false;
             return true;
         }
     }
@@ -1746,7 +1746,7 @@ namespace GomLib.Models
         public override string ToString()
         {
             if (this == null) { return "null"; }
-            if (this.Count <= 0) { return "Empty List"; }
+            if (Count <= 0) { return "Empty List"; }
             string retVal = "";
             foreach (ItemEnhancement i in this) { retVal += string.Format("{0}, ", i); }
             return retVal;
@@ -1773,7 +1773,7 @@ namespace GomLib.Models
         {
             if (itmEList == null) return false;
 
-            if (!Enumerable.SequenceEqual<ItemEnhancement>(this, itmEList))
+            if (!Enumerable.SequenceEqual(this, itmEList))
                 return false;
             return true;
         }
@@ -1785,7 +1785,7 @@ namespace GomLib.Models
         public override string ToString()
         {
             if (this == null) { return "null"; }
-            if (this.Count <= 0) { return "Empty List"; }
+            if (Count <= 0) { return "Empty List"; }
             string retVal = "";
             foreach (ClassSpec i in this) { retVal += string.Format("{0}, ", i); }
             return retVal;
@@ -1818,7 +1818,7 @@ namespace GomLib.Models
             if (itmCSList == null) return false;
             if (compareAbilityPackage)
             {
-                if (!Enumerable.SequenceEqual<ClassSpec>(this, itmCSList)) return false;
+                if (!Enumerable.SequenceEqual(this, itmCSList)) return false;
             }
             else
             {
@@ -1842,7 +1842,7 @@ namespace GomLib.Models
         public override string ToString()
         {
             if (this == null) { return "null"; }
-            if (this.Count <= 0) { return "Empty List"; }
+            if (Count <= 0) { return "Empty List"; }
             string retVal = "";
             foreach (SlotType i in this) { retVal += string.Format("{0}, ", i); }
             return retVal;
@@ -1862,7 +1862,7 @@ namespace GomLib.Models
         {
             if (itmSTList == null) return false;
 
-            if (!Enumerable.SequenceEqual<SlotType>(this, itmSTList)) return false;
+            if (!Enumerable.SequenceEqual(this, itmSTList)) return false;
             return true;
         }
 

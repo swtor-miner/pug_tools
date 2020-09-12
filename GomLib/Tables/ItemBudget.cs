@@ -33,7 +33,7 @@ namespace GomLib.Tables
         }
 
         public List<int> GetBudget(Item i) { return GetBudget(i.Quality, i.ItemLevel); }
-        public List<int> GetBudget(Models.ItemQuality quality, int level)
+        public List<int> GetBudget(ItemQuality quality, int level)
         {
             if (level <= 0) { return new List<int>(); }
 
@@ -71,7 +71,7 @@ namespace GomLib.Tables
             item_budget_data = new Dictionary<int, List<List<int>>>();
             foreach (var kvp in tableData)
             {
-                Models.ItemQuality quality = Models.ItemQualityExtensions.ToItemQuality((ScriptEnum)kvp.Key);
+                ItemQuality quality = ItemQualityExtensions.ToItemQuality((ScriptEnum)kvp.Key);
                 var qlist = (List<object>)kvp.Value;
 
                 List<List<int>> qData = new List<List<int>>();

@@ -19,14 +19,14 @@ namespace FileFormats
 
         public GR2_Bone_Skeleton(BinaryReader br, int index)
         {
-            this.offsetBoneName = br.ReadUInt32();
-            this.parentBoneIndex = br.ReadInt32();
+            offsetBoneName = br.ReadUInt32();
+            parentBoneIndex = br.ReadInt32();
 
-            this.parent = File_Helpers.ReadMatrix(br, true);
-            this.root = File_Helpers.ReadMatrix(br, true);
+            parent = File_Helpers.ReadMatrix(br, true);
+            root = File_Helpers.ReadMatrix(br, true);
 
-            this.boneName = File_Helpers.ReadString(br, this.offsetBoneName);
-            this.boneIndex = index;
+            boneName = File_Helpers.ReadString(br, offsetBoneName);
+            boneIndex = index;
         }
 
     }

@@ -23,7 +23,7 @@ namespace GomLib.Models
         {
             GomObject table = _dom.GetObject(tablePath);
             if (table == null) return;
-            Dictionary<object, object> tableData = table.Data.ValueOrDefault<Dictionary<object, object>>("qstExperienceMultiplierTable", new Dictionary<object, object>());
+            Dictionary<object, object> tableData = table.Data.ValueOrDefault("qstExperienceMultiplierTable", new Dictionary<object, object>());
 
             table_data = tableData.ToDictionary(x => ((ScriptEnum)x.Key).ToString(), x => (float)x.Value);
         }

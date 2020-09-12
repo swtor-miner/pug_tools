@@ -58,7 +58,7 @@ namespace GomLib.Models
                     }
                     break;
             }
-            throw new InvalidOperationException(String.Format("Unknown ConversationAlignment: forceType = {0}, amount = {1}", forceType, amount));
+            throw new InvalidOperationException(string.Format("Unknown ConversationAlignment: forceType = {0}, amount = {1}", forceType, amount));
         }
     }
 }

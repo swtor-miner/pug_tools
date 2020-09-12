@@ -21,9 +21,9 @@ namespace GomLib.Models
         [JsonConverter(typeof(ULongConverter))]
         public ulong UnlockingItemId { get; set; }
         public string UnlockingItemB62Id { get { return UnlockingItemId.ToMaskedBase62(); } }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Item UnlockingItem_ { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Item UnlockingItem
         {
             get
@@ -61,7 +61,7 @@ namespace GomLib.Models
         [JsonConverter(typeof(LongConverter))]
         public long SubCategoryId { get; set; }
         public Dictionary<long, bool> Hooks { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public List<string> AvailableHooks { get; set; }
         public float PrevCamHeightOff { get; set; }
         public float PrevCamDisOff { get; set; }
@@ -143,72 +143,72 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, itm)) return true;
 
-            if (!this.AvailableHooks.SequenceEqual(itm.AvailableHooks))
+            if (!AvailableHooks.SequenceEqual(itm.AvailableHooks))
                 return false;
-            if (this.CategoryId != itm.CategoryId)
+            if (CategoryId != itm.CategoryId)
                 return false;
-            if (this.CategoryName != itm.CategoryName)
+            if (CategoryName != itm.CategoryName)
                 return false;
-            if (this.DecorationFqn != itm.DecorationFqn)
+            if (DecorationFqn != itm.DecorationFqn)
                 return false;
-            if (this.DecorationId != itm.DecorationId)
+            if (DecorationId != itm.DecorationId)
                 return false;
-            if (this.decPrevObjRotationX != itm.decPrevObjRotationX)
+            if (decPrevObjRotationX != itm.decPrevObjRotationX)
                 return false;
-            if (this.decPrevObjRotationY != itm.decPrevObjRotationY)
+            if (decPrevObjRotationY != itm.decPrevObjRotationY)
                 return false;
-            if (this.DefaultAnimation != itm.DefaultAnimation)
+            if (DefaultAnimation != itm.DefaultAnimation)
                 return false;
-            if (this.F2PLimit != itm.F2PLimit)
+            if (F2PLimit != itm.F2PLimit)
                 return false;
-            if (this.FactionPlacementRestriction != itm.FactionPlacementRestriction)
+            if (FactionPlacementRestriction != itm.FactionPlacementRestriction)
                 return false;
-            if (this.Fqn != itm.Fqn)
+            if (Fqn != itm.Fqn)
                 return false;
 
             var lbComp = new DictionaryComparer<long, bool>();
-            if (!lbComp.Equals(this.Hooks, itm.Hooks))
+            if (!lbComp.Equals(Hooks, itm.Hooks))
                 return false;
 
-            if (this.Id != itm.Id)
+            if (Id != itm.Id)
                 return false;
 
             var ssComp = new DictionaryComparer<string, string>();
-            if (!ssComp.Equals(this.LocalizedName, itm.LocalizedName))
+            if (!ssComp.Equals(LocalizedName, itm.LocalizedName))
                 return false;
 
-            if (this.MaxUnlockLimit != itm.MaxUnlockLimit)
+            if (MaxUnlockLimit != itm.MaxUnlockLimit)
                 return false;
-            if (this.Name != itm.Name)
+            if (Name != itm.Name)
                 return false;
-            if (this.NameId != itm.NameId)
+            if (NameId != itm.NameId)
                 return false;
-            if (this.Id != itm.Id)
+            if (Id != itm.Id)
                 return false;
-            if (this.RequiresAbilityUnlocked != itm.RequiresAbilityUnlocked)
+            if (RequiresAbilityUnlocked != itm.RequiresAbilityUnlocked)
                 return false;
 
             var lsComp = new DictionaryComparer<long, string>();
-            if (!lsComp.Equals(this.SourceDict, itm.SourceDict))
+            if (!lsComp.Equals(SourceDict, itm.SourceDict))
                 return false;
 
-            if (this.State != itm.State)
+            if (State != itm.State)
                 return false;
-            if (this.StubType != itm.StubType)
+            if (StubType != itm.StubType)
                 return false;
-            if (this.SubCategoryId != itm.SubCategoryId)
+            if (SubCategoryId != itm.SubCategoryId)
                 return false;
-            if (this.SubCategoryName != itm.SubCategoryName)
+            if (SubCategoryName != itm.SubCategoryName)
                 return false;
-            if (this.UseItemName != itm.UseItemName)
+            if (UseItemName != itm.UseItemName)
                 return false;
-            if (this.PrevCamHeightOff != itm.PrevCamHeightOff)
+            if (PrevCamHeightOff != itm.PrevCamHeightOff)
                 return false;
-            if (this.PrevCamDisOff != itm.PrevCamDisOff)
+            if (PrevCamDisOff != itm.PrevCamDisOff)
                 return false;
-            if (this.GuildPurchaseCost != itm.GuildPurchaseCost)
+            if (GuildPurchaseCost != itm.GuildPurchaseCost)
                 return false;
-            if (this.UnlockingItemId != itm.UnlockingItemId)
+            if (UnlockingItemId != itm.UnlockingItemId)
                 return false;
             return true;
         }
@@ -217,11 +217,11 @@ namespace GomLib.Models
         {
             var hookNameList = Dom_.decorationLoader.HookList.Select(x => x.Value.Name).ToList();
             hookNameList.Sort();
-            string hookString = String.Join(";", hookNameList.Select(x => (AvailableHooks.Contains(x)) ? "x" : "").ToList());
+            string hookString = string.Join(";", hookNameList.Select(x => (AvailableHooks.Contains(x)) ? "x" : "").ToList());
 
-            return String.Join(";",
+            return string.Join(";",
                 Name,
-                String.Join(" - ", SourceDict.Values),
+                string.Join(" - ", SourceDict.Values),
                 UnlockingItem.Binding.ToString().Replace("None", ""),
                 //String.Join(" - ", AvailableHooks)
                 CategoryName.Replace("\r\n", "").Replace("\n", "").Replace("\r", ""),
@@ -264,7 +264,7 @@ namespace GomLib.Models
             decoration.Add(new XElement("Name", Name, new XAttribute("Id", NameId)),
                 new XAttribute("Id", Id),
                 new XElement("Fqn", Fqn, new XAttribute("Id", Id)),
-                new XElement("PreviewWindowValues", String.Join(", ", decPrevObjRotationX, decPrevObjRotationY, PrevCamDisOff, PrevCamHeightOff))
+                new XElement("PreviewWindowValues", string.Join(", ", decPrevObjRotationX, decPrevObjRotationY, PrevCamDisOff, PrevCamHeightOff))
                 );
             if (State != null) decoration.Add(new XElement("DynamicState", State));
 
@@ -277,7 +277,7 @@ namespace GomLib.Models
                 new XElement("Category", CategoryName, new XAttribute("Id", CategoryId)),
                 new XElement("SubCategory", SubCategoryName, new XAttribute("Id", SubCategoryId)));
 
-            decoration.Add(new XElement("AvailableHooks", String.Join(", ", AvailableHooks)));
+            decoration.Add(new XElement("AvailableHooks", string.Join(", ", AvailableHooks)));
             decoration.Add(new XElement("GuildPurchaseCost", GuildPurchaseCost));
             if (StubType != null) decoration.Add(new XElement("RequiredAbilityType", StubType));
             decoration.Add(new XElement("RequiresAbilityUnlocked", RequiresAbilityUnlocked));
@@ -289,7 +289,7 @@ namespace GomLib.Models
             }
             decoration.Add(sources);
             decoration.Add(new XElement("UnlockingItem", UnlockingItem.ToXElement(false)),
-                new XElement("UnlockLimits", String.Join(", ", F2PLimit, MaxUnlockLimit)));
+                new XElement("UnlockLimits", string.Join(", ", F2PLimit, MaxUnlockLimit)));
             return decoration;
         }
     }
@@ -305,7 +305,7 @@ namespace GomLib.Models
 
             Dictionary<long, Hook> hooks = new Dictionary<long, Hook>();
 
-            var data = obj.Data.ValueOrDefault<Dictionary<object, object>>("apthookTable", new Dictionary<object, object>());
+            var data = obj.Data.ValueOrDefault("apthookTable", new Dictionary<object, object>());
 
             var table = dom.stringTable.Find("str.ahd");
 
@@ -347,9 +347,9 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, itm)) return true;
 
-            if (this.Name != itm.Name)
+            if (Name != itm.Name)
                 return false;
-            if (this.NameId != itm.NameId)
+            if (NameId != itm.NameId)
                 return false;
             return true;
         }

@@ -22,7 +22,7 @@ namespace PugTools
         public Format_GR2(string dest, string ext)
         {
             this.dest = dest;
-            this.extension = ext;
+            extension = ext;
         }
 
         public void ParseGR2(Stream fileStream, string fullFileName, Archive arch)
@@ -119,11 +119,11 @@ namespace PugTools
 
         public void WriteFile(bool _ = false)
         {
-            if (!System.IO.Directory.Exists(this.dest + "\\File_Names"))
-                System.IO.Directory.CreateDirectory(this.dest + "\\File_Names");
-            if (this.meshNames.Count > 0)
+            if (!Directory.Exists(dest + "\\File_Names"))
+                Directory.CreateDirectory(dest + "\\File_Names");
+            if (meshNames.Count > 0)
             {
-                System.IO.StreamWriter outputMeshNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_mesh_file_names.txt", false);
+                StreamWriter outputMeshNames = new StreamWriter(dest + "\\File_Names\\" + extension + "_mesh_file_names.txt", false);
                 foreach (var file in meshNames)
                 {
                     string output = "";
@@ -158,9 +158,9 @@ namespace PugTools
                 meshNames.Clear();
             }
 
-            if (this.matNames.Count > 0)
+            if (matNames.Count > 0)
             {
-                System.IO.StreamWriter outputMatNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_material_file_names.txt", false);
+                StreamWriter outputMatNames = new StreamWriter(dest + "\\File_Names\\" + extension + "_material_file_names.txt", false);
                 foreach (string file in matNames)
                 {
                     outputMatNames.Write("/resources/art/shaders/materials/" + file + ".mat" + "\r\n");
@@ -169,9 +169,9 @@ namespace PugTools
                 matNames.Clear();
             }
 
-            if (this.errors.Count > 0)
+            if (errors.Count > 0)
             {
-                System.IO.StreamWriter outputErrors = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_error_list.txt", false);
+                StreamWriter outputErrors = new StreamWriter(dest + "\\File_Names\\" + extension + "_error_list.txt", false);
                 foreach (string error in errors)
                 {
                     outputErrors.Write(error + "\r\n");

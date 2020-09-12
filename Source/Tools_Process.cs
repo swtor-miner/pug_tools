@@ -50,7 +50,7 @@ namespace PugTools
             Clearlist2();
             ClearProgress();
             LoadData();
-            Addtolist(String.Format("Getting {0}", xmlRoot));
+            Addtolist(string.Format("Getting {0}", xmlRoot));
             ProcessProtoData(xmlRoot, prototype, dataTable);
 
             FlushTempTables();
@@ -623,7 +623,7 @@ namespace PugTools
                 ObjectLists.Add("", currentObjects.ToList());
             }
 
-            Addtolist(String.Format("Generating Output {0}", outputTypeName));
+            Addtolist(string.Format("Generating Output {0}", outputTypeName));
             XDocument xmlDoc = new XDocument();
             XElement gomItems = new XElement("GOM_Items");
             XElement z_effects = new XElement("Z_Effects");
@@ -1431,7 +1431,7 @@ namespace PugTools
             string n = Environment.NewLine;
             var txtFile = new StringBuilder();
             string filename = string.Format("\\json\\{0}{1}", prefix, ".json");
-            WriteFile(string.Format("{0}{1}", Tools.patchVersion, n), filename, false);
+            WriteFile(string.Format("{0}{1}", patchVersion, n), filename, false);
             var count = itmList.Count();
             HashTableHashing.MurmurHash2Unsafe jsonHasher = new HashTableHashing.MurmurHash2Unsafe();
 
@@ -1526,7 +1526,7 @@ namespace PugTools
             }
             else
             {
-                Addtolist2(String.Format("Output type not supported for: {0}", xmlRoot));
+                Addtolist2(string.Format("Output type not supported for: {0}", xmlRoot));
                 return;
             }
             string joiner = ",";
@@ -1552,7 +1552,7 @@ namespace PugTools
             txtFile.Append(transInit.InitEnd);
             Addtolist(string.Format("The {0} sql file has been generated; there were {1} {0}", prefix, i));
             WriteFile(transQuery, string.Format(frs, filename, f), false);
-            WriteFile(txtFile.ToString(), String.Format(frs, filename, f), true);
+            WriteFile(txtFile.ToString(), string.Format(frs, filename, f), true);
             initTable[xmlRoot].OutputCreationSQL(); //output the creation sql file for this table
             SqlTransactionsFlush(); //flush the transaction queue
             DeleteEmptyFile(string.Format(frs, filename, f), i);

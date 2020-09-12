@@ -14,19 +14,19 @@ namespace GomLib.GomTypes
 
         internal override void Link(DataObjectModel dom)
         {
-            this._dom = dom;
+            _dom = dom;
             DomClass = _dom.Get<DomClass>(DomClassId);
         }
 
         public override string ToString()
         {
-            return System.String.Format("class {0}", this.DomClass);
+            return string.Format("class {0}", DomClass);
         }
 
         public override object ReadData(DataObjectModel dom, GomBinaryReader reader)
         {
-            if (DomClass == null) this.Link(dom);
-            var obj = _dom.scriptObjectReader.ReadObject(this.DomClass, reader, dom);
+            if (DomClass == null) Link(dom);
+            var obj = _dom.scriptObjectReader.ReadObject(DomClass, reader, dom);
             return obj;
         }
     }

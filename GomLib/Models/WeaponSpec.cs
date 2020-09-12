@@ -170,7 +170,7 @@ namespace GomLib.Models
             Id = id;
         }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public DataObjectModel Dom_ { get; set; }
 
         [JsonIgnore]
@@ -254,11 +254,11 @@ namespace GomLib.Models
             else
                 itm.DamageType = damageType.ToString().Replace("cbtDamage", "");
 
-            itm.IsTwoHanded = gom.ValueOrDefault<bool>("cbtWpnDataIsTwoHanded", false);
-            itm.IsRanged = gom.ValueOrDefault<bool>("cbtWpnDataIsRanged", false);
+            itm.IsTwoHanded = gom.ValueOrDefault("cbtWpnDataIsTwoHanded", false);
+            itm.IsRanged = gom.ValueOrDefault("cbtWpnDataIsRanged", false);
             itm.ReqAbilityId = gom.ValueOrDefault<ulong>("cbtWpnDataRequiredAbility", 0);
-            itm.RequiredTag = gom.ValueOrDefault<string>("cbtWpnDataRequiredTags", "");
-            itm.SpecString = gom.ValueOrDefault<string>("cbtWpnDataSpecString", "");
+            itm.RequiredTag = gom.ValueOrDefault("cbtWpnDataRequiredTags", "");
+            itm.SpecString = gom.ValueOrDefault("cbtWpnDataSpecString", "");
             return itm;
         }
     }

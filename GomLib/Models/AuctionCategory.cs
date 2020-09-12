@@ -111,7 +111,7 @@ namespace GomLib.Models
             if (obj == null) return false;
             if (ReferenceEquals(this, obj)) return true;
 
-            if (this.GetHashCode() != obj.GetHashCode())
+            if (GetHashCode() != obj.GetHashCode())
                 return false;
             return true;
         }
@@ -150,7 +150,7 @@ namespace GomLib.Models
             else
                 itm.Name = itm.Dom_.stringTable.TryGetString("str.gui.auctionhouse", itm.NameId);
 
-            List<object> subCats = gom.ValueOrDefault<List<object>>("ahItemCategorySubCategories", new List<object>());
+            List<object> subCats = gom.ValueOrDefault("ahItemCategorySubCategories", new List<object>());
 
             itm.SubCategories = new Dictionary<int, AuctionSubCategory>();
             foreach (var obj in subCats)
@@ -168,7 +168,7 @@ namespace GomLib.Models
         public AuctionSubCategory(DataObjectModel dom, int id, long sId)
         {
             Dom_ = dom;
-            Id = (long)id;
+            Id = id;
             IntId = id;
             SId = sId;
             Prototype = "ahItemSubCategoriesPrototype";
@@ -220,7 +220,7 @@ namespace GomLib.Models
             if (obj == null) return false;
             if (ReferenceEquals(this, obj)) return true;
 
-            if (this.GetHashCode() != obj.GetHashCode())
+            if (GetHashCode() != obj.GetHashCode())
                 return false;
             return true;
         }
@@ -294,7 +294,7 @@ namespace GomLib.Models
                 AuctionItemSlotList.Add(id, this);
         }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public DataObjectModel Dom_ { get; set; }
 
         public string Id { get; set; }
@@ -333,7 +333,7 @@ namespace GomLib.Models
             if (obj == null) return false;
             if (ReferenceEquals(this, obj)) return true;
 
-            if (this.GetHashCode() != obj.GetHashCode())
+            if (GetHashCode() != obj.GetHashCode())
                 return false;
             return true;
         }

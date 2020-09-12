@@ -45,7 +45,7 @@ namespace TorLib
         {
             if (el == null) { return defaultValue; }
             var val = el.Value;
-            if (String.IsNullOrEmpty(val))
+            if (string.IsNullOrEmpty(val))
             {
                 return defaultValue;
             }
@@ -62,12 +62,12 @@ namespace TorLib
         {
             if (el == null) { return defaultValue; }
             var val = el.Value;
-            if (String.IsNullOrEmpty(val))
+            if (string.IsNullOrEmpty(val))
             {
                 return defaultValue;
             }
 
-            if (!Int32.TryParse(val, out int result))
+            if (!int.TryParse(val, out int result))
             {
                 return defaultValue;
             }
@@ -79,12 +79,12 @@ namespace TorLib
         {
             if (el == null) { return defaultValue; }
             var val = el.Value;
-            if (String.IsNullOrEmpty(val))
+            if (string.IsNullOrEmpty(val))
             {
                 return defaultValue;
             }
 
-            if (!Int32.TryParse(val, out int result))
+            if (!int.TryParse(val, out int result))
             {
                 return defaultValue;
             }
@@ -96,12 +96,12 @@ namespace TorLib
         {
             if (el == null) { return defaultValue; }
             var val = el.Value;
-            if (String.IsNullOrEmpty(val))
+            if (string.IsNullOrEmpty(val))
             {
                 return defaultValue;
             }
 
-            if (!Boolean.TryParse(val, out bool result))
+            if (!bool.TryParse(val, out bool result))
             {
                 return defaultValue;
             }
@@ -120,7 +120,7 @@ namespace TorLib
             }
 
             var val = el.Value;
-            if (String.IsNullOrEmpty(val))
+            if (string.IsNullOrEmpty(val))
             {
                 throw new ArgumentException("Attribute has no content!", "el");
             }
@@ -151,7 +151,7 @@ namespace TorLib
 
             if (globalIdToFqnMap.ContainsKey(id))
             {
-                throw new InvalidOperationException(String.Format("Duplicate ID for {0} and {1}", fqn, globalIdToFqnMap[id]));
+                throw new InvalidOperationException(string.Format("Duplicate ID for {0} and {1}", fqn, globalIdToFqnMap[id]));
             }
             else
             {
@@ -165,7 +165,7 @@ namespace TorLib
         {
             if (el == null) { return defaultValue; }
             var val = el.Value;
-            if (String.IsNullOrEmpty(val))
+            if (string.IsNullOrEmpty(val))
             {
                 return defaultValue;
             }
@@ -182,12 +182,12 @@ namespace TorLib
         {
             if (el == null) { return null; }
             var val = el.Value;
-            if (String.IsNullOrEmpty(val))
+            if (string.IsNullOrEmpty(val))
             {
                 return null;
             }
 
-            if (!Int32.TryParse(val, out int result))
+            if (!int.TryParse(val, out int result))
             {
                 return null;
             }
@@ -199,12 +199,12 @@ namespace TorLib
         {
             if (el == null) { return defaultValue; }
             var val = el.Value;
-            if (String.IsNullOrEmpty(val))
+            if (string.IsNullOrEmpty(val))
             {
                 return defaultValue;
             }
 
-            if (!Single.TryParse(val, out float result))
+            if (!float.TryParse(val, out float result))
             {
                 return defaultValue;
             }
@@ -216,7 +216,7 @@ namespace TorLib
         {
             if (el == null) { return defaultValue; }
             var val = el.Value;
-            if (String.IsNullOrEmpty(val))
+            if (string.IsNullOrEmpty(val))
             {
                 return defaultValue;
             }
@@ -231,7 +231,7 @@ namespace TorLib
             if (el == null) { return 0; }
 
             var durString = (string)el;
-            if (String.IsNullOrEmpty(durString))
+            if (string.IsNullOrEmpty(durString))
             {
                 return 0;
             }
@@ -241,7 +241,7 @@ namespace TorLib
             float result = 0;
             foreach (var part in parts.Reverse())
             {
-                result += mult * Single.Parse(part);
+                result += mult * float.Parse(part);
                 mult *= 60;
             }
 
@@ -250,14 +250,14 @@ namespace TorLib
 
         public static int ParseDuration(this string str)
         {
-            if (String.IsNullOrEmpty(str)) return 0;
+            if (string.IsNullOrEmpty(str)) return 0;
 
             string[] vals = str.Split(':');
             int mult = 1;
             int seconds = 0;
             for (var i = vals.Length - 1; i >= 0; i--)
             {
-                seconds += mult * Int32.Parse(vals[i]);
+                seconds += mult * int.Parse(vals[i]);
                 mult *= 60;
             }
             return seconds;

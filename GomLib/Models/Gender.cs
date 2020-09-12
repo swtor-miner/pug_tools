@@ -16,7 +16,7 @@ namespace GomLib.Models
     {
         public static Gender ToGender(this string str)
         {
-            if (String.IsNullOrEmpty(str)) { return Gender.None; }
+            if (string.IsNullOrEmpty(str)) { return Gender.None; }
             str = str.ToLower();
 
             switch (str)

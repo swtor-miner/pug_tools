@@ -26,7 +26,7 @@ namespace GomLib.Models
         }
 
         internal Ability Ability_ { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Ability Ability
         {
             get
@@ -92,19 +92,19 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, pkga)) return true;
 
-            if (!this.Ability.Equals(pkga.Ability))
+            if (!Ability.Equals(pkga.Ability))
                 return false;
-            if (this.AbilityId != pkga.AbilityId)
+            if (AbilityId != pkga.AbilityId)
                 return false;
-            if (this.AutoAcquire != pkga.AutoAcquire)
+            if (AutoAcquire != pkga.AutoAcquire)
                 return false;
-            if (this.Level != pkga.Level)
+            if (Level != pkga.Level)
                 return false;
-            if (!this.Levels.SequenceEqual(pkga.Levels))
+            if (!Levels.SequenceEqual(pkga.Levels))
                 return false;
-            if (this.PackageId != pkga.PackageId)
+            if (PackageId != pkga.PackageId)
                 return false;
-            if (this.Scales != pkga.Scales)
+            if (Scales != pkga.Scales)
                 return false;
             return true;
         }
@@ -120,7 +120,7 @@ namespace GomLib.Models
         public ulong PackageId { get; set; }
 
         internal Talent Talent_ { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Talent Talent
         {
             get
@@ -170,18 +170,18 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, pkga)) return true;
 
-            if (this.Talent != null)
+            if (Talent != null)
             {
-                if (!this.Talent.Equals(pkga.Talent))
+                if (!Talent.Equals(pkga.Talent))
                     return false;
             }
             else if (pkga.Talent != null)
                 return false;
-            if (this.UtilityPosition != pkga.UtilityPosition)
+            if (UtilityPosition != pkga.UtilityPosition)
                 return false;
-            if (this.UtilityTier != pkga.UtilityTier)
+            if (UtilityTier != pkga.UtilityTier)
                 return false;
-            if (this.PackageId != pkga.PackageId)
+            if (PackageId != pkga.PackageId)
                 return false;
             return true;
         }

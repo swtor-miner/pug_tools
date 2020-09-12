@@ -21,8 +21,8 @@ namespace GomLib.Models
                 {
                     icon = Icon;
                 }
-                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", icon));
-                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+                var fileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/icons/{0}.dds", icon));
+                return string.Format("{0}_{1}", fileId.ph, fileId.sh);
             }
         }
         public long SortIdx { get; set; }
@@ -105,46 +105,46 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, obj)) return true;
 
-            if (this.NodeId != obj.NodeId)
+            if (NodeId != obj.NodeId)
                 return false;
-            if (!this.BaseAbilities.SequenceEqual(obj.BaseAbilities))
+            if (!BaseAbilities.SequenceEqual(obj.BaseAbilities))
                 return false;
-            if (!this.BaseAbilityIds.SequenceEqual(obj.BaseAbilityIds))
+            if (!BaseAbilityIds.SequenceEqual(obj.BaseAbilityIds))
                 return false;
-            if (this.ClassId != obj.ClassId)
+            if (ClassId != obj.ClassId)
                 return false;
-            if (this.ClassName != obj.ClassName)
+            if (ClassName != obj.ClassName)
                 return false;
-            if (this.ClassNameId != obj.ClassNameId)
+            if (ClassNameId != obj.ClassNameId)
                 return false;
-            if (this.Description != obj.Description)
+            if (Description != obj.Description)
                 return false;
-            if (this.DescriptionId != obj.DescriptionId)
+            if (DescriptionId != obj.DescriptionId)
                 return false;
-            if (this.Icon != obj.Icon)
+            if (Icon != obj.Icon)
                 return false;
-            if (this.Id != obj.Id)
+            if (Id != obj.Id)
                 return false;
 
             var dComp = new DictionaryComparer<string, string>();
-            if (!dComp.Equals(this.LocalizedClassName, obj.LocalizedClassName))
+            if (!dComp.Equals(LocalizedClassName, obj.LocalizedClassName))
                 return false;
-            if (!dComp.Equals(this.LocalizedDescription, obj.LocalizedDescription))
+            if (!dComp.Equals(LocalizedDescription, obj.LocalizedDescription))
                 return false;
-            if (!dComp.Equals(this.LocalizedName, obj.LocalizedName))
+            if (!dComp.Equals(LocalizedName, obj.LocalizedName))
                 return false;
 
-            if (this.Name != obj.Name)
+            if (Name != obj.Name)
                 return false;
-            if (this.NameId != obj.NameId)
+            if (NameId != obj.NameId)
                 return false;
-            if (!this.PathAbilities.Equals(obj.PathAbilities))
+            if (!PathAbilities.Equals(obj.PathAbilities))
                 return false;
-            if (this.PathApcId != obj.PathApcId)
+            if (PathApcId != obj.PathApcId)
                 return false;
-            if (this.Role != obj.Role)
+            if (Role != obj.Role)
                 return false;
-            if (this.SortIdx != obj.SortIdx)
+            if (SortIdx != obj.SortIdx)
                 return false;
 
             return true;

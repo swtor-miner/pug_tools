@@ -45,7 +45,7 @@ namespace TorLib.FileReaders
         public IEnumerable<AssetInstance> FindInstances(Func<AssetInstance, bool> predicate)
         {
             List<AssetInstance> results = new List<AssetInstance>();
-            foreach (var room in this.Rooms)
+            foreach (var room in Rooms)
             {
                 results.AddRange(room.FindInstances(predicate));
             }
@@ -55,7 +55,7 @@ namespace TorLib.FileReaders
         public IEnumerable<AssetInstance> FindByAssetId(long assetId)
         {
             List<AssetInstance> results = new List<AssetInstance>();
-            foreach (var room in this.Rooms)
+            foreach (var room in Rooms)
             {
                 results.AddRange(room.FindByAssetId(assetId));
             }
@@ -112,7 +112,7 @@ namespace TorLib.FileReaders
                                 {
                                     Id = long.Parse(assetInfo.Groups[1].Value)
                                 };
-                                if (!String.IsNullOrEmpty(assetInfo.Groups[2].Value))
+                                if (!string.IsNullOrEmpty(assetInfo.Groups[2].Value))
                                 {
                                     asset.EncounterIndex = assetInfo.Groups[2].Value.ToLower();
                                 }
@@ -129,7 +129,7 @@ namespace TorLib.FileReaders
                             break;
                         case FileRegion.Rooms:
                             var roomFileName = currentLine.Trim();
-                            string roomFilePath = String.Format("{0}/{1}.dat", File.FilePath.Remove(File.FilePath.LastIndexOf('/')), roomFileName);
+                            string roomFilePath = string.Format("{0}/{1}.dat", File.FilePath.Remove(File.FilePath.LastIndexOf('/')), roomFileName);
                             File roomFile = _assets.FindFile(roomFilePath);
                             if (roomFile == null)
                             {
@@ -137,9 +137,9 @@ namespace TorLib.FileReaders
                                 break;
                             }
 
-                            FileReaders.RoomSpecification roomSpec = new RoomSpecification(roomFile, roomFileName, this);
+                            RoomSpecification roomSpec = new RoomSpecification(roomFile, roomFileName, this);
                             roomSpec.Read();
-                            this.Rooms.Add(roomSpec);
+                            Rooms.Add(roomSpec);
                             break;
                     }
                 }

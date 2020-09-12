@@ -9,11 +9,11 @@ namespace GomLib.Models
 {
     public class QuestTask : IEquatable<QuestTask>
     {
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public QuestStep Step { get; set; }
         public int Id { get; set; }
         public int DbId { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public DataObjectModel Dom_ { get; set; }
 
         public string String { get; set; }
@@ -67,7 +67,7 @@ namespace GomLib.Models
             }
         }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public List<Quest> BonusMissions
         {
             get
@@ -118,7 +118,7 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, qts)) return true;
 
-            if (this.BonusMissionsIds != null)
+            if (BonusMissionsIds != null)
             {
                 if (qts.BonusMissionsIds == null)
                 {
@@ -126,27 +126,27 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<ulong>(this.BonusMissionsIds, qts.BonusMissionsIds))
+                    if (!Enumerable.SequenceEqual(BonusMissionsIds, qts.BonusMissionsIds))
                         return false;
                 }
             }
-            if (this.CountMax != qts.CountMax)
+            if (CountMax != qts.CountMax)
                 return false;
-            if (this.DbId != qts.DbId)
+            if (DbId != qts.DbId)
                 return false;
-            if (this.Hook != null)
+            if (Hook != null)
             {
                 if (qts.Hook == null)
                     return false;
                 else
                 {
-                    if (!this.Hook.Equals(qts.Hook))
+                    if (!Hook.Equals(qts.Hook))
                         return false;
                 }
             }
-            if (this.Id != qts.Id)
+            if (Id != qts.Id)
                 return false;
-            if (this.ItemsGiven != null)
+            if (ItemsGiven != null)
             {
                 if (qts.ItemsGiven == null)
                 {
@@ -154,11 +154,11 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<QuestItem>(this.ItemsGiven, qts.ItemsGiven))
+                    if (!Enumerable.SequenceEqual(ItemsGiven, qts.ItemsGiven))
                         return false;
                 }
             }
-            if (this.ItemsTaken != null)
+            if (ItemsTaken != null)
             {
                 if (qts.ItemsTaken == null)
                 {
@@ -166,23 +166,23 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<QuestItem>(this.ItemsTaken, qts.ItemsTaken))
+                    if (!Enumerable.SequenceEqual(ItemsTaken, qts.ItemsTaken))
                         return false;
                 }
             }
 
             var ssComp = new DictionaryComparer<string, string>();
-            if (!ssComp.Equals(this.LocalizedString, qts.LocalizedString))
+            if (!ssComp.Equals(LocalizedString, qts.LocalizedString))
                 return false;
 
-            if (this.ShowCount != qts.ShowCount)
+            if (ShowCount != qts.ShowCount)
                 return false;
-            if (this.ShowTracking != qts.ShowTracking)
+            if (ShowTracking != qts.ShowTracking)
                 return false;
-            if (this.String != qts.String)
+            if (String != qts.String)
                 return false;
 
-            if (this.TaskNpcs != null)
+            if (TaskNpcs != null)
             {
                 if (qts.TaskNpcs == null)
                 {
@@ -190,12 +190,12 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<Npc>(this.TaskNpcs, qts.TaskNpcs))
+                    if (!Enumerable.SequenceEqual(TaskNpcs, qts.TaskNpcs))
                         return false;
                 }
             }
 
-            if (this.TaskQuests != null)
+            if (TaskQuests != null)
             {
                 if (qts.TaskQuests == null)
                 {
@@ -203,7 +203,7 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<Quest>(this.TaskQuests, qts.TaskQuests))
+                    if (!Enumerable.SequenceEqual(TaskQuests, qts.TaskQuests))
                         return false;
                 }
             }
@@ -242,9 +242,9 @@ namespace GomLib.Models
                 XElement taskNpcs = new XElement("TaskNpcs");
                 foreach (var npc in TaskNpcs)
                 {
-                    if (this.Step.Branch.Quest.LoadedNpcs.ContainsKey(npc.Fqn))
+                    if (Step.Branch.Quest.LoadedNpcs.ContainsKey(npc.Fqn))
                     {
-                        taskNpcs.Add(this.Step.Branch.Quest.LoadedNpcs[npc.Fqn]);
+                        taskNpcs.Add(Step.Branch.Quest.LoadedNpcs[npc.Fqn]);
                     }
                     else
                     {

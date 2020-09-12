@@ -122,18 +122,18 @@ namespace TorLib
             string searchPattern;
             if (isPtr)
             {
-                searchPattern = String.Format("swtor_test_{0}_*_1.tor", fileGroup);
+                searchPattern = string.Format("swtor_test_{0}_*_1.tor", fileGroup);
             }
             else
             {
-                searchPattern = String.Format("swtor_{0}_*_1.tor", fileGroup);
+                searchPattern = string.Format("swtor_{0}_*_1.tor", fileGroup);
             }
 
             var assetFilePaths = System.IO.Directory.GetFiles(assetPath, searchPattern, System.IO.SearchOption.TopDirectoryOnly);
 
             if (assetFilePaths.Length == 0)
             {
-                searchPattern = String.Format("red_{0}_*.tor", fileGroup);
+                searchPattern = string.Format("red_{0}_*.tor", fileGroup);
                 assetFilePaths = System.IO.Directory.GetFiles(assetPath, searchPattern, System.IO.SearchOption.TopDirectoryOnly);
             }
             if (assetFilePaths.Length > 0)

@@ -38,14 +38,14 @@ namespace GomLib.Models
         {
             return new MapMarker()
             {
-                Placeable = this.Placeable,
-                Npc = this.Npc,
-                X = this.X,
-                Y = this.Y,
-                Z = this.Z,
-                Icon = this.Icon,
-                Map = this.Map,
-                RoomName = this.RoomName
+                Placeable = Placeable,
+                Npc = Npc,
+                X = X,
+                Y = Y,
+                Z = Z,
+                Icon = Icon,
+                Map = Map,
+                RoomName = RoomName
             };
         }
     }

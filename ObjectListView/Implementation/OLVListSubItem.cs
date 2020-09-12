@@ -50,10 +50,10 @@ namespace BrightIdeasSoftware {
         /// <summary>
         /// Create a OLVListSubItem that shows the given string and image
         /// </summary>
-        public OLVListSubItem(object modelValue, string text, Object image) {
-            this.ModelValue = modelValue;
-            this.Text = text;
-            this.ImageSelector = image;
+        public OLVListSubItem(object modelValue, string text, object image) {
+            ModelValue = modelValue;
+            Text = text;
+            ImageSelector = image;
         }
 
         #endregion
@@ -65,8 +65,8 @@ namespace BrightIdeasSoftware {
         /// </summary>
         /// <remarks>This setting only takes effect when the control is owner drawn.</remarks>
         public Rectangle? CellPadding {
-            get { return this.cellPadding; }
-            set { this.cellPadding = value; }
+            get { return cellPadding; }
+            set { cellPadding = value; }
         }
         private Rectangle? cellPadding;
 
@@ -75,8 +75,8 @@ namespace BrightIdeasSoftware {
         /// </summary>
         /// <remarks>This setting only takes effect when the control is owner drawn.</remarks>
         public StringAlignment? CellVerticalAlignment {
-            get { return this.cellVerticalAlignment; }
-            set { this.cellVerticalAlignment = value; }
+            get { return cellVerticalAlignment; }
+            set { cellVerticalAlignment = value; }
         }
         private StringAlignment? cellVerticalAlignment;
 
@@ -95,7 +95,7 @@ namespace BrightIdeasSoftware {
         /// </summary>
         public bool HasDecoration {
             get {
-                return this.decorations != null && this.decorations.Count > 0;
+                return decorations != null && decorations.Count > 0;
             }
         }
 
@@ -105,12 +105,12 @@ namespace BrightIdeasSoftware {
         /// <remarks>Setting this replaces all other decorations</remarks>
         public IDecoration Decoration {
             get {
-                return this.HasDecoration ? this.Decorations[0] : null;
+                return HasDecoration ? Decorations[0] : null;
             }
             set {
-                this.Decorations.Clear();
+                Decorations.Clear();
                 if (value != null)
-                    this.Decorations.Add(value);
+                    Decorations.Add(value);
             }
         }
 
@@ -119,9 +119,9 @@ namespace BrightIdeasSoftware {
         /// </summary>
         public IList<IDecoration> Decorations {
             get {
-                if (this.decorations == null)
-                    this.decorations = new List<IDecoration>();
-                return this.decorations;
+                if (decorations == null)
+                    decorations = new List<IDecoration>();
+                return decorations;
             }
         }
         private IList<IDecoration> decorations;
@@ -131,18 +131,18 @@ namespace BrightIdeasSoftware {
         /// </summary>
         /// <remarks><para>This can be an Image, a string or an int. A string or an int will
         /// be used as an index into the small image list.</para></remarks>
-        public Object ImageSelector {
+        public object ImageSelector {
             get { return imageSelector; }
             set { imageSelector = value; }
         }
-        private Object imageSelector;
+        private object imageSelector;
 
         /// <summary>
         /// Gets or sets the url that should be invoked when this subitem is clicked
         /// </summary>
         public string Url {
-            get { return this.url; }
-            set { this.url = value; }
+            get { return url; }
+            set { url = value; }
         }
         private string url;
 

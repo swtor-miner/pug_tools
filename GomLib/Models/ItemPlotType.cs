@@ -16,7 +16,7 @@ namespace GomLib.Models
     {
         public static ItemPlot ToItemPlot(this string str)
         {
-            if (String.IsNullOrEmpty(str)) return ItemPlot.None;
+            if (string.IsNullOrEmpty(str)) return ItemPlot.None;
 
             switch (str)
             {

@@ -25,7 +25,7 @@ namespace GomLib.GomTypes
         {
             byte typeByte = reader.ReadByte();
 
-            return typeByte == (byte)this.TypeId;
+            return typeByte == (byte)TypeId;
         }
     }
 }

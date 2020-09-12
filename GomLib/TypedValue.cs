@@ -32,15 +32,15 @@ namespace GomLib
 
         public TypedValue(TypedValueType valueType)
         {
-            this.ValueType = valueType;
+            ValueType = valueType;
         }
 
         public void Parse(GomBinaryReader reader)
         {
-            switch (this.ValueType)
+            switch (ValueType)
             {
                 case TypedValueType.Null:
-                    this.Value = null;
+                    Value = null;
                     break;
                 case TypedValueType.Int8:
                 case TypedValueType.Int16:
@@ -51,38 +51,38 @@ namespace GomLib
                 case TypedValueType.Int56:
                 case TypedValueType.Int64:
                     {
-                        int numBytesToRead = ((byte)this.ValueType) - 0xB0 + 1;
-                        this.Value = reader.ReadVariableWidthUInt64(numBytesToRead);
+                        int numBytesToRead = ((byte)ValueType) - 0xB0 + 1;
+                        Value = reader.ReadVariableWidthUInt64(numBytesToRead);
                     }
                     break;
                 case TypedValueType.UnicodeString:
                     {
-                        int strLen = (int)reader.ReadByte();
+                        int strLen = reader.ReadByte();
                         if ((strLen >= 0xB0) && (strLen <= 0xB7))
                         {
                             strLen = (int)reader.ReadVariableWidthUInt64(strLen - 0xB0 + 1);
                         }
 
-                        byte[] charData = reader.ReadBytes((int)strLen * 2);
-                        this.Value = Encoding.Unicode.GetString(charData);
+                        byte[] charData = reader.ReadBytes(strLen * 2);
+                        Value = Encoding.Unicode.GetString(charData);
                     }
                     break;
                 case TypedValueType.CString:
                     {
-                        int strLen = (int)reader.ReadByte();
+                        int strLen = reader.ReadByte();
                         if ((strLen >= 0xB0) && (strLen <= 0xB7))
                         {
                             strLen = (int)reader.ReadVariableWidthUInt64(strLen - 0xB0 + 1);
                         }
 
                         byte[] charData = reader.ReadBytes(strLen);
-                        this.Value = Encoding.UTF8.GetString(charData);
+                        Value = Encoding.UTF8.GetString(charData);
                     }
                     break;
                 case TypedValueType.Array:
                 case TypedValueType.Array2:
                     {
-                        int arrayLen = (int)reader.ReadByte();
+                        int arrayLen = reader.ReadByte();
                         if ((arrayLen >= 0xB0) && (arrayLen <= 0xB7))
                         {
                             arrayLen = (int)reader.ReadVariableWidthUInt64(arrayLen - 0xB0 + 1);
@@ -94,10 +94,10 @@ namespace GomLib
                             var val = reader.ReadTypedValue();
                             arrayValues.Add(val);
                         }
-                        this.Value = arrayValues;
+                        Value = arrayValues;
 
                         // Array type 2 has a trailing byte for some reason
-                        if (this.ValueType == TypedValueType.Array2)
+                        if (ValueType == TypedValueType.Array2)
                         {
                             reader.ReadByte();
                         }
@@ -106,57 +106,57 @@ namespace GomLib
                 case TypedValueType.BizarroFieldType:
                 case TypedValueType.FieldType:
                     {
-                        this.Value = reader.ReadGomType();
+                        Value = reader.ReadGomType();
                     }
                     break;
                 default:
-                    throw new InvalidOperationException(String.Format("Unexpected TypedValue Type: {0:X}", this.ValueType));
+                    throw new InvalidOperationException(string.Format("Unexpected TypedValue Type: {0:X}", ValueType));
             }
         }
 
-        public UInt64 AsNumber()
+        public ulong AsNumber()
         {
-            if (this.ValueType == TypedValueType.Null)
+            if (ValueType == TypedValueType.Null)
             {
                 return 0;
             }
 
-            if (((byte)this.ValueType < 0xB0) || ((byte)this.ValueType > 0xB7))
+            if (((byte)ValueType < 0xB0) || ((byte)ValueType > 0xB7))
             {
                 throw new InvalidOperationException("Value is not a number");
             }
 
-            return (UInt64)this.Value;
+            return (ulong)Value;
         }
 
         public string AsString()
         {
-            if (this.ValueType == TypedValueType.Null)
+            if (ValueType == TypedValueType.Null)
             {
-                return String.Empty;
+                return string.Empty;
             }
 
-            return this.Value.ToString();
+            return Value.ToString();
         }
 
         public IEnumerable<TypedValue> AsEnumerable()
         {
-            if ((this.ValueType != TypedValueType.Array) && (this.ValueType != TypedValueType.Array2))
+            if ((ValueType != TypedValueType.Array) && (ValueType != TypedValueType.Array2))
             {
                 throw new InvalidOperationException("Value is not enumerable");
             }
 
-            return (IEnumerable<TypedValue>)this.Value;
+            return (IEnumerable<TypedValue>)Value;
         }
 
         public GomType AsGomType()
         {
-            if ((this.ValueType != TypedValueType.FieldType) && (this.ValueType != TypedValueType.BizarroFieldType))
+            if ((ValueType != TypedValueType.FieldType) && (ValueType != TypedValueType.BizarroFieldType))
             {
                 throw new InvalidOperationException("Value is not a GomType");
             }
 
-            return (GomType)this.Value;
+            return (GomType)Value;
         }
     }
 }

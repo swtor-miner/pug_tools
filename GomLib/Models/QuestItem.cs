@@ -16,7 +16,7 @@ namespace GomLib.Models
         public string Fqn { get; set; }
         public long MaxCount { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public DataObjectModel Dom_ { get; set; }
 
         [JsonConverter(typeof(LongConverter))]
@@ -46,23 +46,23 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, qsi)) return true;
 
-            if (this.Fqn != qsi.Fqn)
+            if (Fqn != qsi.Fqn)
                 return false;
-            if (this.GUID != qsi.GUID)
+            if (GUID != qsi.GUID)
                 return false;
-            if (this.Id != qsi.Id)
+            if (Id != qsi.Id)
                 return false;
-            if (this.Max != qsi.Max)
+            if (Max != qsi.Max)
                 return false;
-            if (this.MaxCount != qsi.MaxCount)
+            if (MaxCount != qsi.MaxCount)
                 return false;
-            if (this.Min != qsi.Min)
+            if (Min != qsi.Min)
                 return false;
-            if (this.Name != qsi.Name)
+            if (Name != qsi.Name)
                 return false;
-            if (this.UnknownLong != qsi.UnknownLong)
+            if (UnknownLong != qsi.UnknownLong)
                 return false;
-            if (this.VariableId != qsi.VariableId)
+            if (VariableId != qsi.VariableId)
                 return false;
             return true;
         }

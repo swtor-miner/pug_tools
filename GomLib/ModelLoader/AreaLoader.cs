@@ -37,12 +37,12 @@ namespace GomLib.ModelLoader
             {
                 var mapAreasDataProto = _dom.GetObject("mapAreasDataProto");
                 if (mapAreasDataProto != null)
-                    mapAreasDataObjectList = mapAreasDataProto.Data.ValueOrDefault<Dictionary<object, object>>("mapAreasDataObjectList", new Dictionary<object, object>());
+                    mapAreasDataObjectList = mapAreasDataProto.Data.ValueOrDefault("mapAreasDataObjectList", new Dictionary<object, object>());
             }
-            mapAreasDataObjectList.TryGetValue((object)id, out object obj);
+            mapAreasDataObjectList.TryGetValue(id, out object obj);
             return Load(new Area(), obj as GomObjectData);
         }
-        public Models.Area Load(Models.Area area, GomObjectData obj)
+        public Area Load(Area area, GomObjectData obj)
         {
             if (obj == null) { return area; }
             if (area == null) { return null; }
@@ -73,7 +73,7 @@ namespace GomLib.ModelLoader
                 area.Id = (long)area.AreaId;
             area.ZoneName = obj.ValueOrDefault<string>("mapAreasDataDefaultZoneName", null);
 
-            string mapDataPath = String.Format("world.areas.{0}.mapdata", area.AreaId);
+            string mapDataPath = string.Format("world.areas.{0}.mapdata", area.AreaId);
             var mapDataObj = _dom.GetObject(mapDataPath);
             if (mapDataObj != null)
             {
@@ -91,7 +91,7 @@ namespace GomLib.ModelLoader
                     }
                 }
             }
-            string mapNotePath = String.Format("/resources/world/areas/{0}/mapnotes.not", area.AreaId);
+            string mapNotePath = string.Format("/resources/world/areas/{0}/mapnotes.not", area.AreaId);
             var mapNoteObj = _dom._assets.FindFile(mapNotePath);
             if (mapNoteObj != null)
             {
@@ -109,7 +109,7 @@ namespace GomLib.ModelLoader
             return area;
         }
 
-        private void LoadMapNotes(Models.Area area, TorLib.File file)
+        private void LoadMapNotes(Area area, TorLib.File file)
         {
             string xml = "";
             using (var reader = new StreamReader(file.OpenCopyInMemory()))
@@ -140,9 +140,9 @@ namespace GomLib.ModelLoader
             area.MapNotes = mapNotes;
         }
 
-        private void LoadMapdata(Models.Area area, GomObject obj)
+        private void LoadMapdata(Area area, GomObject obj)
         {
-            List<object> mapPages = (List<object>)obj.Data.ValueOrDefault<List<object>>("mapDataContainerMapDataList", null);
+            List<object> mapPages = obj.Data.ValueOrDefault<List<object>>("mapDataContainerMapDataList", null);
             Dictionary<long, MapPage> pageLookup = new Dictionary<long, MapPage>();
 
             if (mapPages != null)
@@ -187,14 +187,14 @@ namespace GomLib.ModelLoader
                         page.MiniMapMaxZ = miniMaxCoord[2];
                     }
                     page.CalculateVolume();
-                    page.ExplorationType = mapPage.ValueOrDefault<ScriptEnum>("mapExplorationType", new ScriptEnum()).ToString();
-                    page.MountAllowed = mapPage.ValueOrDefault<bool>("mapMountAllowed", false);
-                    page.IsHeroic = mapPage.ValueOrDefault<bool>("mapIsHeroic", false);
+                    page.ExplorationType = mapPage.ValueOrDefault("mapExplorationType", new ScriptEnum()).ToString();
+                    page.MountAllowed = mapPage.ValueOrDefault("mapMountAllowed", false);
+                    page.IsHeroic = mapPage.ValueOrDefault("mapIsHeroic", false);
                     page.ParentId = mapPage.ValueOrDefault<long>("mapParentNameSId", 0);
                     page.SId = mapPage.ValueOrDefault<long>("mapNameSId", 0);
                     page.MapName = mapPage.ValueOrDefault<string>("mapName", null);
 
-                    string mapImagePath = String.Format("/resources/world/areas/{0}/{1}_r.dds", area.AreaId, page.MapName);
+                    string mapImagePath = string.Format("/resources/world/areas/{0}/{1}_r.dds", area.AreaId, page.MapName);
                     page.HasImage = _dom._assets.HasFile(mapImagePath);
 
                     if (page.HasImage)
@@ -221,8 +221,8 @@ namespace GomLib.ModelLoader
                     //}
                     page.LocalizedName = strTable.GetLocalizedText(page.Guid, "MapPage." + page.MapName);
 
-                    page.ExplorationId = Int64.Parse(mapPage.ValueOrDefault<object>("mapExplorationId", 0).ToString());
-                    page.MapFowRadius = mapPage.ValueOrDefault<float>("mapFowRadius", 0f);
+                    page.ExplorationId = long.Parse(mapPage.ValueOrDefault<object>("mapExplorationId", 0).ToString());
+                    page.MapFowRadius = mapPage.ValueOrDefault("mapFowRadius", 0f);
 
                     pageLookup[page.SId] = page;
                     area.MapPages.Add(page);
@@ -244,7 +244,7 @@ namespace GomLib.ModelLoader
             }
         }
 
-        public void LoadReferences(Models.GameObject obj, GomObject gom)
+        public void LoadReferences(GameObject obj, GomObject gom)
         {
             if (obj is null)
             {

@@ -48,7 +48,7 @@ namespace GomLib.ModelLoader
             return Load(spn, obj);
         }
 
-        public Models.Spawner Load(Models.Spawner itm, GomObject obj)
+        public Spawner Load(Spawner itm, GomObject obj)
         {
             if (obj == null) { return null; }
             if (itm == null) { return null; }
@@ -64,13 +64,13 @@ namespace GomLib.ModelLoader
             return itm;
         }
 
-        public void LoadObject(Models.GameObject loadMe, GomObject obj)
+        public void LoadObject(GameObject loadMe, GomObject obj)
         {
-            GomLib.Models.Spawner loadObj = (Models.Spawner)loadMe;
+            Spawner loadObj = (Spawner)loadMe;
             Load(loadObj, obj);
         }
 
-        public void LoadReferences(Models.GameObject obj, GomObject gom)
+        public void LoadReferences(GameObject obj, GomObject gom)
         {
             if (obj is null)
             {

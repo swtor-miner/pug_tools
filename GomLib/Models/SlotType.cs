@@ -80,13 +80,13 @@ namespace GomLib.Models
     {
         public static SlotType ToSlotType(this ScriptEnum val)
         {
-            if (val == null) { return ToSlotType(String.Empty); }
+            if (val == null) { return ToSlotType(string.Empty); }
             return ToSlotType(val.ToString());
         }
 
         public static SlotType ToSlotType(this string str)
         {
-            if (String.IsNullOrEmpty(str)) return SlotType.Invalid;
+            if (string.IsNullOrEmpty(str)) return SlotType.Invalid;
 
             switch (str)
             {

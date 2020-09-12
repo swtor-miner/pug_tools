@@ -39,9 +39,9 @@ namespace GomLib.ModelLoader
             get { return "decDecoration"; }
         }
 
-        public Models.GameObject CreateObject()
+        public GameObject CreateObject()
         {
-            return new Models.Decoration();
+            return new Decoration();
         }
 
         private readonly HashSet<string> fields = new HashSet<string>() {
@@ -67,7 +67,7 @@ namespace GomLib.ModelLoader
             "decGuildPurchaseCost"
             };
 
-        public Decoration Load(Models.GameObject obj, GomObject gom)
+        public Decoration Load(GameObject obj, GomObject gom)
         {
             if (gom == null) { return (Decoration)obj; }
             if (gom == null) { return null; }
@@ -75,7 +75,7 @@ namespace GomLib.ModelLoader
             //if (HookList == null)
             //HookList = Hook.LoadHooks(_dom);
 
-            var dec = (Models.Decoration)obj;
+            var dec = (Decoration)obj;
 
             dec.Id = gom.Id;
             dec.Fqn = gom.Name;
@@ -94,7 +94,7 @@ namespace GomLib.ModelLoader
 
             var nameTable = _dom.stringTable.Find("str.dec");
 
-            dec.UseItemName = gom.Data.ValueOrDefault<bool>("decUseItemName", false);
+            dec.UseItemName = gom.Data.ValueOrDefault("decUseItemName", false);
             if (!dec.UseItemName)
             {
                 dec.NameId = gom.Data.ValueOrDefault<long>("decNameId", 0);
@@ -112,9 +112,9 @@ namespace GomLib.ModelLoader
 
             if (dec.UseItemName)
             {
-                dec.NameId = ((Item)dec.UnlockingItem).NameId;
+                dec.NameId = dec.UnlockingItem.NameId;
                 //dec.Name = ((Item)dec.UnlockingItem).Name;
-                dec.LocalizedName = ((Item)dec.UnlockingItem).LocalizedName;
+                dec.LocalizedName = dec.UnlockingItem.LocalizedName;
             }
             Normalize.Dictionary(dec.LocalizedName, dec.Fqn);
             dec.Name = dec.LocalizedName["enMale"];
@@ -161,7 +161,7 @@ namespace GomLib.ModelLoader
             dec.MaxUnlockLimit = gom.Data.ValueOrDefault<long>("decMaxUnlockLimit", 0);
             dec.F2PLimit = gom.Data.ValueOrDefault<long>("decUnknownUnlockLimit", 0);
 
-            dec.UniquePerLegacy = gom.Data.ValueOrDefault<bool>("decUniquePerLegacy", false);
+            dec.UniquePerLegacy = gom.Data.ValueOrDefault("decUniquePerLegacy", false);
 
             if (dec.UniquePerLegacy)
             {
@@ -205,7 +205,7 @@ namespace GomLib.ModelLoader
                 dec.LocalizedSubCategory = catNameTable.GetLocalizedText(dec.SubCategoryNameId, "str.gui.auctionhouse");
             }
 
-            var hookList = gom.Data.ValueOrDefault<Dictionary<object, object>>("decHookList", new Dictionary<object, object>()).ToDictionary(x => (long)x.Key, y => (bool)y.Value);
+            var hookList = gom.Data.ValueOrDefault("decHookList", new Dictionary<object, object>()).ToDictionary(x => (long)x.Key, y => (bool)y.Value);
 
             dec.Hooks = hookList;
 
@@ -215,7 +215,7 @@ namespace GomLib.ModelLoader
             {
                 HookList.TryGetValue(hook.Key, out Hook h);
                 if (h == null)
-                    dec.AvailableHooks.Add(String.Format("Unknown Hooktype: {0}", hook.Key));
+                    dec.AvailableHooks.Add(string.Format("Unknown Hooktype: {0}", hook.Key));
                 else
                     dec.AvailableHooks.Add(h.Name);
             }
@@ -230,7 +230,7 @@ namespace GomLib.ModelLoader
                 if (dec.StubType == "decStubTypeFallback")
                 {
                     var decProto = _dom.GetObject("decorationsPrototype");
-                    Dictionary<object, object> decCompanionHoloTable = decProto.Data.ValueOrDefault<Dictionary<object, object>>("decCompanionHoloTable", new Dictionary<object, object>());
+                    Dictionary<object, object> decCompanionHoloTable = decProto.Data.ValueOrDefault("decCompanionHoloTable", new Dictionary<object, object>());
                     var results = decCompanionHoloTable.Where(x => (ulong)x.Value == dec.Id);
                     if (results.Count() > 1)
                     {
@@ -246,7 +246,7 @@ namespace GomLib.ModelLoader
                                 var baseDecoration = _dom.decorationLoader.Load(baseId);
                                 if (baseDecoration != null)
                                 {
-                                    dec.Name = String.Format("{0} - Holo", baseDecoration.Name);
+                                    dec.Name = string.Format("{0} - Holo", baseDecoration.Name);
                                     dec.SourceDict.Add(0, "Fallback");
                                 }
                             }
@@ -256,7 +256,7 @@ namespace GomLib.ModelLoader
                 }
             }
 
-            dec.RequiresAbilityUnlocked = gom.Data.ValueOrDefault<bool>("decRequiresAbilityUnlocked ", false);
+            dec.RequiresAbilityUnlocked = gom.Data.ValueOrDefault("decRequiresAbilityUnlocked ", false);
 
             dec.GuildPurchaseCost = gom.Data.ValueOrDefault<long>("decGuildPurchaseCost", 0);
 
@@ -268,34 +268,34 @@ namespace GomLib.ModelLoader
             return dec;
         }
 
-        public void LoadReferences(Models.GameObject obj, GomObject gom)
+        public void LoadReferences(GameObject obj, GomObject gom)
         {
         }
 
-        public void LoadObject(Models.GameObject obj, GomObject gom)
+        public void LoadObject(GameObject obj, GomObject gom)
         {
             Load(obj, gom);
         }
 
-        public Models.Decoration Load(ulong nodeId)
+        public Decoration Load(ulong nodeId)
         {
             GomObject obj = _dom.GetObject(nodeId);
             if (obj == null) { return null; }
-            Models.Decoration itm = new Decoration();
+            Decoration itm = new Decoration();
             return Load(itm, obj);
         }
 
-        public Models.Decoration Load(string fqn)
+        public Decoration Load(string fqn)
         {
             GomObject obj = _dom.GetObject(fqn);
             if (obj == null) { return null; }
-            Models.Decoration itm = new Decoration();
+            Decoration itm = new Decoration();
             return Load(itm, obj);
         }
 
-        public Models.Decoration Load(GomObject obj)
+        public Decoration Load(GomObject obj)
         {
-            Models.Decoration itm = new Decoration();
+            Decoration itm = new Decoration();
             return Load(itm, obj);
         }
     }

@@ -112,19 +112,19 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, col)) return true;
 
-            if (this.AbilityIdsList != null)
+            if (AbilityIdsList != null)
             {
                 if (col.AbilityIdsList != null)
                 {
-                    if (!this.AbilityIdsList.SequenceEqual(col.AbilityIdsList))
+                    if (!AbilityIdsList.SequenceEqual(col.AbilityIdsList))
                         return false;
                 }
             }
-            if (this.AlternateUnlocksMap != null)
+            if (AlternateUnlocksMap != null)
             {
                 if (col.AlternateUnlocksMap != null)
                 {
-                    foreach (var altUnlock in this.AlternateUnlocksMap)
+                    foreach (var altUnlock in AlternateUnlocksMap)
                     {
                         _ = new List<ulong>();
                         col.AlternateUnlocksMap.TryGetValue(altUnlock.Key, out List<ulong> prevUnlock);
@@ -135,39 +135,39 @@ namespace GomLib.Models
                     }
                 }
             }
-            if (this.BulletPoints != null)
+            if (BulletPoints != null)
             {
                 if (col.BulletPoints != null)
                 {
-                    if (!this.BulletPoints.SequenceEqual(col.BulletPoints))
+                    if (!BulletPoints.SequenceEqual(col.BulletPoints))
                         return false;
                 }
             }
-            if (this.CategoryId != col.CategoryId)
+            if (CategoryId != col.CategoryId)
                 return false;
-            if (this.CreationIndex != col.CreationIndex)
+            if (CreationIndex != col.CreationIndex)
                 return false;
-            if (this.HasAlternateUnlocks != col.HasAlternateUnlocks)
+            if (HasAlternateUnlocks != col.HasAlternateUnlocks)
                 return false;
-            if (this.Icon != col.Icon)
+            if (Icon != col.Icon)
                 return false;
-            if (this.Id != col.Id)
+            if (Id != col.Id)
                 return false;
-            if (this.IsFoundInPacks != col.IsFoundInPacks)
+            if (IsFoundInPacks != col.IsFoundInPacks)
                 return false;
-            if (this.ItemIdsList != null)
+            if (ItemIdsList != null)
             {
                 if (col.ItemIdsList != null)
                 {
-                    if (!this.ItemIdsList.SequenceEqual(col.ItemIdsList))
+                    if (!ItemIdsList.SequenceEqual(col.ItemIdsList))
                         return false;
                 }
             }
-            if (this.LinkedId != col.LinkedId)
+            if (LinkedId != col.LinkedId)
                 return false;
 
             var ssComp = new DictionaryComparer<string, string>();
-            if (this.LocalizedBulletPoints != null)
+            if (LocalizedBulletPoints != null)
             {
                 if (col.LocalizedBulletPoints != null)
                 {
@@ -175,29 +175,29 @@ namespace GomLib.Models
                         return false;
                     for (int i = 0; i < col.LocalizedBulletPoints.Count; i++)
                     {
-                        if (!ssComp.Equals(this.LocalizedBulletPoints[i], col.LocalizedBulletPoints[i]))
+                        if (!ssComp.Equals(LocalizedBulletPoints[i], col.LocalizedBulletPoints[i]))
                             return false;
                     }
                 }
             }
-            if (!ssComp.Equals(this.LocalizedName, col.LocalizedName))
+            if (!ssComp.Equals(LocalizedName, col.LocalizedName))
                 return false;
-            if (!ssComp.Equals(this.LocalizedRarityDesc, col.LocalizedRarityDesc))
+            if (!ssComp.Equals(LocalizedRarityDesc, col.LocalizedRarityDesc))
                 return false;
-            if (!ssComp.Equals(this.Localizedunknowntext, col.Localizedunknowntext))
+            if (!ssComp.Equals(Localizedunknowntext, col.Localizedunknowntext))
                 return false;
 
-            if (this.Name != col.Name)
+            if (Name != col.Name)
                 return false;
-            if (this.RarityDesc != col.RarityDesc)
+            if (RarityDesc != col.RarityDesc)
                 return false;
-            if (this.RarityDescId != col.RarityDescId)
+            if (RarityDescId != col.RarityDescId)
                 return false;
-            if (this.RequiredLevel != col.RequiredLevel)
+            if (RequiredLevel != col.RequiredLevel)
                 return false;
-            if (this.Unknowntext != col.Unknowntext)
+            if (Unknowntext != col.Unknowntext)
                 return false;
-            if (this.UnknowntextId != col.UnknowntextId)
+            if (UnknowntextId != col.UnknowntextId)
                 return false;
             return true;
         }

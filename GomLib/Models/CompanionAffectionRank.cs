@@ -36,9 +36,9 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, car)) return true;
 
-            if (this.Affection != car.Affection)
+            if (Affection != car.Affection)
                 return false;
-            if (this.Rank != car.Rank)
+            if (Rank != car.Rank)
                 return false;
             return true;
         }

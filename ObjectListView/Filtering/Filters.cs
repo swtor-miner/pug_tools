@@ -94,7 +94,7 @@ namespace BrightIdeasSoftware
         /// <param name="predicate">The function that will filter objects</param>
         public ModelFilter(Predicate<object> predicate)
         {
-            this.Predicate = predicate;
+            Predicate = predicate;
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace BrightIdeasSoftware
         /// <returns></returns>
         virtual public bool Filter(object modelObject)
         {
-            return this.Predicate == null || this.Predicate(modelObject);
+            return Predicate == null || Predicate(modelObject);
         }
     }
 
@@ -162,10 +162,10 @@ namespace BrightIdeasSoftware
         /// <returns>True if the object is included by the filter</returns>
         virtual public bool Filter(object modelObject)
         {
-            if (this.Filters == null || this.Filters.Count == 0)
+            if (Filters == null || Filters.Count == 0)
                 return true;
 
-            return this.FilterObject(modelObject);
+            return FilterObject(modelObject);
         }
 
         /// <summary>
@@ -202,7 +202,7 @@ namespace BrightIdeasSoftware
         /// <returns>True if the object is included by the filter</returns>
         override public bool FilterObject(object modelObject)
         {
-            foreach (IModelFilter filter in this.Filters)
+            foreach (IModelFilter filter in Filters)
                 if (!filter.Filter(modelObject))
                     return false;
 
@@ -235,7 +235,7 @@ namespace BrightIdeasSoftware
         /// <returns>True if the object is included by the filter</returns>
         override public bool FilterObject(object modelObject)
         {
-            foreach (IModelFilter filter in this.Filters)
+            foreach (IModelFilter filter in Filters)
                 if (filter.Filter(modelObject))
                     return true;
 
@@ -270,8 +270,8 @@ namespace BrightIdeasSoftware
         /// <param name="possibleValues"></param>
         public OneOfFilter(AspectGetterDelegate valueGetter, ICollection possibleValues)
         {
-            this.ValueGetter = valueGetter;
-            this.PossibleValues = new ArrayList(possibleValues);
+            ValueGetter = valueGetter;
+            PossibleValues = new ArrayList(possibleValues);
         }
 
         /// <summary>
@@ -303,16 +303,16 @@ namespace BrightIdeasSoftware
         /// <returns></returns>
         public virtual bool Filter(object modelObject)
         {
-            if (this.ValueGetter == null || this.PossibleValues == null || this.PossibleValues.Count == 0)
+            if (ValueGetter == null || PossibleValues == null || PossibleValues.Count == 0)
                 return false;
 
-            object result = this.ValueGetter(modelObject);
+            object result = ValueGetter(modelObject);
             if (result is string || !(result is IEnumerable enumerable))
-                return this.DoesValueMatch(result);
+                return DoesValueMatch(result);
 
             foreach (object x in enumerable)
             {
-                if (this.DoesValueMatch(x))
+                if (DoesValueMatch(x))
                     return true;
             }
             return false;
@@ -325,7 +325,7 @@ namespace BrightIdeasSoftware
         /// <returns></returns>
         protected virtual bool DoesValueMatch(object result)
         {
-            return this.PossibleValues.Contains(result);
+            return PossibleValues.Contains(result);
         }
     }
 
@@ -346,7 +346,7 @@ namespace BrightIdeasSoftware
         /// <param name="possibleValues"></param>
         public FlagBitSetFilter(AspectGetterDelegate valueGetter, ICollection possibleValues) : base(valueGetter, possibleValues)
         {
-            this.ConvertPossibleValues();
+            ConvertPossibleValues();
         }
 
         /// <summary>
@@ -359,15 +359,15 @@ namespace BrightIdeasSoftware
             set
             {
                 base.PossibleValues = value;
-                this.ConvertPossibleValues();
+                ConvertPossibleValues();
             }
         }
 
         private void ConvertPossibleValues()
         {
-            this.possibleValuesAsUlongs = new List<UInt64>();
-            foreach (object x in this.PossibleValues)
-                this.possibleValuesAsUlongs.Add(Convert.ToUInt64(x));
+            possibleValuesAsUlongs = new List<ulong>();
+            foreach (object x in PossibleValues)
+                possibleValuesAsUlongs.Add(Convert.ToUInt64(x));
         }
 
         /// <summary>
@@ -379,8 +379,8 @@ namespace BrightIdeasSoftware
         {
             try
             {
-                UInt64 value = Convert.ToUInt64(result);
-                foreach (ulong flag in this.possibleValuesAsUlongs)
+                ulong value = Convert.ToUInt64(result);
+                foreach (ulong flag in possibleValuesAsUlongs)
                 {
                     if ((value & flag) == flag)
                         return true;
@@ -397,7 +397,7 @@ namespace BrightIdeasSoftware
             }
         }
 
-        private List<UInt64> possibleValuesAsUlongs = new List<UInt64>();
+        private List<ulong> possibleValuesAsUlongs = new List<ulong>();
     }
 
     /// <summary>
@@ -435,7 +435,7 @@ namespace BrightIdeasSoftware
         /// <param name="function"></param>
         public ListFilter(ListFilterDelegate function)
         {
-            this.Function = function;
+            Function = function;
         }
 
         /// <summary>
@@ -455,10 +455,10 @@ namespace BrightIdeasSoftware
         /// <returns></returns>
         public override IEnumerable Filter(IEnumerable modelObjects)
         {
-            if (this.Function == null)
+            if (Function == null)
                 return modelObjects;
 
-            return this.Function(modelObjects);
+            return Function(modelObjects);
         }
     }
 
@@ -480,7 +480,7 @@ namespace BrightIdeasSoftware
         /// <param name="numberOfObjects"></param>
         public TailFilter(int numberOfObjects)
         {
-            this.Count = numberOfObjects;
+            Count = numberOfObjects;
         }
 
         /// <summary>
@@ -501,16 +501,16 @@ namespace BrightIdeasSoftware
         /// <returns></returns>
         public override IEnumerable Filter(IEnumerable modelObjects)
         {
-            if (this.Count <= 0)
+            if (Count <= 0)
                 return modelObjects;
 
             ArrayList list = ObjectListView.EnumerableToArray(modelObjects, false);
 
-            if (this.Count > list.Count)
+            if (Count > list.Count)
                 return list;
 
-            object[] tail = new object[this.Count];
-            list.CopyTo(list.Count - this.Count, tail, 0, this.Count);
+            object[] tail = new object[Count];
+            list.CopyTo(list.Count - Count, tail, 0, Count);
             return new ArrayList(tail);
         }
     }

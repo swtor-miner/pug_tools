@@ -12,8 +12,8 @@ namespace GomLib.ModelLoader
 
         private StringTable taxiTerminals;
 
-        Dictionary<ulong, Models.MapNote> idMap;
-        Dictionary<string, Models.MapNote> nameMap;
+        Dictionary<ulong, MapNote> idMap;
+        Dictionary<string, MapNote> nameMap;
         readonly DataObjectModel _dom;
 
         public MapNoteLoader(DataObjectModel dom)
@@ -25,8 +25,8 @@ namespace GomLib.ModelLoader
         public void Flush()
         {
             taxiTerminals = null;
-            idMap = new Dictionary<ulong, Models.MapNote>();
-            nameMap = new Dictionary<string, Models.MapNote>();
+            idMap = new Dictionary<ulong, MapNote>();
+            nameMap = new Dictionary<string, MapNote>();
         }
 
         public string ClassName
@@ -34,7 +34,7 @@ namespace GomLib.ModelLoader
             get { return "mpnMapNoteInfo"; }
         }
 
-        public Models.MapNote Load(ulong nodeId)
+        public MapNote Load(ulong nodeId)
         {
             if (idMap.TryGetValue(nodeId, out MapNote result))
             {
@@ -42,11 +42,11 @@ namespace GomLib.ModelLoader
             }
 
             GomObject obj = _dom.GetObject(nodeId);
-            Models.MapNote mpn = new Models.MapNote();
+            MapNote mpn = new MapNote();
             return Load(mpn, obj);
         }
 
-        public Models.MapNote Load(string fqn)
+        public MapNote Load(string fqn)
         {
             if (nameMap.TryGetValue(fqn, out MapNote result))
             {
@@ -54,22 +54,22 @@ namespace GomLib.ModelLoader
             }
 
             GomObject obj = _dom.GetObject(fqn);
-            Models.MapNote mpn = new Models.MapNote();
+            MapNote mpn = new MapNote();
             return Load(mpn, obj);
         }
 
-        public Models.MapNote Load(GomObject obj)
+        public MapNote Load(GomObject obj)
         {
-            Models.MapNote mpn = new Models.MapNote();
+            MapNote mpn = new MapNote();
             return Load(mpn, obj);
         }
 
-        public Models.GameObject CreateObject()
+        public GameObject CreateObject()
         {
-            return new Models.MapNote();
+            return new MapNote();
         }
 
-        public Models.MapNote Load(Models.MapNote mpn, GomObject obj)
+        public MapNote Load(MapNote mpn, GomObject obj)
         {
             if (obj == null) { return null; }
             if (mpn == null) { return null; }
@@ -186,13 +186,13 @@ namespace GomLib.ModelLoader
         //    }
         //}
 
-        public void LoadObject(Models.GameObject loadMe, GomObject obj)
+        public void LoadObject(GameObject loadMe, GomObject obj)
         {
-            GomLib.Models.MapNote mpn = (Models.MapNote)loadMe;
+            MapNote mpn = (MapNote)loadMe;
             Load(mpn, obj);
         }
 
-        public void LoadReferences(Models.GameObject obj, GomObject gom)
+        public void LoadReferences(GameObject obj, GomObject gom)
         {
             if (obj is null)
             {

@@ -22,7 +22,7 @@ namespace GomLib.ModelLoader
             idLookup = new Dictionary<long, ReputationRank>();
         }
 
-        public Models.ReputationRank Load(long id)
+        public ReputationRank Load(long id)
         {
             if (idLookup.Count == 0)
             {
@@ -35,7 +35,7 @@ namespace GomLib.ModelLoader
             return data;
         }
 
-        public Models.ReputationRank Load(Models.ReputationRank rank, GomObjectData obj)
+        public ReputationRank Load(ReputationRank rank, GomObjectData obj)
         {
             if (obj == null) { return rank; }
             if (rank == null) { return null; }

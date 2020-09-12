@@ -41,7 +41,7 @@ namespace GomLib.ModelLoader
             get { return "cnvTree_Prototype"; }
         }
 
-        public Models.Conversation Load(ulong nodeId)
+        public Conversation Load(ulong nodeId)
         {
             if (idMap.TryGetValue(nodeId, out Conversation result))
             {
@@ -53,7 +53,7 @@ namespace GomLib.ModelLoader
             return Load(cnv, obj);
         }
 
-        public Models.Conversation Load(string fqn)
+        public Conversation Load(string fqn)
         {
             if (nameMap.TryGetValue(fqn, out Conversation result))
             {
@@ -65,13 +65,13 @@ namespace GomLib.ModelLoader
             return Load(cnv, obj);
         }
 
-        public Models.Conversation Load(GomObject obj)
+        public Conversation Load(GomObject obj)
         {
             Conversation cnv = new Conversation();
             return Load(cnv, obj);
         }
 
-        public Models.Conversation Load(Models.GameObject obj, GomObject gom)
+        public Conversation Load(GameObject obj, GomObject gom)
         {
             if (gom == null) { return (Conversation)obj; }
 
@@ -172,12 +172,12 @@ namespace GomLib.ModelLoader
                 }
 
                 cnv.AudioLanguageState.Add(fileGroup,
-                    _dom._assets.HasFile(String.Format("/resources/{0}/bnk2/" + cnvPath + ".acb", fileGroup)));
+                    _dom._assets.HasFile(string.Format("/resources/{0}/bnk2/" + cnvPath + ".acb", fileGroup)));
             }
 
-            cnv.IsKOTORStyle = obj.Data.ValueOrDefault<bool>("cnvIsKOTORStyle", false);
+            cnv.IsKOTORStyle = obj.Data.ValueOrDefault("cnvIsKOTORStyle", false);
 
-            var dialogNodeMap = obj.Data.ValueOrDefault<Dictionary<object, object>>("cnvTreeDialogNodes_Prototype", new Dictionary<object, object>());
+            var dialogNodeMap = obj.Data.ValueOrDefault("cnvTreeDialogNodes_Prototype", new Dictionary<object, object>());
             foreach (var dialogKvp in dialogNodeMap)
             {
                 var dialogNode = LoadDialogNode(cnv, (GomObjectData)dialogKvp.Value);
@@ -195,18 +195,18 @@ namespace GomLib.ModelLoader
                 cnv.QuestProgressed.AddRange(dialogNode.QuestsProgressed);
             }
 
-            var treeRootNodeMap = obj.Data.ValueOrDefault<object>("cnvTreeRootNode_Prototype", new object());
-            var rootNodeList = ((GomObjectData)treeRootNodeMap).ValueOrDefault<List<object>>("cnvChildNodes", new List<object>());
+            var treeRootNodeMap = obj.Data.ValueOrDefault("cnvTreeRootNode_Prototype", new object());
+            var rootNodeList = ((GomObjectData)treeRootNodeMap).ValueOrDefault("cnvChildNodes", new List<object>());
             for (int i = 0; i < rootNodeList.Count; i++)
             {
                 long childNodeId = (long)rootNodeList[i];
                 cnv.RootNodes.Add(i, childNodeId);
             }
 
-            var treeLinkNodeMap = obj.Data.ValueOrDefault<Dictionary<object, object>>("cnvTreeLinkNodes_Prototype", new Dictionary<object, object>());
+            var treeLinkNodeMap = obj.Data.ValueOrDefault("cnvTreeLinkNodes_Prototype", new Dictionary<object, object>());
             foreach (var nodeLinkKvp in treeLinkNodeMap)
             {
-                long target = (long)((GomObjectData)nodeLinkKvp.Value).ValueOrDefault<long>("cnvLinkTarget", 0);
+                long target = ((GomObjectData)nodeLinkKvp.Value).ValueOrDefault<long>("cnvLinkTarget", 0);
                 cnv.NodeLinkList.Add((long)nodeLinkKvp.Key, target);
             }
 
@@ -269,8 +269,8 @@ namespace GomLib.ModelLoader
             {
                 foreach (var kvp in CompanionFqnIDBySimpleName)
                 {
-                    var simpleNameId = (long)kvp.Key;
-                    Npc npc = _dom.npcLoader.Load((ulong)kvp.Value);
+                    var simpleNameId = kvp.Key;
+                    Npc npc = _dom.npcLoader.Load(kvp.Value);
                     companionShortNameMap[simpleNameId] = npc;
                 }
             }
@@ -284,14 +284,14 @@ namespace GomLib.ModelLoader
                 NodeId = data.Get<long>("cnvNodeNumber"),
                 MinLevel = (int)data.ValueOrDefault<long>("cnvLevelConditionMin", -1),
                 MaxLevel = (int)data.ValueOrDefault<long>("cnvLevelConditionMax", -1),
-                IsEmpty = data.ValueOrDefault<bool>("cnvIsEmpty", false),
-                IsAmbient = data.ValueOrDefault<bool>("cnvIsAmbient", false),
-                JoinDisabledForHolocom = data.ValueOrDefault<bool>("cnvIsJoinDisabledForHolocom", false),
-                ChoiceDisabledForHolocom = data.ValueOrDefault<bool>("cnvIsVoteWinDisabledForHolocom", false),
-                AbortsConversation = data.ValueOrDefault<bool>("cnvAbortConversation", false),
-                IsPlayerNode = data.ValueOrDefault<bool>("cnvIsPcNode", false),
+                IsEmpty = data.ValueOrDefault("cnvIsEmpty", false),
+                IsAmbient = data.ValueOrDefault("cnvIsAmbient", false),
+                JoinDisabledForHolocom = data.ValueOrDefault("cnvIsJoinDisabledForHolocom", false),
+                ChoiceDisabledForHolocom = data.ValueOrDefault("cnvIsVoteWinDisabledForHolocom", false),
+                AbortsConversation = data.ValueOrDefault("cnvAbortConversation", false),
+                IsPlayerNode = data.ValueOrDefault("cnvIsPcNode", false),
                 GenericNodeNumber = data.ValueOrDefault<long>("cnvGenericNodeNumber", 0),
-                CnvAlienVOFQN = data.ValueOrDefault<string>("cnvAlienVOConvoFQN", string.Empty),
+                CnvAlienVOFQN = data.ValueOrDefault("cnvAlienVOConvoFQN", string.Empty),
                 CnvAlienVONode = data.ValueOrDefault<long>("cnvAlienVONodeNumber", -1),
 
                 ActionHook = data.ValueOrDefault<string>("cnvActionHook", null)
@@ -301,7 +301,7 @@ namespace GomLib.ModelLoader
             long alignmentAmount = data.ValueOrDefault<long>("cnvRewardForceAmount", 0);
             if (alignmentAmount != 0)
             {
-                string forceType = data.ValueOrDefault<ScriptEnum>("cnvRewardForceType", new ScriptEnum()).ToString();
+                string forceType = data.ValueOrDefault("cnvRewardForceType", new ScriptEnum()).ToString();
                 result.AlignmentGain = ConversationAlignmentExtensions.ToConversationAlignment(alignmentAmount, forceType);
             }
 
@@ -419,7 +419,7 @@ namespace GomLib.ModelLoader
             //if (result.IsEmpty) { result.Text = null; }
             else
             {
-                GomObjectData txtData = (GomObjectData)textMap[(long)result.NodeId];
+                GomObjectData txtData = (GomObjectData)textMap[result.NodeId];
                 result.Stb = txtData.Get<string>("strLocalizedTextRetrieverBucket");
                 result.Text = _dom.stringTable.TryGetString(cnv.Fqn, txtData);
                 result.LocalizedText = _dom.stringTable.TryGetLocalizedStrings(cnv.Fqn, txtData);

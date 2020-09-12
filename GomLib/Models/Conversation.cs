@@ -136,7 +136,7 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, cnv)) return true;
 
-            if (this.DefaultSpeakerId != cnv.DefaultSpeakerId)
+            if (DefaultSpeakerId != cnv.DefaultSpeakerId)
                 return false;
             /*if (this.DialogNodes != null) //these are the same nodes as on the NodeLookup list
             {
@@ -153,17 +153,17 @@ namespace GomLib.Models
             else if (cnv.DialogNodes != null)
                 return false;*/
 
-            if (this.Fqn != cnv.Fqn)
+            if (Fqn != cnv.Fqn)
                 return false;
-            if (this.Id != cnv.Id)
+            if (Id != cnv.Id)
                 return false;
 
             var llComp = new DictionaryComparer<long, long>();
-            if (!llComp.Equals(this.NodeLinkList, cnv.NodeLinkList))
+            if (!llComp.Equals(NodeLinkList, cnv.NodeLinkList))
                 return false;
 
             var lDNComp = new DictionaryComparer<long, DialogNode>();
-            if (!lDNComp.Equals(this.NodeLookup, cnv.NodeLookup)) //dunno if this will work
+            if (!lDNComp.Equals(NodeLookup, cnv.NodeLookup)) //dunno if this will work
                 return false;
 
             /*if (this.NodeLookup != null) //this was being done right above this
@@ -183,7 +183,7 @@ namespace GomLib.Models
             else if (cnv.NodeLookup != null)
                 return false;*/
 
-            if (this.Placeables != null)
+            if (Placeables != null)
             {
                 if (cnv.Placeables == null)
                 {
@@ -191,14 +191,14 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<Placeable>(this.Placeables, cnv.Placeables))
+                    if (!Enumerable.SequenceEqual(Placeables, cnv.Placeables))
                         return false;
                 }
             }
             else if (cnv.Placeables != null)
                 return false;
 
-            if (this.QuestEnded != null)
+            if (QuestEnded != null)
             {
                 if (cnv.QuestEnded == null)
                 {
@@ -206,14 +206,14 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<ulong>(this.QuestEnded, cnv.QuestEnded))
+                    if (!Enumerable.SequenceEqual(QuestEnded, cnv.QuestEnded))
                         return false;
                 }
             }
             else if (cnv.QuestEnded != null)
                 return false;
 
-            if (this.QuestProgressed != null)
+            if (QuestProgressed != null)
             {
                 if (cnv.QuestProgressed == null)
                 {
@@ -221,14 +221,14 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<ulong>(this.QuestProgressed, cnv.QuestProgressed))
+                    if (!Enumerable.SequenceEqual(QuestProgressed, cnv.QuestProgressed))
                         return false;
                 }
             }
             else if (cnv.QuestProgressed != null)
                 return false;
 
-            if (this.QuestStarted != null)
+            if (QuestStarted != null)
             {
                 if (cnv.QuestStarted == null)
                 {
@@ -236,7 +236,7 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<ulong>(this.QuestStarted, cnv.QuestStarted))
+                    if (!Enumerable.SequenceEqual(QuestStarted, cnv.QuestStarted))
                         return false;
                 }
             }
@@ -244,10 +244,10 @@ namespace GomLib.Models
                 return false;
 
             var ilComp = new DictionaryComparer<int, long>();
-            if (!ilComp.Equals(this.RootNodes, cnv.RootNodes))
+            if (!ilComp.Equals(RootNodes, cnv.RootNodes))
                 return false;
 
-            if (this.SpeakersIds != null)
+            if (SpeakersIds != null)
             {
                 if (cnv.SpeakersIds == null)
                 {
@@ -255,14 +255,14 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<ulong>(this.SpeakersIds, cnv.SpeakersIds))
+                    if (!Enumerable.SequenceEqual(SpeakersIds, cnv.SpeakersIds))
                         return false;
                 }
             }
             else if (cnv.SpeakersIds != null)
                 return false;
 
-            if (this.IsKOTORStyle != cnv.IsKOTORStyle)
+            if (IsKOTORStyle != cnv.IsKOTORStyle)
             {
                 return false;
             }
@@ -274,7 +274,7 @@ namespace GomLib.Models
         {
             StringBuilder bld = new StringBuilder();
             string n = Environment.NewLine;
-            bld.Append(String.Format("Conversation - {0}{1}", Fqn, n));
+            bld.Append(string.Format("Conversation - {0}{1}", Fqn, n));
             foreach (var dialogNode in DialogNodes)
             {
                 if (SpeakersIds.Contains(dialogNode.SpeakerId))
@@ -289,14 +289,14 @@ namespace GomLib.Models
                         switch (Speakers[speakerId].Fqn.Substring(0, 3))
                         {
                             case "npc":
-                                string name = ((GomLib.Models.Npc)Speakers[speakerId]).Name;
+                                string name = ((Npc)Speakers[speakerId]).Name;
                                 if (name.Length == 0) { name = Speakers[speakerId].Fqn; }
-                                bld.Append(String.Format("{0}: {1} - {2}{3}", dialogNode.NodeId, name, dialogNode.Text, n));
+                                bld.Append(string.Format("{0}: {1} - {2}{3}", dialogNode.NodeId, name, dialogNode.Text, n));
                                 continue;
                             case "plc":
-                                string plcName = ((GomLib.Models.Placeable)Speakers[speakerId]).Name;
+                                string plcName = ((Placeable)Speakers[speakerId]).Name;
                                 if (plcName.Length == 0) { plcName = Speakers[speakerId].Fqn; }
-                                bld.Append(String.Format("{0}: {1} - {2}{3}", dialogNode.NodeId, plcName, dialogNode.Text, n));
+                                bld.Append(string.Format("{0}: {1} - {2}{3}", dialogNode.NodeId, plcName, dialogNode.Text, n));
                                 continue;
                             default:
                                 throw new Exception("Unaccounted for speaker type");
@@ -304,7 +304,7 @@ namespace GomLib.Models
                     }
 
                 }
-                bld.Append(String.Format("{0}: {1}{2}", dialogNode.NodeId, dialogNode.Text, n));
+                bld.Append(string.Format("{0}: {1}{2}", dialogNode.NodeId, dialogNode.Text, n));
             }
             return bld.ToString();
         }

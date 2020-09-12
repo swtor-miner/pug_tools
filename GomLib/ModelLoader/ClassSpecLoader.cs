@@ -99,9 +99,9 @@ namespace GomLib.ModelLoader
 
             spec.Name = classNames.GetText(spec.NameId, obj.Name);
             spec.LocalizedName = classNames.GetLocalizedText(spec.NameId, obj.Name);
-            if (String.IsNullOrEmpty(spec.Name))
+            if (string.IsNullOrEmpty(spec.Name))
             {
-                spec.Name = obj.Data.ValueOrDefault<string>("chrClassDataName", "");
+                spec.Name = obj.Data.ValueOrDefault("chrClassDataName", "");
             }
 
             idMap[obj.Id] = spec;

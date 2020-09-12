@@ -23,7 +23,7 @@ namespace GomLib.ModelLoader
             classNames = null;
         }
 
-        public Models.AdvancedClass Load(GomObject obj)
+        public AdvancedClass Load(GomObject obj)
         {
             if (classNames == null)
             {
@@ -31,7 +31,7 @@ namespace GomLib.ModelLoader
                 classDescriptions = _dom.stringTable.Find("str.gui.classdescriptions");
             }
 
-            Models.AdvancedClass ac = new Models.AdvancedClass
+            AdvancedClass ac = new AdvancedClass
             {
                 Dom_ = _dom,
                 Id = obj.Id,
@@ -56,9 +56,9 @@ namespace GomLib.ModelLoader
             var classBaseTable = ablPackagePrototype.Data.ValueOrDefault<Dictionary<object, object>>("classBaseTable");
             ablPackagePrototype.Unload();
 
-            if (classDisciplinesTable.ContainsKey((object)ac.Id))
+            if (classDisciplinesTable.ContainsKey(ac.Id))
             {
-                var discData = (List<GomObjectData>)((List<object>)classDisciplinesTable[(object)ac.Id]).ConvertAll(x => (GomObjectData)x);
+                var discData = ((List<object>)classDisciplinesTable[ac.Id]).ConvertAll(x => (GomObjectData)x);
 
                 ac.Disciplines = new List<Discipline>();
                 foreach (var disc in discData)
@@ -82,15 +82,15 @@ namespace GomLib.ModelLoader
                     string backupName = nameTable.GetText(backupNameId, "str.gui.abl.player.skill_trees");
                     string unusedString = nameTable.GetText(unusedStringId, "str.gui.abl.player.skill_trees");
                 }
-                if (classBaseTable.ContainsKey((object)ac.Id))
+                if (classBaseTable.ContainsKey(ac.Id))
                 {
-                    var entries = (List<GomObjectData>)((List<object>)classBaseTable[ac.Id]).ConvertAll(x => (GomObjectData)x);
+                    var entries = ((List<object>)classBaseTable[ac.Id]).ConvertAll(x => (GomObjectData)x);
 
                     ac.AdvancedClassPkgIds = new List<ulong>();
                     foreach (var entry in entries)
                         ac.AdvancedClassPkgIds.Add(entry.ValueOrDefault<ulong>("disApcId"));
 
-                    entries = (List<GomObjectData>)((List<object>)classBaseTable[ac.ClassSpecId]).ConvertAll(x => (GomObjectData)x);
+                    entries = ((List<object>)classBaseTable[ac.ClassSpecId]).ConvertAll(x => (GomObjectData)x);
 
                     ac.BaseClassPkgIds = new List<ulong>();
                     foreach (var entry in entries)

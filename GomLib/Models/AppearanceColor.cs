@@ -29,7 +29,7 @@ namespace GomLib.Models
     {
         public static AppearanceColor ToAppearanceColor(this string str)
         {
-            if (String.IsNullOrEmpty(str)) return AppearanceColor.None;
+            if (string.IsNullOrEmpty(str)) return AppearanceColor.None;
             switch (str)
             {
                 case "PURPLE": return AppearanceColor.Purple;

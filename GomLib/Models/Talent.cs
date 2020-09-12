@@ -14,12 +14,12 @@ namespace GomLib.Models
         public ulong NodeId { get; set; }
         [JsonConverter(typeof(LongConverter))]
         public long NameId { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
         [JsonConverter(typeof(LongConverter))]
         public long DescriptionId { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public string Description { get; set; }
         public Dictionary<string, string> LocalizedDescription { get; set; }
 
@@ -36,16 +36,16 @@ namespace GomLib.Models
                 {
                     icon = Icon;
                 }
-                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", icon));
-                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+                var fileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/icons/{0}.dds", icon));
+                return string.Format("{0}_{1}", fileId.ph, fileId.sh);
             }
         }
 
         public List<float> TokenList { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public string DescriptionRank2 { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public string DescriptionRank3 { get; set; }
 
         public static string ParseDescription(Talent tal, string desc)
@@ -84,7 +84,7 @@ namespace GomLib.Models
                         durationList = partialToken.Replace("%d", "").Split('/').ToArray();
                         //console.log(durationList);
 
-                        Int32.TryParse(value.ToString(), out int pValue);
+                        int.TryParse(value.ToString(), out int pValue);
 
                         durationText = "";
                         if (pValue <= 0)
@@ -131,9 +131,9 @@ namespace GomLib.Models
 
                 if (ReferenceEquals(this, std)) return true;
 
-                if (this.OffensiveStats != std.OffensiveStats)
+                if (OffensiveStats != std.OffensiveStats)
                     return false;
-                if (this.DefensiveStats != std.DefensiveStats)
+                if (DefensiveStats != std.DefensiveStats)
                     return false;
                 return true;
             }
@@ -169,15 +169,15 @@ namespace GomLib.Models
             public StatData(DataObjectModel dom, GomObjectData gom)
             {
                 _dom = dom;
-                StatId = gom.ValueOrDefault<ScriptEnum>("talTalentStatName", new ScriptEnum()).Value;
-                Stat = gom.ValueOrDefault<ScriptEnum>("talTalentStatName", new ScriptEnum()).ToString();
+                StatId = gom.ValueOrDefault("talTalentStatName", new ScriptEnum()).Value;
+                Stat = gom.ValueOrDefault("talTalentStatName", new ScriptEnum()).ToString();
                 Value = gom.ValueOrDefault<float>("talTalentStatValue");
-                Modifier = gom.ValueOrDefault<ScriptEnum>("talTalentStatModifier", new ScriptEnum()).ToString().Replace("0x00", "AddToCurrent").Replace("modStatType_", "");
+                Modifier = gom.ValueOrDefault("talTalentStatModifier", new ScriptEnum()).ToString().Replace("0x00", "AddToCurrent").Replace("modStatType_", "");
                 Enabled = gom.ValueOrDefault<bool>("talTalentStatIsEnabled");
                 AffectedNodeId = gom.ValueOrDefault<ulong>("talTalentStatTargetId");
             }
             public int StatId { get; set; }
-            [Newtonsoft.Json.JsonIgnore]
+            [JsonIgnore]
             public string Stat { get; set; }
             public DetailedStat DetStat { get; set; }
             public float Value { get; set; }
@@ -186,7 +186,7 @@ namespace GomLib.Models
             [JsonConverter(typeof(ULongConverter))]
             public ulong AffectedNodeId { get; set; }
             public string AffectedNodeB62Id { get { return (AffectedNodeId != 0) ? AffectedNodeId.ToMaskedBase62() : ""; } }
-            [Newtonsoft.Json.JsonIgnore]
+            [JsonIgnore]
             public Ability AffectedAbility { get { return _dom.abilityLoader.Load(AffectedNodeId); } }
 
             public string Modifier { get; set; }
@@ -208,15 +208,15 @@ namespace GomLib.Models
 
                 if (ReferenceEquals(this, std)) return true;
 
-                if (this.AffectedNodeId != std.AffectedNodeId)
+                if (AffectedNodeId != std.AffectedNodeId)
                     return false;
-                if (this.Enabled != std.Enabled)
+                if (Enabled != std.Enabled)
                     return false;
-                if (this.Modifier != std.Modifier)
+                if (Modifier != std.Modifier)
                     return false;
-                if (this.Stat != std.Stat)
+                if (Stat != std.Stat)
                     return false;
-                if (this.Value != std.Value)
+                if (Value != std.Value)
                     return false;
                 return true;
             }
@@ -245,7 +245,7 @@ namespace GomLib.Models
         {
             int hash = Name.GetHashCode();
             hash ^= Description.GetHashCode();
-            hash ^= this.Icon.GetHashCode();
+            hash ^= Icon.GetHashCode();
             return hash;
         }
 
@@ -266,43 +266,43 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, tal)) return true;
 
-            if (this.Description != tal.Description)
+            if (Description != tal.Description)
                 return false;
-            if (this.DescriptionId != tal.DescriptionId)
+            if (DescriptionId != tal.DescriptionId)
                 return false;
-            if (this.DescriptionRank2 != tal.DescriptionRank2)
+            if (DescriptionRank2 != tal.DescriptionRank2)
                 return false;
-            if (this.DescriptionRank3 != tal.DescriptionRank3)
+            if (DescriptionRank3 != tal.DescriptionRank3)
                 return false;
-            if (this.Fqn != tal.Fqn)
+            if (Fqn != tal.Fqn)
                 return false;
-            if (this.Icon != tal.Icon)
+            if (Icon != tal.Icon)
                 return false;
-            if (this.Id != tal.Id)
+            if (Id != tal.Id)
                 return false;
-            if (this.Name != tal.Name)
+            if (Name != tal.Name)
                 return false;
-            if (this.NameId != tal.NameId)
+            if (NameId != tal.NameId)
                 return false;
-            if (this.NodeId != tal.NodeId)
+            if (NodeId != tal.NodeId)
                 return false;
-            if (this.Ranks != tal.Ranks)
+            if (Ranks != tal.Ranks)
                 return false;
 
-            if (this.RankStats.Count != tal.RankStats.Count)
+            if (RankStats.Count != tal.RankStats.Count)
                 return false;
             else
             {
-                for (int i = 0; i < this.RankStats.Count; i++)
+                for (int i = 0; i < RankStats.Count; i++)
                 {
-                    if (!Enumerable.SequenceEqual<StatData>(this.RankStats[i].DefensiveStats, tal.RankStats[i].DefensiveStats))
+                    if (!Enumerable.SequenceEqual(RankStats[i].DefensiveStats, tal.RankStats[i].DefensiveStats))
                         return false;
-                    if (!Enumerable.SequenceEqual<StatData>(this.RankStats[i].OffensiveStats, tal.RankStats[i].OffensiveStats))
+                    if (!Enumerable.SequenceEqual(RankStats[i].OffensiveStats, tal.RankStats[i].OffensiveStats))
                         return false;
                 }
             }
 
-            if (this.TokenList != null)
+            if (TokenList != null)
             {
                 if (tal.TokenList == null)
                 {
@@ -310,7 +310,7 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<float>(this.TokenList, tal.TokenList))
+                    if (!Enumerable.SequenceEqual(TokenList, tal.TokenList))
                         return false;
                 }
             }
@@ -388,7 +388,7 @@ namespace GomLib.Models
                                 }
                             }
                         }
-                        firstStatList += String.Format("{0}, {1}, {2}, {3}, {4}; ", Dom_.statData.ToStat(stat.Stat), stat.Value, stat.Modifier, stat.Enabled, affectedAbility);
+                        firstStatList += string.Format("{0}, {1}, {2}, {3}, {4}; ", Dom_.statData.ToStat(stat.Stat), stat.Value, stat.Modifier, stat.Enabled, affectedAbility);
                     }
                     rank.Add(new XElement("FirstStatList", firstStatList + "}"));
                     string secondStatList = "{ ";
@@ -409,7 +409,7 @@ namespace GomLib.Models
                                 }
                             }
                         }
-                        secondStatList += String.Format("{0}, {1}, {2}, {3}, {4}; ", Dom_.statData.ToStat(stat.Stat), stat.Value, stat.Modifier, stat.Enabled, affectedAbility);
+                        secondStatList += string.Format("{0}, {1}, {2}, {3}, {4}; ", Dom_.statData.ToStat(stat.Stat), stat.Value, stat.Modifier, stat.Enabled, affectedAbility);
                     }
 
                     rank.Add(new XElement("SecondStatList", secondStatList + "}"));

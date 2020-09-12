@@ -30,7 +30,7 @@ namespace GomLib.Models
         public long MaxHooks { get; set; }
         public Dictionary<long, Room> RoomTable { get; set; }
         public long DiscountMtxSFId { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal MtxStorefrontEntry DiscountMtxSF_ { get; set; }
         public MtxStorefrontEntry DiscountMtxSF
         {
@@ -42,7 +42,7 @@ namespace GomLib.Models
             }
         }
         public long MtxStoreFrontId { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal MtxStorefrontEntry MtxStoreFront_ { get; set; }
         public MtxStorefrontEntry MtxStoreFront
         {
@@ -76,61 +76,61 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, itm)) return true;
 
-            if (this.DefaultOccupancy != itm.DefaultOccupancy)
+            if (DefaultOccupancy != itm.DefaultOccupancy)
                 return false;
-            if (this.DefGuildShOcc != itm.DefGuildShOcc)
+            if (DefGuildShOcc != itm.DefGuildShOcc)
                 return false;
-            if (this.DescId != itm.DescId)
+            if (DescId != itm.DescId)
                 return false;
-            if (this.Description != itm.Description)
+            if (Description != itm.Description)
                 return false;
-            if (!this.DiscountMtxSF.Equals(itm.DiscountMtxSF))
+            if (!DiscountMtxSF.Equals(itm.DiscountMtxSF))
                 return false;
-            if (this.DiscountMtxSFId != itm.DiscountMtxSFId)
+            if (DiscountMtxSFId != itm.DiscountMtxSFId)
                 return false;
-            if (this.FactionPurchaseRestriction != itm.FactionPurchaseRestriction)
+            if (FactionPurchaseRestriction != itm.FactionPurchaseRestriction)
                 return false;
-            if (this.Fqn != itm.Fqn)
+            if (Fqn != itm.Fqn)
                 return false;
-            if (this.GuildShCost != itm.GuildShCost)
+            if (GuildShCost != itm.GuildShCost)
                 return false;
-            if (this.Icon != itm.Icon)
+            if (Icon != itm.Icon)
                 return false;
-            if (this.Id != itm.Id)
+            if (Id != itm.Id)
                 return false;
 
             var ssComp = new DictionaryComparer<string, string>();
-            if (!ssComp.Equals(this.LocalizedDescription, itm.LocalizedDescription))
+            if (!ssComp.Equals(LocalizedDescription, itm.LocalizedDescription))
                 return false;
-            if (!ssComp.Equals(this.LocalizedName, itm.LocalizedName))
-                return false;
-
-            if (this.MaxHooks != itm.MaxHooks)
-                return false;
-            if (this.DefaultHooks != itm.DefaultHooks)
-                return false;
-            if (!this.MtxStoreFront.Equals(itm.MtxStoreFront))
-                return false;
-            if (this.MtxStoreFrontId != itm.MtxStoreFrontId)
-                return false;
-            if (this.Name != itm.Name)
-                return false;
-            if (this.NameId != itm.NameId)
-                return false;
-            if (this.NodeId != itm.NodeId)
-                return false;
-            if (this.PhsId != itm.PhsId)
-                return false;
-            if (this.PlayerShCost != itm.PlayerShCost)
-                return false;
-            if (this.PublicIcon != itm.PublicIcon)
+            if (!ssComp.Equals(LocalizedName, itm.LocalizedName))
                 return false;
 
-            if (this.RoomTable != null)
+            if (MaxHooks != itm.MaxHooks)
+                return false;
+            if (DefaultHooks != itm.DefaultHooks)
+                return false;
+            if (!MtxStoreFront.Equals(itm.MtxStoreFront))
+                return false;
+            if (MtxStoreFrontId != itm.MtxStoreFrontId)
+                return false;
+            if (Name != itm.Name)
+                return false;
+            if (NameId != itm.NameId)
+                return false;
+            if (NodeId != itm.NodeId)
+                return false;
+            if (PhsId != itm.PhsId)
+                return false;
+            if (PlayerShCost != itm.PlayerShCost)
+                return false;
+            if (PublicIcon != itm.PublicIcon)
+                return false;
+
+            if (RoomTable != null)
             {
                 if (itm.RoomTable == null)
                     return false;
-                foreach (var kvp in this.RoomTable)
+                foreach (var kvp in RoomTable)
                 {
                     if (itm.RoomTable.TryGetValue(kvp.Key, out Room prevRoom))
                     {
@@ -146,7 +146,7 @@ namespace GomLib.Models
                 }
             }
 
-            if (this.Type != itm.Type)
+            if (Type != itm.Type)
                 return false;
             return true;
         }
@@ -187,9 +187,9 @@ namespace GomLib.Models
 
         public override string ToString(bool verbose)
         {
-            return String.Join("; ",
+            return string.Join("; ",
                 Name,
-                String.Join(" - ", RoomTable.Values.Select(x => x.Name).ToList()),
+                string.Join(" - ", RoomTable.Values.Select(x => x.Name).ToList()),
                 GuildShCost,
                 PlayerShCost);
         }
@@ -231,7 +231,7 @@ namespace GomLib.Models
 
     public class Room : IEquatable<Room>
     {
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public DataObjectModel _dom;
         public long NameId { get; set; }
         public string Name { get; set; }
@@ -255,7 +255,7 @@ namespace GomLib.Models
         public long PlyrShIncDecs { get; set; }
         public long PlyrShIncOcc { get; set; }
         public long MtxStoreFrontId { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal MtxStorefrontEntry MtxStoreFront_ { get; set; }
         public MtxStorefrontEntry MtxStoreFront
         {
@@ -290,46 +290,46 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, itm)) return true;
 
-            if (this.DescId != itm.DescId)
+            if (DescId != itm.DescId)
                 return false;
-            if (this.Description != itm.Description)
+            if (Description != itm.Description)
                 return false;
-            if (!this.DiscountMtxSF.Equals(itm.DiscountMtxSF))
+            if (!DiscountMtxSF.Equals(itm.DiscountMtxSF))
                 return false;
-            if (this.DiscountMtxSFId != itm.DiscountMtxSFId)
+            if (DiscountMtxSFId != itm.DiscountMtxSFId)
                 return false;
-            if (this.GldShCost != itm.GldShCost)
+            if (GldShCost != itm.GldShCost)
                 return false;
-            if (this.GldShIncDecs != itm.GldShIncDecs)
+            if (GldShIncDecs != itm.GldShIncDecs)
                 return false;
-            if (this.GldShIncOcc != itm.GldShIncOcc)
+            if (GldShIncOcc != itm.GldShIncOcc)
                 return false;
-            if (this.Idx != itm.Idx)
+            if (Idx != itm.Idx)
                 return false;
 
             var ssComp = new DictionaryComparer<string, string>();
-            if (!ssComp.Equals(this.LocalizedDescription, itm.LocalizedDescription))
+            if (!ssComp.Equals(LocalizedDescription, itm.LocalizedDescription))
                 return false;
-            if (!ssComp.Equals(this.LocalizedName, itm.LocalizedName))
+            if (!ssComp.Equals(LocalizedName, itm.LocalizedName))
                 return false;
 
-            if (!this.MtxStoreFront.Equals(itm.MtxStoreFront))
+            if (!MtxStoreFront.Equals(itm.MtxStoreFront))
                 return false;
-            if (this.MtxStoreFrontId != itm.MtxStoreFrontId)
+            if (MtxStoreFrontId != itm.MtxStoreFrontId)
                 return false;
-            if (this.Name != itm.Name)
+            if (Name != itm.Name)
                 return false;
-            if (this.NameId != itm.NameId)
+            if (NameId != itm.NameId)
                 return false;
-            if (this.PlayerShCost != itm.PlayerShCost)
+            if (PlayerShCost != itm.PlayerShCost)
                 return false;
-            if (this.PlyrShIncDecs != itm.PlyrShIncDecs)
+            if (PlyrShIncDecs != itm.PlyrShIncDecs)
                 return false;
-            if (this.PlyrShIncOcc != itm.PlyrShIncOcc)
+            if (PlyrShIncOcc != itm.PlyrShIncOcc)
                 return false;
-            if (this.ReqItmToUnlockId != itm.ReqItmToUnlockId)
+            if (ReqItmToUnlockId != itm.ReqItmToUnlockId)
                 return false;
-            if (this.ReqQty != itm.ReqQty)
+            if (ReqQty != itm.ReqQty)
                 return false;
 
             return true;

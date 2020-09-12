@@ -211,20 +211,20 @@ namespace PugTools
         {
             TreeNode node = treeViewFast1.SelectedNode;
             ArchTreeListItem obj = (ArchTreeListItem)node.Tag;
-            this.Text = "Asset File Table Browser  - " + obj.Id.ToString();
+            Text = "Asset File Table Browser  - " + obj.Id.ToString();
             if (obj.arch != null)
             {
                 HideViewers();
                 ShowLoader();
                 DataTable dt = new DataTable();
-                this.currentArchive = obj.arch;
-                this.currentArchDetails = new Dictionary<string, int>();
-                this.filesTotal = 0;
-                this.filesNamed = 0;
-                this.filesUnnamed = 0;
-                this.filesMissing = 0;
+                currentArchive = obj.arch;
+                currentArchDetails = new Dictionary<string, int>();
+                filesTotal = 0;
+                filesNamed = 0;
+                filesUnnamed = 0;
+                filesMissing = 0;
                 FileListItem.ResetTreeListViewColumns(treeListView1);
-                this.treeListView1.TopItemIndex = 0;
+                treeListView1.TopItemIndex = 0;
                 rootList.Clear();
                 await Task.Run(() => ParseLibFiles());
                 HideLoader();
@@ -238,22 +238,22 @@ namespace PugTools
                 }
                 treeListView1.Sort((BrightIdeasSoftware.OLVColumn)treeListView1.Columns[2], SortOrder.Ascending);
                 treeListView1.Visible = true;
-                double dblCompletion = (double)this.filesNamed / (double)this.filesTotal;
+                double dblCompletion = filesNamed / (double)filesTotal;
                 dt.Columns.Add("Property");
                 dt.Columns.Add("Value");
                 dt.Rows.Add(new string[] { "Archive", obj.arch.FileName.Split('\\').Last().Replace(".tor", "") });
-                dt.Rows.Add(new string[] { "Total Files", String.Format("{0:n0}", filesTotal.ToString()) });
-                dt.Rows.Add(new string[] { "Named Files", String.Format("{0:n0}", filesNamed.ToString()) });
-                dt.Rows.Add(new string[] { "Unnamed Files", String.Format("{0:n0}", filesUnnamed.ToString()) });
-                dt.Rows.Add(new string[] { "Name Completion", String.Format("{0:0.0%}", dblCompletion) });
+                dt.Rows.Add(new string[] { "Total Files", string.Format("{0:n0}", filesTotal.ToString()) });
+                dt.Rows.Add(new string[] { "Named Files", string.Format("{0:n0}", filesNamed.ToString()) });
+                dt.Rows.Add(new string[] { "Unnamed Files", string.Format("{0:n0}", filesUnnamed.ToString()) });
+                dt.Rows.Add(new string[] { "Name Completion", string.Format("{0:0.0%}", dblCompletion) });
 
-                if (this.currentArchDetails.Count > 0)
+                if (currentArchDetails.Count > 0)
                 {
-                    List<string> keys = this.currentArchDetails.Keys.ToList();
+                    List<string> keys = currentArchDetails.Keys.ToList();
                     keys.Sort();
                     foreach (var key in keys)
                     {
-                        dt.Rows.Add(new string[] { key.ToUpper() + " Files", this.currentArchDetails[key].ToString() });
+                        dt.Rows.Add(new string[] { key.ToUpper() + " Files", currentArchDetails[key].ToString() });
                     }
                 }
                 dataGridView1.DataSource = dt;
@@ -269,7 +269,7 @@ namespace PugTools
             }
             else
             {
-                List<TorLib.File> files = this.currentArchive.files;
+                List<TorLib.File> files = currentArchive.files;
                 files.Sort(delegate (TorLib.File x, TorLib.File y)
                 {
                     if (x.FileInfo.Offset > y.FileInfo.Offset)
@@ -317,16 +317,16 @@ namespace PugTools
 
         private void EnableUI()
         {
-            this.dataGridView1.Enabled = true;
-            this.treeViewFast1.Enabled = true;
-            this.treeListView1.Enabled = true;
+            dataGridView1.Enabled = true;
+            treeViewFast1.Enabled = true;
+            treeListView1.Enabled = true;
         }
 
         private void SetStripProgressBarValue(int prog)
         {
             if (InvokeRequired)
             {
-                this.Invoke(new Action<int>(SetStripProgressBarValue), new object[] { prog });
+                Invoke(new Action<int>(SetStripProgressBarValue), new object[] { prog });
                 return;
             }
 
@@ -337,7 +337,7 @@ namespace PugTools
         {
             if (InvokeRequired)
             {
-                this.Invoke(new Action<int>(SetStripProgressBarMax), new object[] { prog });
+                Invoke(new Action<int>(SetStripProgressBarMax), new object[] { prog });
                 return;
             }
 
@@ -348,7 +348,7 @@ namespace PugTools
         {
             if (InvokeRequired)
             {
-                this.Invoke(new Action<ProgressBarStyle>(SetStripProgressBarStyle), new object[] { style });
+                Invoke(new Action<ProgressBarStyle>(SetStripProgressBarStyle), new object[] { style });
                 return;
             }
 
@@ -380,13 +380,13 @@ namespace PugTools
 
         public void SetStatusLabel(string message)
         {
-            if (this.statusStrip1.InvokeRequired)
+            if (statusStrip1.InvokeRequired)
             {
-                this.statusStrip1.Invoke(new Action(() => SetStatusLabel(message)));
+                statusStrip1.Invoke(new Action(() => SetStatusLabel(message)));
             }
             else
             {
-                this.toolStripStatusLabel1.Text = message;
+                toolStripStatusLabel1.Text = message;
             }
         }
 

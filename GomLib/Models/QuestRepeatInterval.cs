@@ -18,7 +18,7 @@ namespace GomLib.Models
     {
         public static QuestRepeatInterval ToQuestRepeatInterval(this string str)
         {
-            if (String.IsNullOrEmpty(str)) { return QuestRepeatInterval.None; }
+            if (string.IsNullOrEmpty(str)) { return QuestRepeatInterval.None; }
 
             switch (str)
             {

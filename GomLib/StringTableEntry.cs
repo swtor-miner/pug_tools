@@ -30,11 +30,11 @@ namespace GomLib
 
             if (ReferenceEquals(this, ste)) return true;
 
-            if (this.Id != ste.Id)
+            if (Id != ste.Id)
                 return false;
 
             var ssComp = new Models.DictionaryComparer<string, string>();
-            if (!ssComp.Equals(this.LocalizedText, ste.LocalizedText))
+            if (!ssComp.Equals(LocalizedText, ste.LocalizedText))
                 return false;
 
             return true;

@@ -45,7 +45,7 @@ namespace PugTools
                 lines.RemoveAt(0);
                 lines.RemoveAt(0);
                 lines.RemoveAt(0);
-                string allLines = String.Join("\n", lines.ToArray());
+                string allLines = string.Join("\n", lines.ToArray());
                 string[] sections = allLines.Split('[');
                 foreach (string section in sections)
                 {
@@ -172,7 +172,7 @@ namespace PugTools
                 lines.RemoveAt(0);
                 lines.RemoveAt(0);
                 lines.RemoveAt(0);
-                string allLines = String.Join("\n", lines.ToArray());
+                string allLines = string.Join("\n", lines.ToArray());
                 string[] sections = allLines.Split('[');
                 foreach (string section in sections)
                 {

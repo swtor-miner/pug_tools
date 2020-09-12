@@ -87,9 +87,9 @@ namespace BrightIdeasSoftware
         /// </remarks>
         [Category("Data"),
         TypeConverter("System.Windows.Forms.Design.DataSourceConverter, System.Design")]
-        public virtual Object DataSource {
-            get { return this.Adapter.DataSource; }
-            set { this.Adapter.DataSource = value; }
+        public virtual object DataSource {
+            get { return Adapter.DataSource; }
+            set { Adapter.DataSource = value; }
         }
 
         /// <summary>
@@ -100,8 +100,8 @@ namespace BrightIdeasSoftware
          Editor("System.Windows.Forms.Design.DataMemberListEditor, System.Design", typeof(UITypeEditor)),
          DefaultValue("")]
         public virtual string DataMember {
-            get { return this.Adapter.DataMember; }
-            set { this.Adapter.DataMember = value; }
+            get { return Adapter.DataMember; }
+            set { Adapter.DataMember = value; }
         }
 
         /// <summary>
@@ -119,8 +119,8 @@ namespace BrightIdeasSoftware
          Description("The name of the property/column that holds the key of a row"),
          DefaultValue(null)]
         public virtual string KeyAspectName {
-            get { return this.Adapter.KeyAspectName; }
-            set { this.Adapter.KeyAspectName = value; }
+            get { return Adapter.KeyAspectName; }
+            set { Adapter.KeyAspectName = value; }
         }
 
         /// <summary>
@@ -142,8 +142,8 @@ namespace BrightIdeasSoftware
          Description("The name of the property/column that holds the key of the parent of a row"),
          DefaultValue(null)]
         public virtual string ParentKeyAspectName {
-            get { return this.Adapter.ParentKeyAspectName; }
-            set { this.Adapter.ParentKeyAspectName = value; }
+            get { return Adapter.ParentKeyAspectName; }
+            set { Adapter.ParentKeyAspectName = value; }
         }
 
         /// <summary>
@@ -167,8 +167,8 @@ namespace BrightIdeasSoftware
         [Browsable(false),
         DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public virtual object RootKeyValue {
-            get { return this.Adapter.RootKeyValue; }
-            set { this.Adapter.RootKeyValue = value; }
+            get { return Adapter.RootKeyValue; }
+            set { Adapter.RootKeyValue = value; }
         }
 
         /// <summary>
@@ -185,8 +185,8 @@ namespace BrightIdeasSoftware
         Description("The parent id value that identifies a row as a root object"),
         DefaultValue(null)]
         public virtual string RootKeyValueString {
-            get { return Convert.ToString(this.Adapter.RootKeyValue); }
-            set { this.Adapter.RootKeyValue = value; }
+            get { return Convert.ToString(Adapter.RootKeyValue); }
+            set { Adapter.RootKeyValue = value; }
         }
 
         /// <summary>
@@ -199,8 +199,8 @@ namespace BrightIdeasSoftware
          Description("Should the keys columns (id and parent id) be shown to the user?"),
          DefaultValue(true)]
         public virtual bool ShowKeyColumns {
-            get { return this.Adapter.ShowKeyColumns; }
-            set { this.Adapter.ShowKeyColumns = value; }
+            get { return Adapter.ShowKeyColumns; }
+            set { Adapter.ShowKeyColumns = value; }
         }
 
         #endregion
@@ -213,8 +213,8 @@ namespace BrightIdeasSoftware
         /// </summary>
         protected TreeDataSourceAdapter Adapter {
             get {
-                if (this.adapter == null)
-                    this.adapter = new TreeDataSourceAdapter(this);
+                if (adapter == null)
+                    adapter = new TreeDataSourceAdapter(this);
                 return adapter;
             }
             set { adapter = value; }

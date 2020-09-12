@@ -15,7 +15,7 @@ namespace GomLib.Models
         {
             get
             {
-                switch (Tooltip.language)
+                switch (language)
                 {
                     case "frMale": return "/fr";
                     case "deMale": return "/de";
@@ -193,7 +193,7 @@ namespace GomLib.Models
             if (itm.Id == 0) return new XElement("div", "Not Found");
 
             XElement tooltip = new XElement("div", new XAttribute("class", "torctip_wrapper"));
-            var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", itm.Icon));
+            var fileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/icons/{0}.dds", itm.Icon));
 
             if (itm != null)
             {
@@ -203,25 +203,25 @@ namespace GomLib.Models
                 );
                 if (itm.AppearanceImperial == itm.AppearanceRepublic)
                     imgelement = new XElement("div",
-                            XClass(String.Format("torctip_image torctip_image_{0}", stringQual)),
+                            XClass(string.Format("torctip_image torctip_image_{0}", stringQual)),
                             new XElement("img",
-                                new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", fileId.ph, fileId.sh)),
+                                new XAttribute("src", string.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", fileId.ph, fileId.sh)),
                                 new XAttribute("alt", "")
                             )
                         );
                 else
                 {
-                    var repfileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", itm.RepublicIcon));
-                    var impfileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", itm.ImperialIcon));
+                    var repfileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/icons/{0}.dds", itm.RepublicIcon));
+                    var impfileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/icons/{0}.dds", itm.ImperialIcon));
                     imgelement.Add(
                         new XElement("span",
                             XClass("torctip_app_faction_imp torctip_lc"),
                             GetLocalizedText(1173582633762817, Tooltip.language)
                         ),
                         new XElement("div",
-                            XClass(String.Format("torctip_image torctip_image_{0} torctip_lc", stringQual)),
+                            XClass(string.Format("torctip_image torctip_image_{0} torctip_lc", stringQual)),
                             new XElement("img",
-                                new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", impfileId.ph, impfileId.sh)),
+                                new XAttribute("src", string.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", impfileId.ph, impfileId.sh)),
                                 new XAttribute("alt", "")
                             )
                         ),
@@ -230,9 +230,9 @@ namespace GomLib.Models
                             GetLocalizedText(1173582633762818, Tooltip.language)
                         ),
                         new XElement("div",
-                            XClass(String.Format("torctip_image torctip_image_{0} torctip_lc", stringQual)),
+                            XClass(string.Format("torctip_image torctip_image_{0} torctip_lc", stringQual)),
                             new XElement("img",
-                                new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", repfileId.ph, repfileId.sh)),
+                                new XAttribute("src", string.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", repfileId.ph, repfileId.sh)),
                                 new XAttribute("alt", "")
                             )
                         )
@@ -255,7 +255,7 @@ namespace GomLib.Models
             XElement tooltip = new XElement("div",
                 XClass("torctip_tooltip"),
                 new XElement("span",
-                    XClass(String.Format("torctip_{0}", stringQual)),
+                    XClass(string.Format("torctip_{0}", stringQual)),
                     itm.LocalizedName[Tooltip.language])
                 );
             //MTX
@@ -272,7 +272,7 @@ namespace GomLib.Models
                 string repName = "";
                 if (itm.LocalizedRepFactionDictionary["Imperial"][Tooltip.language] != itm.LocalizedRepFactionDictionary["Republic"][Tooltip.language])
                 {
-                    repName = String.Format("{0} / {1}", itm.LocalizedRepFactionDictionary["Imperial"][Tooltip.language], itm.LocalizedRepFactionDictionary["Republic"][Tooltip.language]);
+                    repName = string.Format("{0} / {1}", itm.LocalizedRepFactionDictionary["Imperial"][Tooltip.language], itm.LocalizedRepFactionDictionary["Republic"][Tooltip.language]);
                 }
                 else
                     repName = itm.LocalizedRepFactionDictionary["Imperial"][Tooltip.language];
@@ -296,7 +296,7 @@ namespace GomLib.Models
                         new XElement("div",
                             GetLocalizedText(836131348283395 + (int)itm.GiftType)),
                         new XElement("div",
-                            String.Format("{0} {1}", GetLocalizedText(836131348283411), itm.GiftRankNum)) //Rank
+                            string.Format("{0} {1}", GetLocalizedText(836131348283411), itm.GiftRankNum)) //Rank
                         );
 
                 }
@@ -349,14 +349,14 @@ namespace GomLib.Models
                 {
                     name = itm.DyeColor.LocalizedColorName[Tooltip.language];
                 }
-                string blks = String.Format("{0} {{0}} ({1})", name, GetLocalizedText(836131348283461));
+                string blks = string.Format("{0} {{0}} ({1})", name, GetLocalizedText(836131348283461));
                 switch (itm.EnhancementType)
                 {
                     case EnhancementType.Dye:
-                        blks = String.Format(blks, GetLocalizedText(1173453784744196));
+                        blks = string.Format(blks, GetLocalizedText(1173453784744196));
                         break;
                     case EnhancementType.ColorCrystal:
-                        blks = String.Format(blks, GetLocalizedText(1173453784743941));
+                        blks = string.Format(blks, GetLocalizedText(1173453784743941));
                         break;
                 }
                 tooltip.Add(new XElement("div",
@@ -379,7 +379,7 @@ namespace GomLib.Models
             {
                 tooltip.Add(new XElement("div",
                     XClass("torctip_main"),
-                    String.Join(", ", itm.Slots.Select(x => x.ConvertToString(Tooltip.language)).Where(x => x != null).ToList())
+                    string.Join(", ", itm.Slots.Select(x => x.ConvertToString(Tooltip.language)).Where(x => x != null).ToList())
                     ));
                 isEquipable = true;
             }
@@ -433,7 +433,7 @@ namespace GomLib.Models
                 {
                     // string dosomething = ""; //suppress for now, break here to debug
                 }
-                string replaceString = String.Format(" {{0}} {0} {1}", GetLocalizedText(836131348283440), localizedRating);
+                string replaceString = string.Format(" {{0}} {0} {1}", GetLocalizedText(836131348283440), localizedRating);
                 string dType = itm.WeaponSpec.DamageType;
                 switch (dType)
                 {
@@ -461,7 +461,7 @@ namespace GomLib.Models
                     new XElement("span",
                         XClass("torctip_maxDam"),
                         max.ToString("0.0")),
-                    String.Format(replaceString, dType, itm.CombinedRating) // " {0} Damage (Rating {1})"
+                    string.Format(replaceString, dType, itm.CombinedRating) // " {0} Damage (Rating {1})"
                     ));
             }
             else if (isEquipable)
@@ -511,17 +511,17 @@ namespace GomLib.Models
                     if (absorbchance > 0)
                         tooltip.Add(new XElement("div",
                             XClass("torctip_main"),
-                            String.Format(GetLocalizedText(836131348283463), (absorbchance * 100).ToString("n1")) //"Shield Absorb: {0}%"
+                            string.Format(GetLocalizedText(836131348283463), (absorbchance * 100).ToString("n1")) //"Shield Absorb: {0}%"
                             ));
                     if (shieldchance > 0)
                         tooltip.Add(new XElement("div",
                             XClass("torctip_main"),
-                            String.Format(GetLocalizedText(836131348283464), (shieldchance * 100).ToString("n1")) //"Shield Chance: {0}%"
+                            string.Format(GetLocalizedText(836131348283464), (shieldchance * 100).ToString("n1")) //"Shield Chance: {0}%"
                             ));
-                    string ratingReplace = String.Format("{{0}} {0}", localizedRating);
+                    string ratingReplace = string.Format("{{0}} {0}", localizedRating);
                     tooltip.Add(new XElement("div",
                         XClass("torctip_main"),
-                        String.Format(ratingReplace, shield.LocalizedName[Tooltip.language], itm.CombinedRating) //"{0} (Rating {1})"
+                        string.Format(ratingReplace, shield.LocalizedName[Tooltip.language], itm.CombinedRating) //"{0} (Rating {1})"
                         ));
                 }
                 ArmorSpec arm = itm.ArmorSpec;
@@ -529,10 +529,10 @@ namespace GomLib.Models
                 {
                     if (arm.DebugSpecName == "adaptive")
                     {
-                        string adapRepString = String.Format("{0} {1}", GetLocalizedText(836131348283702), localizedRating.Replace("1", "0"));
+                        string adapRepString = string.Format("{0} {1}", GetLocalizedText(836131348283702), localizedRating.Replace("1", "0"));
                         tooltip.Add(new XElement("div",
                             XClass("torctip_main"),
-                            String.Format(adapRepString, itm.CombinedRating) //"Adaptive Armor (Rating {0})"
+                            string.Format(adapRepString, itm.CombinedRating) //"Adaptive Armor (Rating {0})"
                             ));
                     }
                     else
@@ -553,10 +553,10 @@ namespace GomLib.Models
 
                             if (armor > 0)
                             {
-                                string armRepString = String.Format("{{0}} {0} {1}", GetLocalizedText(836131348283506), localizedRating);
+                                string armRepString = string.Format("{{0}} {0} {1}", GetLocalizedText(836131348283506), localizedRating);
                                 tooltip.Add(new XElement("div",
                                     XClass("torctip_main"),
-                                    String.Format(armRepString, armor, itm.CombinedRating) //"{0} Armor (Rating {1})"
+                                    string.Format(armRepString, armor, itm.CombinedRating) //"{0} Armor (Rating {1})"
                                     ));
                             }
                         }
@@ -569,7 +569,7 @@ namespace GomLib.Models
                 else if (itm.CombinedRating != 0)
                     tooltip.Add(new XElement("div",
                         XClass("torctip_main"),
-                        String.Format("{0} {1}", GetLocalizedText(836131348284091), itm.CombinedRating) // "Item Rating {0}"
+                        string.Format("{0} {1}", GetLocalizedText(836131348284091), itm.CombinedRating) // "Item Rating {0}"
                         ));
             }
             /*else if (itm.CombinedRating != 0)
@@ -582,7 +582,7 @@ namespace GomLib.Models
             {
                 tooltip.Add(new XElement("div",
                     XClass("torctip_main"),
-                    String.Format("{0}: {1}/{1}", GetLocalizedText(836131348283439), itm.MaxDurability) //"Durability: {0}/{0}"
+                    string.Format("{0}: {1}/{1}", GetLocalizedText(836131348283439), itm.MaxDurability) //"Durability: {0}/{0}"
                     ));
             }
             //stats
@@ -602,7 +602,7 @@ namespace GomLib.Models
                         case EnhancementType.Harness:
                             stats.Add(new XElement("div",
                                XClass("torctip_stat"),
-                               String.Format("{0} {1}", GetLocalizedText(836131348283474), itm.CombinedRating) //"Armor Rating {0}"
+                               string.Format("{0} {1}", GetLocalizedText(836131348283474), itm.CombinedRating) //"Armor Rating {0}"
                             ));
                             break;
                         case EnhancementType.Barrel:
@@ -610,13 +610,13 @@ namespace GomLib.Models
                         case EnhancementType.PowerCrystal:
                             stats.Add(new XElement("div",
                                XClass("torctip_stat"),
-                               String.Format("{0} {1}", GetLocalizedText(836131348283475), itm.CombinedRating) //"Weapon Damage/Power Rating {0}"
+                               string.Format("{0} {1}", GetLocalizedText(836131348283475), itm.CombinedRating) //"Weapon Damage/Power Rating {0}"
                             ));
                             break;
                         default:
                             stats.Add(new XElement("div",
                                XClass("torctip_stat"),
-                               String.Format("{0} {1}", GetLocalizedText(836131348284091), itm.CombinedRating) //"Item Rating {0}"
+                               string.Format("{0} {1}", GetLocalizedText(836131348284091), itm.CombinedRating) //"Item Rating {0}"
                             ));
                             break;
                     }
@@ -628,19 +628,19 @@ namespace GomLib.Models
                         stats.Add(new XElement("div",
                             XClass("torctip_stat"),
                             //new XAttribute("id", String.Format("torctip_stat_{0}", i)),
-                            String.Format("+{0} {1}", itm.CombinedStatModifiers[i].Modifier, itm.CombinedStatModifiers[i].DetailedStat.LocalizedDisplayName[Tooltip.language])));
+                            string.Format("+{0} {1}", itm.CombinedStatModifiers[i].Modifier, itm.CombinedStatModifiers[i].DetailedStat.LocalizedDisplayName[Tooltip.language])));
                     }
                 }
                 if (techpower > 0)
                     stats.Add(new XElement("div",
                         XClass("torctip_stat"),
                         //new XAttribute("id", "torctip_stat_tech"),
-                        String.Format("+{0} {1}", techpower, itm.Dom_.statData.ToStat("STAT_rtg_tech_power").LocalizedDisplayName[Tooltip.language])));
+                        string.Format("+{0} {1}", techpower, itm.Dom_.statData.ToStat("STAT_rtg_tech_power").LocalizedDisplayName[Tooltip.language])));
                 if (forcepower > 0)
                     stats.Add(new XElement("div",
                         XClass("torctip_stat"),
                         //new XAttribute("id", "torctip_stat_force"),
-                        String.Format("+{0} {1}", forcepower, itm.Dom_.statData.ToStat("STAT_rtg_force_power").LocalizedDisplayName[Tooltip.language])));
+                        string.Format("+{0} {1}", forcepower, itm.Dom_.statData.ToStat("STAT_rtg_force_power").LocalizedDisplayName[Tooltip.language])));
                 tooltip.Add(stats);
             }
             //Modifications
@@ -651,7 +651,7 @@ namespace GomLib.Models
                     XClass("torctip_mods"),
                     new XElement("span",
                         XClass("torctip_white"),
-                        String.Format("{0}:", GetLocalizedText(836131348283461))) //"Item Modifications:"
+                        string.Format("{0}:", GetLocalizedText(836131348283461))) //"Item Modifications:"
                     );
 
                 Dictionary<string, XElement> enhancements = new Dictionary<string, XElement>();
@@ -663,7 +663,7 @@ namespace GomLib.Models
                     else if (itm.EnhancementSlots[i].Modification != null && itm.EnhancementSlots[i].Modification.AuctionSubCategory != null)
                         enhName = itm.EnhancementSlots[i].Modification.AuctionSubCategory.LocalizedName[Tooltip.language];
 
-                    if (String.IsNullOrWhiteSpace(enhName))
+                    if (string.IsNullOrWhiteSpace(enhName))
                         enhName = itm.EnhancementSlots[i].Slot.ToString();
 
                     enhancements.Add(enhName, itm.EnhancementSlots[i].ToHTML());
@@ -707,13 +707,13 @@ namespace GomLib.Models
             string reqParanString = GetLocalizedText(836131348283395);  //"Requires {0} ({1})"
             string reqString = GetLocalizedText(836131348283394);  //"Requires {0}"
             if (itm.RequiredLevel != 0)
-                tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format(GetLocalizedText(836131348283393), itm.RequiredLevel))); //"Requires Level {0}"
+                tooltip.Add(new XElement("div", XClass("torctip_main"), string.Format(GetLocalizedText(836131348283393), itm.RequiredLevel))); //"Requires Level {0}"
             if (itm.RequiredClasses != null && itm.RequiredClasses.Count != 0)
-                tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format(reqString, String.Join(",", itm.RequiredClasses.Select(x => x.Name))))); //"Requires {0}"
+                tooltip.Add(new XElement("div", XClass("torctip_main"), string.Format(reqString, string.Join(",", itm.RequiredClasses.Select(x => x.Name))))); //"Requires {0}"
             if (itm.ArmorSpec != null)
-                tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format(reqString, itm.ArmorSpec.LocalizedName[Tooltip.language]))); //"Requires {0}"
+                tooltip.Add(new XElement("div", XClass("torctip_main"), string.Format(reqString, itm.ArmorSpec.LocalizedName[Tooltip.language]))); //"Requires {0}"
             if (itm.WeaponSpec != null && itm.WeaponSpec.LocalizedName != null)
-                tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format(reqString, itm.WeaponSpec.LocalizedName[Tooltip.language]))); //"Requires {0}"
+                tooltip.Add(new XElement("div", XClass("torctip_main"), string.Format(reqString, itm.WeaponSpec.LocalizedName[Tooltip.language]))); //"Requires {0}"
             if (itm.RequiredGender != Gender.None)
             {
                 string genderString = "";
@@ -729,12 +729,12 @@ namespace GomLib.Models
                 tooltip.Add(new XElement("div", XClass("torctip_main"), genderString));
             }
             if (itm.RequiredProfession != Profession.None)
-                tooltip.Add(new XElement("div", XClass("torctip_main"), String.Format(reqParanString, itm.RequiredProfession.ConvertToString(), itm.RequiredProfessionLevel))); //"Requires {0} ({1})"
+                tooltip.Add(new XElement("div", XClass("torctip_main"), string.Format(reqParanString, itm.RequiredProfession.ConvertToString(), itm.RequiredProfessionLevel))); //"Requires {0} ({1})"
             if (itm.RequiredValorRank > 0)
             {
                 tooltip.Add(new XElement("div",
                     XClass("torctip_main"),
-                    String.Format(reqParanString, GetLocalizedText(836131348283505), itm.RequiredValorRank) //"Requires Valor Rank ({0})"
+                    string.Format(reqParanString, GetLocalizedText(836131348283505), itm.RequiredValorRank) //"Requires Valor Rank ({0})"
                     ));
             }
             if (itm.RequiresAlignment)
@@ -745,23 +745,23 @@ namespace GomLib.Models
                 {
                     tooltip.Add(new XElement("div",
                         XClass("torctip_main"),
-                        String.Format(alignment, tier.LocalizedName[Tooltip.language]) //"Requires {0} {1}{2}"
+                        string.Format(alignment, tier.LocalizedName[Tooltip.language]) //"Requires {0} {1}{2}"
                         ));
                 }
                 else
                 {
                     tooltip.Add(new XElement("div",
                         XClass("torctip_main"),
-                        String.Format(alignment, itm.RequiredAlignmentTier) //"Requires {0} {1}{2}"
+                        string.Format(alignment, itm.RequiredAlignmentTier) //"Requires {0} {1}{2}"
                         ));
                 }
             }
             if (itm.RequiresSocial)
             {
-                SocialTier soc = itm.Dom_.socialTierData.ToTier((int)itm.RequiredSocialTier);
+                SocialTier soc = itm.Dom_.socialTierData.ToTier(itm.RequiredSocialTier);
                 tooltip.Add(new XElement("div",
                     XClass("torctip_main"),
-                    String.Format(GetLocalizedText(836131348283656), soc.LocalizedName[Tooltip.language]) //"Requires Social {0} or above"
+                    string.Format(GetLocalizedText(836131348283656), soc.LocalizedName[Tooltip.language]) //"Requires Social {0} or above"
                     ));
             }
 
@@ -770,7 +770,7 @@ namespace GomLib.Models
                 string repString = GetLocalizedText(836131348283738, Tooltip.language, "Requires {1} standing with {0}");
                 tooltip.Add(new XElement("div",
                     XClass("torctip_main"),
-                    String.Format(repString, (itm.LocalizedRequiredReputationLevelName != null) ? itm.LocalizedRequiredReputationLevelName[Tooltip.language] : "unknown", itm.LocalizedRepFactionName[Tooltip.language]) //"Requires {1} standing with {0}"
+                    string.Format(repString, (itm.LocalizedRequiredReputationLevelName != null) ? itm.LocalizedRequiredReputationLevelName[Tooltip.language] : "unknown", itm.LocalizedRepFactionName[Tooltip.language]) //"Requires {1} standing with {0}"
                     ));
             }
             //decoration before abilities
@@ -784,7 +784,7 @@ namespace GomLib.Models
                             GetLocalizedText(836131348284096)), //"Stronghold Decoration: "
                         new XElement("span",
                             XClass("torctip_val"),
-                            String.Format("{0} - {1}", itm.Decoration.CategoryName, itm.Decoration.SubCategoryName))
+                            string.Format("{0} - {1}", itm.Decoration.CategoryName, itm.Decoration.SubCategoryName))
                     ),
                     new XElement("div",
                         XClass("torctip_main"),
@@ -793,7 +793,7 @@ namespace GomLib.Models
                             GetLocalizedText(836131348284097)), // "Hook Type: "
                         new XElement("span",
                             XClass("torctip_val"),
-                            String.Join(", ", itm.Decoration.AvailableHooks))
+                            string.Join(", ", itm.Decoration.AvailableHooks))
                     ),
                     new XElement("div",
                         XClass("torctip_main"),
@@ -802,7 +802,7 @@ namespace GomLib.Models
                             GetLocalizedText(836131348284098)), //"You own: "
                         new XElement("span",
                             XClass("torctip_val"),
-                            String.Format("0/{0}", itm.Decoration.MaxUnlockLimit))
+                            string.Format("0/{0}", itm.Decoration.MaxUnlockLimit))
                     )
                 );
             }
@@ -820,7 +820,7 @@ namespace GomLib.Models
                             GetLocalizedText(836131348283442)); //"Equip: "
                         XElement link = new XElement("a",
                             new XAttribute("href",
-                                String.Format("https://torcommunity.com{2}/database/item/{0}/{1}/",
+                                string.Format("https://torcommunity.com{2}/database/item/{0}/{1}/",
                                     itm.EquipAbility.Base62Id,
                                     itm.EquipAbility.LocalizedName[Tooltip.language].LinkString(),
                                     Tooltip.LinkLocal)),
@@ -847,7 +847,7 @@ namespace GomLib.Models
                                         XClass("torctip_item"),
                                         new XElement("div",
                                             XClass("torctip_main"),
-                                            String.Format(reqParanString, itm.Schematic.LocalizedCrewSkillName[Tooltip.language], itm.Schematic.SkillOrange), //"Requires {0} ({1})"
+                                            string.Format(reqParanString, itm.Schematic.LocalizedCrewSkillName[Tooltip.language], itm.Schematic.SkillOrange), //"Requires {0} ({1})"
                                             ItemInnerHTML(itm.Schematic.Item))
                                         ));
                                 }
@@ -857,7 +857,7 @@ namespace GomLib.Models
                                         XClass("torctip_mission"),
                                         new XElement("div",
                                             XClass("torctip_main"),
-                                            String.Format(reqParanString, itm.Schematic.LocalizedCrewSkillName[Tooltip.language], itm.Schematic.SkillOrange)), //"Requires {0} ({1})"
+                                            string.Format(reqParanString, itm.Schematic.LocalizedCrewSkillName[Tooltip.language], itm.Schematic.SkillOrange)), //"Requires {0} ({1})"
                                         new XElement("div",
                                             XClass("torctip_mission_name"),
                                             itm.Schematic.LocalizedName[Tooltip.language]),
@@ -877,7 +877,7 @@ namespace GomLib.Models
                             break;
                         default:
                             if (itm.UseAbility.Fqn != null)
-                                if (itm.UseAbility.Fqn.StartsWith("abl.player.") && String.IsNullOrEmpty(itm.UseAbility.LocalizedDescription[Tooltip.language]))
+                                if (itm.UseAbility.Fqn.StartsWith("abl.player.") && string.IsNullOrEmpty(itm.UseAbility.LocalizedDescription[Tooltip.language]))
                                 {
                                     // string puasehere = "";
                                 }
@@ -894,10 +894,10 @@ namespace GomLib.Models
                             {
                                 XElement desc = new XElement("div",
                                     XClass("torctip_use"),
-                                    String.Format("{0} ", GetLocalizedText(836131348283443))); //"Use: ");
+                                    string.Format("{0} ", GetLocalizedText(836131348283443))); //"Use: ");
                                 XElement link = new XElement("a",
                                         new XAttribute("href",
-                                            String.Format("https://torcommunity.com{2}/database/ability/{0}/{1}/",
+                                            string.Format("https://torcommunity.com{2}/database/ability/{0}/{1}/",
                                                 itm.UseAbility.Base62Id,
                                                 itm.UseAbility.LocalizedName[Tooltip.language].LinkString(),
                                                 Tooltip.LinkLocal)),
@@ -930,7 +930,7 @@ namespace GomLib.Models
                     {
                         tooltip.Add(new XElement("div",
                             XClass("torctip_source"),
-                            String.Format(GetLocalizedText(946314439295249), ((kvp.Value != null) ? kvp.Value[Tooltip.language] : "unknown")) // "Source: {0}"
+                            string.Format(GetLocalizedText(946314439295249), ((kvp.Value != null) ? kvp.Value[Tooltip.language] : "unknown")) // "Source: {0}"
                         ));
                     }
                 }
@@ -965,10 +965,10 @@ namespace GomLib.Models
                     enhancement.Add(new XElement("div",
                         XClass("torctip_mslot"),
                         new XElement("a",
-                            XClass(String.Format("torctip_{0}", itm.Modification.Quality.ToString())),
-                            new XAttribute("href", String.Format("https://torcommunity.com{2}/database/item/{0}/{1}/", itm.Modification.Base62Id, itm.Modification.LocalizedName[Tooltip.language].LinkString(), Tooltip.LinkLocal)),
+                            XClass(string.Format("torctip_{0}", itm.Modification.Quality.ToString())),
+                            new XAttribute("href", string.Format("https://torcommunity.com{2}/database/item/{0}/{1}/", itm.Modification.Base62Id, itm.Modification.LocalizedName[Tooltip.language].LinkString(), Tooltip.LinkLocal)),
                             new XAttribute("data-torc", "norestyle"),
-                            String.Format("{0} ({1})", slot, itm.Modification.Rating.ToString()),
+                            string.Format("{0} ({1})", slot, itm.Modification.Rating.ToString()),
                             colors)
                         ));
                 }
@@ -977,10 +977,10 @@ namespace GomLib.Models
                     enhancement.Add(new XElement("div",
                     XClass("torctip_mslot"),
                     new XElement("a",
-                        XClass(String.Format("torctip_{0}", itm.Modification.Quality.ToString())),
-                        new XAttribute("href", String.Format("https://torcommunity.com{2}/database/item/{0}/{1}/", itm.Modification.Base62Id, itm.Modification.LocalizedName[Tooltip.language].LinkString(), Tooltip.LinkLocal)),
+                        XClass(string.Format("torctip_{0}", itm.Modification.Quality.ToString())),
+                        new XAttribute("href", string.Format("https://torcommunity.com{2}/database/item/{0}/{1}/", itm.Modification.Base62Id, itm.Modification.LocalizedName[Tooltip.language].LinkString(), Tooltip.LinkLocal)),
                         new XAttribute("data-torc", "norestyle"),
-                        String.Format("{0} ({1})", slot, itm.Modification.Rating.ToString()))
+                        string.Format("{0} ({1})", slot, itm.Modification.Rating.ToString()))
                     ));
                 }
 
@@ -988,7 +988,7 @@ namespace GomLib.Models
                 {
                     enhancement.Add(new XElement("div",
                         XClass("torctip_mstat"),
-                        String.Format("+{0} {1}", itm.Modification.CombinedStatModifiers[e].Modifier, itm.Modification.CombinedStatModifiers[e].DetailedStat.LocalizedDisplayName[Tooltip.language])
+                        string.Format("+{0} {1}", itm.Modification.CombinedStatModifiers[e].Modifier, itm.Modification.CombinedStatModifiers[e].DetailedStat.LocalizedDisplayName[Tooltip.language])
                         ));
                 }
             }
@@ -998,7 +998,7 @@ namespace GomLib.Models
                 string repString = GetLocalizedText(836131348283476); // "{0}: Open"
                 enhancement.Add(new XElement("div",
                         XClass("torctip_mslot"),
-                        String.Format(repString, slot)
+                        string.Format(repString, slot)
                     ));
             }
             return enhancement;
@@ -1008,7 +1008,7 @@ namespace GomLib.Models
         {
             if (color.Name != "0")
             {
-                string color2 = String.Format("background-color: rgba({0}, {1}, {2}, {3}); box-shadow: 0px 0px 2px;",
+                string color2 = string.Format("background-color: rgba({0}, {1}, {2}, {3}); box-shadow: 0px 0px 2px;",
                     (int)color.R,
                     (int)color.G,
                     (int)color.B,
@@ -1030,7 +1030,7 @@ namespace GomLib.Models
             if (itm == null) return new XElement("div", "set bonus not found");
             if (itm.LocalizedNameStrings != null)
                 itm.LocalizedNameStrings.TryGetValue(Tooltip.language, out name);
-            if (!String.IsNullOrEmpty(name))
+            if (!string.IsNullOrEmpty(name))
             {
                 name = "Unnamed Set Bonus";
             }
@@ -1038,9 +1038,9 @@ namespace GomLib.Models
                 XClass("torctip_set_wrapper"),
                 new XElement("div",
                     XClass("torctip_set_name"),
-                    new XElement("span", String.Format("{0} (", name)),
+                    new XElement("span", string.Format("{0} (", name)),
                     new XElement("span", new XAttribute("id", "set_count"), 1),
-                    new XElement("span", String.Format("/{0})", itm.MaxItemCount))
+                    new XElement("span", string.Format("/{0})", itm.MaxItemCount))
                 ));
 
             //add item list here eventually
@@ -1048,7 +1048,7 @@ namespace GomLib.Models
             {
                 enhancement.Add(new XElement("div",
                     XClass("torctip_set_bonus"),
-                    String.Format("({0}) {1}", kvp.Key, kvp.Value.ParsedLocalizedDescription[Tooltip.language].Replace("\'", "'"))
+                    string.Format("({0}) {1}", kvp.Key, kvp.Value.ParsedLocalizedDescription[Tooltip.language].Replace("\'", "'"))
                     ));
             }
             return enhancement;
@@ -1069,7 +1069,7 @@ namespace GomLib.Models
             {
                 stringQual = ((itm.Item.TypeBitFlags.IsModdable && (itm.Item.Quality == ItemQuality.Prototype)) ? "moddable" : itm.Item.Quality.ToString().ToLower());
                 icon = itm.Item.Icon;
-                if (String.IsNullOrEmpty(itm.Name))
+                if (string.IsNullOrEmpty(itm.Name))
                 {
                     itm.Name = itm.Item.Name;
                 }
@@ -1080,19 +1080,19 @@ namespace GomLib.Models
             }
 
             XElement tooltip = new XElement("div", new XAttribute("class", "torctip_wrapper"));
-            var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", icon));
+            var fileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/icons/{0}.dds", icon));
 
             if (itm != null)
             {
                 tooltip.Add(new XElement("div",
-                    new XAttribute("class", String.Format("torctip_image torctip_image_{0}", stringQual)),
+                    new XAttribute("class", string.Format("torctip_image torctip_image_{0}", stringQual)),
                     new XElement("img",
-                        new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", fileId.ph, fileId.sh)),
+                        new XAttribute("src", string.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", fileId.ph, fileId.sh)),
                         new XAttribute("alt", ""))),
                     new XElement("div",
                         new XAttribute("class", "torctip_name"),
                         new XElement("a",
-                            new XAttribute("href", String.Format("https://torcommunity.com{2}/database/item/{0}/{1}/", itm.Base62Id, ((itm.LocalizedName != null) ? itm.LocalizedName[Tooltip.language] : "").LinkString(), Tooltip.LinkLocal)),
+                            new XAttribute("href", string.Format("https://torcommunity.com{2}/database/item/{0}/{1}/", itm.Base62Id, ((itm.LocalizedName != null) ? itm.LocalizedName[Tooltip.language] : "").LinkString(), Tooltip.LinkLocal)),
                             new XAttribute("data-torc", "norestyle"),
                             (itm.LocalizedName != null) ? itm.LocalizedName[Tooltip.language] : ""
                             ))
@@ -1100,7 +1100,7 @@ namespace GomLib.Models
                 XElement inner = new XElement("div",
                     XClass("torctip_tooltip"),
                     new XElement("span",
-                        XClass(String.Format("torctip_{0}", stringQual)),
+                        XClass(string.Format("torctip_{0}", stringQual)),
                         ((itm.LocalizedName != null) ? itm.LocalizedName[Tooltip.language] : ""))
                     );
 
@@ -1108,21 +1108,21 @@ namespace GomLib.Models
                         XClass(""),
                         new XElement("span",
                             XClass("torctip_white"),
-                            String.Format("{0}:", GetLocalizedText(836058333839618))), //"Difficulty:"),
+                            string.Format("{0}:", GetLocalizedText(836058333839618))), //"Difficulty:"),
                         new XElement("div",
                             XClass(""),
                             new XElement("span",
                                 XClass("torctip_hard"),
-                                String.Format("{0} ", itm.SkillOrange)),
+                                string.Format("{0} ", itm.SkillOrange)),
                             new XElement("span",
                                 XClass("torctip_medium"),
-                                String.Format("{0} ", itm.SkillYellow)),
+                                string.Format("{0} ", itm.SkillYellow)),
                             new XElement("span",
                                 XClass("torctip_easy"),
-                                String.Format("{0} ", itm.SkillGreen)),
+                                string.Format("{0} ", itm.SkillGreen)),
                             new XElement("span",
                                 XClass("torctip_trivial"),
-                                String.Format("{0} ", itm.SkillGrey)))
+                                string.Format("{0} ", itm.SkillGrey)))
                     );
                 string reqParanString = GetLocalizedText(836131348283395);  //"Requires {0} ({1})"
                 _ = GetLocalizedText(836131348283394);  //"Requires {0}"
@@ -1142,21 +1142,21 @@ namespace GomLib.Models
                             if (mat != null)
                             {
                                 var matstringQual = ((mat.TypeBitFlags.IsModdable && (mat.Quality == ItemQuality.Prototype)) ? "moddable" : mat.Quality.ToString().ToLower());
-                                var matfileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", mat.Icon));
+                                var matfileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/icons/{0}.dds", mat.Icon));
                                 components.Add(new XElement("div",
                                     XClass("torctip_mat"),
-                                    new XElement("span", String.Format("{0}x ", kvp.Value)),
+                                    new XElement("span", string.Format("{0}x ", kvp.Value)),
                                     new XElement("div",
-                                        new XAttribute("class", String.Format("torctip_image torctip_image_{0} small_border", matstringQual)),
+                                        new XAttribute("class", string.Format("torctip_image torctip_image_{0} small_border", matstringQual)),
                                         new XElement("img",
-                                            new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", matfileId.ph, matfileId.sh)),
+                                            new XAttribute("src", string.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", matfileId.ph, matfileId.sh)),
                                             new XAttribute("alt", mat.LocalizedName[Tooltip.language]),
                                             XClass("small_image"))),
                                     new XElement("div",
                                         new XAttribute("class", "torctip_mat_name"),
                                         new XElement("a",
-                                            XClass(String.Format("torctip_{0}", matstringQual)),
-                                            new XAttribute("href", String.Format("https://torcommunity.com{2}/database/item/{0}/{1}/", mat.Base62Id, LinkString(mat.LocalizedName[Tooltip.language]), Tooltip.LinkLocal)),
+                                            XClass(string.Format("torctip_{0}", matstringQual)),
+                                            new XAttribute("href", string.Format("https://torcommunity.com{2}/database/item/{0}/{1}/", mat.Base62Id, LinkString(mat.LocalizedName[Tooltip.language]), Tooltip.LinkLocal)),
                                             new XAttribute("data-torc", "norestyle"),
                                             mat.LocalizedName[Tooltip.language])
                                         )
@@ -1179,7 +1179,7 @@ namespace GomLib.Models
                     }
                     inner.Add(new XElement("div",
                         XClass("torctip_main"),
-                        String.Format(
+                        string.Format(
                             reqParanString, //"Requires {0} ({1})",
                             itm.LocalizedCrewSkillName[Tooltip.language], itm.SkillOrange))
                     );
@@ -1191,7 +1191,7 @@ namespace GomLib.Models
                         XClass("torctip_mission"),
                         new XElement("div",
                             XClass("torctip_main"),
-                            String.Format(
+                            string.Format(
                                 reqParanString, //"Requires {0} ({1})",
                                 itm.LocalizedCrewSkillName[Tooltip.language], itm.SkillOrange)),
                         new XElement("div",
@@ -1226,14 +1226,14 @@ namespace GomLib.Models
             string icon = itm.Icon;
 
             XElement tooltip = new XElement("div", new XAttribute("class", "torctip_wrapper"));
-            var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", icon));
+            var fileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/icons/{0}.dds", icon));
 
             if (itm != null)
             {
                 tooltip.Add(new XElement("div",
-                    new XAttribute("class", String.Format("torctip_image torctip_image_{0}", stringQual)),
+                    new XAttribute("class", string.Format("torctip_image torctip_image_{0}", stringQual)),
                     new XElement("img",
-                        new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", fileId.ph, fileId.sh)),
+                        new XAttribute("src", string.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", fileId.ph, fileId.sh)),
                         new XAttribute("alt", "")))//,
                                                    //new XElement("div",
                                                    //    new XAttribute("class", "torctip_name"),
@@ -1246,7 +1246,7 @@ namespace GomLib.Models
                 XElement inner = new XElement("div",
                     XClass("torctip_tooltip"),
                     new XElement("span",
-                        XClass(String.Format("torctip_{0}", stringQual)),
+                        XClass(string.Format("torctip_{0}", stringQual)),
                         itm.LocalizedName[Tooltip.language])
                     );
 
@@ -1262,13 +1262,13 @@ namespace GomLib.Models
                 {
                     cast.Add(XStat(
                         GetLocalizedText(836131348283425), //"Activation: ",
-                        String.Format("{0}s", itm.CastingTime)));
+                        string.Format("{0}s", itm.CastingTime)));
                 }
                 else if (itm.ChannelingTime > 0)
                 {
                     cast.Add(XStat(
                         GetLocalizedText(836131348283426), //"Channeled: ",
-                        String.Format("{0}s", itm.ChannelingTime)));
+                        string.Format("{0}s", itm.ChannelingTime)));
                 }
                 else
                 {
@@ -1340,12 +1340,12 @@ namespace GomLib.Models
                 if (itm.Cooldown > 0)
                 {
                     //playerblock.Add(XStat("Cooldown: ", String.Format("{0}s", itm.Cooldown.ToString())));
-                    playerblock.Add(XStat(GetLocalizedText(836131348283427), String.Format("{0}s", itm.Cooldown.ToString())));
+                    playerblock.Add(XStat(GetLocalizedText(836131348283427), string.Format("{0}s", itm.Cooldown.ToString())));
                 }
                 if (itm.MaxRange > 0)
                 {
                     //playerblock.Add(XStat("Range: ", String.Format("{0}m", Math.Round(itm.MaxRange * 10).ToString())));
-                    playerblock.Add(XStat(GetLocalizedText(836131348283429), String.Format("{0}m", Math.Round(itm.MaxRange * 10).ToString())));
+                    playerblock.Add(XStat(GetLocalizedText(836131348283429), string.Format("{0}m", Math.Round(itm.MaxRange * 10).ToString())));
                 }
                 if (playerblock.HasElements)
                 {
@@ -1377,21 +1377,21 @@ namespace GomLib.Models
             icon = itm.Icon;
 
             XElement tooltip = new XElement("div", new XAttribute("class", "torctip_wrapper"));
-            var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", icon));
+            var fileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/icons/{0}.dds", icon));
 
             if (itm != null)
             {
                 XElement inner = new XElement("div",
                     XClass("torctip_tooltip"),
                     new XElement("span",
-                        XClass(String.Format("torctip_{0}", stringQual)),
+                        XClass(string.Format("torctip_{0}", stringQual)),
                         itm.LocalizedName[Tooltip.language])
                     );
 
                 XElement desc = new XElement("div",
                         XClass("torctip_white"));
-                string journalText = itm.Branches.Select(x => x.Steps.Select(y => ((y.LocalizedJournalText.Count > 0) ? y.LocalizedJournalText[Tooltip.language] : "")).FirstOrDefault(z => !String.IsNullOrEmpty(z))).FirstOrDefault(z => !String.IsNullOrEmpty(z));
-                if (!String.IsNullOrEmpty(journalText))
+                string journalText = itm.Branches.Select(x => x.Steps.Select(y => ((y.LocalizedJournalText.Count > 0) ? y.LocalizedJournalText[Tooltip.language] : "")).FirstOrDefault(z => !string.IsNullOrEmpty(z))).FirstOrDefault(z => !string.IsNullOrEmpty(z));
+                if (!string.IsNullOrEmpty(journalText))
                 {
                     AddStringWithBreaks(ref desc, journalText);
                     inner.Add(desc);
@@ -1415,24 +1415,24 @@ namespace GomLib.Models
                                 XClass("torc_task_cont"),
                                 new XElement("span",
                                     XClass("torc_brnch_id"),
-                                    String.Format("{0}) ", stepNum))
+                                    string.Format("{0}) ", stepNum))
                             );
                             XElement taskInner = new XElement("div",
                                 XClass("torc_mis_tasks"));
 
                             foreach (var task in step.Tasks)
                             {
-                                if (String.IsNullOrEmpty(task.String)) continue;
+                                if (string.IsNullOrEmpty(task.String)) continue;
                                 if (itm.Fqn == "qst.location.coruscant.bonus.staged.crisis_control_stage_2")
                                     break;
                                 if (task.ShowCount)
                                 {
                                     taskInner.Add(new XElement("div",
                                         XClass("torc_task"),
-                                        String.Format("{0}: ", task.LocalizedString[Tooltip.language]),
+                                        string.Format("{0}: ", task.LocalizedString[Tooltip.language]),
                                         new XElement("span",
                                             XClass("torctip_val"),
-                                            String.Format("0/{0}", task.CountMax))
+                                            string.Format("0/{0}", task.CountMax))
                                         )
                                     );
                                 }
@@ -1483,13 +1483,13 @@ namespace GomLib.Models
                             joiner = "";
                         if (classes[i].LocalizedName == null)
                             requiredClasses.Add(new XElement("span",
-                                XClass(String.Format("torc_cls_{0}", classes[i].GetFaction())),
-                                String.Format("{0}{1} ", classes[i].Name, joiner))
+                                XClass(string.Format("torc_cls_{0}", classes[i].GetFaction())),
+                                string.Format("{0}{1} ", classes[i].Name, joiner))
                             );
                         else
                             requiredClasses.Add(new XElement("span",
-                                XClass(String.Format("torc_cls_{0}", classes[i].GetFaction())),
-                                String.Format("{0}{1} ", classes[i].LocalizedName[Tooltip.language], joiner))
+                                XClass(string.Format("torc_cls_{0}", classes[i].GetFaction())),
+                                string.Format("{0}{1} ", classes[i].LocalizedName[Tooltip.language], joiner))
                             );
                     }
                     inner.Add(requiredClasses);
@@ -1507,15 +1507,15 @@ namespace GomLib.Models
                     rewardContainer.Add(new XElement("div",
                         XClass("torctip_rwd_info"),
                         new XElement("span",
-                            String.Format("{0}:", GetLocalizedText(963081991618566))), //"Experience: "),
+                            string.Format("{0}:", GetLocalizedText(963081991618566))), //"Experience: "),
                         new XElement("span",
                             new XElement("span",
                                 XClass("torctip_exp"),
-                                String.Format("{0} (Sub)", itm.SubXP.ToString("n0"))),
+                                string.Format("{0} (Sub)", itm.SubXP.ToString("n0"))),
                             " / ",
                             new XElement("span",
                                 XClass("torctip_exp_f2p"),
-                                String.Format("{0} (F2P)", itm.F2PXP.ToString("n0")))
+                                string.Format("{0} (F2P)", itm.F2PXP.ToString("n0")))
                             )
                         )
                     );
@@ -1526,7 +1526,7 @@ namespace GomLib.Models
                     rewardContainer.Add(new XElement("div",
                         XClass("torctip_rwd_info"),
                         new XElement("span",
-                            String.Format("{0}:", GetLocalizedText(963081991618567))), //"Credits: "),
+                            string.Format("{0}:", GetLocalizedText(963081991618567))), //"Credits: "),
                         new XElement("span",
                             XClass("torctip_credits"),
                             itm.CreditsRewarded)
@@ -1541,14 +1541,14 @@ namespace GomLib.Models
                     XElement providedRewards = new XElement("div",
                         XClass("torctip_rwd_items"),
                         new XElement("div",
-                            String.Format("{0}:", GetLocalizedText(963081991618562)) //"Provided Rewards:"));
+                            string.Format("{0}:", GetLocalizedText(963081991618562)) //"Provided Rewards:"));
                         )
                     );
                     Dictionary<string, XElement> providedClassRewards = new Dictionary<string, XElement>();
                     XElement selectOneRewards = new XElement("div",
                         XClass("torctip_rwd_items"),
                         new XElement("div",
-                            String.Format("{0}:", GetLocalizedText(963081991618561)) //"Select One Reward:"
+                            string.Format("{0}:", GetLocalizedText(963081991618561)) //"Select One Reward:"
                         )
                     );
                     Dictionary<string, XElement> selectOneClassRewards = new Dictionary<string, XElement>();
@@ -1560,16 +1560,16 @@ namespace GomLib.Models
                         var mat = rew.RewardItem;
                         if (mat == null) continue;
                         var matstringQual = ((mat.TypeBitFlags.IsModdable && (mat.Quality == ItemQuality.Prototype)) ? "moddable" : mat.Quality.ToString().ToLower());
-                        var matfileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", mat.Icon));
+                        var matfileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/icons/{0}.dds", mat.Icon));
                         XElement matElement = new XElement("div",
                             XClass("torctip_rwd"),
                             new XAttribute("style", "display:inline;"),
                             new XElement("a",
-                                new XAttribute("href", String.Format("https://torcommunity.com{2}/database/item/{0}/{1}/", mat.Base62Id, LinkString(mat.Name), Tooltip.LinkLocal)),
+                                new XAttribute("href", string.Format("https://torcommunity.com{2}/database/item/{0}/{1}/", mat.Base62Id, LinkString(mat.Name), Tooltip.LinkLocal)),
                                 new XAttribute("data-torc", "norestyle"),
-                                new XAttribute("class", String.Format("torctip_image torctip_image_{0}", matstringQual)),
+                                new XAttribute("class", string.Format("torctip_image torctip_image_{0}", matstringQual)),
                                 new XElement("img",
-                                    new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", matfileId.ph, matfileId.sh)),
+                                    new XAttribute("src", string.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", matfileId.ph, matfileId.sh)),
                                     new XAttribute("alt", mat.Name),
                                     XClass("image")
                                 )
@@ -1593,12 +1593,12 @@ namespace GomLib.Models
                                         continue;
                                     string restrictName = cls.Name;
                                     if (rew.MinLevel != 1 || rew.MaxLevel != 65)
-                                        restrictName = String.Format("{0} {1}-{2}", restrictName, rew.MinLevel, rew.MaxLevel);
+                                        restrictName = string.Format("{0} {1}-{2}", restrictName, rew.MinLevel, rew.MaxLevel);
                                     if (!providedClassRewards.ContainsKey(restrictName))
                                     {
                                         providedClassRewards.Add(restrictName,
                                             new XElement("div",
-                                                XClass(String.Format("torctip_class_restrict torc_cls_{0}", cls.GetFaction())),
+                                                XClass(string.Format("torctip_class_restrict torc_cls_{0}", cls.GetFaction())),
                                                 new XElement("span", restrictName),
                                                 new XAttribute("data-min-lvl", rew.MinLevel),
                                                 new XAttribute("data-max-lvl", rew.MaxLevel)
@@ -1610,7 +1610,7 @@ namespace GomLib.Models
                             }
                             else if (rew.MinLevel != 1 || rew.MaxLevel != 65)
                             {
-                                string levelRestrict = String.Format("Level {0}-{1}", rew.MinLevel, rew.MaxLevel);
+                                string levelRestrict = string.Format("Level {0}-{1}", rew.MinLevel, rew.MaxLevel);
                                 if (!providedClassRewards.ContainsKey(levelRestrict))
                                 {
                                     providedClassRewards.Add(levelRestrict,
@@ -1643,12 +1643,12 @@ namespace GomLib.Models
                                         continue;
                                     string restrictName = cls.Name;
                                     if (rew.MinLevel != 1 || rew.MaxLevel != 65)
-                                        restrictName = String.Format("{0} {1}-{2}", restrictName, rew.MinLevel, rew.MaxLevel);
+                                        restrictName = string.Format("{0} {1}-{2}", restrictName, rew.MinLevel, rew.MaxLevel);
                                     if (!selectOneClassRewards.ContainsKey(restrictName))
                                     {
                                         selectOneClassRewards.Add(restrictName,
                                             new XElement("div",
-                                                XClass(String.Format("torctip_class_restrict torc_cls_{0}", cls.GetFaction())),
+                                                XClass(string.Format("torctip_class_restrict torc_cls_{0}", cls.GetFaction())),
                                                 new XElement("span", restrictName),
                                                 new XAttribute("data-min-lvl", rew.MinLevel),
                                                 new XAttribute("data-max-lvl", rew.MaxLevel)
@@ -1660,7 +1660,7 @@ namespace GomLib.Models
                             }
                             else if (rew.MinLevel != 1 || rew.MaxLevel != 65)
                             {
-                                string levelRestrict = String.Format("Level {0}-{1}", rew.MinLevel, rew.MaxLevel);
+                                string levelRestrict = string.Format("Level {0}-{1}", rew.MinLevel, rew.MaxLevel);
                                 if (!selectOneClassRewards.ContainsKey(levelRestrict))
                                 {
                                     selectOneClassRewards.Add(levelRestrict,
@@ -1723,14 +1723,14 @@ namespace GomLib.Models
             string icon = itm.Icon;
 
             XElement tooltip = new XElement("div", new XAttribute("class", "torctip_wrapper"));
-            var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", icon));
+            var fileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/icons/{0}.dds", icon));
 
             if (itm != null)
             {
                 tooltip.Add(new XElement("div",
-                    new XAttribute("class", String.Format("torctip_image torctip_image_{0}", stringQual)),
+                    new XAttribute("class", string.Format("torctip_image torctip_image_{0}", stringQual)),
                     new XElement("img",
-                        new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", fileId.ph, fileId.sh)),
+                        new XAttribute("src", string.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", fileId.ph, fileId.sh)),
                         new XAttribute("alt", "")))//,
                                                    //new XElement("div",
                                                    //    new XAttribute("class", "torctip_name"),
@@ -1743,7 +1743,7 @@ namespace GomLib.Models
                 XElement inner = new XElement("div",
                     XClass("torctip_tooltip"),
                     new XElement("span",
-                        XClass(String.Format("torctip_{0}", stringQual)),
+                        XClass(string.Format("torctip_{0}", stringQual)),
                         itm.Name),
                         new XElement("div",
                             XClass("torctip_white"),
@@ -1778,7 +1778,7 @@ namespace GomLib.Models
             icon = itm.Icon;
 
             XElement tooltip = new XElement("div", new XAttribute("class", "torctip_wrapper"));
-            var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", icon));
+            var fileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/icons/{0}.dds", icon));
 
             if (itm != null)
             {
@@ -1790,9 +1790,9 @@ namespace GomLib.Models
                     // string sofisndf = "";
                 }
                 tooltip.Add(new XElement("div",
-                    new XAttribute("class", String.Format("torctip_image torctip_image_{0}", stringQual)),
+                    new XAttribute("class", string.Format("torctip_image torctip_image_{0}", stringQual)),
                     new XElement("img",
-                        new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", fileId.ph, fileId.sh)),
+                        new XAttribute("src", string.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", fileId.ph, fileId.sh)),
                         new XAttribute("alt", "")),
                     new XElement("div",
                         XClass("torctip_icon_points"),
@@ -1807,7 +1807,7 @@ namespace GomLib.Models
                 XElement inner = new XElement("div",
                     XClass("torctip_tooltip"),
                     new XElement("span",
-                        XClass(String.Format("torctip_{0}", stringQual)),
+                        XClass(string.Format("torctip_{0}", stringQual)),
                         itm.LocalizedName[Tooltip.language]
                     )
                 );
@@ -1821,7 +1821,7 @@ namespace GomLib.Models
                             XClass("torctip_ach_star"),
                             " "
                         ),
-                        String.Format(" {0} ]", itm.Rewards.AchievementPoints)
+                        string.Format(" {0} ]", itm.Rewards.AchievementPoints)
                     ));
                 }
 
@@ -1850,11 +1850,11 @@ namespace GomLib.Models
                                     taskText.Add(new XElement("div",
                                         XClass("torctip_ach_tsk"),
                                         new XElement("span",
-                                            String.Format("0/{0} ", tsk.Count)
+                                            string.Format("0/{0} ", tsk.Count)
                                         ),
                                         new XElement("a",
-                                            XClass(String.Format("torctip_{0}", "achievement")),
-                                            new XAttribute("href", String.Format("https://torcommunity.com{2}/database/achievement/{0}/{1}/", obj.Base62Id, ((Achievement)obj).LocalizedName[Tooltip.language].LinkString(), Tooltip.LinkLocal)),
+                                            XClass(string.Format("torctip_{0}", "achievement")),
+                                            new XAttribute("href", string.Format("https://torcommunity.com{2}/database/achievement/{0}/{1}/", obj.Base62Id, ((Achievement)obj).LocalizedName[Tooltip.language].LinkString(), Tooltip.LinkLocal)),
                                             new XAttribute("data-torc", "norestyle"),
                                             ((Achievement)obj).LocalizedName[Tooltip.language]
                                         )
@@ -1864,11 +1864,11 @@ namespace GomLib.Models
                                     taskText.Add(new XElement("div",
                                         XClass("torctip_ach_tsk"),
                                         new XElement("span",
-                                            String.Format("0/{0} ", tsk.Count)
+                                            string.Format("0/{0} ", tsk.Count)
                                         ),
                                         new XElement("a",
-                                            XClass(String.Format("torctip_{0}", "ability")),
-                                            new XAttribute("href", String.Format("https://torcommunity.com{2}/database/ability/{0}/{1}/", obj.Base62Id, ((Ability)obj).LocalizedName[Tooltip.language].LinkString(), Tooltip.LinkLocal)),
+                                            XClass(string.Format("torctip_{0}", "ability")),
+                                            new XAttribute("href", string.Format("https://torcommunity.com{2}/database/ability/{0}/{1}/", obj.Base62Id, ((Ability)obj).LocalizedName[Tooltip.language].LinkString(), Tooltip.LinkLocal)),
                                             new XAttribute("data-torc", "norestyle"),
                                             ((Ability)obj).LocalizedName[Tooltip.language]
                                         )
@@ -1878,11 +1878,11 @@ namespace GomLib.Models
                                     taskText.Add(new XElement("div",
                                         XClass("torctip_ach_tsk"),
                                         new XElement("span",
-                                            String.Format("0/{0} ", tsk.Count)
+                                            string.Format("0/{0} ", tsk.Count)
                                         ),
                                         new XElement("a",
-                                            XClass(String.Format("torctip_{0}", "codex")),
-                                            new XAttribute("href", String.Format("https://torcommunity.com{2}/database/codex/{0}/{1}/", obj.Base62Id, ((Codex)obj).LocalizedName[Tooltip.language].LinkString(), Tooltip.LinkLocal)),
+                                            XClass(string.Format("torctip_{0}", "codex")),
+                                            new XAttribute("href", string.Format("https://torcommunity.com{2}/database/codex/{0}/{1}/", obj.Base62Id, ((Codex)obj).LocalizedName[Tooltip.language].LinkString(), Tooltip.LinkLocal)),
                                             new XAttribute("data-torc", "norestyle"),
                                             ((Codex)obj).LocalizedName[Tooltip.language]
                                         )
@@ -1892,11 +1892,11 @@ namespace GomLib.Models
                                     taskText.Add(new XElement("div",
                                         XClass("torctip_ach_tsk"),
                                         new XElement("span",
-                                            String.Format("0/{0} ", tsk.Count)
+                                            string.Format("0/{0} ", tsk.Count)
                                         ),
                                         new XElement("a",
-                                            XClass(String.Format("torctip_{0}", "npc")),
-                                            new XAttribute("href", String.Format("https://torcommunity.com{2}/database/npc/{0}/{1}/", obj.Base62Id, ((Npc)obj).LocalizedName[Tooltip.language].LinkString(), Tooltip.LinkLocal)),
+                                            XClass(string.Format("torctip_{0}", "npc")),
+                                            new XAttribute("href", string.Format("https://torcommunity.com{2}/database/npc/{0}/{1}/", obj.Base62Id, ((Npc)obj).LocalizedName[Tooltip.language].LinkString(), Tooltip.LinkLocal)),
                                             new XAttribute("data-torc", "norestyle"),
                                             ((Npc)obj).LocalizedName[Tooltip.language]
                                         )
@@ -1906,11 +1906,11 @@ namespace GomLib.Models
                                     taskText.Add(new XElement("div",
                                         XClass("torctip_ach_tsk"),
                                         new XElement("span",
-                                            String.Format("0/{0} ", tsk.Count)
+                                            string.Format("0/{0} ", tsk.Count)
                                         ),
                                         new XElement("a",
-                                            XClass(String.Format("torctip_{0}", "nco")),
-                                            new XAttribute("href", String.Format("https://torcommunity.com{2}/database/npc/{0}/{1}/", obj.Base62Id, ((NewCompanion)obj).Companion.LocalizedName[Tooltip.language].LinkString(), Tooltip.LinkLocal)),
+                                            XClass(string.Format("torctip_{0}", "nco")),
+                                            new XAttribute("href", string.Format("https://torcommunity.com{2}/database/npc/{0}/{1}/", obj.Base62Id, ((NewCompanion)obj).Companion.LocalizedName[Tooltip.language].LinkString(), Tooltip.LinkLocal)),
                                             new XAttribute("data-torc", "norestyle"),
                                             ((NewCompanion)obj).Companion.LocalizedName[Tooltip.language]
                                         )
@@ -1920,11 +1920,11 @@ namespace GomLib.Models
                                     taskText.Add(new XElement("div",
                                         XClass("torctip_ach_tsk"),
                                         new XElement("span",
-                                            String.Format("0/{0} ", tsk.Count)
+                                            string.Format("0/{0} ", tsk.Count)
                                         ),
                                         new XElement("a",
-                                            XClass(String.Format("torctip_{0}", "mission")),
-                                            new XAttribute("href", String.Format("https://torcommunity.com{2}/database/mission/{0}/{1}/", obj.Base62Id, ((Quest)obj).LocalizedName[Tooltip.language].LinkString(), Tooltip.LinkLocal)),
+                                            XClass(string.Format("torctip_{0}", "mission")),
+                                            new XAttribute("href", string.Format("https://torcommunity.com{2}/database/mission/{0}/{1}/", obj.Base62Id, ((Quest)obj).LocalizedName[Tooltip.language].LinkString(), Tooltip.LinkLocal)),
                                             new XAttribute("data-torc", "norestyle"),
                                             ((Quest)obj).LocalizedName[Tooltip.language]
                                         )
@@ -1943,11 +1943,11 @@ namespace GomLib.Models
                                     taskText.Add(new XElement("div",
                                         XClass("torctip_ach_tsk"),
                                         new XElement("span",
-                                            String.Format("0/{0} ", tsk.Count)
+                                            string.Format("0/{0} ", tsk.Count)
                                         ),
                                         new XElement("a",
-                                            XClass(String.Format("torctip_{0}", ((Item)obj).Quality.ToString())),
-                                            new XAttribute("href", String.Format("https://torcommunity.com{2}/database/item/{0}/{1}/", obj.Base62Id, ((Item)obj).LocalizedName[Tooltip.language].LinkString(), Tooltip.LinkLocal)),
+                                            XClass(string.Format("torctip_{0}", ((Item)obj).Quality.ToString())),
+                                            new XAttribute("href", string.Format("https://torcommunity.com{2}/database/item/{0}/{1}/", obj.Base62Id, ((Item)obj).LocalizedName[Tooltip.language].LinkString(), Tooltip.LinkLocal)),
                                             new XAttribute("data-torc", "norestyle"),
                                             ((Item)obj).LocalizedName[Tooltip.language]
                                         )
@@ -1985,7 +1985,7 @@ namespace GomLib.Models
                                             {
                                                 taskText.Add(new XElement("div",
                                                     XClass("torctip_white"),
-                                                    String.Format("0/1 {0}", fowName)
+                                                    string.Format("0/1 {0}", fowName)
                                                 ));
                                             }
                                         }
@@ -2004,7 +2004,7 @@ namespace GomLib.Models
                                             {
                                                 taskText.Add(new XElement("div",
                                                     XClass("torctip_white"),
-                                                    String.Format("0/1 {0}", key)
+                                                    string.Format("0/1 {0}", key)
                                                 ));
                                             }
                                         }
@@ -2017,13 +2017,13 @@ namespace GomLib.Models
                                                 taskText.Add(new XElement("div",
                                                     XClass("torctip_white torctip_sub_parent"),
                                                     new XElement("span",
-                                                        String.Format("0/{0} {1}", distinceSubs.Count(), val)
+                                                        string.Format("0/{0} {1}", distinceSubs.Count(), val)
                                                     ),
                                                     new XElement("div",
                                                         XClass("torctip_sub_tasks"),
                                                         distinceSubs.Select(x => new XElement("div",
                                                             XClass("torctip_white"),
-                                                            String.Format("0/1 {0}", x)
+                                                            string.Format("0/1 {0}", x)
                                                         ))
                                                     )
                                                 ));
@@ -2042,7 +2042,7 @@ namespace GomLib.Models
                     {
                         taskText.Add(new XElement("div",
                             XClass("torctip_white"),
-                            String.Format("0/{0} {1}", tsk.Count, tskName)
+                            string.Format("0/{0} {1}", tsk.Count, tskName)
                         ));
                     }
                 }
@@ -2116,16 +2116,16 @@ namespace GomLib.Models
                             var mat = itm.Dom_.itemLoader.Load(rew.Key);
                             if (mat == null) continue;
                             var matstringQual = ((mat.TypeBitFlags.IsModdable && (mat.Quality == ItemQuality.Prototype)) ? "moddable" : mat.Quality.ToString().ToLower());
-                            var matfileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", mat.Icon));
+                            var matfileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/icons/{0}.dds", mat.Icon));
                             XElement matElement = new XElement("div",
                                 XClass("torctip_rwd"),
                                 new XAttribute("style", "display:inline;"),
                                 new XElement("a",
-                                    new XAttribute("href", String.Format("https://torcommunity.com{2}/database/item/{0}/{1}/", mat.Base62Id, LinkString(mat.Name), Tooltip.LinkLocal)),
+                                    new XAttribute("href", string.Format("https://torcommunity.com{2}/database/item/{0}/{1}/", mat.Base62Id, LinkString(mat.Name), Tooltip.LinkLocal)),
                                     new XAttribute("data-torc", "norestyle"),
-                                    new XAttribute("class", String.Format("torctip_image torctip_image_{0}", matstringQual)),
+                                    new XAttribute("class", string.Format("torctip_image torctip_image_{0}", matstringQual)),
                                     new XElement("img",
-                                        new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", matfileId.ph, matfileId.sh)),
+                                        new XAttribute("src", string.Format("https://torcommunity.com/db/icons/{0}_{1}.jpg", matfileId.ph, matfileId.sh)),
                                         new XAttribute("alt", mat.Name),
                                         XClass("image")
                                     ),
@@ -2175,7 +2175,7 @@ namespace GomLib.Models
                 XElement inner = new XElement("div",
                     XClass("torctip_tooltip"),
                     new XElement("span",
-                        XClass(String.Format("torctip_{0}", stringQual)),
+                        XClass(string.Format("torctip_{0}", stringQual)),
                         itm.LocalizedName[Tooltip.language]
                     )
                 );
@@ -2183,7 +2183,7 @@ namespace GomLib.Models
                 inner.Add(new XElement("div",
                     XClass("torctip_cdx_image"),
                     new XElement("img",
-                        new XAttribute("src", String.Format("https://torcommunity.com/db/codex/{0}_thumb.jpg", itm.Icon)),
+                        new XAttribute("src", string.Format("https://torcommunity.com/db/codex/{0}_thumb.jpg", itm.Icon)),
                         new XAttribute("alt", "")
                     )
                 ));
@@ -2221,17 +2221,17 @@ namespace GomLib.Models
             }
 
             XElement tooltip = new XElement("div", new XAttribute("class", "torctip_wrapper"));
-            _ = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", icon));
+            _ = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/icons/{0}.dds", icon));
 
             if (itm != null)
             {
                 XElement inner = new XElement("div",
                     XClass("torctip_tooltip"),
                     new XElement("span",
-                        XClass(String.Format("torctip_npc_{0}", stringQual)),
+                        XClass(string.Format("torctip_npc_{0}", stringQual)),
                         itm.LocalizedName[Tooltip.language],
                         new XElement("span",
-                            XClass(String.Format("torctip_toughness_{0}", (itm.LocalizedToughness != null ? itm.LocalizedToughness["enMale"] : "").Replace(" ", "_").ToLower())),
+                            XClass(string.Format("torctip_toughness_{0}", (itm.LocalizedToughness != null ? itm.LocalizedToughness["enMale"] : "").Replace(" ", "_").ToLower())),
                             " "
                         )
                     )
@@ -2245,8 +2245,8 @@ namespace GomLib.Models
                 inner.Add(//new XElement("br"),
                     new XElement("div",
                         XClass("torctip_white"),
-                        String.Format(GetLocalizedText(848771437035837), //"Level {0} {1}"
-                            ((itm.MinLevel == itm.MaxLevel) ? itm.MinLevel.ToString() : String.Join("-", itm.MinLevel, itm.MaxLevel)),
+                        string.Format(GetLocalizedText(848771437035837), //"Level {0} {1}"
+                            ((itm.MinLevel == itm.MaxLevel) ? itm.MinLevel.ToString() : string.Join("-", itm.MinLevel, itm.MaxLevel)),
                             ((itm.ClassSpec.LocalizedName != null) ? itm.ClassSpec.LocalizedName[Tooltip.language] : "Unknown"))
                     )
                 );
@@ -2267,7 +2267,7 @@ namespace GomLib.Models
             }
             if (itm.Id == 0) return new XElement("div", "Not Found");
             string icon = "none";
-            if (!String.IsNullOrEmpty(itm.Icon))
+            if (!string.IsNullOrEmpty(itm.Icon))
                 icon = itm.Icon;
             string stringQual = "none";
             if (itm.Companion != null)
@@ -2282,12 +2282,12 @@ namespace GomLib.Models
             }
 
             XElement tooltip = new XElement("div", new XAttribute("class", "torctip_wrapper"));
-            var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/portraits/{0}.dds", icon));
+            var fileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/portraits/{0}.dds", icon));
 
             tooltip.Add(new XElement("div",
-                new XAttribute("class", String.Format("torctip_image torctip_image_{0}", stringQual)),
+                new XAttribute("class", string.Format("torctip_image torctip_image_{0}", stringQual)),
                 new XElement("img",
-                    new XAttribute("src", String.Format("https://torcommunity.com/db/portraits/{0}_{1}_thumb.png", fileId.ph, fileId.sh)),
+                    new XAttribute("src", string.Format("https://torcommunity.com/db/portraits/{0}_{1}_thumb.png", fileId.ph, fileId.sh)),
                     new XAttribute("alt", "")))
             );
 
@@ -2299,10 +2299,10 @@ namespace GomLib.Models
                 XElement inner = new XElement("div",
                     XClass("torctip_tooltip"),
                     new XElement("span",
-                        XClass(String.Format("torctip_npc_{0}", stringQual)),
+                        XClass(string.Format("torctip_npc_{0}", stringQual)),
                         itm.LocalizedName[Tooltip.language],
                         new XElement("span",
-                            XClass(String.Format("torctip_toughness_{0}", toughness)),
+                            XClass(string.Format("torctip_toughness_{0}", toughness)),
                             " "
                         )
                     )
@@ -2317,10 +2317,10 @@ namespace GomLib.Models
                     inner.Add(//new XElement("br"),
                         new XElement("div",
                             XClass("torctip_white"),
-                            String.Format(GetLocalizedText(848771437035837), //"Level {0} {1}"
+                            string.Format(GetLocalizedText(848771437035837), //"Level {0} {1}"
                                 ((itm.Companion.Npc.MinLevel == itm.Companion.Npc.MaxLevel)
                                     ? itm.Companion.Npc.MinLevel.ToString()
-                                    : String.Join("-", itm.Companion.Npc.MinLevel, itm.Companion.Npc.MaxLevel)),
+                                    : string.Join("-", itm.Companion.Npc.MinLevel, itm.Companion.Npc.MaxLevel)),
                                 ((itm.Companion.Npc.ClassSpec.LocalizedName != null) ? itm.Companion.Npc.ClassSpec.LocalizedName[Tooltip.language] : "Unknown"))
                         )
                     );
@@ -2341,9 +2341,9 @@ namespace GomLib.Models
             }
             if (itm.Id == 0) return new XElement("div", "Not Found");
             string icon = "none";
-            if (!String.IsNullOrEmpty(itm.Icon))
+            if (!string.IsNullOrEmpty(itm.Icon))
                 icon = itm.Icon.ToLower();
-            if (!itm.Dom_._assets.HasFile(String.Format("/resources/gfx/mtxstore/{0}_260x260.dds", icon)))
+            if (!itm.Dom_._assets.HasFile(string.Format("/resources/gfx/mtxstore/{0}_260x260.dds", icon)))
                 icon = "titles_sticker";
             XElement tooltip = new XElement("div", new XAttribute("class", "torctip_wrapper"));
             //var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/portraits/{0}.dds", icon));
@@ -2353,7 +2353,7 @@ namespace GomLib.Models
                 itm.LocalizedName = Normalize.Dictionary(itm.LocalizedName, itm.Icon);
                 XElement inner = new XElement("div",
                     XClass("torctip_tooltip torctip_collection"),
-                    new XAttribute("style", String.Format("background-image:url(https://www.torcommunity.com/db/mtxstore/{0}_260x260.jpg);", icon)),
+                    new XAttribute("style", string.Format("background-image:url(https://www.torcommunity.com/db/mtxstore/{0}_260x260.jpg);", icon)),
                     new XElement("H2",
                         XClass("torctip_white torctip_2l_elipsis"),
                         itm.LocalizedName[Tooltip.language]
@@ -2373,7 +2373,7 @@ namespace GomLib.Models
                                     XClass("torc_hover"),
                                     new XElement("div",
                                         XClass("torctip_req_head"),
-                                        String.Format(GetLocalizedText(836131348283393), itm.RequiredLevel)
+                                        string.Format(GetLocalizedText(836131348283393), itm.RequiredLevel)
                                     )
                                 )
                             )
@@ -2386,13 +2386,13 @@ namespace GomLib.Models
                     );
                     XElement torc_req_anchor = new XElement("span",
                         XClass("torc__req_parent"),
-                        String.Format("0/{0}", itm.ItemIdsList.Count)
+                        string.Format("0/{0}", itm.ItemIdsList.Count)
                     );
                     XElement torc_req_sub = new XElement("div",
                         XClass("torc_hover"),
                         new XElement("div",
                             XClass("torctip_req_head"),
-                            String.Format("{0} 0/{1}", itm.LocalizedName[Tooltip.language], itm.ItemIdsList.Count)
+                            string.Format("{0} 0/{1}", itm.LocalizedName[Tooltip.language], itm.ItemIdsList.Count)
                         )
                     );
                     foreach (Item item in itm.ItemList)
@@ -2400,20 +2400,20 @@ namespace GomLib.Models
                         torc_req_sub.Add(new XElement("div",
                             XClass("torctip_col_req_itm"),
                             new XElement("a",
-                                XClass(String.Format("torctip_{0}", ((Item)item).Quality.ToString().ToLower())),
-                                new XAttribute("href", String.Format("https://torcommunity.com{2}/database/item/{0}/{1}/", item.Base62Id, ((Item)item).LocalizedName[Tooltip.language].LinkString(), Tooltip.LinkLocal)),
+                                XClass(string.Format("torctip_{0}", item.Quality.ToString().ToLower())),
+                                new XAttribute("href", string.Format("https://torcommunity.com{2}/database/item/{0}/{1}/", item.Base62Id, item.LocalizedName[Tooltip.language].LinkString(), Tooltip.LinkLocal)),
                                 new XAttribute("data-torc", "norestyle"),
                                 new XElement("div",
-                                    XClass(String.Format("torctip_image torctip_image_{0} small_border", ((Item)item).Quality.ToString().ToLower())),
+                                    XClass(string.Format("torctip_image torctip_image_{0} small_border", item.Quality.ToString().ToLower())),
                                     new XElement("img",
-                                        new XAttribute("src", String.Format("https://torcommunity.com/db/icons/{0}.jpg", item.HashedIcon)),
+                                        new XAttribute("src", string.Format("https://torcommunity.com/db/icons/{0}.jpg", item.HashedIcon)),
                                         new XAttribute("alt", ""),
                                         XClass("small_image")
                                     )
                                 ),
                                 new XElement("span",
                                     XClass("torctip_name"),
-                                    ((Item)item).LocalizedName[Tooltip.language]
+                                    item.LocalizedName[Tooltip.language]
                                 )
                             )
                         ));
@@ -2439,7 +2439,7 @@ namespace GomLib.Models
             }
             if (itm.Id == 0) return new XElement("div", "Not Found");
             string icon = "none";
-            if (!String.IsNullOrEmpty(itm.Icon))
+            if (!string.IsNullOrEmpty(itm.Icon))
                 icon = itm.Icon.ToLower();
 
             XElement tooltip = new XElement("div", new XAttribute("class", "torctip_wrapper"));
@@ -2452,7 +2452,7 @@ namespace GomLib.Models
                     itm.LocalizedName.TryGetValue(Tooltip.language, out name);
                 XElement inner = new XElement("div",
                     XClass("torctip_tooltip torctip_collection"),
-                    new XAttribute("style", String.Format("background-image:url(https://www.torcommunity.com/db/mtxstore/{0}_260x260.jpg);", icon)),
+                    new XAttribute("style", string.Format("background-image:url(https://www.torcommunity.com/db/mtxstore/{0}_260x260.jpg);", icon)),
                     new XElement("H2",
                         XClass("torctip_white torctip_2l_elipsis"),
                         name
@@ -2514,7 +2514,7 @@ namespace GomLib.Models
                     OmitXmlDeclaration = true
                 };
 
-                using (System.Xml.XmlWriter xmlTextWriter = XmlWriter.Create(stringWriter, s))
+                using (XmlWriter xmlTextWriter = XmlWriter.Create(stringWriter, s))
                 {
                     xElement.WriteTo(xmlTextWriter);
                 }

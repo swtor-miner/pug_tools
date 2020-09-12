@@ -46,19 +46,19 @@ namespace PugTools
                         if (data == null)
                         {
                             entry.ID = (ulong)ph << 32 | sh;
-                            entry.Filename = ((ulong)entry.ID).ToString();
+                            entry.Filename = entry.ID.ToString();
                         }
                         else
                         {
                             entry.ID = (ulong)data.ph << 32 | data.sh;
-                            entry.Filename = ((ulong)entry.ID).ToString();
+                            entry.Filename = entry.ID.ToString();
                         }
 
                     }
 
                     if (entry.Filename.Contains('.'))
                     {
-                        entry.Type = (((string)entry.Filename).Split('.').Last()).ToUpper();
+                        entry.Type = (entry.Filename.Split('.').Last()).ToUpper();
                     }
                     else
                     {

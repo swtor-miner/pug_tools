@@ -70,7 +70,7 @@ namespace GomLib
 
                 // Save data to resulting script object
                 string fieldName;
-                if ((field != null) && (!String.IsNullOrEmpty(field.Name)))
+                if ((field != null) && (!string.IsNullOrEmpty(field.Name)))
                 {
                     fieldName = field.Name;
                     if (!_dom.NamedMap.ContainsKey(domClassNullCheck))

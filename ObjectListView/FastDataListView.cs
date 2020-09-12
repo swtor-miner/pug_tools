@@ -72,9 +72,9 @@ namespace BrightIdeasSoftware
         /// </remarks>
         [Category("Data"),
         TypeConverter("System.Windows.Forms.Design.DataSourceConverter, System.Design")]
-        public virtual Object DataSource {
-            get { return this.Adapter.DataSource; }
-            set { this.Adapter.DataSource = value; }
+        public virtual object DataSource {
+            get { return Adapter.DataSource; }
+            set { Adapter.DataSource = value; }
         }
 
         /// <summary>
@@ -85,8 +85,8 @@ namespace BrightIdeasSoftware
          Editor("System.Windows.Forms.Design.DataMemberListEditor, System.Design", typeof(UITypeEditor)),
          DefaultValue("")]
         public virtual string DataMember {
-            get { return this.Adapter.DataMember; }
-            set { this.Adapter.DataMember = value; }
+            get { return Adapter.DataMember; }
+            set { Adapter.DataMember = value; }
         }
 
         #endregion
@@ -100,7 +100,7 @@ namespace BrightIdeasSoftware
         protected DataSourceAdapter Adapter {
             get {
                 if (adapter == null)
-                    adapter = this.CreateDataSourceAdapter();
+                    adapter = CreateDataSourceAdapter();
                 return adapter;
             }
             set { adapter = value; }

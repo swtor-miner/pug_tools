@@ -30,21 +30,21 @@ namespace GomLib.Models
                 {
                     SocialTier socTier = new SocialTier(i)
                     {
-                        Threshold = ((GomLib.GomObjectData)chrSocialScoreTiers[i]).ValueOrDefault<float>("chrSocialScoreTierThreshold", 0f)
+                        Threshold = ((GomObjectData)chrSocialScoreTiers[i]).ValueOrDefault("chrSocialScoreTierThreshold", 0f)
                     };
-                    string tierStringId = ((GomLib.GomObjectData)chrSocialScoreTiers[i]).ValueOrDefault<string>("chrSocialScoreTierName", "");
+                    string tierStringId = ((GomObjectData)chrSocialScoreTiers[i]).ValueOrDefault("chrSocialScoreTierName", "");
                     socTier.NameId = Convert.ToInt16(tierStringId.Split(':')[1]) + 836131348283392;
                     socTier.LocalizedName = table.GetLocalizedText(socTier.NameId, "str.gui.tooltips");
                     socTier.Name = socTier.LocalizedName["enMale"];
 
-                    socTier.Appearance = ((GomLib.GomObjectData)chrSocialScoreTiers[i]).ValueOrDefault<string>("chrSocialScoreTierAchieveAppearance", "");
-                    socTier.MessageColor = ((GomLib.GomObjectData)chrSocialScoreTiers[i]).ValueOrDefault<string>("chrSocialScoreTierAchieveMessageColor", "");
+                    socTier.Appearance = ((GomObjectData)chrSocialScoreTiers[i]).ValueOrDefault("chrSocialScoreTierAchieveAppearance", "");
+                    socTier.MessageColor = ((GomObjectData)chrSocialScoreTiers[i]).ValueOrDefault("chrSocialScoreTierAchieveMessageColor", "");
 
-                    socTier.AchieveMessageId = ((GomLib.GomObjectData)chrSocialScoreTiers[i]).ValueOrDefault<long>("chrSocialScoreTierAchieveMessageId", 0) + 836131348283566;
+                    socTier.AchieveMessageId = ((GomObjectData)chrSocialScoreTiers[i]).ValueOrDefault<long>("chrSocialScoreTierAchieveMessageId", 0) + 836131348283566;
                     socTier.LocalizedAchieveMessage = table.GetLocalizedText(socTier.AchieveMessageId, "str.gui.tooltips");
                     socTier.AchieveMessage = socTier.LocalizedName["enMale"];
 
-                    socTier.TitleId = ((GomLib.GomObjectData)chrSocialScoreTiers[i]).ValueOrDefault<long>("chrSocialScoreTierTitleId", 0);
+                    socTier.TitleId = ((GomObjectData)chrSocialScoreTiers[i]).ValueOrDefault<long>("chrSocialScoreTierTitleId", 0);
 
                     SocialTierLookup.Add(i + 1, socTier);
                 }

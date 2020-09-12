@@ -97,7 +97,7 @@ namespace GomLib.Models
     {
         public Dictionary<long, DetailedEnhancementType> SlotLookup { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         readonly DataObjectModel _dom;
 
         public EnhancementData(DataObjectModel dom)
@@ -120,22 +120,22 @@ namespace GomLib.Models
                 {
                     DetailedEnhancementType detEnhance = new DetailedEnhancementType
                     {
-                        IsArmorMod = ((GomLib.GomObjectData)enh.Value).ValueOrDefault<bool>("itmEnhancementTypeIsArmor", false),
-                        Id = ((GomLib.GomObjectData)enh.Value).ValueOrDefault<long>("itmEnhancementTypeDisplayStringID", 0)
+                        IsArmorMod = ((GomObjectData)enh.Value).ValueOrDefault("itmEnhancementTypeIsArmor", false),
+                        Id = ((GomObjectData)enh.Value).ValueOrDefault<long>("itmEnhancementTypeDisplayStringID", 0)
                     };
                     detEnhance.StringId = detEnhance.Id;
                     if (table != null)
                     {
                         string text = table.GetText(detEnhance.StringId, "str.gui.stats");
-                        if (String.IsNullOrWhiteSpace(text))
+                        if (string.IsNullOrWhiteSpace(text))
                             detEnhance.StringId = detEnhance.Id + 1173453784743936;
                         detEnhance.DisplayName = table.GetText(detEnhance.StringId, "str.gui.stats");
                         detEnhance.LocalizedDisplayName = table.GetLocalizedText(detEnhance.StringId, "str.gui.stats");
                     }
-                    detEnhance.Mount = ((GomLib.GomObjectData)enh.Value).ValueOrDefault<string>("itmEnhancementTypeMount", "");
-                    detEnhance.Icon = ((GomLib.GomObjectData)enh.Value).ValueOrDefault<string>("itmEnhancementTypeIconAsset", "");
-                    detEnhance.ModType = ((GomLib.GomObjectData)enh.Value).ValueOrDefault<ScriptEnum>("itmEnhancementModificationType", new ScriptEnum());
-                    detEnhance.IsDestroyed = ((GomLib.GomObjectData)enh.Value).ValueOrDefault<bool>("itmEnhancementDestroyOnRemove", false);
+                    detEnhance.Mount = ((GomObjectData)enh.Value).ValueOrDefault("itmEnhancementTypeMount", "");
+                    detEnhance.Icon = ((GomObjectData)enh.Value).ValueOrDefault("itmEnhancementTypeIconAsset", "");
+                    detEnhance.ModType = ((GomObjectData)enh.Value).ValueOrDefault("itmEnhancementModificationType", new ScriptEnum());
+                    detEnhance.IsDestroyed = ((GomObjectData)enh.Value).ValueOrDefault("itmEnhancementDestroyOnRemove", false);
                     SlotLookup.Add((long)enh.Key, detEnhance);
                 }
             }

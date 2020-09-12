@@ -37,17 +37,17 @@ namespace GomLib.Models
                 return false;
             if (ReferenceEquals(this, entry))
                 return true;
-            if (this.Id != entry.Id)
+            if (Id != entry.Id)
                 return false;
-            if (this.FactionName != entry.FactionName)
+            if (FactionName != entry.FactionName)
                 return false;
-            if (!this.CdxOverviewByClass.SequenceEqual(entry.CdxOverviewByClass))
+            if (!CdxOverviewByClass.SequenceEqual(entry.CdxOverviewByClass))
                 return false;
-            if (!this.ClassCodexTotals.SequenceEqual(entry.ClassCodexTotals))
+            if (!ClassCodexTotals.SequenceEqual(entry.ClassCodexTotals))
                 return false;
-            if (!this.PlanetValueByPlanetNameByCatNameByClassName.SequenceEqual(entry.PlanetValueByPlanetNameByCatNameByClassName))
+            if (!PlanetValueByPlanetNameByCatNameByClassName.SequenceEqual(entry.PlanetValueByPlanetNameByCatNameByClassName))
                 return false;
-            if (!this.PlanetCatTotalByPlanetNameByCatNameByClassName.SequenceEqual(entry.PlanetCatTotalByPlanetNameByCatNameByClassName))
+            if (!PlanetCatTotalByPlanetNameByCatNameByClassName.SequenceEqual(entry.PlanetCatTotalByPlanetNameByCatNameByClassName))
                 return false;
 
             return true;
@@ -55,9 +55,9 @@ namespace GomLib.Models
 
         public override int GetHashCode()
         {
-            int hash = this.Id.GetHashCode();
-            hash ^= this.FactionName.GetHashCode();
-            foreach(KeyValuePair<string, long> kvp in this.ClassCodexTotals)
+            int hash = Id.GetHashCode();
+            hash ^= FactionName.GetHashCode();
+            foreach(KeyValuePair<string, long> kvp in ClassCodexTotals)
             {
                 hash ^= kvp.Key.GetHashCode();
                 hash ^= kvp.Value.GetHashCode();

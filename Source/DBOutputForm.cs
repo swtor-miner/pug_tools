@@ -21,10 +21,10 @@ namespace PugTools
 
         private void VersionTexBox_TextChanged(object sender, EventArgs e)
         {
-            if (!String.IsNullOrEmpty(this.versionTexBox.Text))
-                this.btnOK.Enabled = true;
+            if (!string.IsNullOrEmpty(versionTexBox.Text))
+                btnOK.Enabled = true;
             else
-                this.btnOK.Enabled = false;
+                btnOK.Enabled = false;
         }
     }
 }

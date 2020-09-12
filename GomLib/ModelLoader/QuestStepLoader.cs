@@ -28,14 +28,14 @@ namespace GomLib.ModelLoader
 
                 Id = (int)obj.ValueOrDefault<long>("qstStepId", 0),
                 Branch = branch,
-                IsShareable = obj.ValueOrDefault<bool>("qstStepIsShareable", false)
+                IsShareable = obj.ValueOrDefault("qstStepIsShareable", false)
             };
 
-            var bonusMissions = (List<object>)obj.ValueOrDefault<List<object>>("qstBonusMissions", null);
+            var bonusMissions = obj.ValueOrDefault<List<object>>("qstBonusMissions", null);
             step.BonusMissionsIds = _dom.questLoader.LoadBonusMissions(bonusMissions);
 
             step.Tasks = new List<QuestTask>();
-            var tasks = (List<object>)obj.ValueOrDefault<List<object>>("qstTasks", null);
+            var tasks = obj.ValueOrDefault<List<object>>("qstTasks", null);
             if (tasks != null)
             {
                 foreach (var taskDef in tasks)
@@ -45,7 +45,7 @@ namespace GomLib.ModelLoader
                 }
             }
 
-            var stringIds = (List<object>)obj.ValueOrDefault<List<object>>("qstStepJournalEntryStringIdList", null);
+            var stringIds = obj.ValueOrDefault<List<object>>("qstStepJournalEntryStringIdList", null);
             var strings = new List<string>();
             var localizedStrings = new Dictionary<string, List<string>>();
             if (stringIds != null && branch.Quest.TextLookup != null)
@@ -69,7 +69,7 @@ namespace GomLib.ModelLoader
                     }
                     else
                     {
-                        strings.Add(String.Empty);
+                        strings.Add(string.Empty);
                         if (localizedStrings.Count == 0)
                         {
                             localizedStrings.Add("enMale", new List<string>());
@@ -79,23 +79,23 @@ namespace GomLib.ModelLoader
                             localizedStrings.Add("deMale", new List<string>());
                             localizedStrings.Add("deFemale", new List<string>());
                         }
-                        localizedStrings["enMale"].Add(String.Empty);
+                        localizedStrings["enMale"].Add(string.Empty);
                         //localizedStrings["enFemale"].Add(String.Empty);
-                        localizedStrings["frMale"].Add(String.Empty);
-                        localizedStrings["frFemale"].Add(String.Empty);
-                        localizedStrings["deMale"].Add(String.Empty);
-                        localizedStrings["deFemale"].Add(String.Empty);
+                        localizedStrings["frMale"].Add(string.Empty);
+                        localizedStrings["frFemale"].Add(string.Empty);
+                        localizedStrings["deMale"].Add(string.Empty);
+                        localizedStrings["deFemale"].Add(string.Empty);
                     }
                 }
             }
 
-            step.JournalText = String.Join(Environment.NewLine + Environment.NewLine, strings.ToArray());
-            step.LocalizedJournalText = localizedStrings.ToDictionary(x => x.Key, x => String.Join(Environment.NewLine + Environment.NewLine, x.Value.ToArray()));
+            step.JournalText = string.Join(Environment.NewLine + Environment.NewLine, strings.ToArray());
+            step.LocalizedJournalText = localizedStrings.ToDictionary(x => x.Key, x => string.Join(Environment.NewLine + Environment.NewLine, x.Value.ToArray()));
 
-            var itemsGiven = (List<object>)obj.ValueOrDefault<List<object>>("qstItemsGivenOnCompletion", null);
+            var itemsGiven = obj.ValueOrDefault<List<object>>("qstItemsGivenOnCompletion", null);
             step.ItemsGiven = _dom.questLoader.LoadGivenOrTakenItems(step.Branch.Quest, itemsGiven);
 
-            var itemsTaken = (List<object>)obj.ValueOrDefault<List<object>>("qstItemsTakenOnCompletion", null);
+            var itemsTaken = obj.ValueOrDefault<List<object>>("qstItemsTakenOnCompletion", null);
             step.ItemsTaken = _dom.questLoader.LoadGivenOrTakenItems(step.Branch.Quest, itemsTaken);
 
             return step;

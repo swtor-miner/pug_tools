@@ -24,7 +24,7 @@ namespace GomLib.FileLoaders
         public RoomDat Load(string room, int offset, AreaDat area)
         {
             if (area == null) return null;
-            var file = _dom._assets.FindFile(String.Format("/resources/world/areas/{0}/{1}.dat", area.AreaId, room.ToLower()));
+            var file = _dom._assets.FindFile(string.Format("/resources/world/areas/{0}/{1}.dat", area.AreaId, room.ToLower()));
             if (file == null) return null;
             Stream fileStream = file.OpenCopyInMemory();
             BinaryReader binReader = new BinaryReader(fileStream);

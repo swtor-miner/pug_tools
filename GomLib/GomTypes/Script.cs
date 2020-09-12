@@ -14,7 +14,7 @@ namespace GomLib.GomTypes
 
         internal override void Link(DataObjectModel dom)
         {
-            this._dom = dom;
+            _dom = dom;
             if (DomClassId != 0)
             {
                 DomClass = _dom.Get<DomClass>(DomClassId);
@@ -23,7 +23,7 @@ namespace GomLib.GomTypes
 
         public override string ToString()
         {
-            return System.String.Format("script {0}", this.DomClass);
+            return string.Format("script {0}", DomClass);
         }
 
         public override object ReadData(DataObjectModel dom, GomBinaryReader reader)

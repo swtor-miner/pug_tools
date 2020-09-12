@@ -47,32 +47,32 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, spa)) return true;
 
-            if (this.Availability != spa.Availability)
+            if (Availability != spa.Availability)
                 return false;
-            if (this.Icon != spa.Icon)
+            if (Icon != spa.Icon)
                 return false;
-            if (this.Id != spa.Id)
+            if (Id != spa.Id)
                 return false;
-            if (this.IsAvailable != spa.IsAvailable)
+            if (IsAvailable != spa.IsAvailable)
                 return false;
-            if (this.IsDeprecated != spa.IsDeprecated)
+            if (IsDeprecated != spa.IsDeprecated)
                 return false;
-            if (this.Name != spa.Name)
+            if (Name != spa.Name)
                 return false;
-            if (this.NameId != spa.NameId)
+            if (NameId != spa.NameId)
                 return false;
-            if (this.ShipId != spa.ShipId)
+            if (ShipId != spa.ShipId)
                 return false;
-            if (this.ShortId != spa.ShortId)
+            if (ShortId != spa.ShortId)
                 return false;
-            if (this.TextureForCurrentShip != spa.TextureForCurrentShip)
+            if (TextureForCurrentShip != spa.TextureForCurrentShip)
                 return false;
 
             var lsComp = new DictionaryComparer<long, string>();
-            if (!lsComp.Equals(this.TexturesByShipId, spa.TexturesByShipId))
+            if (!lsComp.Equals(TexturesByShipId, spa.TexturesByShipId))
                 return false;
 
-            if (this.VeryShortId != spa.VeryShortId)
+            if (VeryShortId != spa.VeryShortId)
                 return false;
 
             return true;

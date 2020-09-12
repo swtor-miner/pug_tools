@@ -11,7 +11,7 @@ namespace TorLib
 
         static GameInfo()
         {
-            Boolean.TryParse(System.Configuration.ConfigurationManager.AppSettings["usePtrData"], out bool isPtr);
+            bool.TryParse(System.Configuration.ConfigurationManager.AppSettings["usePtrData"], out bool isPtr);
 
             if (isPtr)
             {

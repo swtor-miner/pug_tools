@@ -40,12 +40,12 @@ namespace GomLib.ModelLoader
             get { return "itmItem"; }
         }
 
-        public Models.GameObject CreateObject()
+        public GameObject CreateObject()
         {
-            return new Models.Item();
+            return new Item();
         }
 
-        public Item Load(Models.GameObject obj, GomObject gom)
+        public Item Load(GameObject obj, GomObject gom)
         {
             if (gom == null) { return (Item)obj; }
             if (gom == null) { return null; }
@@ -67,7 +67,7 @@ namespace GomLib.ModelLoader
                         table = proto.Data.ValueOrDefault<Dictionary<object, object>>("qstRewardsNewInfoData", null);
                         if (proto.Data.ContainsKey("qstRewardsInfoData"))
                         {
-                            foreach (var kvp in table = proto.Data.ValueOrDefault<Dictionary<object, object>>("qstRewardsInfoData", new Dictionary<object, object>()))
+                            foreach (var kvp in table = proto.Data.ValueOrDefault("qstRewardsInfoData", new Dictionary<object, object>()))
                             {
                                 if (!table.ContainsKey(kvp.Key))
                                     table.Add(kvp.Key, kvp.Value);
@@ -110,7 +110,7 @@ namespace GomLib.ModelLoader
                     }
                 }
             }
-            var itm = (Models.Item)obj;
+            var itm = (Item)obj;
 
             //HashSet<ulong> qRList;
             //if (questRewardRefs.TryGetValue(gom.Id, out qRList))
@@ -120,7 +120,7 @@ namespace GomLib.ModelLoader
             itm.Fqn = gom.Name;
             itm.Dom_ = _dom;
             itm.References = gom.References;
-            itm.AppearanceColor = (string)gom.Data.ValueOrDefault<string>("itmEnhancementColor", null);
+            itm.AppearanceColor = gom.Data.ValueOrDefault<string>("itmEnhancementColor", null);
             if (itm.AppearanceColor != "None")
             {
                 // string oshdfoi = "";
@@ -131,15 +131,15 @@ namespace GomLib.ModelLoader
                 itm.DyeColor = _dom.detailedAppearanceColorLoader.Load(itm.DyeId);
             }
 
-            itm.ArmorSpec = Models.ArmorSpec.Load(_dom, (long)gom.Data.ValueOrDefault<long>("itmArmorSpec", 0));
-            itm.Binding = Models.ItemBindingRuleExtensions.ToBindingRule((ScriptEnum)gom.Data.ValueOrDefault<ScriptEnum>("itmBindingRule", null));
+            itm.ArmorSpec = ArmorSpec.Load(_dom, gom.Data.ValueOrDefault<long>("itmArmorSpec", 0));
+            itm.Binding = ItemBindingRuleExtensions.ToBindingRule(gom.Data.ValueOrDefault<ScriptEnum>("itmBindingRule", null));
 
             itm.CombinedStatModifiers = new ItemStatList();
-            itm.ConsumedOnUse = (bool)gom.Data.ValueOrDefault<bool>("itmConsumedOnUse", false);
+            itm.ConsumedOnUse = gom.Data.ValueOrDefault("itmConsumedOnUse", false);
 
-            itm.SoundType = (string)gom.Data.ValueOrDefault<string>("itmSoundType", null);
-            itm.StackCount = (long)gom.Data.ValueOrDefault<long>("itmStackCount", 0);
-            itm.MaxDurability = (long)gom.Data.ValueOrDefault<long>("itmMaxDurability", 0);
+            itm.SoundType = gom.Data.ValueOrDefault<string>("itmSoundType", null);
+            itm.StackCount = gom.Data.ValueOrDefault<long>("itmStackCount", 0);
+            itm.MaxDurability = gom.Data.ValueOrDefault<long>("itmMaxDurability", 0);
 
             //itm.Conversation = new Conversation();
             itm.ConversationFqn = gom.Data.ValueOrDefault<string>("itmConversation", null);
@@ -152,18 +152,18 @@ namespace GomLib.ModelLoader
                 itm.Description = _dom.stringTable.TryGetString(itm.Fqn, descLookupData);
             }
 
-            itm.DisassembleCategory = Models.ProfessionSubtypeExtensions.ToProfessionSubtype((ScriptEnum)gom.Data.ValueOrDefault<ScriptEnum>("prfDisassembleCategory", null));
+            itm.DisassembleCategory = ProfessionSubtypeExtensions.ToProfessionSubtype(gom.Data.ValueOrDefault<ScriptEnum>("prfDisassembleCategory", null));
             itm.Durability = (int)gom.Data.ValueOrDefault<long>("itmMaxDurability", 0);
-            itm.EnhancementCategory = Models.EnhancementCategoryExtensions.ToEnhancementCategory((ScriptEnum)gom.Data.ValueOrDefault<ScriptEnum>("itmEnhancementCategory", null));
-            itm.EnhancementSubCategory = Models.EnhancementSubCategoryExtensions.ToEnhancementSubCategory((ScriptEnum)gom.Data.ValueOrDefault<ScriptEnum>("itmEnhancementSubCategory", null));
-            long slotId = (long)gom.Data.ValueOrDefault<long>("itmEnhancementType", 0);
-            itm.EnhancementType = Models.EnhancementTypeExtensions.ToEnhancementType(slotId);
+            itm.EnhancementCategory = EnhancementCategoryExtensions.ToEnhancementCategory(gom.Data.ValueOrDefault<ScriptEnum>("itmEnhancementCategory", null));
+            itm.EnhancementSubCategory = EnhancementSubCategoryExtensions.ToEnhancementSubCategory(gom.Data.ValueOrDefault<ScriptEnum>("itmEnhancementSubCategory", null));
+            long slotId = gom.Data.ValueOrDefault<long>("itmEnhancementType", 0);
+            itm.EnhancementType = EnhancementTypeExtensions.ToEnhancementType(slotId);
             itm.DetEnhancementType = _dom.enhanceData.ToEnhancement(slotId);
 
             // Enhancement Slots
             itm.EnhancementSlots = new ItemEnhancementList();
-            var enhancementSlots = (List<object>)gom.Data.ValueOrDefault<List<object>>("itmEnhancementSlots", null);
-            var enhancementDefaults = (List<object>)gom.Data.ValueOrDefault<List<object>>("itmEnhancementDefaults", null);
+            var enhancementSlots = gom.Data.ValueOrDefault<List<object>>("itmEnhancementSlots", null);
+            var enhancementDefaults = gom.Data.ValueOrDefault<List<object>>("itmEnhancementDefaults", null);
             if (enhancementSlots != null)
             {
                 for (var i = 0; i < 5; i++)
@@ -195,14 +195,14 @@ namespace GomLib.ModelLoader
             itm.EquipAbilityId = gom.Data.ValueOrDefault<ulong>("itmEquipAbility", 0);
             itm.EquipAbility = _dom.abilityLoader.Load(itm.EquipAbilityId);
 
-            itm.GiftRank = Models.GiftRankExtensions.ToGiftRank((ScriptEnum)gom.Data.ValueOrDefault<ScriptEnum>("itmGiftAffectionRank", null));
-            itm.GiftType = Models.GiftTypeExtensions.ToGiftType((ScriptEnum)gom.Data.ValueOrDefault<ScriptEnum>("itmGiftType", null));
+            itm.GiftRank = GiftRankExtensions.ToGiftRank(gom.Data.ValueOrDefault<ScriptEnum>("itmGiftAffectionRank", null));
+            itm.GiftType = GiftTypeExtensions.ToGiftType(gom.Data.ValueOrDefault<ScriptEnum>("itmGiftType", null));
             if (itm.GiftType != GiftType.None && itm.GiftRank == GiftRank.None)
             {
                 itm.GiftRank = GiftRank.Rank1;
             }
             itm.GiftRankNum = (int)itm.GiftRank;
-            itm.Icon = gom.Data.ValueOrDefault<string>("itmIcon", String.Empty);
+            itm.Icon = gom.Data.ValueOrDefault("itmIcon", string.Empty);
             _dom._assets.icons.Add(itm.Icon);
 
             //string itmModifierSetID = gom.Data.ValueOrDefault<string>("itmModifierSetID", null);
@@ -218,7 +218,7 @@ namespace GomLib.ModelLoader
             //    }
             //}
 
-            if (gom.Data.ValueOrDefault<bool>("itmHasAppearanceSlot", false) || gom.Data.ValueOrDefault<ulong>("itmAppearanceSpec", 0) != 0)
+            if (gom.Data.ValueOrDefault("itmHasAppearanceSlot", false) || gom.Data.ValueOrDefault<ulong>("itmAppearanceSpec", 0) != 0)
             {
                 Dictionary<object, object> itmAppearanceSpecByPlayerClass = gom.Data.ValueOrDefault<Dictionary<object, object>>("itmAppearanceSpecByPlayerClass", null);
                 if (itmAppearanceSpecByPlayerClass != null)
@@ -238,7 +238,7 @@ namespace GomLib.ModelLoader
                     itm.ClassAppearance = new Dictionary<string, string>();
                     foreach (var appearancePair in itmAppearanceSpecByPlayerClass)
                     {
-                        GomLib.GomObject itemAppearance = _dom.GetObject((ulong)appearancePair.Value);
+                        GomObject itemAppearance = _dom.GetObject((ulong)appearancePair.Value);
                         if (itemAppearance == null) continue;
 
                         itm.ClassAppearance.Add(classNameLookup[(ulong)appearancePair.Key], itemAppearance.Name);
@@ -246,7 +246,7 @@ namespace GomLib.ModelLoader
                         {
                             itm.ImperialIcon = itemAppearance.Name;
                             itm.AppearanceImperial = itemAppearance.Id.ToMaskedBase62();
-                            itm.VOModulationImperial = itemAppearance.Data.ValueOrDefault<string>("ippVOSoundTypeOverride", "noModulation");
+                            itm.VOModulationImperial = itemAppearance.Data.ValueOrDefault("ippVOSoundTypeOverride", "noModulation");
                             itm.ImperialAppearanceTag = AppearanceTags(itemAppearance);
                             DupeAppReferences(itm, itemAppearance, "similarBaseModel");
                             DupeAppReferences(itm, itemAppearance, "similarAppearance");
@@ -265,7 +265,7 @@ namespace GomLib.ModelLoader
                         {
                             itm.RepublicIcon = itemAppearance.Name;
                             itm.AppearanceRepublic = itemAppearance.Id.ToMaskedBase62();
-                            itm.VOModulationRepublic = itemAppearance.Data.ValueOrDefault<string>("ippVOSoundTypeOverride", "noModulation");
+                            itm.VOModulationRepublic = itemAppearance.Data.ValueOrDefault("ippVOSoundTypeOverride", "noModulation");
                             itm.RepublicAppearanceTag = AppearanceTags(itemAppearance);
                             DupeAppReferences(itm, itemAppearance, "similarBaseModel");
                             DupeAppReferences(itm, itemAppearance, "similarAppearance");
@@ -288,10 +288,10 @@ namespace GomLib.ModelLoader
                     ulong itmAppearanceSpec = gom.Data.ValueOrDefault<ulong>("itmAppearanceSpec", 0);
                     if (itmAppearanceSpec != 0)
                     {
-                        GomLib.GomObject itemAppearance = _dom.GetObject(itmAppearanceSpec);
+                        GomObject itemAppearance = _dom.GetObject(itmAppearanceSpec);
                         if (itemAppearance != null)
                         {
-                            itm.VOModulationImperial = itemAppearance.Data.ValueOrDefault<string>("ippVOSoundTypeOverride", "noModulation");
+                            itm.VOModulationImperial = itemAppearance.Data.ValueOrDefault("ippVOSoundTypeOverride", "noModulation");
                             itm.VOModulationRepublic = itm.VOModulationImperial;
                             itm.ImperialAppearanceTag = AppearanceTags(itemAppearance);
                             itm.RepublicAppearanceTag = itm.ImperialAppearanceTag;
@@ -333,7 +333,7 @@ namespace GomLib.ModelLoader
             itm.ShortId = (ulong)(itm.NameId >> 32);
             itm.Id = gom.Id;
 
-            itm.Quality = Models.ItemQualityExtensions.ToItemQuality((ScriptEnum)gom.Data.ValueOrDefault<ScriptEnum>("itmBaseQuality", null));
+            itm.Quality = ItemQualityExtensions.ToItemQuality(gom.Data.ValueOrDefault<ScriptEnum>("itmBaseQuality", null));
             if ((itm.Quality == ItemQuality.Prototype) && (itm.EnhancementSlots.Count > 1))
                 itm.Quality = ItemQuality.Moddable;
             //if (itm.EnhancementType != EnhancementType.None)
@@ -344,15 +344,15 @@ namespace GomLib.ModelLoader
             //{
             //itm.Rating = Tables.ItemRating.GetRating(itm.ItemLevel, ItemQuality.Premium);
             //}
-            itm.RequiresAlignment = (bool)gom.Data.ValueOrDefault<bool>("itmAlignmentRequired", false);
+            itm.RequiresAlignment = gom.Data.ValueOrDefault("itmAlignmentRequired", false);
             itm.RequiredAlignmentTier = (int)gom.Data.ValueOrDefault<long>("itmRequiredAlignmentTier", 0);
-            itm.RequiredAlignmentInverted = (bool)gom.Data.ValueOrDefault<bool>("itmRequiredAlignmentInverted", false);
+            itm.RequiredAlignmentInverted = gom.Data.ValueOrDefault("itmRequiredAlignmentInverted", false);
 
             itm.ItmCraftedCategory = gom.Data.ValueOrDefault<long>("itmCraftedCategory", 0);
 
             // Required Classes
             itm.RequiredClasses = new ClassSpecList();
-            var classMap = (Dictionary<object, object>)gom.Data.ValueOrDefault<Dictionary<object, object>>("itmRequiredClasses", null);
+            var classMap = gom.Data.ValueOrDefault<Dictionary<object, object>>("itmRequiredClasses", null);
             if (classMap != null)
             {
                 foreach (var kvp in classMap)
@@ -366,15 +366,15 @@ namespace GomLib.ModelLoader
                 }
             }
 
-            itm.RequiredGender = GenderExtensions.ToGender((ScriptEnum)gom.Data.ValueOrDefault<ScriptEnum>("itmGenderRequired", null));
+            itm.RequiredGender = GenderExtensions.ToGender(gom.Data.ValueOrDefault<ScriptEnum>("itmGenderRequired", null));
             itm.AuctionCategoryId = (int)gom.Data.ValueOrDefault<long>("itmGtnMaincategory", 0);
             itm.AuctionCategory = AuctionCategory.Load(_dom, itm.AuctionCategoryId);
             itm.AuctionSubCategoryId = (int)gom.Data.ValueOrDefault<long>("itmGtnSubcategory", 0);
-            itm.AuctionSubCategory = AuctionSubCategory.Load(_dom, (int)itm.AuctionSubCategoryId);
+            itm.AuctionSubCategory = AuctionSubCategory.Load(_dom, itm.AuctionSubCategoryId);
             itm.RequiredLevel = (int)gom.Data.ValueOrDefault<long>("itmMinimumLevel", 0);
-            itm.RequiredProfession = Models.ProfessionExtensions.ToProfession((ScriptEnum)gom.Data.ValueOrDefault<ScriptEnum>("prfProfessionRequired", null));
+            itm.RequiredProfession = ProfessionExtensions.ToProfession(gom.Data.ValueOrDefault<ScriptEnum>("prfProfessionRequired", null));
             itm.RequiredProfessionLevel = (int)gom.Data.ValueOrDefault<long>("prfProfessionLevelRequired", 0);
-            itm.RequiresSocial = (bool)gom.Data.ValueOrDefault<bool>("itmSocialScoreRequired", false);
+            itm.RequiresSocial = gom.Data.ValueOrDefault("itmSocialScoreRequired", false);
             itm.RequiredSocialTier = (int)gom.Data.ValueOrDefault<long>("itmRequiredSocialScoreTier", 0);
             itm.RequiredValorRank = (int)gom.Data.ValueOrDefault<long>("itmRequiredValorRank", 0);
             GomObjectData repContainer = gom.Data.ValueOrDefault<GomObjectData>("itmReputationContainer", null);
@@ -400,11 +400,11 @@ namespace GomLib.ModelLoader
                 }
             }
 
-            itm.ShieldSpec = ArmorSpec.Load(_dom, (long)gom.Data.ValueOrDefault<long>("itmShieldSpec", 0));
+            itm.ShieldSpec = ArmorSpec.Load(_dom, gom.Data.ValueOrDefault<long>("itmShieldSpec", 0));
 
             // Valid Inventory Slots
             itm.Slots = new SlotTypeList();
-            var slotList = (List<object>)gom.Data.ValueOrDefault<List<object>>("itmSlotTypes", null);
+            var slotList = gom.Data.ValueOrDefault<List<object>>("itmSlotTypes", null);
             if (slotList != null)
             {
                 foreach (var slot in slotList)
@@ -416,7 +416,7 @@ namespace GomLib.ModelLoader
             }
 
             // Item Stats
-            var stats = (Dictionary<object, object>)gom.Data.ValueOrDefault<Dictionary<object, object>>("itmEquipModStats", null);
+            var stats = gom.Data.ValueOrDefault<Dictionary<object, object>>("itmEquipModStats", null);
             itm.StatModifiers = new ItemStatList();
             if (stats != null)
             {
@@ -486,8 +486,8 @@ namespace GomLib.ModelLoader
             if (itm.CombinedRating == 0) itm.CombinedRating = itm.Rating;
 
             //itm.TreasurePackageSpec;
-            itm.TreasurePackageId = (long)gom.Data.ValueOrDefault<long>("itmTreasurePackageId", 0);
-            itm.TypeBitSet = (int)(long)gom.Data.ValueOrDefault<long>("itmTypeBitSet", 0);
+            itm.TreasurePackageId = gom.Data.ValueOrDefault<long>("itmTreasurePackageId", 0);
+            itm.TypeBitSet = (int)gom.Data.ValueOrDefault<long>("itmTypeBitSet", 0);
             itm.UniqueLimit = (int)gom.Data.ValueOrDefault<long>("itmUniqueLimit", 0);
 
             itm.UseAbilityId = gom.Data.ValueOrDefault<ulong>("itmUsageAbility", 0);
@@ -528,22 +528,22 @@ namespace GomLib.ModelLoader
 
             if (itm.WeaponSpec != null)
             {
-                itm.WeaponAppSpec = gom.Data.ValueOrDefault<string>("cbtWeaponAppearanceSpec", "");
+                itm.WeaponAppSpec = gom.Data.ValueOrDefault("cbtWeaponAppearanceSpec", "");
                 if (itm.WeaponAppSpec != "")
                 {
                     if (itemAppearances.ContainsKey(itm.WeaponAppSpec))
                     {
-                        itm.Model = ((GomObjectData)itemAppearances[itm.WeaponAppSpec]).ValueOrDefault<string>("itmModel", "");
+                        itm.Model = ((GomObjectData)itemAppearances[itm.WeaponAppSpec]).ValueOrDefault("itmModel", "");
                     }
                 }
             }
 
-            var sourceList = gom.Data.ValueOrDefault<List<object>>("itmDecorationSource", new List<object>());
+            var sourceList = gom.Data.ValueOrDefault("itmDecorationSource", new List<object>());
 
             itm.StrongholdSourceList = sourceList.ConvertAll(x => (long)x);
 
-            itm.IsUnknownBool = gom.Data.ValueOrDefault<bool>("itmIsUnknownBool", false);
-            itm.MTXRarity = gom.Data.ValueOrDefault<ScriptEnum>("itmMTXRarity", new ScriptEnum()).ToString();
+            itm.IsUnknownBool = gom.Data.ValueOrDefault("itmIsUnknownBool", false);
+            itm.MTXRarity = gom.Data.ValueOrDefault("itmMTXRarity", new ScriptEnum()).ToString();
 
             var sourceProto = _dom.GetObject("itmSourceProto");
 
@@ -573,7 +573,7 @@ namespace GomLib.ModelLoader
             childLookupMap.TryGetValue(itm.Id, out ulong cId);
             itm.ChildId = cId;
 
-            itm.BindsToSlot = gom.Data.ValueOrDefault<bool>("itmBindsToSlot", false);
+            itm.BindsToSlot = gom.Data.ValueOrDefault("itmBindsToSlot", false);
 
             itm.RepFactionId = (int)gom.Data.ValueOrDefault<long>("reputationFactionIndex", 0); //on trophies
 
@@ -630,7 +630,7 @@ namespace GomLib.ModelLoader
             {
                 var debugmap = _dom.GetObject("prfDebugSchematicMapPrototype");
                 if (debugmap == null) return;
-                var childmap = debugmap.Data.ValueOrDefault<Dictionary<object, object>>("schemChildMap", new Dictionary<object, object>());
+                var childmap = debugmap.Data.ValueOrDefault("schemChildMap", new Dictionary<object, object>());
                 debugmap.Unload();
                 childLookupMap = childmap.ToDictionary(x => (ulong)x.Key, x => (ulong)((List<object>)x.Value).First());
                 foreach (var kvp in childLookupMap)
@@ -643,7 +643,7 @@ namespace GomLib.ModelLoader
             }
         }
 
-        private string AppearanceTags(GomLib.GomObject itemAppearance)
+        private string AppearanceTags(GomObject itemAppearance)
         {
             ScriptEnum appearanceSlotType = itemAppearance.Data.ValueOrDefault<ScriptEnum>("appAppearanceSlotType", null);
             if (appearanceSlotType != null)
@@ -674,11 +674,11 @@ namespace GomLib.ModelLoader
             return "";
         }
 
-        public void LoadReferences(Models.GameObject obj, GomObject gom)
+        public void LoadReferences(GameObject obj, GomObject gom)
         {
         }
 
-        public void LoadObject(Models.GameObject obj, GomObject gom)
+        public void LoadObject(GameObject obj, GomObject gom)
         {
             Load(obj, gom);
         }
@@ -686,7 +686,7 @@ namespace GomLib.ModelLoader
         readonly Dictionary<ulong, Item> idMap = new Dictionary<ulong, Item>();
         readonly Dictionary<string, Item> nameMap = new Dictionary<string, Item>();
 
-        public Models.Item Load(ulong nodeId)
+        public Item Load(ulong nodeId)
         {
             if (idMap.TryGetValue(nodeId, out Item result))
             {
@@ -695,11 +695,11 @@ namespace GomLib.ModelLoader
 
             GomObject obj = _dom.GetObject(nodeId);
             if (obj == null) { return null; }
-            Models.Item itm = new Item();
+            Item itm = new Item();
             return Load(itm, obj);
         }
 
-        public Models.Item Load(string fqn)
+        public Item Load(string fqn)
         {
             if (nameMap.TryGetValue(fqn, out Item result))
             {
@@ -708,14 +708,14 @@ namespace GomLib.ModelLoader
 
             GomObject obj = _dom.GetObject(fqn);
             if (obj == null) { return null; }
-            Models.Item itm = new Item();
+            Item itm = new Item();
             return Load(itm, obj);
         }
 
-        public Models.Item Load(GomObject obj)
+        public Item Load(GomObject obj)
         {
             if (obj == null) { return null; }
-            Models.Item itm = new Item();
+            Item itm = new Item();
             return Load(itm, obj);
         }
     }

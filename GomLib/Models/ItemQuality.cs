@@ -23,13 +23,13 @@ namespace GomLib.Models
     {
         public static ItemQuality ToItemQuality(this ScriptEnum val)
         {
-            if (val == null) { return ToItemQuality(String.Empty); }
+            if (val == null) { return ToItemQuality(string.Empty); }
             return ToItemQuality(val.ToString());
         }
 
         public static ItemQuality ToItemQuality(this string str)
         {
-            if (String.IsNullOrEmpty(str)) return ItemQuality.Cheap;
+            if (string.IsNullOrEmpty(str)) return ItemQuality.Cheap;
 
             switch (str)
             {

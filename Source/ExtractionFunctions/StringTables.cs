@@ -65,7 +65,7 @@ namespace PugTools
                         {
                             if (!curTbl.Equals(prevTbl))
                             {
-                                Addtolist2(String.Format("Changed: {0}", curTbl.Fqn));
+                                Addtolist2(string.Format("Changed: {0}", curTbl.Fqn));
                                 XElement oldElement = StbToXElement(prevTbl);
                                 XElement newElement = StbToXElement(curTbl);
 
@@ -80,7 +80,7 @@ namespace PugTools
                         }
                         else
                         {
-                            Addtolist2(String.Format("New: {0}", curTbl.Fqn));
+                            Addtolist2(string.Format("New: {0}", curTbl.Fqn));
                             XElement newElement = StbToXElement(curTbl);
                             newElement.Add(new XAttribute("Status", "New"));
                             if (newElement.Elements().Count() > 0) { stringTables.Add(newElement); }
@@ -88,7 +88,7 @@ namespace PugTools
                     }
                     else if (prevTbl != null)
                     {
-                        Addtolist2(String.Format("Removed: {0}", prevTbl.Fqn));
+                        Addtolist2(string.Format("Removed: {0}", prevTbl.Fqn));
                         XElement remElement = StbToXElement(prevTbl);
                         remElement.Add(new XAttribute("Status", "Removed"));
                         if (remElement.Elements().Count() > 0) { stringTables.Add(remElement); }

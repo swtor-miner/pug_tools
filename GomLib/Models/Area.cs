@@ -58,21 +58,21 @@ namespace GomLib.Models
 
         public void SortMaps()
         {
-            if (this.MapPages == null) { return; }
-            this.MapPages.Sort((x, y) => x.Volume.CompareTo(y.Volume)); // Sort MapPages by Volume (smallest to largest)
+            if (MapPages == null) { return; }
+            MapPages.Sort((x, y) => x.Volume.CompareTo(y.Volume)); // Sort MapPages by Volume (smallest to largest)
             sortedByVolume = true;
         }
 
         public MapPage FindSmallestMapContaining(float x, float y, float z)
         {
-            if (!sortedByVolume) { this.SortMaps(); }
-            return this.MapPages.Find(m => m.ContainsPoint(x, y, z)); // Find first Map that contains the point -- since maps are sorted from smallest to largest, the first found will be the one we want
+            if (!sortedByVolume) { SortMaps(); }
+            return MapPages.Find(m => m.ContainsPoint(x, y, z)); // Find first Map that contains the point -- since maps are sorted from smallest to largest, the first found will be the one we want
         }
 
         public MapPage FindSmallestMapContainingInMinimap(float x, float y, float z)
         {
-            if (!sortedByVolume) { this.SortMaps(); }
-            return this.MapPages.Find(m => m.MiniMapContainsPoint(x, y, z));
+            if (!sortedByVolume) { SortMaps(); }
+            return MapPages.Find(m => m.MiniMapContainsPoint(x, y, z));
         }
 
         public override int GetHashCode()  //should be fixed.
@@ -107,9 +107,9 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, itm)) return true;
 
-            if (this.GetHashCode() != itm.GetHashCode())
+            if (GetHashCode() != itm.GetHashCode())
                 return false;
-            if (this.Id != itm.Id)
+            if (Id != itm.Id)
                 return false;
 
             return true;
@@ -118,7 +118,7 @@ namespace GomLib.Models
         public override XElement ToXElement(bool verbose)
         {
             XElement area = new XElement("Area");
-            if (this.Id == 0) return area;
+            if (Id == 0) return area;
             if (verbose)
             {
                 //XElement MapPages = new XElement("MapPages");

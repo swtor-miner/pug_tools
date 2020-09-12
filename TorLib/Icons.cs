@@ -32,7 +32,7 @@ namespace TorLib
 
         public void Add(string filename)
         {
-            if (!String.IsNullOrEmpty(filename))
+            if (!string.IsNullOrEmpty(filename))
             {
                 Filenames.Add(filename.ToLower());
             }
@@ -40,7 +40,7 @@ namespace TorLib
 
         public void AddPortrait(string path)
         {
-            if (!String.IsNullOrEmpty(path))
+            if (!string.IsNullOrEmpty(path))
             {
                 Portraits.Add(path.ToLower());
             }
@@ -48,7 +48,7 @@ namespace TorLib
 
         public void AddCodex(string fileName)
         {
-            if (!String.IsNullOrEmpty(fileName))
+            if (!string.IsNullOrEmpty(fileName))
             {
                 Codex.Add(fileName.ToLower());
             }
@@ -67,7 +67,7 @@ namespace TorLib
 
         public void AddMtx(string fileName)
         {
-            if (!String.IsNullOrEmpty(fileName))
+            if (!string.IsNullOrEmpty(fileName))
             {
                 //Mtx.Add(fileName.ToLower() + "_120x120");
                 //Mtx.Add(fileName.ToLower() + "_260x400");
@@ -104,7 +104,7 @@ namespace TorLib
                 var portraitFileName = System.IO.Path.GetFileNameWithoutExtension(iconName);
                 if (existingFiles.Contains(portraitFileName)) { return; }
 
-                string iconPath = String.Format("/resources{0}", iconName);
+                string iconPath = string.Format("/resources{0}", iconName);
                 var file = _assets.FindFile(iconPath);
                 if (file == null)
                 {
@@ -139,7 +139,7 @@ namespace TorLib
                     System.IO.Directory.CreateDirectory(outDir);
                 }
 
-                SaveSetTo(outDir, maps.Value, String.Format("/resources/world/areas/{0}/{{0}}_r.dds", maps.Key), "map", overwrite);
+                SaveSetTo(outDir, maps.Value, string.Format("/resources/world/areas/{0}/{{0}}_r.dds", maps.Key), "map", overwrite);
             }
         }
 
@@ -210,7 +210,7 @@ namespace TorLib
                 var fileName = iconName;
                 if (existingFiles.Contains(iconName)) { return; }
 
-                string iconPath = String.Format(internalPathFormat, iconName);
+                string iconPath = string.Format(internalPathFormat, iconName);
                 var file = _assets.FindFile(iconPath);
                 if (file == null)
                 {

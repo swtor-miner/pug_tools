@@ -26,17 +26,17 @@ namespace PugTools
         public Format_DAT(string dest, string ext)
         {
             this.dest = dest;
-            this.extension = ext;
+            extension = ext;
         }
 
-        public void ParseDAT(Stream fileStream, string fullFileName, PugTools.AssetBrowser form)
+        public void ParseDAT(Stream fileStream, string fullFileName, AssetBrowser form)
         {
             if (form is null)
             {
                 throw new ArgumentNullException(nameof(form));
             }
 
-            this.filename = fullFileName;
+            filename = fullFileName;
             bool oldFormat = true;
             BinaryReader binReader = new BinaryReader(fileStream);
             int header = binReader.ReadInt32();
@@ -115,9 +115,9 @@ namespace PugTools
 
             string areaID = null;	//areaGuid not usually the correct ID in the file path
 
-            if (this.filename.Contains("/resources/world/areas"))
+            if (filename.Contains("/resources/world/areas"))
             {
-                areaID = this.filename.Replace("/resources/world/areas/", "").Replace("/area.dat", "");
+                areaID = filename.Replace("/resources/world/areas/", "").Replace("/area.dat", "");
                 fileNames.Add("/resources/world/areas/" + areaID + "/mapnotes.not");
             }
 
@@ -129,9 +129,9 @@ namespace PugTools
                 uint nameLength = br.ReadUInt32();
                 string room = ReadString(br, nameLength).ToLower();
                 if (areaID != null)
-                    fileNames.Add(String.Format("/resources/world/areas/{0}/{1}.dat", areaID, room));
+                    fileNames.Add(string.Format("/resources/world/areas/{0}/{1}.dat", areaID, room));
                 else
-                    fileNames.Add(String.Format("/resources/world/areas/{0}/{1}.dat", areaGuid, room));
+                    fileNames.Add(string.Format("/resources/world/areas/{0}/{1}.dat", areaGuid, room));
             }
 
             //Assets
@@ -166,9 +166,9 @@ namespace PugTools
                         int end = scheme.IndexOf('|', idx);
                         int len = end - idx;
                         string final = scheme.Substring(idx, len).ToLower();
-                        fileNames.Add(String.Format("/resources{0}.tex", final));
-                        fileNames.Add(String.Format("/resources{0}.dds", final));
-                        fileNames.Add(String.Format("/resources{0}.tiny.dds", final));
+                        fileNames.Add(string.Format("/resources{0}.tex", final));
+                        fileNames.Add(string.Format("/resources{0}.dds", final));
+                        fileNames.Add(string.Format("/resources{0}.tiny.dds", final));
                         idx = end;
                     }
                 }
@@ -183,8 +183,8 @@ namespace PugTools
                 uint nameLength = br.ReadUInt32();
                 string terTexName = ReadString(br, nameLength);
 
-                fileNames.Add(String.Format("/resources/art/shaders/materials/{0}.mat", terTexName.ToLower()));
-                fileNames.Add(String.Format("/resources/art/shaders/environmentmaterials/{0}.emt", terTexName.ToLower()));
+                fileNames.Add(string.Format("/resources/art/shaders/materials/{0}.mat", terTexName.ToLower()));
+                fileNames.Add(string.Format("/resources/art/shaders/environmentmaterials/{0}.emt", terTexName.ToLower()));
             }
 
             //TERRAINTEXTURES
@@ -196,8 +196,8 @@ namespace PugTools
                 uint nameLength = br.ReadUInt32();
                 string terTexName = ReadString(br, nameLength);
 
-                fileNames.Add(String.Format("/resources/art/shaders/materials/{0}.mat", terTexName.ToLower()));
-                fileNames.Add(String.Format("/resources/art/shaders/environmentmaterials/{0}.emt", terTexName.ToLower()));
+                fileNames.Add(string.Format("/resources/art/shaders/materials/{0}.mat", terTexName.ToLower()));
+                fileNames.Add(string.Format("/resources/art/shaders/environmentmaterials/{0}.emt", terTexName.ToLower()));
             }
 
             //DYDCHANNELPARAMS
@@ -233,11 +233,11 @@ namespace PugTools
 
             uint fileNameLength = br.ReadUInt32();
             string filename = ReadString(br, fileNameLength);
-            fileNames.Add(String.Format("/resources{0}", filename));
+            fileNames.Add(string.Format("/resources{0}", filename));
 
             string area = filename.Remove(filename.LastIndexOf('/') + 1);
-            fileNames.Add(String.Format("/resources{0}", area + "area.dat"));
-            fileNames.Add(String.Format("/resources{0}", area + "mapnotes.not"));
+            fileNames.Add(string.Format("/resources{0}", area + "area.dat"));
+            fileNames.Add(string.Format("/resources{0}", area + "mapnotes.not"));
 
             //Instances
             br.BaseStream.Position = instanceOffset;
@@ -346,7 +346,7 @@ namespace PugTools
                                 }
                                 o = str.ToString();
 
-                                if (!String.IsNullOrWhiteSpace((string)o))
+                                if (!string.IsNullOrWhiteSpace((string)o))
                                 {
                                     switch (propertyId)
                                     {
@@ -443,14 +443,14 @@ namespace PugTools
 
             foreach (var fxs in fxspecs)
             {
-                fileNames.Add(String.Format("/resources/art/fx/fxspec/{0}.fxspec", fxs.ToLower()).Replace("\\", "/").Replace("//", "/").Replace(".fxspec.fxspec", ".fxspec"));
+                fileNames.Add(string.Format("/resources/art/fx/fxspec/{0}.fxspec", fxs.ToLower()).Replace("\\", "/").Replace("//", "/").Replace(".fxspec.fxspec", ".fxspec"));
             }
             foreach (var tex in textures)
             {
                 string file = ("/resources/" + tex.ToLower()).Replace("\\", "/").Replace("//", "/").Replace(".dds", "");
-                fileNames.Add(String.Format("{0}.dds", file));
-                fileNames.Add(String.Format("{0}.tiny.dds", file));
-                fileNames.Add(String.Format("{0}.tex", file));
+                fileNames.Add(string.Format("{0}.dds", file));
+                fileNames.Add(string.Format("{0}.tiny.dds", file));
+                fileNames.Add(string.Format("{0}.tex", file));
             }
         }
         #endregion
@@ -648,11 +648,11 @@ namespace PugTools
 
         public void WriteFile()
         {
-            if (!System.IO.Directory.Exists(this.dest + "\\File_Names"))
-                System.IO.Directory.CreateDirectory(this.dest + "\\File_Names");
-            if (this.fileNames.Count > 0)
+            if (!Directory.Exists(dest + "\\File_Names"))
+                Directory.CreateDirectory(dest + "\\File_Names");
+            if (fileNames.Count > 0)
             {
-                System.IO.StreamWriter outputNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_file_names.txt", false);
+                StreamWriter outputNames = new StreamWriter(dest + "\\File_Names\\" + extension + "_file_names.txt", false);
                 foreach (string file in fileNames)
                 {
                     outputNames.WriteLine(file.Replace("\\", "/"));
@@ -661,9 +661,9 @@ namespace PugTools
                 fileNames.Clear();
             }
 
-            if (this.animFileNames.Count > 0)
+            if (animFileNames.Count > 0)
             {
-                System.IO.StreamWriter outputAnimNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_anim_file_names.txt", false);
+                StreamWriter outputAnimNames = new StreamWriter(dest + "\\File_Names\\" + extension + "_anim_file_names.txt", false);
                 foreach (string file in animFileNames)
                 {
                     outputAnimNames.WriteLine(file.Replace("\\", "/"));
@@ -672,9 +672,9 @@ namespace PugTools
                 animFileNames.Clear();
             }
 
-            if (this.errors.Count > 0)
+            if (errors.Count > 0)
             {
-                System.IO.StreamWriter outputErrors = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_error_list.txt", false);
+                StreamWriter outputErrors = new StreamWriter(dest + "\\File_Names\\" + extension + "_error_list.txt", false);
                 foreach (string error in errors)
                 {
                     outputErrors.WriteLine(error);

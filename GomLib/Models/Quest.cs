@@ -42,7 +42,7 @@ namespace GomLib.Models
         public List<QuestReward> Rewards { get; set; }
         public string ReqPrivacy { get; set; }
         internal List<Quest> _BonusMissions;
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public List<Quest> BonusMissions
         {
             get
@@ -86,8 +86,8 @@ namespace GomLib.Models
         {
             get
             {
-                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/codex/{0}.dds", this.Icon));
-                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+                var fileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/codex/{0}.dds", Icon));
+                return string.Format("{0}_{1}", fileId.ph, fileId.sh);
             }
         }
         #region Branches
@@ -98,9 +98,9 @@ namespace GomLib.Models
                 return Branches.Count;
             }
         }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal List<string> BranchIds_ { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public List<string> BranchIds
         {
             get
@@ -114,9 +114,9 @@ namespace GomLib.Models
         }
         #endregion
         #region Rewards
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal List<string> RewardIds_ { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public List<string> RewardIds
         {
             get
@@ -131,9 +131,9 @@ namespace GomLib.Models
         }
         #endregion
         #region Bonus Missions
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal List<string> BonusMissionsB62Ids_ { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public List<string> BonusMissionsB62Ids
         {
             get
@@ -168,12 +168,12 @@ namespace GomLib.Models
             get
             {
                 if (Classes == null) return "";
-                return String.Join(",", Classes.Select(x => x.Name).ToList());
+                return string.Join(",", Classes.Select(x => x.Name).ToList());
             }
         }
         #endregion
         #region Conversation Rewards
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public QuestAffectionGainTable ConversationGains_ { get; set; }
         public QuestAffectionGainTable ConversationGains
         {
@@ -184,17 +184,17 @@ namespace GomLib.Models
                 if (ConversationGains_ == null)
                 {
                     ConversationGains_ = new QuestAffectionGainTable();
-                    if (this.References != null)
+                    if (References != null)
                     {
-                        if (this.References.ContainsKey("conversationEnds"))
+                        if (References.ContainsKey("conversationEnds"))
                         {
                             AddQuestAffectionGains("conversationEnds", ConvosParsed, this);
                         }
-                        if (this.References.ContainsKey("conversationProgresses"))
+                        if (References.ContainsKey("conversationProgresses"))
                         {
                             AddQuestAffectionGains("conversationProgresses", ConvosParsed, this);
                         }
-                        if (this.References.ContainsKey("conversationStarts"))
+                        if (References.ContainsKey("conversationStarts"))
                         {
                             AddQuestAffectionGains("conversationStarts", ConvosParsed, this);
                         }
@@ -216,7 +216,7 @@ namespace GomLib.Models
                 foreach (var dNode in dNodes)
                 {
                     var affects = dNode.AffectionRewards;
-                    string NodeLookupId = String.Format("{0}_{1}", convo.Base62Id, dNode.NodeId);
+                    string NodeLookupId = string.Format("{0}_{1}", convo.Base62Id, dNode.NodeId);
                     qst.ConversationGains_.NodeText.Add(NodeLookupId, dNode.LocalizedText);
                     qst.ConversationGains_.AffectionGainTable.Add(NodeLookupId, new List<QuestAffectionGain>());
                     foreach (var kvp in affects)
@@ -255,9 +255,9 @@ namespace GomLib.Models
                 if (QuestsNext_ == null)
                 {
                     QuestsNext_ = new SortedSet<ulong>();
-                    if (this.References != null)
+                    if (References != null)
                     {
-                        if (this.References.ContainsKey("conversationEnds"))
+                        if (References.ContainsKey("conversationEnds"))
                         {
                             foreach (var cnvId in References["conversationEnds"])
                             {
@@ -298,9 +298,9 @@ namespace GomLib.Models
                 if (QuestsPrevious_ == null)
                 {
                     QuestsPrevious_ = new SortedSet<ulong>();
-                    if (this.References != null)
+                    if (References != null)
                     {
-                        if (this.References.ContainsKey("conversationStarts"))
+                        if (References.ContainsKey("conversationStarts"))
                         {
                             foreach (var cnvId in References["conversationStarts"])
                             {
@@ -370,7 +370,7 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, qst)) return true;
 
-            if (this.BonusMissionsIds != null)
+            if (BonusMissionsIds != null)
             {
                 if (qst.BonusMissionsIds == null)
                 {
@@ -378,13 +378,13 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<ulong>(this.BonusMissionsIds, qst.BonusMissionsIds))
+                    if (!Enumerable.SequenceEqual(BonusMissionsIds, qst.BonusMissionsIds))
                         return false;
                 }
             }
-            if (this.BonusShareable != qst.BonusShareable)
+            if (BonusShareable != qst.BonusShareable)
                 return false;
-            if (this.Branches != null)
+            if (Branches != null)
             {
                 if (qst.Branches == null)
                 {
@@ -392,19 +392,19 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<QuestBranch>(this.Branches, qst.Branches))
+                    if (!Enumerable.SequenceEqual(Branches, qst.Branches))
                         return false;
                 }
             }
-            if (this.CanAbandon != qst.CanAbandon)
+            if (CanAbandon != qst.CanAbandon)
                 return false;
-            if (!this.Category.Equals(qst.Category))
+            if (!Category.Equals(qst.Category))
             {
                 return false;
             }
-            if (this.CategoryId != qst.CategoryId)
+            if (CategoryId != qst.CategoryId)
                 return false;
-            if (this.Classes != null)
+            if (Classes != null)
             {
                 if (qst.Classes == null)
                 {
@@ -412,44 +412,44 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!this.Classes.Equals(qst.Classes, false))
+                    if (!Classes.Equals(qst.Classes, false))
                         return false;
                 }
             }
-            if (!this.Difficulty.Equals(qst.Difficulty))
+            if (!Difficulty.Equals(qst.Difficulty))
                 return false;
-            if (this.Fqn != qst.Fqn)
+            if (Fqn != qst.Fqn)
                 return false;
-            if (this.Icon != qst.Icon)
+            if (Icon != qst.Icon)
                 return false;
-            if (this.Id != qst.Id)
+            if (Id != qst.Id)
                 return false;
-            if (this.IsBonus != qst.IsBonus)
+            if (IsBonus != qst.IsBonus)
                 return false;
-            if (this.IsClassQuest != qst.IsClassQuest)
+            if (IsClassQuest != qst.IsClassQuest)
                 return false;
-            if (this.IsHidden != qst.IsHidden)
+            if (IsHidden != qst.IsHidden)
                 return false;
-            if (this.IsRepeatable != qst.IsRepeatable)
+            if (IsRepeatable != qst.IsRepeatable)
                 return false;
 
             var uQIComp = new DictionaryComparer<ulong, QuestItem>();
-            if (!uQIComp.Equals(this.Items, qst.Items))
+            if (!uQIComp.Equals(Items, qst.Items))
                 return false;
 
             var ssComp = new DictionaryComparer<string, string>();
-            if (!ssComp.Equals(this.LocalizedName, qst.LocalizedName))
+            if (!ssComp.Equals(LocalizedName, qst.LocalizedName))
                 return false;
 
-            if (this.Name != qst.Name)
+            if (Name != qst.Name)
                 return false;
-            if (this.NodeId != qst.NodeId)
+            if (NodeId != qst.NodeId)
                 return false;
-            if (this.ReqPrivacy != qst.ReqPrivacy)
+            if (ReqPrivacy != qst.ReqPrivacy)
                 return false;
-            if (this.RequiredLevel != qst.RequiredLevel)
+            if (RequiredLevel != qst.RequiredLevel)
                 return false;
-            if (this.Rewards != null)
+            if (Rewards != null)
             {
                 if (qst.Rewards == null)
                 {
@@ -457,11 +457,11 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<QuestReward>(this.Rewards, qst.Rewards))
+                    if (!Enumerable.SequenceEqual(Rewards, qst.Rewards))
                         return false;
                 }
             }
-            if (this.XpLevel != qst.XpLevel)
+            if (XpLevel != qst.XpLevel)
                 return false;
             return true;
         }
@@ -542,9 +542,9 @@ namespace GomLib.Models
             return txtFile.ToString();
         }
         #region XML
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Dictionary<string, XElement> LoadedNpcs;
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Dictionary<string, XElement> LoadedQuests;
         public override XElement ToXElement(bool verbose)
         {
@@ -627,14 +627,14 @@ namespace GomLib.Models
             }
             return questNode;
         }
-        public void QuestItemsGivenOrTakenToXElement(XElement questNode, List<GomLib.Models.QuestItem> givenItems, List<GomLib.Models.QuestItem> takenItems)
+        public void QuestItemsGivenOrTakenToXElement(XElement questNode, List<QuestItem> givenItems, List<QuestItem> takenItems)
         {
             XElement itemsGiven = QuestItemListToXElement("ItemsGiven", givenItems);
             XElement itemsTaken = QuestItemListToXElement("itemsTaken", takenItems);
 
             questNode.Add(itemsGiven, itemsTaken);
         }
-        private XElement QuestItemListToXElement(string elementName, List<GomLib.Models.QuestItem> Items)
+        private XElement QuestItemListToXElement(string elementName, List<QuestItem> Items)
         {
             XElement itemsElement = new XElement(elementName);
             if (Items != null)
@@ -660,19 +660,19 @@ namespace GomLib.Models
     {
         public long UnknownNum { get; set; }
         public bool IsAlwaysProvided { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Item RewardItem
         {
             get { return Dom_.itemLoader.Load(RewardItemId); }
             set { RewardItem = value; }
         }
         public new string Base62Id => RewardItemId.ToMaskedBase62();
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public ulong RewardItemId { get; set; }
         #region Classes
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public ClassSpecList Classes { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal List<string> ClassesB62_ { get; set; }
         public List<string> ClassesB62
         {
@@ -709,7 +709,7 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, qsr)) return true;
 
-            if (this.Classes != null)
+            if (Classes != null)
             {
                 if (qsr.Classes == null)
                 {
@@ -717,27 +717,27 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!this.Classes.Equals(qsr.Classes, false))
+                    if (!Classes.Equals(qsr.Classes, false))
                         return false;
                 }
             }
-            if (this.Fqn != qsr.Fqn)
+            if (Fqn != qsr.Fqn)
                 return false;
-            if (this.Id != qsr.Id)
+            if (Id != qsr.Id)
                 return false;
-            if (this.IsAlwaysProvided != qsr.IsAlwaysProvided)
+            if (IsAlwaysProvided != qsr.IsAlwaysProvided)
                 return false;
-            if (this.MaxLevel != qsr.MaxLevel)
+            if (MaxLevel != qsr.MaxLevel)
                 return false;
-            if (this.MinLevel != qsr.MinLevel)
+            if (MinLevel != qsr.MinLevel)
                 return false;
-            if (this.NumberOfItem != qsr.NumberOfItem)
+            if (NumberOfItem != qsr.NumberOfItem)
                 return false;
             //if (this.RewardItem.Equals(qsr.RewardItem))
             //return false;
-            if (this.RewardItemId != qsr.RewardItemId)
+            if (RewardItemId != qsr.RewardItemId)
                 return false;
-            if (this.UnknownNum != qsr.UnknownNum)
+            if (UnknownNum != qsr.UnknownNum)
                 return false;
             return true;
         }
@@ -842,9 +842,9 @@ namespace GomLib.Models
             AffectionGainTable = new Dictionary<string, List<QuestAffectionGain>>();
         }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Dictionary<string, Npc> Companions { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal Dictionary<string, Dictionary<string, string>> CompanionsParsed_ { get; set; }
         public Dictionary<string, Dictionary<string, string>> CompanionsParsed
         {

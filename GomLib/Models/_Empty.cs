@@ -43,7 +43,7 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, obj)) return true;
 
-            if (this.NodeId != obj.NodeId)
+            if (NodeId != obj.NodeId)
                 return false;
 
             return true;

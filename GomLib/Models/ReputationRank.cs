@@ -36,13 +36,13 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, rank)) return true;
 
-            if (this.RankPoints != rank.RankPoints)
+            if (RankPoints != rank.RankPoints)
                 return false;
-            if (this.RankTitle != rank.RankTitle)
+            if (RankTitle != rank.RankTitle)
                 return false;
-            if (this.RankId != rank.RankId)
+            if (RankId != rank.RankId)
                 return false;
-            if (this.RankTitleId != rank.RankTitleId)
+            if (RankTitleId != rank.RankTitleId)
                 return false;
 
             return true;

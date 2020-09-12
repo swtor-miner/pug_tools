@@ -28,14 +28,14 @@ namespace GomLib.ModelLoader
             componentAppearanceLookup = new Dictionary<object, object>();
         }
 
-        public Models.ScFFComponent Load(ulong nodeId)
+        public ScFFComponent Load(ulong nodeId)
         {
             GomObject obj = _dom.GetObject(nodeId);
-            Models.ScFFComponent cmp = new ScFFComponent();
+            ScFFComponent cmp = new ScFFComponent();
             return Load(cmp, obj);
         }
 
-        public Models.ScFFComponent Load(Models.ScFFComponent cmp, GomObject obj)
+        public ScFFComponent Load(ScFFComponent cmp, GomObject obj)
         {
             if (obj == null) { return cmp; }
             if (cmp == null) { return null; }
@@ -130,7 +130,7 @@ namespace GomLib.ModelLoader
                     cmp.StatsList["trackingAccuracyLoss"] = controller.Data.ValueOrDefault<float>("scFFControllerTrackingAccuracyLoss", 0); // 0.1
                     //var damAblId = controller.Data.ValueOrDefault<ulong>("scFFControllerAbility", 0); // 16141065603985844578
 
-                    var unknownBool = controller.Data.ValueOrDefault<bool>("4611686350202417000", false); // true
+                    var unknownBool = controller.Data.ValueOrDefault("4611686350202417000", false); // true
                 }
                 else
                 {
@@ -140,7 +140,7 @@ namespace GomLib.ModelLoader
             }
 
 
-            cmp.Icon = obj.Data.ValueOrDefault<string>("scFFComponentIcon", "");
+            cmp.Icon = obj.Data.ValueOrDefault("scFFComponentIcon", "");
             _dom._assets.icons.Add(cmp.Icon);
 
             cmp.DescriptionId = obj.Data.ValueOrDefault<long>("scFFComponentDescription", 0);
@@ -173,7 +173,7 @@ namespace GomLib.ModelLoader
                 var controllerAppearanceMap = (Dictionary<object, object>)componentAppearanceLookup[cmp.CostLookupId];
                 if (controllerAppearanceMap.ContainsKey(cmp.UsedByShipId))
                 {
-                    cmp.Model = ((GomObjectData)controllerAppearanceMap[cmp.UsedByShipId]).ValueOrDefault<string>("scFFComponentAppearance", "");
+                    cmp.Model = ((GomObjectData)controllerAppearanceMap[cmp.UsedByShipId]).ValueOrDefault("scFFComponentAppearance", "");
                 }
             }
 
@@ -196,7 +196,7 @@ namespace GomLib.ModelLoader
                     {
                         case 0:
                             var abilityTier = (GomObjectData)((Dictionary<object, object>)talentSlot.Value)[(long)1];
-                            scTree.Ability = _dom.abilityLoader.Load((ulong)(abilityTier.ValueOrDefault("scFFAbilityId", new ulong())));
+                            scTree.Ability = _dom.abilityLoader.Load(abilityTier.ValueOrDefault("scFFAbilityId", new ulong()));
                             break;
                         default:
                             scTree.Tree.Add(Convert.ToInt32(talentSlot.Key), ParseTalentTier(talentSlot));
@@ -261,7 +261,7 @@ namespace GomLib.ModelLoader
             return tier;
         }
 
-        private void CheckAvailability(Models.ScFFComponent cmp, ScriptEnum availability)
+        private void CheckAvailability(ScFFComponent cmp, ScriptEnum availability)
         {
             bool available = false;
             bool deprecated = false;

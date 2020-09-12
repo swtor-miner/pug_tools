@@ -18,7 +18,7 @@ namespace PugTools
         public Format_SDEF(string dest, string ext)
         {
             this.dest = dest;
-            this.extension = ext;
+            extension = ext;
         }
 
         public void ParseSDEF(Stream fileStream)
@@ -40,7 +40,7 @@ namespace PugTools
                 br.ReadByte();
 
                 //Read 2 byte integer                
-                UInt16 count = FileFormats.File_Helpers.ReverseBytes(br.ReadUInt16());
+                ushort count = FileFormats.File_Helpers.ReverseBytes(br.ReadUInt16());
 
                 for (int c = 0; c < count; c++)
                 {
@@ -78,14 +78,14 @@ namespace PugTools
 
         public void WriteFile()
         {
-            if (!System.IO.Directory.Exists(this.dest + "\\File_Names"))
-                System.IO.Directory.CreateDirectory(this.dest + "\\File_Names");
+            if (!Directory.Exists(dest + "\\File_Names"))
+                Directory.CreateDirectory(dest + "\\File_Names");
 
-            this.found = this.fileNames.Count();
+            found = fileNames.Count();
 
-            if (this.fileNames.Count > 0)
+            if (fileNames.Count > 0)
             {
-                System.IO.StreamWriter outputNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_file_names.txt", false);
+                StreamWriter outputNames = new StreamWriter(dest + "\\File_Names\\" + extension + "_file_names.txt", false);
                 foreach (string file in fileNames)
                 {
                     outputNames.WriteLine(file.Replace("\\", "/"));
@@ -94,9 +94,9 @@ namespace PugTools
                 fileNames.Clear();
             }
 
-            if (this.errors.Count > 0)
+            if (errors.Count > 0)
             {
-                System.IO.StreamWriter outputErrors = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_error_list.txt", false);
+                StreamWriter outputErrors = new StreamWriter(dest + "\\File_Names\\" + extension + "_error_list.txt", false);
                 foreach (string error in errors)
                 {
                     outputErrors.WriteLine(error);

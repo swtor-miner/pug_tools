@@ -15,7 +15,7 @@ namespace PugTools
     public partial class AssetBrowserHashStatus : Form
     {
         //private HashDictionaryInstance hashData;
-        private TorLib.Assets currentAssets;
+        private Assets currentAssets;
 
         private int intAllTotal = 0;
         private int intAllNamed = 0;
@@ -37,7 +37,7 @@ namespace PugTools
             dgvHashStatus.Enabled = false;
             toolStripProgressBar1.Visible = true;
             toolStripStatusLabel1.Text = "Calculating Hash Status...";
-            this.Refresh();
+            Refresh();
             backgroundWorker1.RunWorkerAsync();
         }
 
@@ -58,7 +58,7 @@ namespace PugTools
                     int intTotal = 0;
                     int intNamed = 0;
 
-                    foreach (TorLib.File file in arch.Value.files)
+                    foreach (File file in arch.Value.files)
                     {
                         intTotal++;
                         intAllTotal++;
@@ -71,7 +71,7 @@ namespace PugTools
                         }
                     }
                     int intMissing = intTotal - intNamed;
-                    double dblCompletion = (double)intNamed / (double)intTotal;
+                    double dblCompletion = intNamed / (double)intTotal;
                     DataRow row = dt.NewRow();
                     row[0] = archName;
                     row[1] = intTotal;
@@ -95,12 +95,12 @@ namespace PugTools
             dgvHashStatus.Columns["Completion"].DefaultCellStyle.Format = "0.0%";
 
             intAllMissing = intAllTotal - intAllNamed;
-            dblAllCompletion = (double)intAllNamed / (double)intAllTotal;
+            dblAllCompletion = intAllNamed / (double)intAllTotal;
 
-            lblTotalFilesVal.Text = String.Format("{0:n0}", intAllTotal);
-            lblTotalNamedVal.Text = String.Format("{0:n0}", intAllNamed);
-            lblTotalMissingVal.Text = String.Format("{0:n0}", intAllMissing);
-            lblCompletionVal.Text = String.Format("{0:0.0%}", dblAllCompletion);
+            lblTotalFilesVal.Text = string.Format("{0:n0}", intAllTotal);
+            lblTotalNamedVal.Text = string.Format("{0:n0}", intAllNamed);
+            lblTotalMissingVal.Text = string.Format("{0:n0}", intAllMissing);
+            lblCompletionVal.Text = string.Format("{0:0.0%}", dblAllCompletion);
 
             lblTotalFilesVal.Visible = true;
             lblTotalNamedVal.Visible = true;

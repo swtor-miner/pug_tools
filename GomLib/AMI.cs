@@ -31,14 +31,14 @@ namespace GomLib
 
         public AMIEntry Find(string fqn, long id)
         {
-            if (String.IsNullOrEmpty(fqn)) { return null; }
+            if (string.IsNullOrEmpty(fqn)) { return null; }
 
             if (!loaded)
                 Load();
 
 
             if (fqnMap.Count == 0)
-                this.Load();
+                Load();
 
             if (fqnMap.TryGetValue("ami." + fqn, out AMI table))
             {
@@ -95,9 +95,9 @@ namespace GomLib
                     ame.Load((GomObjectData)(entry.Value));
                     table.data.Add((long)entry.Key, ame);
                 }
-                this.fqnMap.Add(table.Fqn, table);
+                fqnMap.Add(table.Fqn, table);
             }
-            if (this.fqnMap.Count == 0)
+            if (fqnMap.Count == 0)
                 load_failed = true;
             else
                 loaded = true;
@@ -137,11 +137,11 @@ namespace GomLib
 
             if (ReferenceEquals(this, stb)) return true;
 
-            if (this.Fqn != stb.Fqn)
+            if (Fqn != stb.Fqn)
                 return false;
 
             var ssComp = new Models.DictionaryComparer<long, AMIEntry>();
-            if (!ssComp.Equals(this.data, stb.data))
+            if (!ssComp.Equals(data, stb.data))
                 return false;
             return true;
         }

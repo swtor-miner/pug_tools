@@ -10,7 +10,7 @@ namespace GomLib.Models
     public class MapPage : IEquatable<MapPage>
     {
         public int Id { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Area Area { get; set; }
         public long Guid { get; set; }
         public long SId { get; set; }
@@ -28,7 +28,7 @@ namespace GomLib.Models
         public string MapName { get; set; }
         public string Name { get; set; }
         public Dictionary<string, string> LocalizedName { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public MapPage Parent { get; set; }
         public long ParentId { get; set; }
         public float MinX { get; set; }
@@ -51,7 +51,7 @@ namespace GomLib.Models
         {
             get
             {
-                return String.Format("/resources/world/areas/{0}/{1}_r.dds", Area.AreaId, MapName);
+                return string.Format("/resources/world/areas/{0}/{1}_r.dds", Area.AreaId, MapName);
             }
         }
 
@@ -147,11 +147,11 @@ namespace GomLib.Models
             float dx = MaxX - MinX;
             float dy = MaxY - MinY;
             float dz = MaxZ - MinZ;
-            this.Volume = dx * dy * dz;
+            Volume = dx * dy * dz;
 
             float mdx = MiniMapMaxX - MiniMapMinX;
             float mdz = MiniMapMaxZ - MiniMapMinZ;
-            this.MiniMapVolume = mdx * dy * mdz;
+            MiniMapVolume = mdx * dy * mdz;
         }
 
         public bool ContainsPoint(float x, float y, float z)
@@ -223,9 +223,9 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, itm)) return true;
 
-            if (this.GetHashCode() != itm.GetHashCode())
+            if (GetHashCode() != itm.GetHashCode())
                 return false;
-            if (this.Id != itm.Id)
+            if (Id != itm.Id)
                 return false;
 
             return true;

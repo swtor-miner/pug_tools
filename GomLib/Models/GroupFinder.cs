@@ -49,7 +49,7 @@ namespace GomLib.Models
                             gfCont.Times.Add(gfTime);
                         }
                     }
-                    var gfType = gom.ValueOrDefault<ScriptEnum>("grpFindTypeEnum", new ScriptEnum());
+                    var gfType = gom.ValueOrDefault("grpFindTypeEnum", new ScriptEnum());
                     gfCont.TypeId = gfType.Value;
                     StringTable table = _dom.stringTable.Find("str.sys.worldmap");
                     gfCont.NameId = gom.ValueOrDefault<long>("grpFindAreaName", 0);
@@ -65,8 +65,8 @@ namespace GomLib.Models
                     gfCont.PhsId = gom.ValueOrDefault<long>("grpFindPhsIdLookup", 0);
                     gfCont.QuestLevel = (int)gom.ValueOrDefault<long>("grpFindQuestLevel", 0);
 
-                    gfCont.IsImperialAvailable = gom.ValueOrDefault<bool>("grpFindImperialAvailable", false); //available imperial
-                    gfCont.IsRepublicAvailable = gom.ValueOrDefault<bool>("grpFindRepublicAvailable", false); //available republic
+                    gfCont.IsImperialAvailable = gom.ValueOrDefault("grpFindImperialAvailable", false); //available imperial
+                    gfCont.IsRepublicAvailable = gom.ValueOrDefault("grpFindRepublicAvailable", false); //available republic
                     gfCont.GroupSize = (int)gom.ValueOrDefault<long>("grpFindGroupSize", 0);
                     gfCont.MinLevel = (int)gom.ValueOrDefault<long>("grpFindMinLevel", 0);
                     gfCont.MaxLevel = (int)gom.ValueOrDefault<long>("grpFindMaxLevel", 0);
@@ -89,7 +89,7 @@ namespace GomLib.Models
 
         private static DateTime GetTime(long milliseconds)
         {
-            DateTime time = new DateTime(1601, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            DateTime time = new DateTime(1601, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             time = time.AddSeconds(milliseconds / 1000).ToLocalTime();
             return time;
         }

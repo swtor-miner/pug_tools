@@ -9,7 +9,7 @@ namespace GomLib.Models
 {
     public class NpcVisualData : IEquatable<NpcVisualData>
     {
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         readonly DataObjectModel _dom;
 
         public NpcVisualData(DataObjectModel dom)
@@ -22,9 +22,9 @@ namespace GomLib.Models
         [JsonConverter(typeof(ULongConverter))]
         public ulong MeleeWepId { get; set; }
         public string MeleeWepB62Id { get { return MeleeWepId.ToMaskedBase62(); } }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal Item _MeleeWep;
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Item MeleeWep
         {
             get
@@ -37,9 +37,9 @@ namespace GomLib.Models
         [JsonConverter(typeof(ULongConverter))]
         public ulong MeleeOffWepId { get; set; }
         public string MeleeOffWepB62Id { get { return MeleeOffWepId.ToMaskedBase62(); } }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal Item _MeleeOffWep;
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Item MeleeOffWep
         {
             get
@@ -52,9 +52,9 @@ namespace GomLib.Models
         [JsonConverter(typeof(ULongConverter))]
         public ulong RangedWepId { get; set; }
         public string RangedWepB62Id { get { return RangedWepId.ToMaskedBase62(); } }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal Item _RangedWep;
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Item RangedWep
         {
             get
@@ -67,9 +67,9 @@ namespace GomLib.Models
         [JsonConverter(typeof(ULongConverter))]
         public ulong RangedOffWepId { get; set; }
         public string RangedOffWepB62Id { get { return RangedOffWepId.ToMaskedBase62(); } }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal Item _RangedOffWep;
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Item RangedOffWep
         {
             get
@@ -83,7 +83,7 @@ namespace GomLib.Models
         public ulong AppearanceId { get; set; }
         public string AppearanceFqn { get; set; }
         internal NpcAppearance _Appearance;
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public NpcAppearance Appearance
         {
             get
@@ -112,21 +112,21 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, nvd)) return true;
 
-            if (this.AppearanceId != nvd.AppearanceId)
+            if (AppearanceId != nvd.AppearanceId)
                 return false;
-            if (this.CharSpec != nvd.CharSpec)
+            if (CharSpec != nvd.CharSpec)
                 return false;
-            if (this.MeleeOffWepId != nvd.MeleeOffWepId)
+            if (MeleeOffWepId != nvd.MeleeOffWepId)
                 return false;
-            if (this.MeleeWepId != nvd.MeleeWepId)
+            if (MeleeWepId != nvd.MeleeWepId)
                 return false;
-            if (this.RangedOffWepId != nvd.RangedOffWepId)
+            if (RangedOffWepId != nvd.RangedOffWepId)
                 return false;
-            if (this.RangedWepId != nvd.RangedWepId)
+            if (RangedWepId != nvd.RangedWepId)
                 return false;
-            if (this.ScaleAdjustment != nvd.ScaleAdjustment)
+            if (ScaleAdjustment != nvd.ScaleAdjustment)
                 return false;
-            if (this.SpeciesScale != nvd.SpeciesScale)
+            if (SpeciesScale != nvd.SpeciesScale)
                 return false;
             return true;
         }

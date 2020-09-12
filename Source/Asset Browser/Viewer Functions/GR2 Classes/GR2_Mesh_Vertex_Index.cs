@@ -13,7 +13,7 @@ namespace FileFormats
 
         public GR2_Mesh_Vertex_Index(BinaryReader br)
         {
-            this.index = br.ReadUInt16();
+            index = br.ReadUInt16();
         }
     }
 }

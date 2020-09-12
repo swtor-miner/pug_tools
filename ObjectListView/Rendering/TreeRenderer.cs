@@ -21,7 +21,7 @@ namespace BrightIdeasSoftware
             /// </summary>
             public TreeRenderer()
             {
-                this.LinePen = new Pen(Color.Blue, 1.0f)
+                LinePen = new Pen(Color.Blue, 1.0f)
                 {
                     DashStyle = DashStyle.Dot
                 };
@@ -34,7 +34,7 @@ namespace BrightIdeasSoftware
             {
                 get
                 {
-                    return this.TreeListView.TreeModel.GetBranch(this.RowObject);
+                    return TreeListView.TreeModel.GetBranch(RowObject);
                 }
             }
 
@@ -55,7 +55,7 @@ namespace BrightIdeasSoftware
             {
                 get
                 {
-                    return (TreeListView)this.ListView;
+                    return (TreeListView)ListView;
                 }
             }
 
@@ -79,32 +79,32 @@ namespace BrightIdeasSoftware
             /// </summary>
             /// <param name="g"></param>
             /// <param name="r"></param>
-            public override void Render(System.Drawing.Graphics g, System.Drawing.Rectangle r)
+            public override void Render(Graphics g, Rectangle r)
             {
-                this.DrawBackground(g, r);
+                DrawBackground(g, r);
 
-                Branch br = this.Branch;
+                Branch br = Branch;
 
-                Rectangle paddedRectangle = this.ApplyCellPadding(r);
+                Rectangle paddedRectangle = ApplyCellPadding(r);
 
                 Rectangle expandGlyphRectangle = paddedRectangle;
                 expandGlyphRectangle.Offset((br.Level - 1) * PIXELS_PER_LEVEL, 0);
                 expandGlyphRectangle.Width = PIXELS_PER_LEVEL;
                 expandGlyphRectangle.Height = PIXELS_PER_LEVEL;
-                expandGlyphRectangle.Y = this.AlignVertically(paddedRectangle, expandGlyphRectangle);
+                expandGlyphRectangle.Y = AlignVertically(paddedRectangle, expandGlyphRectangle);
                 int expandGlyphRectangleMidVertical = expandGlyphRectangle.Y + (expandGlyphRectangle.Height / 2);
 
-                if (this.IsShowLines)
-                    this.DrawLines(g, r, this.LinePen, br, expandGlyphRectangleMidVertical);
+                if (IsShowLines)
+                    DrawLines(g, r, LinePen, br, expandGlyphRectangleMidVertical);
 
                 if (br.CanExpand)
-                    this.DrawExpansionGlyph(g, expandGlyphRectangle, br.IsExpanded);
+                    DrawExpansionGlyph(g, expandGlyphRectangle, br.IsExpanded);
 
                 int indent = br.Level * PIXELS_PER_LEVEL;
                 paddedRectangle.Offset(indent, 0);
                 paddedRectangle.Width -= indent;
 
-                this.DrawImageAndText(g, paddedRectangle);
+                DrawImageAndText(g, paddedRectangle);
             }
 
             /// <summary>
@@ -115,13 +115,13 @@ namespace BrightIdeasSoftware
             /// <param name="isExpanded"></param>
             protected virtual void DrawExpansionGlyph(Graphics g, Rectangle r, bool isExpanded)
             {
-                if (this.UseStyles)
+                if (UseStyles)
                 {
-                    this.DrawExpansionGlyphStyled(g, r, isExpanded);
+                    DrawExpansionGlyphStyled(g, r, isExpanded);
                 }
                 else
                 {
-                    this.DrawExpansionGlyphManual(g, r, isExpanded);
+                    DrawExpansionGlyphManual(g, r, isExpanded);
                 }
             }
 
@@ -132,7 +132,7 @@ namespace BrightIdeasSoftware
             {
                 get
                 {
-                    return !this.IsPrinting && Application.RenderWithVisualStyles;
+                    return !IsPrinting && Application.RenderWithVisualStyles;
                 }
             }
 
@@ -234,9 +234,9 @@ namespace BrightIdeasSoftware
             /// <param name="y"></param>
             protected override void HandleHitTest(Graphics g, OlvListViewHitTestInfo hti, int x, int y)
             {
-                Branch br = this.Branch;
+                Branch br = Branch;
 
-                Rectangle r = this.Bounds;
+                Rectangle r = Bounds;
                 if (br.CanExpand)
                 {
                     r.Offset((br.Level - 1) * PIXELS_PER_LEVEL, 0);
@@ -248,7 +248,7 @@ namespace BrightIdeasSoftware
                     }
                 }
 
-                r = this.Bounds;
+                r = Bounds;
                 int indent = br.Level * PIXELS_PER_LEVEL;
                 r.X += indent;
                 r.Width -= indent;
@@ -260,7 +260,7 @@ namespace BrightIdeasSoftware
                 }
                 else
                 {
-                    this.StandardHitTest(g, hti, r, x, y);
+                    StandardHitTest(g, hti, r, x, y);
                 }
             }
 
@@ -275,7 +275,7 @@ namespace BrightIdeasSoftware
             /// <returns></returns>
             protected override Rectangle HandleGetEditRectangle(Graphics g, Rectangle cellBounds, OLVListItem item, int subItemIndex, Size preferredSize)
             {
-                return this.StandardGetEditRectangle(g, cellBounds, preferredSize);
+                return StandardGetEditRectangle(g, cellBounds, preferredSize);
             }
         }
     }

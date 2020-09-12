@@ -218,7 +218,7 @@ namespace PugTools
                 int intLength = temp.Length;
                 for (int intCount2 = 0; intCount2 <= intLength; intCount2++)
                 {
-                    string output = String.Join(".", temp, 0, intCount2);
+                    string output = string.Join(".", temp, 0, intCount2);
                     if (output != "")
                         allDirs.Add(output);
                 }
@@ -227,12 +227,12 @@ namespace PugTools
             foreach (var dir in allDirs)
             {
                 string[] temp = dir.ToString().Split('.');
-                string parentDir = String.Join(".", temp.Take(temp.Length - 1));
+                string parentDir = string.Join(".", temp.Take(temp.Length - 1));
                 if (parentDir == "")
                     parentDir = "/";
                 string display = temp.Last();
 
-                NodeAsset asset = new NodeAsset(dir.ToString(), parentDir, display, (GomObject)null);
+                NodeAsset asset = new NodeAsset(dir.ToString(), parentDir, display, null);
                 if (!assetDict.ContainsKey(dir.ToString()))
                     assetDict.Add(dir.ToString(), asset);
             }
@@ -315,7 +315,7 @@ namespace PugTools
                             fieldLookup = classLookup.Fields.Find(x => x.Id == id);
                             if (fieldLookup == null)
                             {
-                                this.currentDom.DomTypeMap.TryGetValue(id, out DomType fieldLookup2);
+                                currentDom.DomTypeMap.TryGetValue(id, out DomType fieldLookup2);
                             }
                         }
                         catch (Exception) { }

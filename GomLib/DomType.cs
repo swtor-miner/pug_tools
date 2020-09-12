@@ -4,7 +4,7 @@ namespace GomLib
 {
     public abstract class DomType
     {
-        public UInt64 Id { get; set; }
+        public ulong Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
 
@@ -17,7 +17,7 @@ namespace GomLib
         public virtual void Print(System.IO.TextWriter writer)
         {
             writer.WriteLine("{0} - 0x{1:X}", Name, Id);
-            if (!String.IsNullOrEmpty(Description))
+            if (!string.IsNullOrEmpty(Description))
             {
                 writer.WriteLine("\t{0}", Description);
             }
@@ -25,7 +25,7 @@ namespace GomLib
 
         public override string ToString()
         {
-            return this.Name;
+            return Name;
         }
     }
 }

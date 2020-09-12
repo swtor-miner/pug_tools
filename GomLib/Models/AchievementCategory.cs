@@ -61,20 +61,20 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, obj)) return true;
 
-            if (this.CatId != obj.CatId)
+            if (CatId != obj.CatId)
                 return false;
-            if (this.Icon != obj.Icon)
+            if (Icon != obj.Icon)
                 return false;
-            if (this.CodexIcon != obj.CodexIcon)
+            if (CodexIcon != obj.CodexIcon)
                 return false;
-            if (this.NameId != obj.NameId)
+            if (NameId != obj.NameId)
                 return false;
-            if (this.Name != obj.Name)
+            if (Name != obj.Name)
                 return false;
-            if (this.Index != obj.Index)
+            if (Index != obj.Index)
                 return false;
             //TODO: SubCategories
-            if (this.ParentCategory != obj.ParentCategory)
+            if (ParentCategory != obj.ParentCategory)
                 return false;
             //TODO: Achievements
 
@@ -137,9 +137,9 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, obj)) return true;
 
-            if (this.Id != obj.Id)
+            if (Id != obj.Id)
                 return false;
-            if (this.DrawArrow != obj.DrawArrow)
+            if (DrawArrow != obj.DrawArrow)
                 return false;
 
             return true;

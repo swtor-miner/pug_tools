@@ -68,7 +68,7 @@ namespace BrightIdeasSoftware
         /// </summary>
         /// <param name="title">The title of the column</param>
         public OLVColumnAttribute(string title) {
-            this.Title = title;
+            Title = title;
         }
 
         #endregion
@@ -91,7 +91,7 @@ namespace BrightIdeasSoftware
             get { return checkBoxes; }
             set {
                 checkBoxes = value;
-                this.IsCheckBoxesSet = true;
+                IsCheckBoxesSet = true;
             }
         }
         private bool checkBoxes;
@@ -190,7 +190,7 @@ namespace BrightIdeasSoftware
             get { return isEditable; }
             set {
                 isEditable = value;
-                this.IsEditableSet = true;
+                IsEditableSet = true;
             }
         }
         private bool isEditable = true;
@@ -235,19 +235,19 @@ namespace BrightIdeasSoftware
         /// <summary>
         /// 
         /// </summary>
-        public String Name {
+        public string Name {
             get { return name; }
             set { name = value; }
         }
-        private String name;
+        private string name;
 
         /// <summary>
         /// 
         /// </summary>
         public HorizontalAlignment TextAlign {
-            get { return this.textAlign; }
+            get { return textAlign; }
             set {
-                this.textAlign = value;
+                textAlign = value;
                 IsTextAlignSet = true;
             }
         }
@@ -257,29 +257,29 @@ namespace BrightIdeasSoftware
         /// <summary>
         /// 
         /// </summary>
-        public String Tag {
+        public string Tag {
             get { return tag; }
             set { tag = value; }
         }
-        private String tag;
+        private string tag;
 
         /// <summary>
         /// 
         /// </summary>
-        public String Title {
+        public string Title {
             get { return title; }
             set { title = value; }
         }
-        private String title;
+        private string title;
 
         /// <summary>
         /// 
         /// </summary>
-        public String ToolTipText {
+        public string ToolTipText {
             get { return toolTipText; }
             set { toolTipText = value; }
         }
-        private String toolTipText;
+        private string toolTipText;
 
         /// <summary>
         /// 
@@ -288,7 +288,7 @@ namespace BrightIdeasSoftware
             get { return triStateCheckBoxes; }
             set { 
                 triStateCheckBoxes = value;
-                this.IsTriStateCheckBoxesSet = true;
+                IsTriStateCheckBoxesSet = true;
             }
         }
         private bool triStateCheckBoxes;

@@ -20,7 +20,7 @@ namespace PugTools
         public Format_DYN(string dest, string ext)
         {
             this.dest = dest;
-            this.extension = ext;
+            extension = ext;
         }
 
         public void ParseDYN(List<GomObject> dynNodes)
@@ -30,9 +30,9 @@ namespace PugTools
                 List<object> dynVisualList = obj.Data.ValueOrDefault<List<object>>("dynVisualList", null);
                 if (dynVisualList != null)
                 {
-                    foreach (var dynVisualListItem in (List<object>)dynVisualList)
+                    foreach (var dynVisualListItem in dynVisualList)
                     {
-                        var dynVisualListItem2 = (GomLib.GomObjectData)dynVisualListItem;
+                        var dynVisualListItem2 = (GomObjectData)dynVisualListItem;
 
                         var visual = dynVisualListItem2.ValueOrDefault<object>("dynVisualFqn", "").ToString().ToLower();
                         if (visual != "")
@@ -63,9 +63,9 @@ namespace PugTools
                 Dictionary<object, object> dynLightNameToProperty = obj.Data.ValueOrDefault<Dictionary<object, object>>("dynLightNameToProperty", null);
                 if (dynLightNameToProperty != null)
                 {
-                    foreach (var dynLightNameToPropertyItem in (Dictionary<object, object>)dynLightNameToProperty)
+                    foreach (var dynLightNameToPropertyItem in dynLightNameToProperty)
                     {
-                        var dynLightNameToPropertyItem2 = (GomLib.GomObjectData)dynLightNameToPropertyItem.Value;
+                        var dynLightNameToPropertyItem2 = (GomObjectData)dynLightNameToPropertyItem.Value;
                         var ramp = dynLightNameToPropertyItem2.ValueOrDefault<object>("dynLightRampMap", "").ToString().ToLower();
                         var illum = dynLightNameToPropertyItem2.ValueOrDefault<object>("dynLightIlluminationMap", "").ToString().ToLower();
                         var fall = dynLightNameToPropertyItem2.ValueOrDefault<object>("dynLightFalloff", "").ToString().ToLower();
@@ -83,11 +83,11 @@ namespace PugTools
 
         public void WriteFile(bool _ = false)
         {
-            if (!System.IO.Directory.Exists(this.dest + "\\File_Names"))
-                System.IO.Directory.CreateDirectory(this.dest + "\\File_Names");
-            if (this.fileNames.Count > 0)
+            if (!Directory.Exists(dest + "\\File_Names"))
+                Directory.CreateDirectory(dest + "\\File_Names");
+            if (fileNames.Count > 0)
             {
-                System.IO.StreamWriter outputFileNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_file_names.txt", false);
+                StreamWriter outputFileNames = new StreamWriter(dest + "\\File_Names\\" + extension + "_file_names.txt", false);
                 foreach (string item in fileNames)
                 {
                     if (item != "")
@@ -97,9 +97,9 @@ namespace PugTools
                 fileNames.Clear();
             }
 
-            if (this.unknownFileNames.Count > 0)
+            if (unknownFileNames.Count > 0)
             {
-                System.IO.StreamWriter outputUnknownFileNames = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_unknown_file_names.txt", false);
+                StreamWriter outputUnknownFileNames = new StreamWriter(dest + "\\File_Names\\" + extension + "_unknown_file_names.txt", false);
                 foreach (string item in unknownFileNames)
                 {
                     if (item != "")
@@ -109,9 +109,9 @@ namespace PugTools
                 unknownFileNames.Clear();
             }
 
-            if (this.errors.Count > 0)
+            if (errors.Count > 0)
             {
-                System.IO.StreamWriter outputErrors = new System.IO.StreamWriter(this.dest + "\\File_Names\\" + this.extension + "_error_list.txt", false);
+                StreamWriter outputErrors = new StreamWriter(dest + "\\File_Names\\" + extension + "_error_list.txt", false);
                 foreach (string error in errors)
                 {
                     outputErrors.Write(error + "\r\n");

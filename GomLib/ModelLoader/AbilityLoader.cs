@@ -43,7 +43,7 @@ namespace GomLib.ModelLoader
             get { return "ablAbility"; }
         }
 
-        public Models.Ability Load(ulong nodeId)
+        public Ability Load(ulong nodeId)
         {
             if (idMap.TryGetValue(nodeId, out Ability result))
             {
@@ -51,12 +51,12 @@ namespace GomLib.ModelLoader
             }
 
             GomObject obj = _dom.GetObject(nodeId);
-            Models.Ability abl = new Ability();
+            Ability abl = new Ability();
             return Load(abl, obj);
         }
 
 
-        public Models.Ability Load(string fqn)
+        public Ability Load(string fqn)
         {
             if (nameMap.TryGetValue(fqn, out Ability result))
             {
@@ -64,22 +64,22 @@ namespace GomLib.ModelLoader
             }
 
             GomObject obj = _dom.GetObject(fqn);
-            Models.Ability abl = new Ability();
+            Ability abl = new Ability();
             return Load(abl, obj);
         }
 
-        public Models.Ability Load(GomObject obj)
+        public Ability Load(GomObject obj)
         {
-            Models.Ability abl = new Ability();
+            Ability abl = new Ability();
             return Load(abl, obj);
         }
 
-        public Models.GameObject CreateObject()
+        public GameObject CreateObject()
         {
-            return new Models.Ability();
+            return new Ability();
         }
 
-        public Models.Ability Load(Models.GameObject obj, GomObject gom)
+        public Ability Load(GameObject obj, GomObject gom)
         {
             if (gom == null) { return (Ability)obj; }
             if (obj == null) { return null; }
@@ -104,14 +104,14 @@ namespace GomLib.ModelLoader
             abl.NodeId = gom.Id;
 
             // Ability Info
-            abl.IsPassive = gom.Data.ValueOrDefault<bool>("ablIsPassive", false);//4611686019453829615
-            abl.IsHidden = gom.Data.ValueOrDefault<bool>("ablIsHidden", false);
+            abl.IsPassive = gom.Data.ValueOrDefault("ablIsPassive", false);//4611686019453829615
+            abl.IsHidden = gom.Data.ValueOrDefault("ablIsHidden", false);
             abl.Icon = gom.Data.ValueOrDefault<string>("ablIconSpec", null);
             _dom._assets.icons.Add(abl.Icon);
 
             GomObject effectZero = gom.Data.ValueOrDefault<GomObject>("ablEffectZero", null);
             if (effectZero != null) abl.EffectZero = effectZero.Id;
-            List<Object> effectIds = gom.Data.ValueOrDefault<List<Object>>("ablEffectIDs", null);
+            List<object> effectIds = gom.Data.ValueOrDefault<List<object>>("ablEffectIDs", null);
             if (effectIds != null)
             {
                 abl.EffectIds = new List<ulong>();
@@ -157,10 +157,10 @@ namespace GomLib.ModelLoader
 
                 foreach (var token in descTokenList)
                 {
-                    string tokenType = ((Dictionary<string, object>)token.Value)["ablDescriptionTokenType"].ToString();
+                    string tokenType = token.Value["ablDescriptionTokenType"].ToString();
                     if (tokenType == "ablDescriptionTokenTypeRank" || tokenType == "ablDescriptionTokenTypeDuration")
                     {
-                        object multiplier = ((Dictionary<string, object>)token.Value)["ablParsedDescriptionToken"];
+                        object multiplier = token.Value["ablParsedDescriptionToken"];
                         /*string tokenIdentifier = "<<" + token.Key.ToString();
                         for (int i = 0; i < abl.LocalizedDescription.Count; i++)
                         {
@@ -203,7 +203,7 @@ namespace GomLib.ModelLoader
                                 effWithUnknowns.Add(key + " - " + eff.Data.Get<object>(key).GetType().ToString() + " - " + eff.Data.Get<object>(key).ToString() + " - " + eff.Name);
                             }
                         }
-                        string keyType = String.Join(": ", _dom.GetStoredTypeId(key).ToString(), key, eff.Data.Dictionary[key].GetType().ToString());
+                        string keyType = string.Join(": ", _dom.GetStoredTypeId(key).ToString(), key, eff.Data.Dictionary[key].GetType().ToString());
                         if (!effKeys.Contains(keyType))
                         {
                             effKeys.Add(keyType);
@@ -234,7 +234,7 @@ namespace GomLib.ModelLoader
                                 var blah2 = ((GomObjectData)blah).Get<object>(subKey);
                                 if (((List<object>)blah2).Count > 1)
                                 {
-                                    foreach (var condition in ((List<object>)blah2).ConvertAll<GomObjectData>(x => (GomObjectData)x))
+                                    foreach (var condition in ((List<object>)blah2).ConvertAll(x => (GomObjectData)x))
                                     {
                                         var logicOperator = condition.ValueOrDefault<object>("effConditionLogicOperator", "");
                                         /*if (logicOperator.ToString() != "" && logicOperator.ToString() != "effLogicOpAnd") //obsolete debugging code
@@ -253,7 +253,7 @@ namespace GomLib.ModelLoader
                                     if (effAction.ValueOrDefault<ScriptEnum>("effActionName", null).ToString() == "effAction_AbsorbDamage")
                                     {
                                         Dictionary<string, float> absorbDetails = new Dictionary<string, float>();
-                                        Dictionary<object, object> valueByParam = effAction.ValueOrDefault<Dictionary<object, object>>("effFloatParams",
+                                        Dictionary<object, object> valueByParam = effAction.ValueOrDefault("effFloatParams",
                                             new Dictionary<object, object>());
 
                                         foreach (KeyValuePair<object, object> kvp in valueByParam)
@@ -288,7 +288,7 @@ namespace GomLib.ModelLoader
             abl.CastingTime = gom.Data.ValueOrDefault<float>("ablCastingTime", 0);//4611686019453829657
             abl.Cooldown = gom.Data.ValueOrDefault<float>("ablCooldownTime", 0);//4611686019453829631
 
-            abl.Pushback = gom.Data.ValueOrDefault<bool>("ablUsesSpellPushback", true);
+            abl.Pushback = gom.Data.ValueOrDefault("ablUsesSpellPushback", true);
             // abl.ApType
             if (abl.ApCost > 0)
             {
@@ -316,10 +316,10 @@ namespace GomLib.ModelLoader
                 abl.ApType = ApType.None;
             }
 
-            abl.IgnoreAlacrity = gom.Data.ValueOrDefault<bool>("ablIgnoreAlacrity", false);
+            abl.IgnoreAlacrity = gom.Data.ValueOrDefault("ablIgnoreAlacrity", false);
             abl.GCD = gom.Data.ValueOrDefault<float>("ablGlobalCooldownTime", -1);
             abl.GcdOverride = abl.GCD > -0.5f;
-            abl.LineOfSightCheck = gom.Data.ValueOrDefault<bool>("ablIsLineOfSightChecked", true);
+            abl.LineOfSightCheck = gom.Data.ValueOrDefault("ablIsLineOfSightChecked", true);
             abl.ModalGroup = gom.Data.ValueOrDefault<long>("ablModalGroup", 0);
 
             var sharedCooldowns = gom.Data.ValueOrDefault<List<object>>("ablCooldownTimerSpecs", null);
@@ -348,11 +348,11 @@ namespace GomLib.ModelLoader
             if (ablCombatMode != null) { abl.CombatMode = ablCombatMode.Value; } else { abl.CombatMode = 1; }
             var ablAutoAttackMode = gom.Data.ValueOrDefault<ScriptEnum>("ablAutoAttackMode", null);
             if (ablAutoAttackMode != null) { abl.AutoAttackMode = ablAutoAttackMode.Value; } else { abl.AutoAttackMode = 0; }
-            abl.IsValid = gom.Data.ValueOrDefault<bool>("ablIsValid", false);
-            abl.IsCustom = gom.Data.ValueOrDefault<bool>("ablIsCustom", false);
-            abl.AppearanceSpec = gom.Data.ValueOrDefault<string>("ablAppearanceSpec", "");
+            abl.IsValid = gom.Data.ValueOrDefault("ablIsValid", false);
+            abl.IsCustom = gom.Data.ValueOrDefault("ablIsCustom", false);
+            abl.AppearanceSpec = gom.Data.ValueOrDefault("ablAppearanceSpec", "");
             abl.UnknownInt = gom.Data.ValueOrDefault<long>("4611686019453829607", 0);
-            abl.UnknownBool = gom.Data.ValueOrDefault<bool>("4611686025269794705", false);
+            abl.UnknownBool = gom.Data.ValueOrDefault("4611686025269794705", false);
             abl.UnknownInt2 = gom.Data.ValueOrDefault<ulong>("4611686028321074586", 0);
 
             if (gom.References != null)
@@ -539,9 +539,9 @@ tempString = start + middle + end;
             return tokenInfo;
         }
 
-        public void LoadObject(Models.GameObject loadMe, GomObject obj)
+        public void LoadObject(GameObject loadMe, GomObject obj)
         {
-            GomLib.Models.Ability abl = (Models.Ability)loadMe;
+            Ability abl = (Ability)loadMe;
             Load(abl, obj);
         }
 
@@ -552,7 +552,7 @@ tempString = start + middle + end;
             foreach (ulong effId in effectIds)
             {
                 var eff = _dom.GetObject(effId);
-                if (!String.Equals(eff.Data.ValueOrDefault<ScriptEnum>("effSlotType", null).ToString(), "conSlotEffectOther")) { continue; } // GenerateHeat function only appears in this type of effect
+                if (!string.Equals(eff.Data.ValueOrDefault<ScriptEnum>("effSlotType", null).ToString(), "conSlotEffectOther")) { continue; } // GenerateHeat function only appears in this type of effect
                 var subEffects = eff.Data.ValueOrDefault<List<object>>("effSubEffects", null);
                 foreach (GomObjectData subEff in subEffects)
                 {
@@ -572,12 +572,12 @@ tempString = start + middle + end;
 
         private bool HasDamageAction(GomObject effect)
         {
-            var tokSubEffects = (List<object>)effect.Data.ValueOrDefault<List<object>>("effSubEffects", null);
+            var tokSubEffects = effect.Data.ValueOrDefault<List<object>>("effSubEffects", null);
             foreach (GomObjectData subEff in tokSubEffects)
             {
                 foreach (GomObjectData a in subEff.ValueOrDefault<List<object>>("effActions", null))
                 {
-                    switch (((ScriptEnum)a.ValueOrDefault<ScriptEnum>("effActionName", null)).ToString())
+                    switch (a.ValueOrDefault<ScriptEnum>("effActionName", null).ToString())
                     {
                         case "effAction_WeaponDamage":
                         case "effAction_SpellDamage":
@@ -593,7 +593,7 @@ tempString = start + middle + end;
         {
             int tokEffIndex = (int)tokDesc.ValueOrDefault<long>("ablDescriptionTokenEffect", 0);
             int tokSubEffIndex = (int)tokDesc.ValueOrDefault<long>("ablDescriptionTokenSubEffect", 0);
-            float multi = (float)tokDesc.ValueOrDefault<float>("ablDescriptionTokenMultiplier", 0f);
+            float multi = (float)tokDesc.ValueOrDefault("ablDescriptionTokenMultiplier", 0f);
             if (!(tokEffIndex < abilityEffectList.Count)) { return new List<KeyValuePair<string, List<Dictionary<string, string>>>>(); }
 
             // Effect is in-range, find the coefficients for dmg formula
@@ -620,7 +620,7 @@ tempString = start + middle + end;
             }
             if (tokEff == null) { return new List<KeyValuePair<string, List<Dictionary<string, string>>>>(); }
 
-            var tokSubEffects = (List<object>)tokEff.Data.ValueOrDefault<List<object>>("effSubEffects", null);
+            var tokSubEffects = tokEff.Data.ValueOrDefault<List<object>>("effSubEffects", null);
             List<GomObjectData> actions = new List<GomObjectData>();
             List<string> actionNames = new List<string>();
 
@@ -630,7 +630,7 @@ tempString = start + middle + end;
                 GomObjectData subEff = (GomObjectData)tokSubEffects[tokSubEffIndex];
                 foreach (GomObjectData a in subEff.ValueOrDefault<List<object>>("effActions", null))
                 {
-                    string actionName = ((ScriptEnum)a.ValueOrDefault<ScriptEnum>("effActionName", null)).ToString();
+                    string actionName = a.ValueOrDefault<ScriptEnum>("effActionName", null).ToString();
                     if (actionName == "effAction_WeaponDamage" || actionName == "effAction_SpellDamage"
                         || actionName == "effAction_GodDamage")
                     {
@@ -643,10 +643,10 @@ tempString = start + middle + end;
             {
                 foreach (GomObjectData subEff in tokSubEffects)
                 {
-                    var effActions = (List<object>)subEff.Get<List<object>>("effActions");
+                    var effActions = subEff.Get<List<object>>("effActions");
                     foreach (GomObjectData a in effActions)
                     {
-                        string actionName = ((ScriptEnum)a.Get<ScriptEnum>("effActionName")).ToString();
+                        string actionName = a.Get<ScriptEnum>("effActionName").ToString();
                         if (actionName == "effAction_WeaponDamage" || actionName == "effAction_SpellDamage"
                             || actionName == "effAction_GodDamage")
                         {
@@ -723,7 +723,7 @@ tempString = start + middle + end;
         {
             int tokEffIndex = (int)tokDesc.ValueOrDefault<long>("ablDescriptionTokenEffect", 0);
             int tokSubEffIndex = (int)tokDesc.ValueOrDefault<long>("ablDescriptionTokenSubEffect", 0);
-            float multi = (float)tokDesc.ValueOrDefault<float>("ablDescriptionTokenMultiplier", 0f);
+            float multi = (float)tokDesc.ValueOrDefault("ablDescriptionTokenMultiplier", 0f);
 
             if (tokEffIndex < abilityEffectList.Count)
             {
@@ -731,7 +731,7 @@ tempString = start + middle + end;
                 var tokEff = _dom.GetObject((ulong)abilityEffectList[tokEffIndex]);
                 if (tokEff == null) { return new List<KeyValuePair<string, List<Dictionary<string, string>>>>(); }
 
-                var tokSubEffects = (List<object>)tokEff.Data.ValueOrDefault<List<object>>("effSubEffects", null);
+                var tokSubEffects = tokEff.Data.ValueOrDefault<List<object>>("effSubEffects", null);
                 tokEff.Unload();
                 GomObjectData action = null;
                 // Loop through subEffects
@@ -740,7 +740,7 @@ tempString = start + middle + end;
                     GomObjectData subEff = (GomObjectData)tokSubEffects[tokSubEffIndex];
                     foreach (GomObjectData a in subEff.ValueOrDefault<List<object>>("effActions", null))
                     {
-                        if (((ScriptEnum)a.ValueOrDefault<ScriptEnum>("effActionName", null)).ToString() == "effAction_Heal")
+                        if (a.ValueOrDefault<ScriptEnum>("effActionName", null).ToString() == "effAction_Heal")
                         {
                             action = a;
                             break;
@@ -751,10 +751,10 @@ tempString = start + middle + end;
                 {
                     foreach (GomObjectData subEff in tokSubEffects)
                     {
-                        var effActions = (List<object>)subEff.ValueOrDefault<List<object>>("effActions", null);
+                        var effActions = subEff.ValueOrDefault<List<object>>("effActions", null);
                         foreach (GomObjectData a in effActions)
                         {
-                            if (((ScriptEnum)a.ValueOrDefault<ScriptEnum>("effActionName", null)).ToString() == "effAction_Heal")
+                            if (a.ValueOrDefault<ScriptEnum>("effActionName", null).ToString() == "effAction_Heal")
                             {
                                 action = a;
                                 break;
@@ -802,7 +802,7 @@ tempString = start + middle + end;
                 {
                     if (tokSubEffIndex < 1)
                     {
-                        duration = (float)((ulong)tokEff.Data.ValueOrDefault<ulong>("effDuration", 0)) / 1000;
+                        duration = (float)tokEff.Data.ValueOrDefault<ulong>("effDuration", 0) / 1000;
                     }
                     else
                     {
@@ -828,10 +828,10 @@ tempString = start + middle + end;
                 }
             }
 
-            return String.Format("duration,{0}", duration);
+            return string.Format("duration,{0}", duration);
         }
 
-        public void LoadReferences(Models.GameObject obj, GomObject gom)
+        public void LoadReferences(GameObject obj, GomObject gom)
         {
             // No references to load
         }

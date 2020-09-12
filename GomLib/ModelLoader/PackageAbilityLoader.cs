@@ -32,7 +32,7 @@ namespace GomLib.ModelLoader
             {
                 _dom = _dom,
                 AbilityId = gomObj.ValueOrDefault<ulong>("ablAbilityDataSpec", 0),
-                AutoAcquire = gomObj.ValueOrDefault<bool>("ablAbilityDataAutoAcquire", false),
+                AutoAcquire = gomObj.ValueOrDefault("ablAbilityDataAutoAcquire", false),
                 PackageId = gomObj.ValueOrDefault<ulong>("ablAbilityDataPackage", 0)
             };
             List<object> ranks = gomObj.ValueOrDefault<List<object>>("ablAbilityDataRanks", null);
@@ -45,7 +45,7 @@ namespace GomLib.ModelLoader
                 result.Level = result.Levels[0];
             }
             result.Scales = (result.Levels.Count == 61 - result.Level);
-            result.Toughness = gomObj.ValueOrDefault<string>("apnCbtToughness", "");
+            result.Toughness = gomObj.ValueOrDefault("apnCbtToughness", "");
             result.AiUsePriority = gomObj.ValueOrDefault<long>("AiUsagePriority", 0);
 
             //result.Ability = _dom.abilityLoader.Load(result.AbilityId);

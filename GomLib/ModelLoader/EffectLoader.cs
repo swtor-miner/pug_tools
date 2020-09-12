@@ -27,26 +27,26 @@ namespace GomLib.ModelLoader
 
         public static long DescLookupKey1 => DescLookupKey;
 
-        public Models.Effect Load(ulong nodeId)
+        public Effect Load(ulong nodeId)
         {
             GomObject obj = _dom.GetObject(nodeId);
-            Models.Effect model = new Effect();
+            Effect model = new Effect();
             return Load(model, obj);
         }
 
-        public Models.Effect Load(string fqn)
+        public Effect Load(string fqn)
         {
             GomObject obj = _dom.GetObject(fqn);
-            Models.Effect model = new Effect();
+            Effect model = new Effect();
             return Load(model, obj);
         }
 
-        public Models.GameObject CreateObject()
+        public GameObject CreateObject()
         {
-            return new Models.Effect();
+            return new Effect();
         }
 
-        public Models.Effect Load(Models.GameObject obj, GomObject gom)
+        public Effect Load(GameObject obj, GomObject gom)
         {
             if (gom == null) { return (Effect)obj; }
             if (obj == null) { return null; }
@@ -69,7 +69,7 @@ namespace GomLib.ModelLoader
             eff.StackLimit = gom.Data.ValueOrDefault<long>("effStackLimit");
             eff.StackLimitIsByTag = gom.Data.ValueOrDefault<bool>("effStackLimitIsByTag");
             eff.StackLimitIsByCaster = gom.Data.ValueOrDefault<bool>("effStackLimitIsByCaster");
-            eff.SlotType = (EffectSlot)gom.Data.ValueOrDefault<ScriptEnum>("effSlotType", new ScriptEnum()).Value;
+            eff.SlotType = (EffectSlot)gom.Data.ValueOrDefault("effSlotType", new ScriptEnum()).Value;
             eff.DoesPersistAfterDeath = gom.Data.ValueOrDefault<bool>("effDoesPersistAfterDeath");
             List<object> customIntervalPerSwing = gom.Data.ValueOrDefault<List<object>>("4611686019692990768");
             if (customIntervalPerSwing != null)
@@ -77,7 +77,7 @@ namespace GomLib.ModelLoader
                 eff.CustomIntervalPerSwing = new List<ulong>();
                 foreach (ulong interval in customIntervalPerSwing)
                 {
-                    eff.CustomIntervalPerSwing.Add((ulong)interval);
+                    eff.CustomIntervalPerSwing.Add(interval);
                 }
             }
             eff.StackLimitIsMultiTarget = gom.Data.ValueOrDefault<bool>("effStackLimitIsMultiTarget");
@@ -112,7 +112,7 @@ namespace GomLib.ModelLoader
             //DEPRECATED - effStackLimitRelevantTags is no longer used in the current client
             eff.Icon = gom.Data.ValueOrDefault<string>("effIcon");
             eff.Charges = gom.Data.ValueOrDefault<long>("effCharges");
-            List<object> effSubEffects = gom.Data.ValueOrDefault<List<object>>("effSubEffects", new List<object>());
+            List<object> effSubEffects = gom.Data.ValueOrDefault("effSubEffects", new List<object>());
             eff.SubEffects = new List<SubEffect>();
             foreach (GomObjectData subeffect in effSubEffects)
             {
@@ -120,31 +120,31 @@ namespace GomLib.ModelLoader
                 {
                     Actions = new List<SubEffectFunction>()//-----------------------------------------------------
                 };
-                List<object> actionList = subeffect.ValueOrDefault<List<object>>("effActions", new List<object>());
+                List<object> actionList = subeffect.ValueOrDefault("effActions", new List<object>());
                 foreach (GomObjectData action in actionList)
                 {
                     outSubEffect.Actions.Add(LoadSubEffectFunction(action, "effActionName"));
                 }
                 outSubEffect.TargetOverrides = new List<SubEffectFunction>();//-----------------------------------------------------
-                List<object> targetOverridesList = subeffect.ValueOrDefault<List<object>>("effTargetOverrides", new List<object>());
+                List<object> targetOverridesList = subeffect.ValueOrDefault("effTargetOverrides", new List<object>());
                 foreach (GomObjectData targetOverride in targetOverridesList)
                 {
                     outSubEffect.TargetOverrides.Add(LoadSubEffectFunction(targetOverride, "effTargetOverrideName"));
                 }
                 outSubEffect.Triggers = new List<SubEffectFunction>();//-----------------------------------------------------
-                List<object> triggersList = subeffect.ValueOrDefault<List<object>>("effTriggers", new List<object>());
+                List<object> triggersList = subeffect.ValueOrDefault("effTriggers", new List<object>());
                 foreach (GomObjectData trigger in triggersList)
                 {
                     outSubEffect.Triggers.Add(LoadSubEffectFunction(trigger, "effTriggerName"));
                 }
                 outSubEffect.Initializers = new List<SubEffectFunction>();//-----------------------------------------------------
-                List<object> initializersList = subeffect.ValueOrDefault<List<object>>("effInitializers", new List<object>());
+                List<object> initializersList = subeffect.ValueOrDefault("effInitializers", new List<object>());
                 foreach (GomObjectData initializer in initializersList)
                 {
                     outSubEffect.Initializers.Add(LoadSubEffectFunction(initializer, "effInitializerName"));
                 }
                 outSubEffect.Conditions = new List<SubEffectFunction>();//-----------------------------------------------------
-                Dictionary<object, object> conditionsList = subeffect.ValueOrDefault<Dictionary<object, object>>("effConditions", new Dictionary<object, object>());
+                Dictionary<object, object> conditionsList = subeffect.ValueOrDefault("effConditions", new Dictionary<object, object>());
                 foreach (KeyValuePair<object, object> kvp in conditionsList)
                 {
                     outSubEffect.Conditions.Add(LoadSubEffectFunction((GomObjectData)kvp.Value, "effConditionName", (ulong)kvp.Key));
@@ -179,7 +179,7 @@ namespace GomLib.ModelLoader
             eff.AbilitySpec = gom.Data.ValueOrDefault<ulong>("effAbilitySpec");
             eff.Hydra = gom.Data.ValueOrDefault<ulong>("effHydra");
             eff.DurationAddedDelay = gom.Data.ValueOrDefault<ulong>("effDurationAddedDelay");
-            eff.DurationAddedDelayMaxToughness = gom.Data.ValueOrDefault<ScriptEnum>("effDurationAddedDelayMaxToughness", new ScriptEnum()).ToString();
+            eff.DurationAddedDelayMaxToughness = gom.Data.ValueOrDefault("effDurationAddedDelayMaxToughness", new ScriptEnum()).ToString();
             eff.HasStackLimit = gom.Data.ValueOrDefault<bool>("effHasStackLimit");
             eff.IsInstant = gom.Data.ValueOrDefault<bool>("effIsInstant");
             eff.IsInterruptible = gom.Data.ValueOrDefault<bool>("effIsInterruptible");
@@ -201,7 +201,7 @@ namespace GomLib.ModelLoader
             foreach (long tagId in eff.Tags)
             {
                 tagIdToStringMap.TryGetValue(tagId, out object tag);
-                if (tag == null) tag = String.Format("Unknown tag: {0}", tagId);
+                if (tag == null) tag = string.Format("Unknown tag: {0}", tagId);
                 eff.ParsedTags.Add((string)tag);
             }
 
@@ -263,7 +263,7 @@ namespace GomLib.ModelLoader
         {
             SubEffectFunction output = new SubEffectFunction
             {
-                Type = obj.ValueOrDefault<ScriptEnum>(nameId, new ScriptEnum()).Value
+                Type = obj.ValueOrDefault(nameId, new ScriptEnum()).Value
             };
             if (conditionId != 0UL)
             {
@@ -277,22 +277,22 @@ namespace GomLib.ModelLoader
             Dictionary<object, object> boolParams = obj.ValueOrDefault<Dictionary<object, object>>("effBoolParams");
             foreach (KeyValuePair<object, object> kvp in boolParams)
             {
-                output.Params.Add(new SubEffectFunctionParam((long)((ScriptEnum)kvp.Key).Value, 1, (bool)kvp.Value));
+                output.Params.Add(new SubEffectFunctionParam(((ScriptEnum)kvp.Key).Value, 1, (bool)kvp.Value));
             }
             Dictionary<object, object> stringParams = obj.ValueOrDefault<Dictionary<object, object>>("effStringParams");
             foreach (KeyValuePair<object, object> kvp in stringParams)
             {
-                output.Params.Add(new SubEffectFunctionParam((long)((ScriptEnum)kvp.Key).Value, 2, (string)kvp.Value));
+                output.Params.Add(new SubEffectFunctionParam(((ScriptEnum)kvp.Key).Value, 2, (string)kvp.Value));
             }
             Dictionary<object, object> intParams = obj.ValueOrDefault<Dictionary<object, object>>("effIntParams");
             foreach (KeyValuePair<object, object> kvp in intParams)
             {
-                output.Params.Add(new SubEffectFunctionParam((long)((ScriptEnum)kvp.Key).Value, 3, (long)kvp.Value));
+                output.Params.Add(new SubEffectFunctionParam(((ScriptEnum)kvp.Key).Value, 3, (long)kvp.Value));
             }
             Dictionary<object, object> floatParams = obj.ValueOrDefault<Dictionary<object, object>>("effFloatParams");
             foreach (KeyValuePair<object, object> kvp in floatParams)
             {
-                output.Params.Add(new SubEffectFunctionParam((long)((ScriptEnum)kvp.Key).Value, 4, (float)kvp.Value));
+                output.Params.Add(new SubEffectFunctionParam(((ScriptEnum)kvp.Key).Value, 4, (float)kvp.Value));
             }
             Dictionary<object, object> functionTags = obj.ValueOrDefault<Dictionary<object, object>>("effFunctionTags");
             output.Tags = new List<long>();
@@ -304,7 +304,7 @@ namespace GomLib.ModelLoader
             Dictionary<object, object> timeParams = obj.ValueOrDefault<Dictionary<object, object>>("effTimeIntervalParams");
             foreach (KeyValuePair<object, object> kvp in timeParams)
             {
-                output.Params.Add(new SubEffectFunctionParam((long)((ScriptEnum)kvp.Key).Value, 5, (ulong)kvp.Value));
+                output.Params.Add(new SubEffectFunctionParam(((ScriptEnum)kvp.Key).Value, 5, (ulong)kvp.Value));
             }
             Dictionary<object, object> floatListParams = obj.ValueOrDefault<Dictionary<object, object>>("effFloatListParams");
             foreach (KeyValuePair<object, object> kvp in floatListParams)
@@ -314,7 +314,7 @@ namespace GomLib.ModelLoader
                 {
                     floatList.Add(entry);
                 }
-                output.Params.Add(new SubEffectFunctionParam((long)((ScriptEnum)kvp.Key).Value, 6, floatList));
+                output.Params.Add(new SubEffectFunctionParam(((ScriptEnum)kvp.Key).Value, 6, floatList));
             }
             Dictionary<object, object> intListParams = obj.ValueOrDefault<Dictionary<object, object>>("effIntListParams");
             foreach (KeyValuePair<object, object> kvp in intListParams)
@@ -324,7 +324,7 @@ namespace GomLib.ModelLoader
                 {
                     intList.Add(entry);
                 }
-                output.Params.Add(new SubEffectFunctionParam((long)((ScriptEnum)kvp.Key).Value, 7, intList));
+                output.Params.Add(new SubEffectFunctionParam(((ScriptEnum)kvp.Key).Value, 7, intList));
             }
             Dictionary<object, object> idListParams = obj.ValueOrDefault<Dictionary<object, object>>("effIdListParams");
             foreach (KeyValuePair<object, object> kvp in idListParams)
@@ -334,7 +334,7 @@ namespace GomLib.ModelLoader
                 {
                     idList.Add(entry);
                 }
-                output.Params.Add(new SubEffectFunctionParam((long)((ScriptEnum)kvp.Key).Value, 8, idList));
+                output.Params.Add(new SubEffectFunctionParam(((ScriptEnum)kvp.Key).Value, 8, idList));
             }
             //TODO unknown: 4611686346551820000
 
@@ -345,20 +345,20 @@ namespace GomLib.ModelLoader
             foreach (long tagId in output.Tags)
             {
                 tagIdToStringMap.TryGetValue(tagId, out object tag);
-                if (tag == null) tag = String.Format("Unknown tag: {0}", tagId);
+                if (tag == null) tag = string.Format("Unknown tag: {0}", tagId);
                 output.ParsedTags.Add((string)tag);
             }
 
             return output;
         }
 
-        public void LoadObject(Models.GameObject loadMe, GomObject obj)
+        public void LoadObject(GameObject loadMe, GomObject obj)
         {
-            GomLib.Models.Ability abl = (Models.Ability)loadMe;
+            Ability abl = (Ability)loadMe;
             Load(abl, obj);
         }
 
-        public void LoadReferences(Models.GameObject obj, GomObject gom)
+        public void LoadReferences(GameObject obj, GomObject gom)
         {
             // No references to load
         }

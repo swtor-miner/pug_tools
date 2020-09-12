@@ -40,13 +40,13 @@ namespace GomLib.Models
     {
         public static EnhancementSubCategory ToEnhancementSubCategory(this ScriptEnum val)
         {
-            if (val == null) { return ToEnhancementSubCategory(String.Empty); }
+            if (val == null) { return ToEnhancementSubCategory(string.Empty); }
             return ToEnhancementSubCategory(val.ToString());
         }
 
         public static EnhancementSubCategory ToEnhancementSubCategory(this string str)
         {
-            if (String.IsNullOrEmpty(str)) return EnhancementSubCategory.None;
+            if (string.IsNullOrEmpty(str)) return EnhancementSubCategory.None;
 
             switch (str)
             {

@@ -123,7 +123,7 @@
             this.splitContainerLeft.Name = "splitContainerLeft";
             this.splitContainerLeft.Orientation = System.Windows.Forms.Orientation.Horizontal;
             this.splitContainerLeft.Size = new System.Drawing.Size(243, 633);
-            this.splitContainerLeft.SplitterDistance = 65;
+            this.splitContainerLeft.SplitterDistance = 80;
             this.splitContainerLeft.TabStop = false;
             // 
             // splitContainerLeft.Panel1
@@ -183,6 +183,7 @@
             this.treeViewList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.treeViewList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeViewList.ImageIndex = 0;
             this.treeViewList.ImageList = this.imageList1;
             this.treeViewList.Location = new System.Drawing.Point(3, 3);
@@ -245,6 +246,7 @@
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.hexBox1.ColumnInfoVisible = true;
+            this.hexBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.hexBox1.Font = new System.Drawing.Font("Tahoma", 8.25F);
             this.hexBox1.LineInfoVisible = true;
             this.hexBox1.Location = new System.Drawing.Point(3, 3);
@@ -263,6 +265,7 @@
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.White;
             this.pictureBox1.BackgroundImage = global::PugTools.Properties.Resources.Transparent;
+            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Left;
             this.pictureBox1.Location = new System.Drawing.Point(3, 3);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(701, 601);
@@ -277,6 +280,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox2.BackColor = System.Drawing.Color.White;
             this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.pictureBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox2.Image = global::PugTools.Properties.Resources.LoadingImage;
             this.pictureBox2.Location = new System.Drawing.Point(3, 3);
             this.pictureBox2.Name = "pictureBox2";
@@ -290,6 +294,7 @@
             this.renderPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.renderPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.renderPanel.Location = new System.Drawing.Point(3, 3);
             this.renderPanel.Name = "renderPanel";
             this.renderPanel.Size = new System.Drawing.Size(701, 601);
@@ -308,6 +313,7 @@
             this.treeItemView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvColumn1,
             this.olvColumn2});
+            this.treeItemView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeItemView.GridLines = true;
             this.treeItemView.Location = new System.Drawing.Point(3, 3);
             this.treeItemView.Name = "treeItemView";
@@ -340,6 +346,7 @@
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtRawView.BackColor = System.Drawing.Color.White;
+            this.txtRawView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtRawView.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtRawView.ForeColor = System.Drawing.Color.Black;
             this.txtRawView.Location = new System.Drawing.Point(3, 3);
@@ -365,6 +372,7 @@
             this.toolStripStatusLabelLeft2,
             this.toolStripProgressBar1,
             this.toolStripStatusLabelRight});
+            this.txtRawView.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.statusStrip1.Location = new System.Drawing.Point(0, 607);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(707, 22);
@@ -406,7 +414,7 @@
             this.splitContainerRight.Name = "splitContainerRight";
             this.splitContainerRight.Orientation = System.Windows.Forms.Orientation.Horizontal;
             this.splitContainerRight.Size = new System.Drawing.Size(225, 633);
-            this.splitContainerRight.SplitterDistance = 403;
+            this.splitContainerRight.SplitterDistance = 350;
             this.splitContainerRight.TabStop = false;
             // 
             // splitContainerRight.Panel1
@@ -422,6 +430,7 @@
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Enabled = false;
             this.dataGridView1.Location = new System.Drawing.Point(3, 3);
             this.dataGridView1.Name = "dataGridView1";

@@ -31,9 +31,9 @@ namespace GomLib.ModelLoader
 
         public HashSet<string> Fields => fields;
 
-        public Models.GameObject CreateObject()
+        public GameObject CreateObject()
         {
-            return new Models.Stronghold();
+            return new Stronghold();
         }
 
         private readonly HashSet<string> fields = new HashSet<string>() {
@@ -59,12 +59,12 @@ namespace GomLib.ModelLoader
             "decGuildPurchaseCost"
             };
 
-        public Stronghold Load(Models.GameObject obj, GomObject gom)
+        public Stronghold Load(GameObject obj, GomObject gom)
         {
             if (gom == null) { return (Stronghold)obj; }
             if (gom == null) { return null; }
 
-            var apt = (Models.Stronghold)obj;
+            var apt = (Stronghold)obj;
 
             apt.NodeId = gom.Id;
             apt.Id = gom.Id;
@@ -92,13 +92,13 @@ namespace GomLib.ModelLoader
             apt.Description = nameTable.GetText(apt.DescId, "str.apt");
             apt.LocalizedDescription = nameTable.GetLocalizedText(apt.DescId, "str.apt");
 
-            apt.PublicIcon = gom.Data.ValueOrDefault<string>("aptPublicIcon", "");
-            apt.Icon = gom.Data.ValueOrDefault<string>("aptIcon", "");
+            apt.PublicIcon = gom.Data.ValueOrDefault("aptPublicIcon", "");
+            apt.Icon = gom.Data.ValueOrDefault("aptIcon", "");
             apt.DefaultOccupancy = gom.Data.ValueOrDefault<long>("aptDefaultOccupancy", 0);
             apt.DefaultHooks = gom.Data.ValueOrDefault<long>("aptDefaultHooks", 0);
             apt.PhsId = gom.Data.ValueOrDefault<ulong>("aptPhsId", 0);
             apt.MaxHooks = gom.Data.ValueOrDefault<long>("aptMaxHooks", 0);
-            var roomTable = gom.Data.ValueOrDefault<Dictionary<object, object>>("aptRoomTable", new Dictionary<object, object>());
+            var roomTable = gom.Data.ValueOrDefault("aptRoomTable", new Dictionary<object, object>());
 
             apt.RoomTable = new Dictionary<long, Room>();
             foreach (var kvp in roomTable)
@@ -112,9 +112,9 @@ namespace GomLib.ModelLoader
             apt.DefGuildShOcc = gom.Data.ValueOrDefault<long>("aptDefGuildShOcc", 0);
             apt.PlayerShCost = gom.Data.ValueOrDefault<long>("aptPlayerShCost", 0);
             apt.GuildShCost = gom.Data.ValueOrDefault<long>("aptGuildShCost", 0);
-            var factionPurchaseRestriction = gom.Data.ValueOrDefault<ScriptEnum>("aptFactionPurchaseRestriction", new ScriptEnum());
+            var factionPurchaseRestriction = gom.Data.ValueOrDefault("aptFactionPurchaseRestriction", new ScriptEnum());
             apt.FactionPurchaseRestriction = factionPurchaseRestriction.ToString();
-            var type = gom.Data.ValueOrDefault<ScriptEnum>("aptType", new ScriptEnum());
+            var type = gom.Data.ValueOrDefault("aptType", new ScriptEnum());
             apt.Type = type.ToString();
 
 
@@ -122,35 +122,35 @@ namespace GomLib.ModelLoader
             return apt;
         }
 
-        public void LoadReferences(Models.GameObject obj, GomObject gom)
+        public void LoadReferences(GameObject obj, GomObject gom)
         {
         }
 
-        public void LoadObject(Models.GameObject obj, GomObject gom)
+        public void LoadObject(GameObject obj, GomObject gom)
         {
             Load(obj, gom);
         }
 
-        public Models.Stronghold Load(ulong nodeId)
+        public Stronghold Load(ulong nodeId)
         {
             GomObject obj = _dom.GetObject(nodeId);
             if (obj == null) { return null; }
-            Models.Stronghold itm = new Stronghold();
+            Stronghold itm = new Stronghold();
             return Load(itm, obj);
         }
 
-        public Models.Stronghold Load(string fqn)
+        public Stronghold Load(string fqn)
         {
             GomObject obj = _dom.GetObject(fqn);
             if (obj == null) { return null; }
-            Models.Stronghold itm = new Stronghold();
+            Stronghold itm = new Stronghold();
             return Load(itm, obj);
         }
 
-        public Models.Stronghold Load(GomObject obj)
+        public Stronghold Load(GomObject obj)
         {
             if (obj == null) { return null; }
-            Models.Stronghold itm = new Stronghold();
+            Stronghold itm = new Stronghold();
             return Load(itm, obj);
         }
 

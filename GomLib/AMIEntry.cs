@@ -33,7 +33,7 @@ namespace GomLib
                     if (RepresentativeColor.ContainsKey("g")) green = RepresentativeColor["g"].ToString();
                     if (RepresentativeColor.ContainsKey("b")) blue = RepresentativeColor["b"].ToString();
                     if (RepresentativeColor.ContainsKey("a")) alpha = RepresentativeColor["a"].ToString();
-                    return String.Format("({0},{1},{2},{3})", red, green, blue, alpha);
+                    return string.Format("({0},{1},{2},{3})", red, green, blue, alpha);
                 }
                 return "";
             }
@@ -63,12 +63,12 @@ namespace GomLib
         public void Load(GomObjectData data)
         {
             Id = data.ValueOrDefault<long>("appModelId", 0);
-            BaseFile = data.ValueOrDefault<string>("appModelBaseFile", "");
-            var attachments = data.ValueOrDefault<Dictionary<object, object>>("appModelAttachments", new Dictionary<object, object>());
+            BaseFile = data.ValueOrDefault("appModelBaseFile", "");
+            var attachments = data.ValueOrDefault("appModelAttachments", new Dictionary<object, object>());
             Attachments = attachments.ToDictionary(a => (long)a.Key, a => (string)a.Value);
-            SlotType = data.ValueOrDefault<ScriptEnum>("appModelSlotType", new ScriptEnum()).ToString();
+            SlotType = data.ValueOrDefault("appModelSlotType", new ScriptEnum()).ToString();
 
-            var matList = data.ValueOrDefault<Dictionary<object, object>>("appModelMaterialList", new Dictionary<object, object>());
+            var matList = data.ValueOrDefault("appModelMaterialList", new Dictionary<object, object>());
 
             if (matList.Count != 0)
             {
@@ -119,7 +119,7 @@ namespace GomLib
 
             }
 
-            var modelColors = data.ValueOrDefault<Dictionary<object, object>>("appModelColors", new Dictionary<object, object>());
+            var modelColors = data.ValueOrDefault("appModelColors", new Dictionary<object, object>());
             Colors = new Dictionary<string, ModelColors>();
             foreach (var kvp in modelColors)
             {
@@ -162,27 +162,27 @@ namespace GomLib
 
             if (ReferenceEquals(this, ame)) return true;
 
-            if (this.Id != ame.Id)
+            if (Id != ame.Id)
                 return false;
 
             var lsComp = new Models.DictionaryComparer<long, string>();
-            if (!lsComp.Equals(this.Attachments, ame.Attachments))
+            if (!lsComp.Equals(Attachments, ame.Attachments))
                 return false;
 
-            if (this.BaseFile != ame.BaseFile)
+            if (BaseFile != ame.BaseFile)
                 return false;
 
             var ssComp = new Models.DictionaryComparer<string, string>();
-            if (!ssComp.Equals(this.ChildSkinMaterials, ame.ChildSkinMaterials))
+            if (!ssComp.Equals(ChildSkinMaterials, ame.ChildSkinMaterials))
                 return false;
 
-            if (this.Colors != null)
+            if (Colors != null)
             {
                 if (ame.Colors != null)
                 {
-                    if (this.Colors.Count != ame.Colors.Count)
+                    if (Colors.Count != ame.Colors.Count)
                         return false;
-                    foreach (var color in this.Colors)
+                    foreach (var color in Colors)
                     {
                         ame.Colors.TryGetValue(color.Key, out ModelColors oColor);
                         if (!color.Value.Equals(oColor))
@@ -195,13 +195,13 @@ namespace GomLib
             else if (ame.Colors != null)
                 return false;
 
-            if (this.MaterialList != null)
+            if (MaterialList != null)
             {
                 if (ame.MaterialList != null)
                 {
-                    if (this.MaterialList.Count != ame.MaterialList.Count)
+                    if (MaterialList.Count != ame.MaterialList.Count)
                         return false;
-                    foreach (var material in this.MaterialList)
+                    foreach (var material in MaterialList)
                     {
                         ame.MaterialList.TryGetValue(material.Key, out Dictionary<long, string> oMaterial);
                         if (!lsComp.Equals(material.Value, oMaterial))
@@ -215,18 +215,18 @@ namespace GomLib
                 return false;
 
             var sfComp = new Models.DictionaryComparer<string, float>();
-            if (!sfComp.Equals(this.RepresentativeColor, ame.RepresentativeColor))
+            if (!sfComp.Equals(RepresentativeColor, ame.RepresentativeColor))
                 return false;
 
-            if (this.SithComplexion1 != ame.SithComplexion1)
+            if (SithComplexion1 != ame.SithComplexion1)
                 return false;
-            if (this.SithComplexion2 != ame.SithComplexion2)
+            if (SithComplexion2 != ame.SithComplexion2)
                 return false;
-            if (this.SkinHueIndex != ame.SkinHueIndex)
+            if (SkinHueIndex != ame.SkinHueIndex)
                 return false;
-            if (this.SkinMaterialIndex != ame.SkinMaterialIndex)
+            if (SkinMaterialIndex != ame.SkinMaterialIndex)
                 return false;
-            if (this.SlotType != ame.SlotType)
+            if (SlotType != ame.SlotType)
                 return false;
             return true;
         }
@@ -267,9 +267,9 @@ namespace GomLib
 
             if (ReferenceEquals(this, ame)) return true;
 
-            if (this.PrimaryColor != ame.PrimaryColor)
+            if (PrimaryColor != ame.PrimaryColor)
                 return false;
-            if (this.SecondaryColor != ame.SecondaryColor)
+            if (SecondaryColor != ame.SecondaryColor)
                 return false;
             return true;
         }

@@ -93,10 +93,10 @@ namespace DevIL
             get
             {
                 if (!IsValid)
-                    return DevIL.DataType.UnsignedByte;
+                    return DataType.UnsignedByte;
 
                 Bind();
-                return (DevIL.DataType)IL.IlGetInteger(ILDefines.IL_IMAGE_TYPE);
+                return (DataType)IL.IlGetInteger(ILDefines.IL_IMAGE_TYPE);
             }
         }
 
@@ -105,10 +105,10 @@ namespace DevIL
             get
             {
                 if (!IsValid)
-                    return DevIL.PaletteType.None;
+                    return PaletteType.None;
 
                 Bind();
-                return (DevIL.PaletteType)IL.IlGetInteger(ILDefines.IL_PALETTE_TYPE);
+                return (PaletteType)IL.IlGetInteger(ILDefines.IL_PALETTE_TYPE);
             }
         }
 
@@ -286,7 +286,7 @@ namespace DevIL
             {
                 if (!IsValid)
                     return false;
-                return this.DxtcFormat != CompressedDataFormat.None;
+                return DxtcFormat != CompressedDataFormat.None;
             }
         }
 
@@ -296,7 +296,7 @@ namespace DevIL
             {
                 if (!IsValid)
                     return false;
-                return this.PaletteType != DevIL.PaletteType.None;
+                return PaletteType != PaletteType.None;
             }
         }
 
@@ -363,7 +363,7 @@ namespace DevIL
                 return false;
 
             destImage.Bind();
-            return IL.CopyImage(this.ImageID);
+            return IL.CopyImage(ImageID);
         }
 
         public Image Clone()

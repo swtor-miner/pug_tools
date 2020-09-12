@@ -44,7 +44,7 @@ namespace PugTools
 
                     if (encrypted)
                     {
-                        byte[] decryptedData = new Byte[data.Length];
+                        byte[] decryptedData = new byte[data.Length];
                         uint unk = 0x35;
                         for (int i = 0; i < data.Length; i++)
                         {

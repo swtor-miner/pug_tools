@@ -41,7 +41,7 @@ namespace GomLib.ModelLoader
             get { return "achAchievement"; }
         }
 
-        public Models.Achievement Load(ulong nodeId)
+        public Achievement Load(ulong nodeId)
         {
             if (idMap.TryGetValue(nodeId, out Achievement result))
             {
@@ -49,12 +49,12 @@ namespace GomLib.ModelLoader
             }
 
             GomObject obj = _dom.GetObject(nodeId);
-            Models.Achievement ach = new Achievement();
+            Achievement ach = new Achievement();
             return Load(ach, obj);
         }
 
 
-        public Models.Achievement Load(string fqn)
+        public Achievement Load(string fqn)
         {
             if (nameMap.TryGetValue(fqn, out Achievement result))
             {
@@ -62,22 +62,22 @@ namespace GomLib.ModelLoader
             }
 
             GomObject obj = _dom.GetObject(fqn);
-            Models.Achievement ach = new Achievement();
+            Achievement ach = new Achievement();
             return Load(ach, obj);
         }
 
-        public Models.Achievement Load(GomObject obj)
+        public Achievement Load(GomObject obj)
         {
-            Models.Achievement ach = new Achievement();
+            Achievement ach = new Achievement();
             return Load(ach, obj);
         }
 
-        public Models.GameObject CreateObject()
+        public GameObject CreateObject()
         {
-            return new Models.Achievement();
+            return new Achievement();
         }
 
-        public Models.Achievement Load(Models.GameObject obj, GomObject gom)
+        public Achievement Load(GameObject obj, GomObject gom)
         {
             if (gom == null) { return (Achievement)obj; }
             if (obj == null) { return null; }
@@ -155,7 +155,7 @@ namespace GomLib.ModelLoader
             //ach.Visibility = obj.Data.ValueOrDefault<AchievementVisibility>("achVisibility", AchievementVisibility.Always);//4611686344448990000
 
             //Right Way - Then once read you can cast to your own type like so:
-            ach.Visibility = (AchievementVisibility)gom.Data.ValueOrDefault<ScriptEnum>("achVisibility", new ScriptEnum()).Value; //4611686344448990000
+            ach.Visibility = (AchievementVisibility)gom.Data.ValueOrDefault("achVisibility", new ScriptEnum()).Value; //4611686344448990000
             //Or you could store the ScriptEnum in ach.Visibility and cast the value to your custom enum at output time.
 
             ach.AchId = gom.Data.ValueOrDefault<long>("achId", 0);
@@ -178,7 +178,7 @@ namespace GomLib.ModelLoader
 
                     var legacyTitleField = rawRewards.ValueOrDefault<long>("achRewardLegacyTitleId", 0);
                     ach.Rewards.LocalizedLegacyTitle = new Dictionary<string, string>();
-                    if ((long)legacyTitleField != 0)
+                    if (legacyTitleField != 0)
                     {
                         ach.Rewards.LocalizedLegacyTitle = LegacyTitleLookup(legacyTitleField);
                         if (ach.Rewards.LocalizedLegacyTitle != null)
@@ -265,14 +265,14 @@ namespace GomLib.ModelLoader
                     var condLookupData = (GomObjectData)cond;
                     var tmpCondition = new AchCondition
                     {
-                        UnknownBoolean = condLookupData.ValueOrDefault<bool>("4611686294605190001", false), // is only set true on kill achievements
+                        UnknownBoolean = condLookupData.ValueOrDefault("4611686294605190001", false), // is only set true on kill achievements
                                                                                                             // All Unknown13 type achievements (except a test one) has this set true
                                                                                                             // Player Faction restricted kill achievements have this set false
 
-                        Type = (AchConditionType)condLookupData.ValueOrDefault<ScriptEnum>("achConditionType", new ScriptEnum()).Value,
+                        Type = (AchConditionType)condLookupData.ValueOrDefault("achConditionType", new ScriptEnum()).Value,
                         // 13 - player/non-faction npc kills
                         // 
-                        Target = (AchConditionTarget)condLookupData.ValueOrDefault<ScriptEnum>("achConditionTarget", new ScriptEnum()).Value
+                        Target = (AchConditionTarget)condLookupData.ValueOrDefault("achConditionTarget", new ScriptEnum()).Value
                     };
 
                     //if (tmpCondition.Type == AchConditionType.Unknown13 || tmpCondition.Type == AchConditionType.Faction || tmpCondition.UnknownBoolean)
@@ -396,13 +396,13 @@ namespace GomLib.ModelLoader
                             };
         }
 
-        public void LoadObject(Models.GameObject loadMe, GomObject obj)
+        public void LoadObject(GameObject loadMe, GomObject obj)
         {
-            GomLib.Models.Achievement ach = (Models.Achievement)loadMe;
+            Achievement ach = (Achievement)loadMe;
             Load(ach, obj);
         }
 
-        public void LoadReferences(Models.GameObject obj, GomObject gom)
+        public void LoadReferences(GameObject obj, GomObject gom)
         {
             // No references to load
         }

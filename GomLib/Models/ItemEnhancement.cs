@@ -48,13 +48,13 @@ namespace GomLib.Models
         {
             if (itmEnh == null) return false;
 
-            if (this.ModificationId != itmEnh.ModificationId)
+            if (ModificationId != itmEnh.ModificationId)
                 return false;
-            if (!this.Slot.Equals(itmEnh.Slot))
+            if (!Slot.Equals(itmEnh.Slot))
                 return false;
-            if (this.ModificationId != 0)
+            if (ModificationId != 0)
             {
-                if (!this.Modification.Equals(itmEnh.Modification))
+                if (!Modification.Equals(itmEnh.Modification))
                     return false;
             }
             else if (itmEnh.ModificationId != 0)

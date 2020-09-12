@@ -20,13 +20,13 @@ namespace GomLib.Models
     {
         public static ItemBindingRule ToBindingRule(this ScriptEnum val)
         {
-            if (val == null) { return ToBindingRule(String.Empty); }
+            if (val == null) { return ToBindingRule(string.Empty); }
             return ToBindingRule(val.ToString());
         }
 
         public static ItemBindingRule ToBindingRule(this string str)
         {
-            if (String.IsNullOrEmpty(str)) return ItemBindingRule.None;
+            if (string.IsNullOrEmpty(str)) return ItemBindingRule.None;
 
             switch (str)
             {

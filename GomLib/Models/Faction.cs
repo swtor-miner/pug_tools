@@ -64,7 +64,7 @@ namespace GomLib.Models
     {
         public static Faction ToFaction(this string str)
         {
-            if (String.IsNullOrEmpty(str)) return Faction.None;
+            if (string.IsNullOrEmpty(str)) return Faction.None;
 
             switch (str.ToLower())
             {
@@ -141,7 +141,7 @@ namespace GomLib.Models
     {
         public Dictionary<long, DetailedFaction> FactionLookup { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         readonly DataObjectModel _dom;
 
         public FactionData(DataObjectModel dom)
@@ -165,13 +165,13 @@ namespace GomLib.Models
                     DetailedFaction detFact = new DetailedFaction();
                     GomObjectData gomy = faction.Value as GomObjectData;
                     detFact.Id = gomy.ValueOrDefault<long>("cbtFaction", 0);
-                    detFact.RepublicReaction = gomy.ValueOrDefault<ScriptEnum>("chrFactionPackageRepublicPCsAttitude", new ScriptEnum()).ToString();
-                    detFact.ImperialReaction = gomy.ValueOrDefault<ScriptEnum>("chrFactionPackageEmpirePCsAttitude", new ScriptEnum()).ToString();
+                    detFact.RepublicReaction = gomy.ValueOrDefault("chrFactionPackageRepublicPCsAttitude", new ScriptEnum()).ToString();
+                    detFact.ImperialReaction = gomy.ValueOrDefault("chrFactionPackageEmpirePCsAttitude", new ScriptEnum()).ToString();
                     detFact.NameId = gomy.ValueOrDefault<long>("chrFactionPackageDisplayName", 0) + 1173582633762816;
                     detFact.LocalizedName = table.GetLocalizedText(detFact.NameId, "str.sys.factions");
-                    detFact.DefendedFactionIds = gomy.ValueOrDefault<Dictionary<object, object>>("chrFactionPackageDefendedFactions", new Dictionary<object, object>()).Select(x => (long)x.Key).ToList();
-                    detFact.FactionString = gomy.ValueOrDefault<string>("cbtFactionString", "");
-                    detFact.OpposingFactionIds = gomy.ValueOrDefault<Dictionary<object, object>>("chrFactionPackageOpposingFactions", new Dictionary<object, object>()).Select(x => (long)x.Key).ToList();
+                    detFact.DefendedFactionIds = gomy.ValueOrDefault("chrFactionPackageDefendedFactions", new Dictionary<object, object>()).Select(x => (long)x.Key).ToList();
+                    detFact.FactionString = gomy.ValueOrDefault("cbtFactionString", "");
+                    detFact.OpposingFactionIds = gomy.ValueOrDefault("chrFactionPackageOpposingFactions", new Dictionary<object, object>()).Select(x => (long)x.Key).ToList();
                     FactionLookup.Add(detFact.Id, detFact);
                 }
                 chrFactionSpecToPackageMap = null;
@@ -236,26 +236,26 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, itm)) return true;
 
-            if (this.RepublicReaction != itm.RepublicReaction)
+            if (RepublicReaction != itm.RepublicReaction)
                 return false;
-            if (this.Id != itm.Id)
+            if (Id != itm.Id)
                 return false;
 
             var dComp = new DictionaryComparer<string, string>();
-            if (!dComp.Equals(this.LocalizedName, itm.LocalizedName))
+            if (!dComp.Equals(LocalizedName, itm.LocalizedName))
                 return false;
 
-            if (this.Name != itm.Name)
+            if (Name != itm.Name)
                 return false;
-            if (this.NameId != itm.NameId)
+            if (NameId != itm.NameId)
                 return false;
-            if (this.FactionId != itm.FactionId)
+            if (FactionId != itm.FactionId)
                 return false;
-            if (this.FactionString != itm.FactionString)
+            if (FactionString != itm.FactionString)
                 return false;
-            if (this.OpposingFactionIds != itm.OpposingFactionIds)
+            if (OpposingFactionIds != itm.OpposingFactionIds)
                 return false;
-            if (this.DefendedFactionIds != itm.DefendedFactionIds)
+            if (DefendedFactionIds != itm.DefendedFactionIds)
                 return false;
 
             return true;

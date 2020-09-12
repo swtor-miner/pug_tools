@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace PugTools
 {
@@ -63,7 +63,6 @@ namespace PugTools
             {
                 SelectedPath = textBoxPrevAssetsFolder.Text
             };
-            _ = fbd.ShowDialog();
             if (fbd.SelectedPath.EndsWith("\\"))
             {
                 textBoxPrevAssetsFolder.Text = fbd.SelectedPath;
@@ -106,7 +105,7 @@ namespace PugTools
                 string selected = comboBoxExtractTypes.SelectedItem.ToString();
                 if ((cbxExtractFormat.SelectedItem.ToString() == "SQL" || cbxExtractFormat.SelectedItem.ToString() == "JSON") && versionTexBox.Text == "")
                 {
-                    System.Windows.Forms.MessageBox.Show("A patch version number is required for SQL Output.");
+                    MessageBox.Show("A patch version number is required for SQL Output.");
                     EnableButtons();
                     return;
                 }
@@ -243,14 +242,14 @@ namespace PugTools
 
         private void CheckBox1_CheckedChanged(object sender, EventArgs e)
         {
-            verbose = (this.chkVerbose.CheckState == CheckState.Checked);
+            verbose = (chkVerbose.CheckState == CheckState.Checked);
             //if (verbose) prefix = "Verbose";
             //else prefix = "";
         }
 
         private void RemoveElementsCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            removeUnchangedElements = (this.chkRemoveElements.CheckState == CheckState.Checked);
+            removeUnchangedElements = (chkRemoveElements.CheckState == CheckState.Checked);
         }
 
         private void CbxExtractFormat_SelectedIndexChanged(object sender, EventArgs e)
@@ -279,22 +278,22 @@ namespace PugTools
             {
                 if (PathContainsPTSAssets(path))
                 {
-                    buttonFindAssets.Image = global::PugTools.Properties.Resources.tick_shield;
+                    buttonFindAssets.Image = Properties.Resources.tick_shield;
                 }
                 else
                 {
-                    buttonFindAssets.Image = global::PugTools.Properties.Resources.cross_shield;
+                    buttonFindAssets.Image = Properties.Resources.cross_shield;
                 }
             }
             else
             {
                 if (PathContainsLiveAssets(path))
                 {
-                    buttonFindAssets.Image = global::PugTools.Properties.Resources.tick_shield;
+                    buttonFindAssets.Image = Properties.Resources.tick_shield;
                 }
                 else
                 {
-                    buttonFindAssets.Image = global::PugTools.Properties.Resources.cross_shield;
+                    buttonFindAssets.Image = Properties.Resources.cross_shield;
                 }
             }
 
@@ -321,22 +320,22 @@ namespace PugTools
             {
                 if (PathContainsPTSAssets(path))
                 {
-                    buttonFindPrevAssets.Image = global::PugTools.Properties.Resources.tick_shield;
+                    buttonFindPrevAssets.Image = Properties.Resources.tick_shield;
                 }
                 else
                 {
-                    buttonFindPrevAssets.Image = global::PugTools.Properties.Resources.cross_shield;
+                    buttonFindPrevAssets.Image = Properties.Resources.cross_shield;
                 }
             }
             else
             {
                 if (PathContainsLiveAssets(path))
                 {
-                    buttonFindPrevAssets.Image = global::PugTools.Properties.Resources.tick_shield;
+                    buttonFindPrevAssets.Image = Properties.Resources.tick_shield;
                 }
                 else
                 {
-                    buttonFindPrevAssets.Image = global::PugTools.Properties.Resources.cross_shield;
+                    buttonFindPrevAssets.Image = Properties.Resources.cross_shield;
                 }
             }
 
@@ -356,8 +355,8 @@ namespace PugTools
         {
             if (AssetBrowser == null || AssetBrowser.IsDisposed)
             {
-                bool usePTS = this.usePTSAssets.Checked;
-                AssetBrowser = new AssetBrowser(this.textBoxAssetsFolder.Text, usePTS);
+                bool usePTS = usePTSAssets.Checked;
+                AssetBrowser = new AssetBrowser(textBoxAssetsFolder.Text, usePTS);
                 AssetBrowser.FormClosed += OnAssetBrowserClosed;
                 AssetBrowser.Show();
                 AssetBrowser.Focus();
@@ -379,8 +378,8 @@ namespace PugTools
         {
             if (NodeBrowser == null || NodeBrowser.IsDisposed)
             {
-                bool usePTS = this.usePTSAssets.Checked;
-                NodeBrowser = new NodeBrowser(this.textBoxAssetsFolder.Text, usePTS, this.textBoxExtractFolder.Text);
+                bool usePTS = usePTSAssets.Checked;
+                NodeBrowser = new NodeBrowser(textBoxAssetsFolder.Text, usePTS, textBoxExtractFolder.Text);
                 System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.SustainedLowLatency;
                 NodeBrowser.Show();
                 NodeBrowser.Focus();
@@ -395,8 +394,8 @@ namespace PugTools
         {
             if (ModelBrowser == null || ModelBrowser.IsDisposed)
             {
-                bool usePTS = this.usePTSAssets.Checked;
-                ModelBrowser = new ModelBrowser(this.textBoxAssetsFolder.Text, usePTS, this.textBoxPrevAssetsFolder.Text, prevUsePTSAssets.Checked, chkBuildCompare.Checked);
+                bool usePTS = usePTSAssets.Checked;
+                ModelBrowser = new ModelBrowser(textBoxAssetsFolder.Text, usePTS, textBoxPrevAssetsFolder.Text, prevUsePTSAssets.Checked, chkBuildCompare.Checked);
                 System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.SustainedLowLatency;
                 ModelBrowser.FormClosed += OnModelBrowserClosed;
                 ModelBrowser.Show();
@@ -432,7 +431,7 @@ namespace PugTools
             HashSet<string> previous = GetFilenameHashset(previousAssets);
             var sorted = current.Except(previous).ToList();
             sorted.Sort();
-            WriteFile(String.Join(Environment.NewLine, sorted), "newFiles.txt", false);
+            WriteFile(string.Join(Environment.NewLine, sorted), "newFiles.txt", false);
 
             EnableButtons();
         }
@@ -492,22 +491,22 @@ namespace PugTools
             bool hasPTS = PathContainsPTSAssets(path);
             if (hasLive && !hasPTS)
             {
-                buttonFindAssets.Image = global::PugTools.Properties.Resources.tick_shield;
+                buttonFindAssets.Image = Properties.Resources.tick_shield;
                 usePTSAssets.Checked = false;
             }
             else if (!hasLive && hasPTS)
             {
-                buttonFindAssets.Image = global::PugTools.Properties.Resources.tick_shield;
+                buttonFindAssets.Image = Properties.Resources.tick_shield;
                 usePTSAssets.Checked = true;
             }
             else if (!hasLive && !hasPTS)
             {
-                buttonFindAssets.Image = global::PugTools.Properties.Resources.cross_shield;
+                buttonFindAssets.Image = Properties.Resources.cross_shield;
             }
             else
             {
                 //Has both live and pts assets.
-                buttonFindAssets.Image = global::PugTools.Properties.Resources.tick_shield;
+                buttonFindAssets.Image = Properties.Resources.tick_shield;
             }
 
             if (Loaded)
@@ -545,22 +544,22 @@ namespace PugTools
             bool hasPTS = PathContainsPTSAssets(path);
             if (hasLive && !hasPTS)
             {
-                buttonFindPrevAssets.Image = global::PugTools.Properties.Resources.tick_shield;
+                buttonFindPrevAssets.Image = Properties.Resources.tick_shield;
                 prevUsePTSAssets.Checked = false;
             }
             else if (!hasLive && hasPTS)
             {
-                buttonFindPrevAssets.Image = global::PugTools.Properties.Resources.tick_shield;
+                buttonFindPrevAssets.Image = Properties.Resources.tick_shield;
                 prevUsePTSAssets.Checked = true;
             }
             else if (!hasLive && !hasPTS)
             {
-                buttonFindPrevAssets.Image = global::PugTools.Properties.Resources.cross_shield;
+                buttonFindPrevAssets.Image = Properties.Resources.cross_shield;
             }
             else
             {
                 //Has both live and pts assets.
-                buttonFindPrevAssets.Image = global::PugTools.Properties.Resources.tick_shield;
+                buttonFindPrevAssets.Image = Properties.Resources.tick_shield;
             }
 
             Config.PrevAssetsPath = path;
@@ -595,9 +594,9 @@ namespace PugTools
         #region Invokers
         private void DisableButtons()
         {
-            if (this.textBoxAssetsFolder.InvokeRequired)
+            if (textBoxAssetsFolder.InvokeRequired)
             {
-                this.Invoke((Action)DisableButtons);
+                Invoke((Action)DisableButtons);
             }
             else
             {
@@ -620,9 +619,9 @@ namespace PugTools
 
         private void EnableButtons()
         {
-            if (this.textBoxAssetsFolder.InvokeRequired)
+            if (textBoxAssetsFolder.InvokeRequired)
             {
-                this.Invoke((Action)EnableButtons);
+                Invoke((Action)EnableButtons);
             }
             else
             {
@@ -645,101 +644,101 @@ namespace PugTools
 
         private void Clearlist()
         {
-            if (this.listBox1.InvokeRequired)
+            if (listBox1.InvokeRequired)
             {
                 ClearlistCallback d = new ClearlistCallback(Clearlist);
-                this.Invoke(d, new object[] { });
+                Invoke(d, new object[] { });
             }
             else
             {
-                this.listBox1.Items.Clear();
+                listBox1.Items.Clear();
             }
         }
 
         private void Clearlist2()
         {
-            if (this.listBox1.InvokeRequired)
+            if (listBox1.InvokeRequired)
             {
                 ClearlistCallback d = new ClearlistCallback(Clearlist2);
-                this.Invoke(d, new object[] { });
+                Invoke(d, new object[] { });
             }
             else
             {
-                this.listBox2.Items.Clear();
+                listBox2.Items.Clear();
             }
         }
 
         private void Addtolist(string text)
         {
-            if (this.listBox1.InvokeRequired)
+            if (listBox1.InvokeRequired)
             {
                 SetTextCallback d = new SetTextCallback(Addtolist);
-                this.Invoke(d, new object[] { text });
+                Invoke(d, new object[] { text });
             }
             else
             {
-                this.listBox1.Items.Add(text);
-                this.listBox1.TopIndex = listBox1.Items.Count - 1;
+                listBox1.Items.Add(text);
+                listBox1.TopIndex = listBox1.Items.Count - 1;
 
             }
         }
 
         private void Addtolist2(string text)
         {
-            if (this.listBox2.InvokeRequired)
+            if (listBox2.InvokeRequired)
             {
                 SetText2Callback d = new SetText2Callback(Addtolist2);
-                this.Invoke(d, new object[] { text });
+                Invoke(d, new object[] { text });
             }
             else
             {
-                this.listBox2.Items.Add(text);
-                this.listBox2.TopIndex = listBox2.Items.Count - 1;
+                listBox2.Items.Add(text);
+                listBox2.TopIndex = listBox2.Items.Count - 1;
             }
         }
 
         private void ProgressUpdate(int progress, int count)
         {
-            if (this.progressBar1.InvokeRequired)
+            if (progressBar1.InvokeRequired)
             {
                 ProgressCallback d = new ProgressCallback(ProgressUpdate);
-                this.Invoke(d, new object[] { progress, count });
+                Invoke(d, new object[] { progress, count });
             }
             else
             {
                 int value = 0;
                 if (count != 0)
-                    value = (int)((progress * 100) / count);
-                this.progressBar1.Value = value;
-                this.progressBar1.Update();
+                    value = (progress * 100) / count;
+                progressBar1.Value = value;
+                progressBar1.Update();
             }
         }
 
         private void ClearProgress()
         {
-            if (this.progressBar1.InvokeRequired)
+            if (progressBar1.InvokeRequired)
             {
                 ClearProgressCallback d = new ClearProgressCallback(ClearProgress);
-                this.Invoke(d, new object[] { });
+                Invoke(d, new object[] { });
             }
             else
             {
-                this.progressBar1.Style = ProgressBarStyle.Blocks;
-                this.progressBar1.Value = 0;
+                progressBar1.Style = ProgressBarStyle.Blocks;
+                progressBar1.Value = 0;
             }
         }
 
         private void ContinuousProgress()
         {
-            if (this.progressBar1.InvokeRequired)
+            if (progressBar1.InvokeRequired)
             {
                 ContinuousProgressCallback d = new ContinuousProgressCallback(ContinuousProgress);
-                this.Invoke(d, new object[] { });
+                Invoke(d, new object[] { });
             }
             else
             {
-                this.progressBar1.Style = ProgressBarStyle.Marquee;
-                this.progressBar1.MarqueeAnimationSpeed = 25;
+                progressBar1.Style = ProgressBarStyle.Marquee;
+                progressBar1.MarqueeAnimationSpeed = 25;
             }
         }
 

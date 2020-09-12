@@ -42,7 +42,7 @@ namespace GomLib.ModelLoader
             return Load(enc, obj);
         }
 
-        public Models.Encounter Load(string fqn)
+        public Encounter Load(string fqn)
         {
             if (nameMap.TryGetValue(fqn, out Encounter result))
             {
@@ -54,7 +54,7 @@ namespace GomLib.ModelLoader
             return Load(enc, obj);
         }
 
-        public Models.Encounter Load(Models.Encounter enc, GomObject obj)
+        public Encounter Load(Encounter enc, GomObject obj)
         {
             if (obj == null) { return null; }
             if (enc == null) { return null; }
@@ -83,13 +83,13 @@ namespace GomLib.ModelLoader
             return enc;
         }
 
-        public void LoadObject(Models.GameObject loadMe, GomObject obj)
+        public void LoadObject(GameObject loadMe, GomObject obj)
         {
-            GomLib.Models.Encounter loadObj = (Models.Encounter)loadMe;
+            Encounter loadObj = (Encounter)loadMe;
             Load(loadObj, obj);
         }
 
-        public void LoadReferences(Models.GameObject obj, GomObject gom)
+        public void LoadReferences(GameObject obj, GomObject gom)
         {
             if (obj is null)
             {

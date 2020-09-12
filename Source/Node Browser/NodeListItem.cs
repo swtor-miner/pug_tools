@@ -71,7 +71,7 @@ namespace PugTools
                         foreach (var item in objDict)
                         {
                             NodeListItem child = new NodeListItem(item.Key, item.Value, valueType);
-                            if (this.displayName == "locTextRetrieverMap")
+                            if (displayName == "locTextRetrieverMap")
                             {
                                 GomObjectData currentValue = (GomObjectData)item.Value;
                                 long stringId = currentValue.ValueOrDefault<long>("strLocalizedTextRetrieverStringID", 0);
@@ -143,7 +143,7 @@ namespace PugTools
                     }
                     else if (type.TypeId == GomTypeId.Vec3)
                     {
-                        List<Single> list = (List<Single>)this.value;
+                        List<float> list = (List<float>)this.value;
                         displayValue = "(" + string.Join(", ", list.ToArray()) + ")";
                         this.type = type.ToString();
                     }

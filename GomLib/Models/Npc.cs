@@ -44,7 +44,7 @@ namespace GomLib.Models
             }
         }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public HashSet<ulong> AbilityPackageIdList { get; set; }
         public List<string> AbilityPackageB62IdList_ { get; set; }
         public List<string> AbilityPackageB62IdList
@@ -63,7 +63,7 @@ namespace GomLib.Models
             }
         }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public ClassSpec ClassSpec { get; set; }
         public int MinLevel { get; set; }
         public int MaxLevel { get; set; }
@@ -76,7 +76,7 @@ namespace GomLib.Models
         public Dictionary<string, string> LocalizedToughness { get; set; }
         public int DifficultyFlags { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Conversation Conversation { get; set; }
 
         public string CnvConversationName { get; set; }
@@ -98,7 +98,7 @@ namespace GomLib.Models
             }
         }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Codex Codex
         {
             get
@@ -121,7 +121,7 @@ namespace GomLib.Models
             }
         }
         public Profession ProfessionTrained { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Npc CompanionOverride
         {
             get { return Dom_.npcLoader.Load(CompanionOverrideId); }
@@ -133,7 +133,7 @@ namespace GomLib.Models
         public long LootTableId { get; set; }
 
         public bool IsClassTrainer { get; set; }
-        public bool IsVendor { get { return this.VendorPackages.Count > 0; } }
+        public bool IsVendor { get { return VendorPackages.Count > 0; } }
         public List<string> VendorPackages { get; set; }
 
         public string MovementPackage { get; set; }
@@ -149,7 +149,7 @@ namespace GomLib.Models
         {
             get
             {
-                if (String.IsNullOrEmpty(FqnCategory_))
+                if (string.IsNullOrEmpty(FqnCategory_))
                 {
                     string[] fqnParts = Fqn.Substring(4).Split('.');
                     FqnCategory_ = fqnParts[0];
@@ -163,7 +163,7 @@ namespace GomLib.Models
         {
             get
             {
-                if (String.IsNullOrEmpty(FqnSubCategory_))
+                if (string.IsNullOrEmpty(FqnSubCategory_))
                 {
                     string[] fqnParts = Fqn.Substring(4).Split('.');
                     FqnCategory_ = fqnParts[0];
@@ -217,9 +217,9 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, npc)) return true;
 
-            if (this.AggroPackage != npc.AggroPackage)
+            if (AggroPackage != npc.AggroPackage)
                 return false;
-            if (!this.ClassSpec.Equals(npc.ClassSpec))
+            if (!ClassSpec.Equals(npc.ClassSpec))
                 return false;
             /*if (this.Codex != null)
             {
@@ -228,7 +228,7 @@ namespace GomLib.Models
             }
             else if (npc.Codex != null)
                 return false;*/
-            if (this.CodexId != npc.CodexId)
+            if (CodexId != npc.CodexId)
                 return false;
             /*if (this.CompanionOverride != null)
             {
@@ -237,58 +237,58 @@ namespace GomLib.Models
             }
             else if (npc.CompanionOverride != null)
                 return false;*/
-            if (this.CompanionOverrideId != npc.CompanionOverrideId)
+            if (CompanionOverrideId != npc.CompanionOverrideId)
                 return false;
             //if (!this.Conversation.Equals(npc.Conversation))
             //return false;
-            if (this.CnvConversationName != npc.CnvConversationName)
+            if (CnvConversationName != npc.CnvConversationName)
                 return false;
-            if (this.CoverPackage != npc.CoverPackage)
+            if (CoverPackage != npc.CoverPackage)
                 return false;
-            if (this.DifficultyFlags != npc.DifficultyFlags)
+            if (DifficultyFlags != npc.DifficultyFlags)
                 return false;
-            if (this.Faction != npc.Faction)
+            if (Faction != npc.Faction)
                 return false;
-            if (this.Fqn != npc.Fqn)
+            if (Fqn != npc.Fqn)
                 return false;
-            if (this.Id != npc.Id)
+            if (Id != npc.Id)
                 return false;
-            if (this.IsClassTrainer != npc.IsClassTrainer)
+            if (IsClassTrainer != npc.IsClassTrainer)
                 return false;
-            if (this.IsVendor != npc.IsVendor)
+            if (IsVendor != npc.IsVendor)
                 return false;
 
             var ssComp = new DictionaryComparer<string, string>();
-            if (!ssComp.Equals(this.LocalizedName, npc.LocalizedName))
+            if (!ssComp.Equals(LocalizedName, npc.LocalizedName))
                 return false;
-            if (!ssComp.Equals(this.LocalizedTitle, npc.LocalizedTitle))
+            if (!ssComp.Equals(LocalizedTitle, npc.LocalizedTitle))
                 return false;
 
-            if (this.LootTableId != npc.LootTableId)
+            if (LootTableId != npc.LootTableId)
                 return false;
-            if (this.MaxLevel != npc.MaxLevel)
+            if (MaxLevel != npc.MaxLevel)
                 return false;
-            if (this.MinLevel != npc.MinLevel)
+            if (MinLevel != npc.MinLevel)
                 return false;
-            if (this.MovementPackage != npc.MovementPackage)
+            if (MovementPackage != npc.MovementPackage)
                 return false;
-            if (this.Name != npc.Name)
+            if (Name != npc.Name)
                 return false;
-            if (this.NameId != npc.NameId)
+            if (NameId != npc.NameId)
                 return false;
-            if (this.NodeId != npc.NodeId)
+            if (NodeId != npc.NodeId)
                 return false;
-            if (this.ParentSpecId != npc.ParentSpecId)
+            if (ParentSpecId != npc.ParentSpecId)
                 return false;
-            if (this.ProfessionTrained != npc.ProfessionTrained)
+            if (ProfessionTrained != npc.ProfessionTrained)
                 return false;
-            if (this.Title != npc.Title)
+            if (Title != npc.Title)
                 return false;
-            if (this.Toughness != npc.Toughness)
+            if (Toughness != npc.Toughness)
                 return false;
-            if (!this.VendorPackages.SequenceEqual(npc.VendorPackages))
+            if (!VendorPackages.SequenceEqual(npc.VendorPackages))
                 return false;
-            if (this.VisualDataList != null)
+            if (VisualDataList != null)
             {
                 if (npc.VisualDataList == null)
                 {
@@ -296,11 +296,11 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<NpcVisualData>(this.VisualDataList, npc.VisualDataList))
+                    if (!Enumerable.SequenceEqual(VisualDataList, npc.VisualDataList))
                         return false;
                 }
             }
-            if (this.WanderPackage != npc.WanderPackage)
+            if (WanderPackage != npc.WanderPackage)
                 return false;
             return true;
         }
@@ -380,7 +380,7 @@ namespace GomLib.Models
             txtFile.Append("  ConversationFqn: " + ConversationFqn + n); */
             txtFile.Append("  DifficultyFlags: " + DifficultyFlags + n);
             if (IsClassTrainer) { txtFile.Append("  ProfessionTrained: " + ProfessionTrained + n); }
-            if (IsVendor) { txtFile.Append("  VendorPackages: { " + String.Join(", ", VendorPackages.ToArray<string>()) + " }" + n); }
+            if (IsVendor) { txtFile.Append("  VendorPackages: { " + string.Join(", ", VendorPackages.ToArray<string>()) + " }" + n); }
             txtFile.Append("  LootTableId: " + LootTableId + n);
             txtFile.Append("------------------------------------------------------------" + n);
             txtFile.Append(Environment.NewLine + n);

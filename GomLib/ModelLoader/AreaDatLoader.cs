@@ -23,7 +23,7 @@ namespace GomLib.FileLoaders
 
         public AreaDat Load(ulong areaId)
         {
-            var file = _dom._assets.FindFile(String.Format("/resources/world/areas/{0}/area.dat", areaId));
+            var file = _dom._assets.FindFile(string.Format("/resources/world/areas/{0}/area.dat", areaId));
             if (file == null) return null;
             Stream fileStream = file.OpenCopyInMemory();
             BinaryReader binReader = new BinaryReader(fileStream);

@@ -43,7 +43,7 @@ namespace GomLib.ModelLoader
             return Load(plc, obj);
         }
 
-        public Models.Placeable Load(string fqn)
+        public Placeable Load(string fqn)
         {
             if (nameMap.TryGetValue(fqn, out Placeable result))
             {
@@ -55,13 +55,13 @@ namespace GomLib.ModelLoader
             return Load(plc, obj);
         }
 
-        public Models.Placeable Load(GomObject obj)
+        public Placeable Load(GomObject obj)
         {
             Placeable plc = new Placeable();
             return Load(plc, obj);
         }
 
-        public Models.Placeable Load(Models.Placeable plc, GomObject obj)
+        public Placeable Load(Placeable plc, GomObject obj)
         {
             if (obj == null) { return null; }
             if (plc == null) { return null; }
@@ -85,25 +85,25 @@ namespace GomLib.ModelLoader
             plc.CodexId = obj.Data.ValueOrDefault<ulong>("plcCodexSpec", 0);
 
             //public Profession RequiredProfession { get; set; }
-            plc.RequiredProfession = ProfessionExtensions.ToProfession((ScriptEnum)obj.Data.ValueOrDefault<ScriptEnum>("prfProfessionRequired", null));
+            plc.RequiredProfession = ProfessionExtensions.ToProfession(obj.Data.ValueOrDefault<ScriptEnum>("prfProfessionRequired", null));
 
             //public int RequiredProfessionLevel { get; set; }
             plc.RequiredProfessionLevel = (int)obj.Data.ValueOrDefault<long>("prfProfessionLevelRequired", 0);
 
             //public bool IsBank { get; set; }
-            plc.IsBank = obj.Data.ValueOrDefault<bool>("plcIsBank", false);
+            plc.IsBank = obj.Data.ValueOrDefault("plcIsBank", false);
 
             //public bool IsMailbox { get; set; }
-            plc.IsMailbox = obj.Data.ValueOrDefault<bool>("plcIsMailbox", false);
+            plc.IsMailbox = obj.Data.ValueOrDefault("plcIsMailbox", false);
 
             //public AuctionHouseNetwork AuctionNetwork { get; set; }
-            plc.AuctionNetwork = AuctionHouseNetworkExtensions.ToAuctionHouseNetwork((ScriptEnum)obj.Data.ValueOrDefault<ScriptEnum>("plcAuctionNetwork", null));
+            plc.AuctionNetwork = AuctionHouseNetworkExtensions.ToAuctionHouseNetwork(obj.Data.ValueOrDefault<ScriptEnum>("plcAuctionNetwork", null));
 
             //public bool IsAuctionHouse { get; set; }
             plc.IsAuctionHouse = plc.AuctionNetwork != AuctionHouseNetwork.None;
 
             //public bool IsEnhancementStation { get; set; }
-            plc.IsEnhancementStation = EnhancementStationType.None != EnhancementStationTypeExtensions.ToEnhancementStationType((ScriptEnum)obj.Data.ValueOrDefault<ScriptEnum>("itmEnhancementStationType", null));
+            plc.IsEnhancementStation = EnhancementStationType.None != EnhancementStationTypeExtensions.ToEnhancementStationType(obj.Data.ValueOrDefault<ScriptEnum>("itmEnhancementStationType", null));
 
             //public Faction Faction { get; set; }
             plc.Faction = FactionExtensions.ToFaction(obj.Data.ValueOrDefault<long>("plcFaction", 0));
@@ -127,7 +127,7 @@ namespace GomLib.ModelLoader
                 //plc.HydraScript = HydraScriptLoader.Load(hydNodeId);
             }
 
-            plc.TemplateNoGlow = obj.Data.ValueOrDefault<bool>("plcTemplateNoGlow", false);
+            plc.TemplateNoGlow = obj.Data.ValueOrDefault("plcTemplateNoGlow", false);
 
             plc.PropState = obj.Data.ValueOrDefault<long>("plcPropState", 0);
 
@@ -173,13 +173,13 @@ namespace GomLib.ModelLoader
             if (plc.Fqn.StartsWith("plc.location.")) { plc.Category = PlaceableCategory.Quest; }
         }
 
-        public void LoadObject(Models.GameObject loadMe, GomObject obj)
+        public void LoadObject(GameObject loadMe, GomObject obj)
         {
-            GomLib.Models.Placeable loadObj = (Models.Placeable)loadMe;
+            Placeable loadObj = (Placeable)loadMe;
             Load(loadObj, obj);
         }
 
-        public void LoadReferences(Models.GameObject obj, GomObject gom)
+        public void LoadReferences(GameObject obj, GomObject gom)
         {
             if (obj is null)
             {

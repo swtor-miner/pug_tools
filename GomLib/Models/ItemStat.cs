@@ -10,7 +10,7 @@ namespace GomLib.Models
     {
         public ItemStat Clone()
         {
-            ItemStat clone = this.MemberwiseClone() as ItemStat;
+            ItemStat clone = MemberwiseClone() as ItemStat;
             //
             //
             return clone;
@@ -45,9 +45,9 @@ namespace GomLib.Models
         {
             if (itmStat == null) return false;
 
-            if (this.Modifier != itmStat.Modifier)
+            if (Modifier != itmStat.Modifier)
                 return false;
-            if (!this.Stat.Equals(itmStat.Stat))
+            if (!Stat.Equals(itmStat.Stat))
                 return false;
             return true;
         }

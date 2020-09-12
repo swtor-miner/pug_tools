@@ -62,7 +62,7 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, qss)) return true;
 
-            if (this.BonusMissions != null)
+            if (BonusMissions != null)
             {
                 if (qss.BonusMissions == null)
                 {
@@ -70,17 +70,17 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<Quest>(this.BonusMissions, qss.BonusMissions))
+                    if (!Enumerable.SequenceEqual(BonusMissions, qss.BonusMissions))
                         return false;
                 }
             }
-            if (this.DbId != qss.DbId)
+            if (DbId != qss.DbId)
                 return false;
-            if (this.Id != qss.Id)
+            if (Id != qss.Id)
                 return false;
-            if (this.IsShareable != qss.IsShareable)
+            if (IsShareable != qss.IsShareable)
                 return false;
-            if (this.ItemsGiven != null)
+            if (ItemsGiven != null)
             {
                 if (qss.ItemsGiven == null)
                 {
@@ -88,11 +88,11 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<QuestItem>(this.ItemsGiven, qss.ItemsGiven))
+                    if (!Enumerable.SequenceEqual(ItemsGiven, qss.ItemsGiven))
                         return false;
                 }
             }
-            if (this.ItemsTaken != null)
+            if (ItemsTaken != null)
             {
                 if (qss.ItemsTaken == null)
                 {
@@ -100,13 +100,13 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<QuestItem>(this.ItemsTaken, qss.ItemsTaken))
+                    if (!Enumerable.SequenceEqual(ItemsTaken, qss.ItemsTaken))
                         return false;
                 }
             }
-            if (this.JournalText != qss.JournalText)
+            if (JournalText != qss.JournalText)
                 return false;
-            if (this.Tasks != null)
+            if (Tasks != null)
             {
                 if (qss.Tasks == null)
                 {
@@ -114,7 +114,7 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<QuestTask>(this.Tasks, qss.Tasks))
+                    if (!Enumerable.SequenceEqual(Tasks, qss.Tasks))
                         return false;
                 }
             }

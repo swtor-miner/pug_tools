@@ -294,11 +294,11 @@ namespace nsHashDictionary
 
         public void LoadHashList()
         {
-            string gfile = String.Format("{0}.gz", this.dictionaryBin);
-            if (System.IO.File.Exists(gfile))
+            string gfile = string.Format("{0}.gz", dictionaryBin);
+            if (File.Exists(gfile))
                 LoadHashList(gfile, false, true);
             else
-                LoadHashList(this.dictionaryFile, false);
+                LoadHashList(dictionaryFile, false);
         }
         public void MergeHashList(object obj)
         {
@@ -313,7 +313,7 @@ namespace nsHashDictionary
 
             if (!Path.IsPathRooted(file))
             {
-                string path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+                string path = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
                 file = path + "/" + file;
             }
 
@@ -324,7 +324,7 @@ namespace nsHashDictionary
 
                 if (newformat)
                 {
-                    using (System.IO.FileStream fs = new FileStream(file, FileMode.Open))
+                    using (FileStream fs = new FileStream(file, FileMode.Open))
                     {
                         using (System.IO.Compression.GZipStream gzip = new System.IO.Compression.GZipStream(fs, System.IO.Compression.CompressionMode.Decompress))
                         {
@@ -366,7 +366,7 @@ namespace nsHashDictionary
                                             else
                                                 LoadHash(ph, sh, filename, crc, archive);
                                             if (i % 200 == 0)
-                                                TriggerHashEvent(new DictionaryEventArgs(DictionaryState.Building, (float)br.BaseStream.Position / (float)br.BaseStream.Length));
+                                                TriggerHashEvent(new DictionaryEventArgs(DictionaryState.Building, br.BaseStream.Position / (float)br.BaseStream.Length));
                                         }
                                     }
                                 }
@@ -413,7 +413,7 @@ namespace nsHashDictionary
                                 else
                                     LoadHash(ph, sh, filename, crc, archiveName);
                                 if (i % 200 == 0)
-                                    TriggerHashEvent(new DictionaryEventArgs(DictionaryState.Building, (float)reader.BaseStream.Position / (float)reader.BaseStream.Length));
+                                    TriggerHashEvent(new DictionaryEventArgs(DictionaryState.Building, reader.BaseStream.Position / (float)reader.BaseStream.Length));
                             }
                         }
                     }
@@ -427,7 +427,7 @@ namespace nsHashDictionary
         /// </summary>
         public void SaveTxtHashList()
         {
-            string path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+            string path = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
 
             DateTime centuryBegin = new DateTime(2001, 1, 1);
             DateTime currentDate = DateTime.Now;
@@ -469,7 +469,7 @@ namespace nsHashDictionary
                                 , subHashList.Values[i].crc);
 
                             if (i % 200 == 0)
-                                TriggerHashEvent(new DictionaryEventArgs(DictionaryState.Building, (float)i / (float)hashList.Count));
+                                TriggerHashEvent(new DictionaryEventArgs(DictionaryState.Building, i / (float)hashList.Count));
                         }
                     }
                 }
@@ -482,7 +482,7 @@ namespace nsHashDictionary
         public void SaveBinHashList()
         {
 
-            string path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+            string path = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
 
             DateTime centuryBegin = new DateTime(2001, 1, 1);
             DateTime currentDate = DateTime.Now;
@@ -502,10 +502,10 @@ namespace nsHashDictionary
             }
 
             //Save dictionary
-            string gfile = String.Format("{0}.gz", dicFile);
+            string gfile = string.Format("{0}.gz", dicFile);
 
             if (File.Exists(gfile)) File.Move(gfile, path + "/Hash/oldHashList_" + elapsedSpan.TotalSeconds.ToString() + ".bin.gz");
-            using (System.IO.FileStream fs = new FileStream(dicFile, FileMode.OpenOrCreate))
+            using (FileStream fs = new FileStream(dicFile, FileMode.OpenOrCreate))
             {
                 using (BinaryWriter br = new BinaryWriter(fs))
                 {
@@ -549,7 +549,7 @@ namespace nsHashDictionary
                             br.Write(subHashList.Values[i].filename);
 
                             if (i % 200 == 0)
-                                TriggerHashEvent(new DictionaryEventArgs(DictionaryState.Building, (float)i / (float)hashList.Count));
+                                TriggerHashEvent(new DictionaryEventArgs(DictionaryState.Building, i / (float)hashList.Count));
                         }
                     }
                 }
@@ -558,7 +558,7 @@ namespace nsHashDictionary
             {
                 if (readstream == null) return;
                 if (readstream.Length == 0) return;
-                using (FileStream outFileStream = new FileStream(String.Join("", dicFile, ".gz"), FileMode.Create, FileAccess.Write))
+                using (FileStream outFileStream = new FileStream(string.Join("", dicFile, ".gz"), FileMode.Create, FileAccess.Write))
                 using (System.IO.Compression.GZipStream gzip = new System.IO.Compression.GZipStream(outFileStream, System.IO.Compression.CompressionMode.Compress))
                 {
                     readstream.CopyTo(gzip);
@@ -812,13 +812,13 @@ namespace nsHashDictionary
 
         public void SaveHelpers()
         {
-            string rootPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+            string rootPath = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
             SaveList(dirListing, rootPath + "/" + directoryListingFile);
             SaveList(fileListing, rootPath + "/" + fileListingFile);
             SaveList(extListing, rootPath + "/" + extensionListingFile);
         }
 
-        private void SaveList(HashSet<String> theHashSet, string fileName)
+        private void SaveList(HashSet<string> theHashSet, string fileName)
         {
             FileStream fs;
             StreamWriter writer;
@@ -827,7 +827,7 @@ namespace nsHashDictionary
             fs = new FileStream(fileName, FileMode.OpenOrCreate);
             writer = new StreamWriter(fs);
 
-            foreach (String item in theHashSet)
+            foreach (string item in theHashSet)
             {
                 writer.WriteLine(item);
             }

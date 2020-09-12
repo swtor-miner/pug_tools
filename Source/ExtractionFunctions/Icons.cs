@@ -32,7 +32,7 @@ namespace PugTools
 
             Addtolist2("Icon Extract Started");
 
-            System.IO.StreamWriter file2 = new System.IO.StreamWriter(Config.ExtractPath + "icons.txt", true);
+            StreamWriter file2 = new StreamWriter(Config.ExtractPath + "icons.txt", true);
 
             Addtolist2("Starting Item Icon Extraction");
             var itmList = currentDom.GetObjectsStartingWith("itm.");
@@ -196,7 +196,7 @@ namespace PugTools
             Dictionary<object, object> shipData = shipDataProto.Data.ValueOrDefault<Dictionary<object, object>>("scFFShipsData", null);
             if (shipData != null)
             {
-                foreach (var item in (Dictionary<object, object>)shipData)
+                foreach (var item in shipData)
                 {
                     var item2 = (GomLib.GomObjectData)item.Value;
                     item2.Dictionary.TryGetValue("scFFShipHullIcon", out object icon1_string);
@@ -222,7 +222,7 @@ namespace PugTools
             Dictionary<object, object> shipColors = shipColorOptionProto.Data.ValueOrDefault<Dictionary<object, object>>("scFFComponentColorUIData", null);
             if (shipColors != null)
             {
-                foreach (var item in (Dictionary<object, object>)shipColors)
+                foreach (var item in shipColors)
                 {
                     var item2 = (GomLib.GomObjectData)item.Value;
                     item2.Dictionary.TryGetValue("scFFComponentColorIcon", out object icon_string);
@@ -241,7 +241,7 @@ namespace PugTools
             Dictionary<object, object> shipCrew = scffCrewProto.Data.ValueOrDefault<Dictionary<object, object>>("scFFShipsCrewAndPatternData", null);
             if (shipCrew != null)
             {
-                foreach (var item in (Dictionary<object, object>)shipCrew)
+                foreach (var item in shipCrew)
                 {
                     var item2 = (GomLib.GomObjectData)item.Value;
                     item2.Dictionary.TryGetValue("scFFCrewIcon", out object icon_string);
@@ -262,7 +262,7 @@ namespace PugTools
             Dictionary<object, object> mtxItems = mtxStore.Data.ValueOrDefault<Dictionary<object, object>>("mtxStorefrontData", null);
             if (mtxItems != null)
             {
-                foreach (var item in (Dictionary<object, object>)mtxItems)
+                foreach (var item in mtxItems)
                 {
                     var item2 = (GomLib.GomObjectData)item.Value;
                     item2.Dictionary.TryGetValue("mtxStorefrontIcon", out object icon_string);
@@ -285,7 +285,7 @@ namespace PugTools
             Dictionary<object, object> colCats = colCategoriesProto.Data.ValueOrDefault<Dictionary<object, object>>("colCollectionCategoryData", null);
             if (colCats != null)
             {
-                foreach (var item in (Dictionary<object, object>)colCats)
+                foreach (var item in colCats)
                 {
                     var item2 = (GomLib.GomObjectData)item.Value;
                     item2.Dictionary.TryGetValue("colCollectionCategoryIcon", out object icon_string);
@@ -308,7 +308,7 @@ namespace PugTools
             Dictionary<object, object> colItems = colCollectionItemsProto.Data.ValueOrDefault<Dictionary<object, object>>("colCollectionItemsData", null);
             if (colItems != null)
             {
-                foreach (var item in (Dictionary<object, object>)colItems)
+                foreach (var item in colItems)
                 {
                     var item2 = (GomLib.GomObjectData)item.Value;
                     item2.Dictionary.TryGetValue("colCollectionIcon", out object icon_string);
@@ -331,7 +331,7 @@ namespace PugTools
             Dictionary<object, object> achCategories = achCategoriesTable_Proto.Data.ValueOrDefault<Dictionary<object, object>>("achCategoriesData", null);
             if (achCategories != null)
             {
-                foreach (var item in (Dictionary<object, object>)achCategories)
+                foreach (var item in achCategories)
                 {
                     var item2 = (GomLib.GomObjectData)item.Value;
                     item2.Dictionary.TryGetValue("achCategoriesIcon", out object icon_string1);

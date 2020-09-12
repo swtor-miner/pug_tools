@@ -30,11 +30,11 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, stt)) return true;
 
-            if (this.Ability != null)
+            if (Ability != null)
             {
                 if (stt.Ability != null)
                 {
-                    if (!this.Ability.Equals(stt.Ability))
+                    if (!Ability.Equals(stt.Ability))
                         return false;
                 }
                 else
@@ -42,13 +42,13 @@ namespace GomLib.Models
             }
             else if (stt.Ability != null)
                 return false;
-            if (this.Tree != null)
+            if (Tree != null)
             {
                 if (stt.Tree != null)
                 {
-                    if (!this.Tree.Keys.SequenceEqual(stt.Tree.Keys))
+                    if (!Tree.Keys.SequenceEqual(stt.Tree.Keys))
                         return false;
-                    foreach (var kvp in this.Tree)
+                    foreach (var kvp in Tree)
                     {
                         stt.Tree.TryGetValue(kvp.Key, out Dictionary<int, List<object>> prevValue);
                         foreach (var innerKvp in kvp.Value)

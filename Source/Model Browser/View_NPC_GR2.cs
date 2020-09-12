@@ -9,10 +9,10 @@ using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 using Buffer = SlimDX.Direct3D11.Buffer;
-using SlimDX_Framework;
-using SlimDX_Framework.Camera;
-using SlimDX_Framework.FX;
-using SlimDX_Framework.Vertex;
+using SlimDXNet;
+using SlimDXNet.Camera;
+using SlimDXNet.FX;
+using SlimDXNet.Vertex;
 using FileFormats;
 using GomLib;
 
@@ -1256,14 +1256,14 @@ namespace PugTools
                                         glossData.Data[k * 4 + 3],
                                         glossData.Data[k * 4 + 3]);
 
-                            glossBM.SetPixel(k % glossData.Width, (int)k / glossData.Width, glossPixel);
+                            glossBM.SetPixel(k % glossData.Width, k / glossData.Width, glossPixel);
 
                             Color specPixel = Color.FromArgb(255,
                                         glossData.Data[k * 4 + 0],
                                         glossData.Data[k * 4 + 1],
                                         glossData.Data[k * 4 + 2]);
 
-                            specBM.SetPixel(k % glossData.Width, (int)k / glossData.Width, specPixel);
+                            specBM.SetPixel(k % glossData.Width, k / glossData.Width, specPixel);
                         }
 
                         //save
@@ -1272,7 +1272,7 @@ namespace PugTools
                             glossBM.Save(bmStream, System.Drawing.Imaging.ImageFormat.Png); //Bitmap to Stream
                             DevIL.Image bmp = imp.LoadImageFromStream(new MemoryStream(bmStream.GetBuffer())); //Image from Stream
                             exp.SaveImageToStream(bmp, DevIL.ImageType.Png, bmStream); //Image to DDS
-                            PugTools.Tools.WriteFile(bmStream, string.Format("{0}\\{1}", path, mat.glossDDS.Substring(mat.glossDDS.LastIndexOf('/') + 1).Replace("_s.", "_si.").Replace(".dds", ".png"))); //Save DDS
+                            Tools.WriteFile(bmStream, string.Format("{0}\\{1}", path, mat.glossDDS.Substring(mat.glossDDS.LastIndexOf('/') + 1).Replace("_s.", "_si.").Replace(".dds", ".png"))); //Save DDS
                         }
 
                         using (var bmStream = new MemoryStream())
@@ -1280,7 +1280,7 @@ namespace PugTools
                             specBM.Save(bmStream, System.Drawing.Imaging.ImageFormat.Png); //Bitmap to Stream
                             DevIL.Image bmp = imp.LoadImageFromStream(new MemoryStream(bmStream.GetBuffer())); //Image from Stream
                             exp.SaveImageToStream(bmp, DevIL.ImageType.Png, bmStream); //Image to DDS
-                            PugTools.Tools.WriteFile(bmStream, string.Format("{0}\\{1}", path, mat.glossDDS.Substring(mat.glossDDS.LastIndexOf('/') + 1).Replace(".dds", ".png"))); //Save DDS
+                            Tools.WriteFile(bmStream, string.Format("{0}\\{1}", path, mat.glossDDS.Substring(mat.glossDDS.LastIndexOf('/') + 1).Replace(".dds", ".png"))); //Save DDS
                         }
                     }
                 }

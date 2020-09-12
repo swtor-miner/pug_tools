@@ -75,10 +75,10 @@ namespace GomLib
             //add apc code here
             MessageDelegate("Smart-linking classes...");//Load classes
             nodeList = dom.GetObjectsStartingWith("class.");
-            Dictionary<ulong, GomLib.Models.AdvancedClass> LoadedACs = new Dictionary<ulong, GomLib.Models.AdvancedClass>();
+            Dictionary<ulong, Models.AdvancedClass> LoadedACs = new Dictionary<ulong, Models.AdvancedClass>();
             foreach (GomObject node in nodeList)
             {
-                ulong apcId = node.Data.ValueOrDefault<ulong>("chrAbilityPackage", 0UL);
+                ulong apcId = node.Data.ValueOrDefault("chrAbilityPackage", 0UL);
                 dom.AddCrossLink(apcId, "usedByClass", node.Id);//apn node
                 if (node.Name.StartsWith("class.pc."))
                 {
@@ -175,7 +175,7 @@ namespace GomLib
             proto.Unload();
             foreach (var areaId in table.Keys)
             {
-                string mapNotePath = String.Format("/resources/world/areas/{0}/mapnotes.not", areaId);
+                string mapNotePath = string.Format("/resources/world/areas/{0}/mapnotes.not", areaId);
                 var file = dom._assets.FindFile(mapNotePath);
                 if (file == null)
                     continue;
@@ -302,7 +302,7 @@ namespace GomLib
             foreach (GomObject node in nodeList)
             {
                 //dom.AddCrossLink(node.Data.ValueOrDefault<ulong>("decUnlockingItemId", 0UL), "unlockingDecoration", node.Id);//itm node  //should not be necessary I think
-                dom.AddCrossLink(node.Data.ValueOrDefault<ulong>("decDecorationId", 0UL), "usedByDecoration", node.Id);//dyn/npc/plc node
+                dom.AddCrossLink(node.Data.ValueOrDefault("decDecorationId", 0UL), "usedByDecoration", node.Id);//dyn/npc/plc node
                 node.Unload();
             }
         }
@@ -321,7 +321,7 @@ namespace GomLib
                         dom.AddCrossLink((string)spawner.Value, "partOfEnc", node.Id);//spn node
                     }
                 }
-                dom.AddCrossLink(node.Data.ValueOrDefault<ulong>("plcHydraId", 0UL), "controllingEnc", node.Id);//hyd node
+                dom.AddCrossLink(node.Data.ValueOrDefault("plcHydraId", 0UL), "controllingEnc", node.Id);//hyd node
                 node.Unload();
             }
         }
@@ -335,13 +335,13 @@ namespace GomLib
             nodeList = dom.GetObjectsStartingWith("itm.");
             foreach (GomObject node in nodeList)
             {
-                dom.AddCrossLink(node.Data.ValueOrDefault<ulong>("itmEquipAbility", 0UL), "calledByItmEquip", node.Id);//abl node
-                dom.AddCrossLink(node.Data.ValueOrDefault<ulong>("itmUsageAbility", 0UL), "calledByItmUse", node.Id);//abl node
-                dom.AddCrossLink(node.Data.ValueOrDefault<ulong>("itmUniformNppSpec", 0UL), "givenByItem", node.Id);//npp node
-                dom.AddCrossLink(node.Data.ValueOrDefault<ulong>("itmAppearanceSpec", 0UL), "givenByItem", node.Id);//ipp node
-                dom.AddCrossLink(node.Data.ValueOrDefault<ulong>("itemTeachesRef", 0UL), "taughtByItem", node.Id);//any node
+                dom.AddCrossLink(node.Data.ValueOrDefault("itmEquipAbility", 0UL), "calledByItmEquip", node.Id);//abl node
+                dom.AddCrossLink(node.Data.ValueOrDefault("itmUsageAbility", 0UL), "calledByItmUse", node.Id);//abl node
+                dom.AddCrossLink(node.Data.ValueOrDefault("itmUniformNppSpec", 0UL), "givenByItem", node.Id);//npp node
+                dom.AddCrossLink(node.Data.ValueOrDefault("itmAppearanceSpec", 0UL), "givenByItem", node.Id);//ipp node
+                dom.AddCrossLink(node.Data.ValueOrDefault("itemTeachesRef", 0UL), "taughtByItem", node.Id);//any node
 
-                if (node.Data.ValueOrDefault<bool>("itmHasAppearanceSlot", false) || node.Data.ValueOrDefault<ulong>("itmAppearanceSpec", 0) != 0)
+                if (node.Data.ValueOrDefault("itmHasAppearanceSlot", false) || node.Data.ValueOrDefault<ulong>("itmAppearanceSpec", 0) != 0)
                 {
                     Dictionary<object, object> itmAppearanceSpecByPlayerClass = node.Data.ValueOrDefault<Dictionary<object, object>>("itmAppearanceSpecByPlayerClass", null);
                     SortedSet<ulong> apps = new SortedSet<ulong>();
@@ -370,7 +370,7 @@ namespace GomLib
                         soundList[sound].Add(node.Id);
                     }
                 }
-                List<object> enhancementDefaults = (List<object>)node.Data.ValueOrDefault<List<object>>("itmEnhancementDefaults", null);
+                List<object> enhancementDefaults = node.Data.ValueOrDefault<List<object>>("itmEnhancementDefaults", null);
                 if (enhancementDefaults != null)
                 {
                     foreach (object o in enhancementDefaults)
@@ -410,7 +410,7 @@ namespace GomLib
             nodeList = dom.GetObjectsStartingWith("ipp.");
             foreach (GomObject node in nodeList)
             {
-                long modelId = node.Data.ValueOrDefault<long>("appAppearanceSlotModelID", 0L);
+                long modelId = node.Data.ValueOrDefault("appAppearanceSlotModelID", 0L);
                 var typ = ((ScriptEnum)node.Data.ValueOrDefault<object>("appAppearanceSlotType", null));
                 string type;
                 if (typ == null)
@@ -418,13 +418,13 @@ namespace GomLib
                 else
                     type = typ.ToString();
                 if (modelId == 0L) continue;
-                long materialIndex = node.Data.ValueOrDefault<long>("appAppearanceSlotMaterialIndex", 0L);
+                long materialIndex = node.Data.ValueOrDefault("appAppearanceSlotMaterialIndex", 0L);
                 List<object> attachments = node.Data.ValueOrDefault<List<object>>("appAppearanceSlotAttachments", null);
                 string attachString = "";
                 if (attachments != null)
                 {
                     attachments.Sort();
-                    attachString = String.Join(".", attachments);
+                    attachString = string.Join(".", attachments);
                 }
                 var ami = dom.ami.Find(type.Substring(7).ToLower(), modelId);
                 var anon = new
@@ -436,7 +436,7 @@ namespace GomLib
                 if (ami != null)
                 {
                     var mat = ami.GetMaterial(materialIndex);
-                    string baseModMat = String.Format("{0}.{1}", ami.BaseFile, mat.Key);
+                    string baseModMat = string.Format("{0}.{1}", ami.BaseFile, mat.Key);
                     if (!appList.ContainsKey(baseModMat))
                         appList.Add(baseModMat, new List<ulong>());
                     appList[baseModMat].Add(node.Id);
@@ -514,19 +514,19 @@ namespace GomLib
                     if (slotName == "Age") continue;
                     if (!(slot.Value is List<object> slotDataList) || slotDataList.Count() == 0)
                         continue;
-                    string refname = String.Format("{0}SimilarItems", slotName);
+                    string refname = string.Format("{0}SimilarItems", slotName);
                     foreach (object slotObj in slotDataList)
                     {
                         GomObjectData slotData = (GomObjectData)slotObj;
-                        long modelId = slotData.ValueOrDefault<long>("appAppearanceSlotModelID", 0L);
+                        long modelId = slotData.ValueOrDefault("appAppearanceSlotModelID", 0L);
                         if (modelId == 0L) continue;
-                        long materialIndex = slotData.ValueOrDefault<long>("appAppearanceSlotMaterialIndex", 0L);
+                        long materialIndex = slotData.ValueOrDefault("appAppearanceSlotMaterialIndex", 0L);
                         List<object> attachments = slotData.ValueOrDefault<List<object>>("appAppearanceSlotAttachments", null);
                         string attachString = "";
                         if (attachments != null)
                         {
                             attachments.Sort();
-                            attachString = String.Join(".", attachments);
+                            attachString = string.Join(".", attachments);
                         }
                         var anon = new
                         {
@@ -589,26 +589,26 @@ namespace GomLib
             nodeList = dom.GetObjectsStartingWith("npc.");
             foreach (GomObject node in nodeList)
             {
-                ulong npcCodexSpec = node.Data.ValueOrDefault<ulong>("npcCodexSpec", 0UL);
+                ulong npcCodexSpec = node.Data.ValueOrDefault("npcCodexSpec", 0UL);
                 if (npcCodexSpec != 0)
                 {
                     dom.AddCrossLink(npcCodexSpec, "npcsGrantThisCodex", node.Id);//cdx node
                     dom.AddCrossLink(node.Id, "cdxGrantedByThisNpc", npcCodexSpec);//npc node
                 }
-                dom.AddCrossLink(node.Data.ValueOrDefault<ulong>("npcClassPackage", 0UL), "npcsWithThisClass", node.Id);//class node
-                dom.AddCrossLink(node.Data.ValueOrDefault<ulong>("npcParentSpecId", 0UL), "npcsWithThisBlueprint", node.Id);//npc node
+                dom.AddCrossLink(node.Data.ValueOrDefault("npcClassPackage", 0UL), "npcsWithThisClass", node.Id);//class node
+                dom.AddCrossLink(node.Data.ValueOrDefault("npcParentSpecId", 0UL), "npcsWithThisBlueprint", node.Id);//npc node
 
-                string npcCnvName = node.Data.ValueOrDefault<string>("cnvConversationName", "");
+                string npcCnvName = node.Data.ValueOrDefault("cnvConversationName", "");
                 if (npcCnvName == "")
                 {
                     ulong ParentSpecId = node.Data.ValueOrDefault<ulong>("npcParentSpecId", 0);
                     if (ParentSpecId != 0)
                     {
                         GomObject baseNpc = dom.GetObject(ParentSpecId);
-                        npcCnvName = baseNpc.Data.ValueOrDefault<string>("cnvConversationName", "");
+                        npcCnvName = baseNpc.Data.ValueOrDefault("cnvConversationName", "");
                     }
                 }
-                if (!String.IsNullOrEmpty(npcCnvName))
+                if (!string.IsNullOrEmpty(npcCnvName))
                 {
                     ulong cnvId = dom.GetObjectId(npcCnvName);
                     if (cnvId != 0)
@@ -644,7 +644,7 @@ namespace GomLib
             nodeList = dom.GetObjectsStartingWith("phs.");
             foreach (GomObject node in nodeList)
             {
-                dom.AddCrossLink(node.Data.ValueOrDefault<ulong>("phsConditionalHydraScript", 0UL), "controllingPhase", node.Id);//hyd node
+                dom.AddCrossLink(node.Data.ValueOrDefault("phsConditionalHydraScript", 0UL), "controllingPhase", node.Id);//hyd node
                 node.Unload();
             }
         }
@@ -655,17 +655,17 @@ namespace GomLib
             nodeList = dom.GetObjectsStartingWith("plc.");
             foreach (GomObject node in nodeList)
             {
-                dom.AddCrossLink(node.Data.ValueOrDefault<string>("plcModel", ""), "connectedToPlc", node.Id);//dyn node
-                dom.AddCrossLink(node.Data.ValueOrDefault<ulong>("plcAbilitySpecOnUse", 0UL), "calledByPlcUse", node.Id);//abl node
-                dom.AddCrossLink(node.Data.ValueOrDefault<ulong>("plcHydraRef", 0UL), "connectedToPlc", node.Id);//hyd node
-                dom.AddCrossLink(node.Data.ValueOrDefault<string>("plcConvo", ""), "connectedToPlc", node.Id);//cnv node
+                dom.AddCrossLink(node.Data.ValueOrDefault("plcModel", ""), "connectedToPlc", node.Id);//dyn node
+                dom.AddCrossLink(node.Data.ValueOrDefault("plcAbilitySpecOnUse", 0UL), "calledByPlcUse", node.Id);//abl node
+                dom.AddCrossLink(node.Data.ValueOrDefault("plcHydraRef", 0UL), "connectedToPlc", node.Id);//hyd node
+                dom.AddCrossLink(node.Data.ValueOrDefault("plcConvo", ""), "connectedToPlc", node.Id);//cnv node
                 node.Unload();
             }
             MessageDelegate("Smart-linking dynamic placeables...");//Load dyn
             nodeList = dom.GetObjectsStartingWith("dyn.");
             foreach (GomObject node in nodeList)
             {
-                dom.AddCrossLink(node.Data.ValueOrDefault<ulong>("dynRelatedHydra", 0UL), "calledByDyn", node.Id);//hyd node
+                dom.AddCrossLink(node.Data.ValueOrDefault("dynRelatedHydra", 0UL), "calledByDyn", node.Id);//hyd node
                 node.Unload();
             }
         }
@@ -689,10 +689,10 @@ namespace GomLib
                                 GomObjectData qstHydraScriptOnSuccess = ((GomObjectData)step).ValueOrDefault<GomObjectData>("qstHydraScriptOnSuccess", null);
                                 if (qstHydraScriptOnSuccess != null)
                                 {
-                                    string hydraEvent = ((GomObjectData)qstHydraScriptOnSuccess).ValueOrDefault<string>("hydraEvent", null);
+                                    string hydraEvent = qstHydraScriptOnSuccess.ValueOrDefault<string>("hydraEvent", null);
                                     if (hydraEvent == "codexGrantEntry")
                                     {
-                                        ulong hydId = ((GomObjectData)qstHydraScriptOnSuccess).ValueOrDefault<ulong>("hydraScriptNodeId", 0);
+                                        ulong hydId = qstHydraScriptOnSuccess.ValueOrDefault<ulong>("hydraScriptNodeId", 0);
                                         GomObject hydra = dom.GetObject(hydId);
                                         if (hydra != null)
                                         {
@@ -718,7 +718,7 @@ namespace GomLib
                                                                         string hydAction = ((GomObjectData)action).ValueOrDefault<string>("hydAction", null);
                                                                         if (hydAction == "Grant Codex")
                                                                         {
-                                                                            string hydValue = ((GomObjectData)action).ValueOrDefault<string>("hydValue", "");
+                                                                            string hydValue = ((GomObjectData)action).ValueOrDefault("hydValue", "");
                                                                             if (hydValue != null)
                                                                             {
                                                                                 GomObject cdxObj = dom.GetObject(hydValue);
@@ -795,7 +795,7 @@ namespace GomLib
                     table = proto.Data.ValueOrDefault<Dictionary<object, object>>("qstRewardsNewInfoData", null);
                     if (proto.Data.ContainsKey("qstRewardsInfoData"))
                     {
-                        foreach (var kvp in table = proto.Data.ValueOrDefault<Dictionary<object, object>>("qstRewardsInfoData", new Dictionary<object, object>()))
+                        foreach (var kvp in table = proto.Data.ValueOrDefault("qstRewardsInfoData", new Dictionary<object, object>()))
                         {
                             if (!table.ContainsKey(kvp.Key))
                                 table.Add(kvp.Key, kvp.Value);
@@ -840,7 +840,7 @@ namespace GomLib
                         dom.AddCrossLink((ulong)material.Key, "materialFor", node.Id);//itm node
                     }
                 }
-                dom.AddCrossLink(node.Data.ValueOrDefault<ulong>("prfSchematicItemSpec", 0UL), "createdBy", node.Id);//itm node
+                dom.AddCrossLink(node.Data.ValueOrDefault("prfSchematicItemSpec", 0UL), "createdBy", node.Id);//itm node
                 node.Unload();
             }
             nodeList = dom.GetObjectsStartingWith("pkg.profession_trainer");
@@ -889,9 +889,9 @@ namespace GomLib
                 {
                     foreach (GomObjectData spawnedNpc in spawnedNpcs)
                     {
-                        dom.AddCrossLink(spawnedNpc.ValueOrDefault<ulong>("spnHydraRef", 0UL), "controllingSpawner", node.Id);//hyd node
-                        dom.AddCrossLink(spawnedNpc.ValueOrDefault<ulong>("spawnedId", 0UL), "spawnedBy", node.Id);//npc node
-                        dom.AddCrossLink(spawnedNpc.ValueOrDefault<ulong>("4611686198161500153", 0UL), "affectingSpawner", node.Id);//epp node
+                        dom.AddCrossLink(spawnedNpc.ValueOrDefault("spnHydraRef", 0UL), "controllingSpawner", node.Id);//hyd node
+                        dom.AddCrossLink(spawnedNpc.ValueOrDefault("spawnedId", 0UL), "spawnedBy", node.Id);//npc node
+                        dom.AddCrossLink(spawnedNpc.ValueOrDefault("4611686198161500153", 0UL), "affectingSpawner", node.Id);//epp node
                     }
                 }
                 node.Unload();

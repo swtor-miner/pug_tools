@@ -44,13 +44,13 @@ namespace GomLib.ModelLoader
         {
             var gom = _dom.GetObject("chrCompanionInfo_Prototype");
 
-            var chrCompanionInfoData = gom.Data.ValueOrDefault<Dictionary<object, object>>("chrCompanionInfoData", new Dictionary<object, object>());
+            var chrCompanionInfoData = gom.Data.ValueOrDefault("chrCompanionInfoData", new Dictionary<object, object>());
             if (!chrCompanionInfoData.ContainsKey(npcId))
                 return null;
             return Load(new Companion(), npcId, (GomObjectData)chrCompanionInfoData[npcId]);
         }
 
-        public Models.Companion Load(Models.Companion cmp, ulong npcId, GomObjectData obj)
+        public Companion Load(Companion cmp, ulong npcId, GomObjectData obj)
         {
             if (obj == null) { return cmp; }
             if (cmp == null) { return null; }
@@ -60,7 +60,7 @@ namespace GomLib.ModelLoader
                 var crewProto = _dom.GetObject("scffCrewPrototype");
                 if (crewProto != null)
                 {
-                    crewPositionLookup = crewProto.Data.ValueOrDefault<Dictionary<object, object>>("scFFCrewPositionData", crewPositionLookup);
+                    crewPositionLookup = crewProto.Data.ValueOrDefault("scFFCrewPositionData", crewPositionLookup);
                     crewData = crewProto.Data.Get<Dictionary<object, object>>("scFFShipsCrewAndPatternData");
                     factionLookup = crewProto.Data.Get<Dictionary<object, object>>("scFFCrewFactionData");
                     npcNodeIdLookup = crewProto.Data.Get<Dictionary<object, object>>("scFFCrewNpcNodeData");
@@ -68,7 +68,7 @@ namespace GomLib.ModelLoader
                 crewProto = null;
 
                 var chrCompanionInfo_Prototype = _dom.GetObject("chrCompanionInfo_Prototype");
-                var chrCompanionPermittedLookup = chrCompanionInfo_Prototype.Data.ValueOrDefault<Dictionary<object, object>>("chrCompanionPermittedLookup", new Dictionary<object, object>());
+                var chrCompanionPermittedLookup = chrCompanionInfo_Prototype.Data.ValueOrDefault("chrCompanionPermittedLookup", new Dictionary<object, object>());
 
                 foreach (var kvp in chrCompanionPermittedLookup)
                 {
@@ -85,7 +85,7 @@ namespace GomLib.ModelLoader
                 var contactsPrototype = _dom.GetObject("contactsPrototype");
                 if (contactsPrototype != null)
                 {
-                    var contactsNpcToNcoMap = contactsPrototype.Data.ValueOrDefault<Dictionary<object, object>>("contactsNpcToNcoMap", new Dictionary<object, object>());
+                    var contactsNpcToNcoMap = contactsPrototype.Data.ValueOrDefault("contactsNpcToNcoMap", new Dictionary<object, object>());
                     NpcToNcoMap = contactsNpcToNcoMap.ToDictionary(x => (ulong)x.Key, x => (ulong)x.Value);
                 }
             }
@@ -107,7 +107,7 @@ namespace GomLib.ModelLoader
                 cmp.Portrait = ParsePortrait((string)portrait);
             }
             cmp.ConversationMultiplier = (float)obj.Dictionary["chrCompanionInfo_affectionMultiplier"];
-            cmp.IsGenderMale = (bool)obj.Dictionary.ContainsKey("chrCompanionInfo_gender_male");
+            cmp.IsGenderMale = obj.Dictionary.ContainsKey("chrCompanionInfo_gender_male");
             cmp.AppearanceClassId = obj.ValueOrDefault<ulong>("chrCompanionInfo_appearance_class", 0);
             cmp.Classes = new ClassSpecList();
 
@@ -239,7 +239,7 @@ namespace GomLib.ModelLoader
                             cmp.CrewPositions.Add(positionName);
                         }
                     }
-                    cmp.SpaceIcon = cmpSpaceData.ValueOrDefault<string>("scFFCrewIcon", ""); //ex "spvp_Crew_icon_risha"
+                    cmp.SpaceIcon = cmpSpaceData.ValueOrDefault("scFFCrewIcon", ""); //ex "spvp_Crew_icon_risha"
                     _dom._assets.icons.Add(cmp.SpaceIcon);
                     /* string tokens = "";
                     if (cmp.SpaceAbility.TalentTokens != null) tokens = cmp.SpaceAbility.TalentTokens.Substring(cmp.SpaceAbility.TalentTokens.IndexOf(',') + 1);
@@ -272,7 +272,7 @@ namespace GomLib.ModelLoader
             return portrait.Replace("/gfx/portraits/", "");
         }
 
-        public void LoadReferences(Models.GameObject obj, GomObject gom)
+        public void LoadReferences(GameObject obj, GomObject gom)
         {
             if (obj is null)
             {
@@ -342,7 +342,7 @@ namespace GomLib.ModelLoader
         public long SubCategoryId { get; private set; }
         public Dictionary<string, NewCompanion> UnknownMap { get => unknownMap; set => unknownMap = value; }
 
-        public Models.NewCompanion Load(ulong nodeId)
+        public NewCompanion Load(ulong nodeId)
         {
             if (idMap.TryGetValue(nodeId, out NewCompanion result))
             {
@@ -350,12 +350,12 @@ namespace GomLib.ModelLoader
             }
 
             GomObject obj = _dom.GetObject(nodeId);
-            Models.NewCompanion ach = new NewCompanion();
+            NewCompanion ach = new NewCompanion();
             return Load(ach, obj);
         }
 
 
-        public Models.NewCompanion Load(string fqn)
+        public NewCompanion Load(string fqn)
         {
             if (nameMap.TryGetValue(fqn, out NewCompanion result))
             {
@@ -363,22 +363,22 @@ namespace GomLib.ModelLoader
             }
 
             GomObject obj = _dom.GetObject(fqn);
-            Models.NewCompanion ach = new NewCompanion();
+            NewCompanion ach = new NewCompanion();
             return Load(ach, obj);
         }
 
-        public Models.NewCompanion Load(GomObject obj)
+        public NewCompanion Load(GomObject obj)
         {
-            Models.NewCompanion ach = new NewCompanion();
+            NewCompanion ach = new NewCompanion();
             return Load(ach, obj);
         }
 
-        public Models.GameObject CreateObject()
+        public GameObject CreateObject()
         {
-            return new Models.NewCompanion();
+            return new NewCompanion();
         }
 
-        public Models.NewCompanion Load(Models.GameObject obj, GomObject gom)
+        public NewCompanion Load(GameObject obj, GomObject gom)
         {
             if (gom == null) { return (NewCompanion)obj; }
             if (obj == null) { return null; }
@@ -433,7 +433,7 @@ namespace GomLib.ModelLoader
             nco.NpcId = gom.Data.ValueOrDefault<ulong>("ncoNpcId", 0);
 
             nco.Icon = gom.Data.ValueOrDefault("ncoPreviewIcon", "");
-            if (String.IsNullOrEmpty(nco.Icon) && nco.Companion != null)
+            if (string.IsNullOrEmpty(nco.Icon) && nco.Companion != null)
                 nco.Icon = (nco.Companion.Portrait ?? "").Replace(".dds", "");
 
             Dictionary<object, object> ncoInteractionList = gom.Data.ValueOrDefault("ncoInteractionList", new Dictionary<object, object>());
@@ -480,13 +480,13 @@ namespace GomLib.ModelLoader
             return nco;
         }
 
-        public void LoadObject(Models.GameObject loadMe, GomObject obj)
+        public void LoadObject(GameObject loadMe, GomObject obj)
         {
-            GomLib.Models.NewCompanion ach = (Models.NewCompanion)loadMe;
+            NewCompanion ach = (NewCompanion)loadMe;
             Load(ach, obj);
         }
 
-        public void LoadReferences(Models.GameObject obj, GomObject gom)
+        public void LoadReferences(GameObject obj, GomObject gom)
         {
             // No references to load
         }

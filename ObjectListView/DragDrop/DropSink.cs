@@ -129,7 +129,7 @@ namespace BrightIdeasSoftware
         public virtual ObjectListView ListView
         {
             get { return listView; }
-            set { this.listView = value; }
+            set { listView = value; }
         }
         private ObjectListView listView;
 
@@ -157,7 +157,7 @@ namespace BrightIdeasSoftware
         /// <param name="args"></param>
         public virtual void Drop(DragEventArgs args)
         {
-            this.Cleanup();
+            Cleanup();
         }
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace BrightIdeasSoftware
         /// </summary>
         public virtual void Leave()
         {
-            this.Cleanup();
+            Cleanup();
         }
 
         /// <summary>
@@ -298,19 +298,19 @@ namespace BrightIdeasSoftware
         /// </summary>
         public SimpleDropSink()
         {
-            this.timer = new Timer
+            timer = new Timer
             {
                 Interval = 250
             };
-            this.timer.Tick += new EventHandler(this.Timer_Tick);
+            timer.Tick += new EventHandler(Timer_Tick);
 
-            this.CanDropOnItem = true;
+            CanDropOnItem = true;
             //this.CanDropOnSubItem = true;
             //this.CanDropOnBackground = true;
             //this.CanDropBetween = true;
 
-            this.FeedbackColor = Color.FromArgb(180, Color.MediumBlue);
-            this.billboard = new BillboardOverlay();
+            FeedbackColor = Color.FromArgb(180, Color.MediumBlue);
+            billboard = new BillboardOverlay();
         }
 
         #endregion
@@ -322,8 +322,8 @@ namespace BrightIdeasSoftware
         /// </summary>
         public DropTargetLocation AcceptableLocations
         {
-            get { return this.acceptableLocations; }
-            set { this.acceptableLocations = value; }
+            get { return acceptableLocations; }
+            set { acceptableLocations = value; }
         }
         private DropTargetLocation acceptableLocations;
 
@@ -332,8 +332,8 @@ namespace BrightIdeasSoftware
         /// </summary>
         public bool AcceptExternal
         {
-            get { return this.acceptExternal; }
-            set { this.acceptExternal = value; }
+            get { return acceptExternal; }
+            set { acceptExternal = value; }
         }
         private bool acceptExternal = true;
 
@@ -343,8 +343,8 @@ namespace BrightIdeasSoftware
         /// </summary>
         public bool AutoScroll
         {
-            get { return this.autoScroll; }
-            set { this.autoScroll = value; }
+            get { return autoScroll; }
+            set { autoScroll = value; }
         }
         private bool autoScroll = true;
 
@@ -355,8 +355,8 @@ namespace BrightIdeasSoftware
         /// <remarks>Set this to null to stop the feedback.</remarks>
         public BillboardOverlay Billboard
         {
-            get { return this.billboard; }
-            set { this.billboard = value; }
+            get { return billboard; }
+            set { billboard = value; }
         }
         private BillboardOverlay billboard;
 
@@ -365,13 +365,13 @@ namespace BrightIdeasSoftware
         /// </summary>
         public bool CanDropBetween
         {
-            get { return (this.AcceptableLocations & DropTargetLocation.BetweenItems) == DropTargetLocation.BetweenItems; }
+            get { return (AcceptableLocations & DropTargetLocation.BetweenItems) == DropTargetLocation.BetweenItems; }
             set
             {
                 if (value)
-                    this.AcceptableLocations |= DropTargetLocation.BetweenItems;
+                    AcceptableLocations |= DropTargetLocation.BetweenItems;
                 else
-                    this.AcceptableLocations &= ~DropTargetLocation.BetweenItems;
+                    AcceptableLocations &= ~DropTargetLocation.BetweenItems;
             }
         }
 
@@ -380,13 +380,13 @@ namespace BrightIdeasSoftware
         /// </summary>
         public bool CanDropOnBackground
         {
-            get { return (this.AcceptableLocations & DropTargetLocation.Background) == DropTargetLocation.Background; }
+            get { return (AcceptableLocations & DropTargetLocation.Background) == DropTargetLocation.Background; }
             set
             {
                 if (value)
-                    this.AcceptableLocations |= DropTargetLocation.Background;
+                    AcceptableLocations |= DropTargetLocation.Background;
                 else
-                    this.AcceptableLocations &= ~DropTargetLocation.Background;
+                    AcceptableLocations &= ~DropTargetLocation.Background;
             }
         }
 
@@ -395,13 +395,13 @@ namespace BrightIdeasSoftware
         /// </summary>
         public bool CanDropOnItem
         {
-            get { return (this.AcceptableLocations & DropTargetLocation.Item) == DropTargetLocation.Item; }
+            get { return (AcceptableLocations & DropTargetLocation.Item) == DropTargetLocation.Item; }
             set
             {
                 if (value)
-                    this.AcceptableLocations |= DropTargetLocation.Item;
+                    AcceptableLocations |= DropTargetLocation.Item;
                 else
-                    this.AcceptableLocations &= ~DropTargetLocation.Item;
+                    AcceptableLocations &= ~DropTargetLocation.Item;
             }
         }
 
@@ -410,13 +410,13 @@ namespace BrightIdeasSoftware
         /// </summary>
         public bool CanDropOnSubItem
         {
-            get { return (this.AcceptableLocations & DropTargetLocation.SubItem) == DropTargetLocation.SubItem; }
+            get { return (AcceptableLocations & DropTargetLocation.SubItem) == DropTargetLocation.SubItem; }
             set
             {
                 if (value)
-                    this.AcceptableLocations |= DropTargetLocation.SubItem;
+                    AcceptableLocations |= DropTargetLocation.SubItem;
                 else
-                    this.AcceptableLocations &= ~DropTargetLocation.SubItem;
+                    AcceptableLocations &= ~DropTargetLocation.SubItem;
             }
         }
 
@@ -428,10 +428,10 @@ namespace BrightIdeasSoftware
             get { return dropTargetIndex; }
             set
             {
-                if (this.dropTargetIndex != value)
+                if (dropTargetIndex != value)
                 {
-                    this.dropTargetIndex = value;
-                    this.ListView.Invalidate();
+                    dropTargetIndex = value;
+                    ListView.Invalidate();
                 }
             }
         }
@@ -444,7 +444,7 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                return this.ListView.GetItem(this.DropTargetIndex);
+                return ListView.GetItem(DropTargetIndex);
             }
         }
 
@@ -456,10 +456,10 @@ namespace BrightIdeasSoftware
             get { return dropTargetLocation; }
             set
             {
-                if (this.dropTargetLocation != value)
+                if (dropTargetLocation != value)
                 {
-                    this.dropTargetLocation = value;
-                    this.ListView.Invalidate();
+                    dropTargetLocation = value;
+                    ListView.Invalidate();
                 }
             }
         }
@@ -473,10 +473,10 @@ namespace BrightIdeasSoftware
             get { return dropTargetSubItemIndex; }
             set
             {
-                if (this.dropTargetSubItemIndex != value)
+                if (dropTargetSubItemIndex != value)
                 {
-                    this.dropTargetSubItemIndex = value;
-                    this.ListView.Invalidate();
+                    dropTargetSubItemIndex = value;
+                    ListView.Invalidate();
                 }
             }
         }
@@ -487,8 +487,8 @@ namespace BrightIdeasSoftware
         /// </summary>
         public Color FeedbackColor
         {
-            get { return this.feedbackColor; }
-            set { this.feedbackColor = value; }
+            get { return feedbackColor; }
+            set { feedbackColor = value; }
         }
         private Color feedbackColor;
 
@@ -497,7 +497,7 @@ namespace BrightIdeasSoftware
         /// </summary>
         public bool IsAltDown
         {
-            get { return (this.KeyState & 32) == 32; }
+            get { return (KeyState & 32) == 32; }
         }
 
         /// <summary>
@@ -505,7 +505,7 @@ namespace BrightIdeasSoftware
         /// </summary>
         public bool IsAnyModifierDown
         {
-            get { return (this.KeyState & (4 + 8 + 32)) != 0; }
+            get { return (KeyState & (4 + 8 + 32)) != 0; }
         }
 
         /// <summary>
@@ -513,7 +513,7 @@ namespace BrightIdeasSoftware
         /// </summary>
         public bool IsControlDown
         {
-            get { return (this.KeyState & 8) == 8; }
+            get { return (KeyState & 8) == 8; }
         }
 
         /// <summary>
@@ -521,7 +521,7 @@ namespace BrightIdeasSoftware
         /// </summary>
         public bool IsLeftMouseButtonDown
         {
-            get { return (this.KeyState & 1) == 1; }
+            get { return (KeyState & 1) == 1; }
         }
 
         /// <summary>
@@ -529,7 +529,7 @@ namespace BrightIdeasSoftware
         /// </summary>
         public bool IsMiddleMouseButtonDown
         {
-            get { return (this.KeyState & 16) == 16; }
+            get { return (KeyState & 16) == 16; }
         }
 
         /// <summary>
@@ -537,7 +537,7 @@ namespace BrightIdeasSoftware
         /// </summary>
         public bool IsRightMouseButtonDown
         {
-            get { return (this.KeyState & 2) == 2; }
+            get { return (KeyState & 2) == 2; }
         }
 
         /// <summary>
@@ -545,7 +545,7 @@ namespace BrightIdeasSoftware
         /// </summary>
         public bool IsShiftDown
         {
-            get { return (this.KeyState & 4) == 4; }
+            get { return (KeyState & 4) == 4; }
         }
 
         /// <summary>
@@ -553,8 +553,8 @@ namespace BrightIdeasSoftware
         /// </summary>
         public int KeyState
         {
-            get { return this.keyState; }
-            set { this.keyState = value; }
+            get { return keyState; }
+            set { keyState = value; }
         }
         private int keyState;
 
@@ -616,9 +616,9 @@ namespace BrightIdeasSoftware
         /// </summary>
         protected override void Cleanup()
         {
-            this.DropTargetLocation = DropTargetLocation.None;
-            this.ListView.FullRowSelect = this.originalFullRowSelect;
-            this.Billboard.Text = null;
+            DropTargetLocation = DropTargetLocation.None;
+            ListView.FullRowSelect = originalFullRowSelect;
+            Billboard.Text = null;
         }
 
         /// <summary>
@@ -635,25 +635,25 @@ namespace BrightIdeasSoftware
         {
             g.SmoothingMode = ObjectListView.SmoothingMode;
 
-            switch (this.DropTargetLocation)
+            switch (DropTargetLocation)
             {
                 case DropTargetLocation.Background:
-                    this.DrawFeedbackBackgroundTarget(g, bounds);
+                    DrawFeedbackBackgroundTarget(g, bounds);
                     break;
                 case DropTargetLocation.Item:
-                    this.DrawFeedbackItemTarget(g, bounds);
+                    DrawFeedbackItemTarget(g, bounds);
                     break;
                 case DropTargetLocation.AboveItem:
-                    this.DrawFeedbackAboveItemTarget(g, bounds);
+                    DrawFeedbackAboveItemTarget(g, bounds);
                     break;
                 case DropTargetLocation.BelowItem:
-                    this.DrawFeedbackBelowItemTarget(g, bounds);
+                    DrawFeedbackBelowItemTarget(g, bounds);
                     break;
             }
 
-            if (this.Billboard != null)
+            if (Billboard != null)
             {
-                this.Billboard.Draw(this.ListView, g, bounds);
+                Billboard.Draw(ListView, g, bounds);
             }
         }
 
@@ -663,10 +663,10 @@ namespace BrightIdeasSoftware
         /// <param name="args"></param>
         public override void Drop(DragEventArgs args)
         {
-            this.dropEventArgs.DragEventArgs = args;
-            this.TriggerDroppedEvent(args);
-            this.timer.Stop();
-            this.Cleanup();
+            dropEventArgs.DragEventArgs = args;
+            TriggerDroppedEvent(args);
+            timer.Stop();
+            Cleanup();
         }
 
         /// <summary>
@@ -688,24 +688,24 @@ namespace BrightIdeasSoftware
              * The first problem we can solve through coding, but the second is more difficult. 
              * We avoid both problems by turning off FullRowSelect during the drop operation.
              */
-            this.originalFullRowSelect = this.ListView.FullRowSelect;
-            this.ListView.FullRowSelect = false;
+            originalFullRowSelect = ListView.FullRowSelect;
+            ListView.FullRowSelect = false;
 
             // Setup our drop event args block
-            this.dropEventArgs = new ModelDropEventArgs
+            dropEventArgs = new ModelDropEventArgs
             {
                 DropSink = this,
-                ListView = this.ListView,
+                ListView = ListView,
                 DragEventArgs = args,
                 DataObject = args.Data
             };
             if (args.Data is OLVDataObject olvData)
             {
-                this.dropEventArgs.SourceListView = olvData.ListView;
-                this.dropEventArgs.SourceModels = olvData.ModelObjects;
+                dropEventArgs.SourceListView = olvData.ListView;
+                dropEventArgs.SourceModels = olvData.ModelObjects;
             }
 
-            this.Over(args);
+            Over(args);
         }
 
         /// <summary>
@@ -714,7 +714,7 @@ namespace BrightIdeasSoftware
         /// <param name="args"></param>
         public override void GiveFeedback(GiveFeedbackEventArgs args)
         {
-            args.UseDefaultCursors = this.UseDefaultCursors;
+            args.UseDefaultCursors = UseDefaultCursors;
         }
 
         /// <summary>
@@ -724,11 +724,11 @@ namespace BrightIdeasSoftware
         public override void Over(DragEventArgs args)
         {
             //System.Diagnostics.Debug.WriteLine("Over");
-            this.dropEventArgs.DragEventArgs = args;
-            this.KeyState = args.KeyState;
-            Point pt = this.ListView.PointToClient(new Point(args.X, args.Y));
-            args.Effect = this.CalculateDropAction(args, pt);
-            this.CheckScrolling(pt);
+            dropEventArgs.DragEventArgs = args;
+            KeyState = args.KeyState;
+            Point pt = ListView.PointToClient(new Point(args.X, args.Y));
+            args.Effect = CalculateDropAction(args, pt);
+            CheckScrolling(pt);
         }
 
         #endregion
@@ -741,14 +741,14 @@ namespace BrightIdeasSoftware
         /// <param name="args"></param>
         protected virtual void TriggerDroppedEvent(DragEventArgs args)
         {
-            this.dropEventArgs.Handled = false;
+            dropEventArgs.Handled = false;
 
             // If the source is an ObjectListView, trigger the ModelDropped event
-            if (this.dropEventArgs.SourceListView != null)
-                this.OnModelDropped(this.dropEventArgs);
+            if (dropEventArgs.SourceListView != null)
+                OnModelDropped(dropEventArgs);
 
-            if (!this.dropEventArgs.Handled)
-                this.OnDropped(this.dropEventArgs);
+            if (!dropEventArgs.Handled)
+                OnDropped(dropEventArgs);
         }
 
         /// <summary>
@@ -757,7 +757,7 @@ namespace BrightIdeasSoftware
         /// <param name="args"></param>
         protected virtual void OnCanDrop(OlvDropEventArgs args)
         {
-            this.CanDrop?.Invoke(this, args);
+            CanDrop?.Invoke(this, args);
         }
 
         /// <summary>
@@ -766,7 +766,7 @@ namespace BrightIdeasSoftware
         /// <param name="args"></param>
         protected virtual void OnDropped(OlvDropEventArgs args)
         {
-            this.Dropped?.Invoke(this, args);
+            Dropped?.Invoke(this, args);
         }
 
         /// <summary>
@@ -777,7 +777,7 @@ namespace BrightIdeasSoftware
         {
 
             // Don't allow drops from other list, if that's what's configured
-            if (!this.AcceptExternal && args.SourceListView != null && args.SourceListView != this.ListView)
+            if (!AcceptExternal && args.SourceListView != null && args.SourceListView != ListView)
             {
                 args.Effect = DragDropEffects.None;
                 args.DropTargetLocation = DropTargetLocation.None;
@@ -785,7 +785,7 @@ namespace BrightIdeasSoftware
                 return;
             }
 
-            this.ModelCanDrop?.Invoke(this, args);
+            ModelCanDrop?.Invoke(this, args);
         }
 
         /// <summary>
@@ -794,7 +794,7 @@ namespace BrightIdeasSoftware
         /// <param name="args"></param>
         protected virtual void OnModelDropped(ModelDropEventArgs args)
         {
-            this.ModelDropped?.Invoke(this, args);
+            ModelDropped?.Invoke(this, args);
         }
 
         #endregion
@@ -803,7 +803,7 @@ namespace BrightIdeasSoftware
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            this.HandleTimerTick();
+            HandleTimerTick();
         }
 
         /// <summary>
@@ -816,24 +816,24 @@ namespace BrightIdeasSoftware
             // If the mouse has been released, stop scrolling.
             // This is only necessary if the mouse is released outside of the control. 
             // If the mouse is released inside the control, we would receive a Drop event.
-            if ((this.IsLeftMouseButtonDown && (Control.MouseButtons & MouseButtons.Left) != MouseButtons.Left) ||
-                (this.IsMiddleMouseButtonDown && (Control.MouseButtons & MouseButtons.Middle) != MouseButtons.Middle) ||
-                (this.IsRightMouseButtonDown && (Control.MouseButtons & MouseButtons.Right) != MouseButtons.Right))
+            if ((IsLeftMouseButtonDown && (Control.MouseButtons & MouseButtons.Left) != MouseButtons.Left) ||
+                (IsMiddleMouseButtonDown && (Control.MouseButtons & MouseButtons.Middle) != MouseButtons.Middle) ||
+                (IsRightMouseButtonDown && (Control.MouseButtons & MouseButtons.Right) != MouseButtons.Right))
             {
-                this.timer.Stop();
-                this.Cleanup();
+                timer.Stop();
+                Cleanup();
                 return;
             }
 
             // Auto scrolling will continune while the mouse is close to the ListView
             const int GRACE_PERIMETER = 30;
 
-            Point pt = this.ListView.PointToClient(Cursor.Position);
-            Rectangle r2 = this.ListView.ClientRectangle;
+            Point pt = ListView.PointToClient(Cursor.Position);
+            Rectangle r2 = ListView.ClientRectangle;
             r2.Inflate(GRACE_PERIMETER, GRACE_PERIMETER);
             if (r2.Contains(pt))
             {
-                this.ListView.LowLevelScroll(0, this.scrollAmount);
+                ListView.LowLevelScroll(0, scrollAmount);
             }
         }
 
@@ -850,24 +850,24 @@ namespace BrightIdeasSoftware
             int targetIndex = -1;
             int targetSubIndex = 0;
 
-            if (this.CanDropOnBackground)
+            if (CanDropOnBackground)
                 location = DropTargetLocation.Background;
 
             // Which item is the mouse over?
             // If it is not over any item, it's over the background.
             //ListViewHitTestInfo info = this.ListView.HitTest(pt.X, pt.Y);
-            OlvListViewHitTestInfo info = this.ListView.OlvHitTest(pt.X, pt.Y);
-            if (info.Item != null && this.CanDropOnItem)
+            OlvListViewHitTestInfo info = ListView.OlvHitTest(pt.X, pt.Y);
+            if (info.Item != null && CanDropOnItem)
             {
                 location = DropTargetLocation.Item;
                 targetIndex = info.Item.Index;
-                if (info.SubItem != null && this.CanDropOnSubItem)
+                if (info.SubItem != null && CanDropOnSubItem)
                     targetSubIndex = info.Item.SubItems.IndexOf(info.SubItem);
             }
 
             // Check to see if the mouse is "between" rows.
             // ("between" is somewhat loosely defined)
-            if (this.CanDropBetween && this.ListView.GetItemCount() > 0)
+            if (CanDropBetween && ListView.GetItemCount() > 0)
             {
 
                 // If the mouse is over an item, check to see if it is near the top or bottom
@@ -882,7 +882,7 @@ namespace BrightIdeasSoftware
                 {
                     // Is there an item a little below the mouse?
                     // If so, we say the drop point is above that row
-                    info = this.ListView.OlvHitTest(pt.X, pt.Y + SMALL_VALUE);
+                    info = ListView.OlvHitTest(pt.X, pt.Y + SMALL_VALUE);
                     if (info.Item != null)
                     {
                         targetIndex = info.Item.Index;
@@ -891,7 +891,7 @@ namespace BrightIdeasSoftware
                     else
                     {
                         // Is there an item a little above the mouse?
-                        info = this.ListView.OlvHitTest(pt.X, pt.Y - SMALL_VALUE);
+                        info = ListView.OlvHitTest(pt.X, pt.Y - SMALL_VALUE);
                         if (info.Item != null)
                         {
                             targetIndex = info.Item.Index;
@@ -917,24 +917,24 @@ namespace BrightIdeasSoftware
         public virtual DragDropEffects CalculateDropAction(DragEventArgs args, Point pt)
         {
 
-            this.CalculateDropTarget(this.dropEventArgs, pt);
+            CalculateDropTarget(dropEventArgs, pt);
 
-            this.dropEventArgs.MouseLocation = pt;
-            this.dropEventArgs.InfoMessage = null;
-            this.dropEventArgs.Handled = false;
+            dropEventArgs.MouseLocation = pt;
+            dropEventArgs.InfoMessage = null;
+            dropEventArgs.Handled = false;
 
-            if (this.dropEventArgs.SourceListView != null)
+            if (dropEventArgs.SourceListView != null)
             {
-                this.dropEventArgs.TargetModel = this.ListView.GetModelObject(this.dropEventArgs.DropTargetIndex);
-                this.OnModelCanDrop(this.dropEventArgs);
+                dropEventArgs.TargetModel = ListView.GetModelObject(dropEventArgs.DropTargetIndex);
+                OnModelCanDrop(dropEventArgs);
             }
 
-            if (!this.dropEventArgs.Handled)
-                this.OnCanDrop(this.dropEventArgs);
+            if (!dropEventArgs.Handled)
+                OnCanDrop(dropEventArgs);
 
-            this.UpdateAfterCanDropEvent(this.dropEventArgs);
+            UpdateAfterCanDropEvent(dropEventArgs);
 
-            return this.dropEventArgs.Effect;
+            return dropEventArgs.Effect;
         }
 
         /// <summary>
@@ -944,9 +944,9 @@ namespace BrightIdeasSoftware
         /// <returns>The drop operation that matches the state of the keys</returns>
         public DragDropEffects CalculateStandardDropActionFromKeys()
         {
-            if (this.IsControlDown)
+            if (IsControlDown)
             {
-                if (this.IsShiftDown)
+                if (IsShiftDown)
                     return DragDropEffects.Link;
                 else
                     return DragDropEffects.Copy;
@@ -963,35 +963,35 @@ namespace BrightIdeasSoftware
         /// <param name="pt"></param>
         protected virtual void CheckScrolling(Point pt)
         {
-            if (!this.AutoScroll)
+            if (!AutoScroll)
                 return;
 
-            Rectangle r = this.ListView.ContentRectangle;
-            int rowHeight = this.ListView.RowHeightEffective;
+            Rectangle r = ListView.ContentRectangle;
+            int rowHeight = ListView.RowHeightEffective;
             int close = rowHeight;
 
             // In Tile view, using the whole row height is too much
-            if (this.ListView.View == View.Tile)
+            if (ListView.View == View.Tile)
                 close /= 2;
 
             if (pt.Y <= (r.Top + close))
             {
                 // Scroll faster if the mouse is closer to the top
-                this.timer.Interval = ((pt.Y <= (r.Top + close / 2)) ? 100 : 350);
-                this.timer.Start();
-                this.scrollAmount = -rowHeight;
+                timer.Interval = ((pt.Y <= (r.Top + close / 2)) ? 100 : 350);
+                timer.Start();
+                scrollAmount = -rowHeight;
             }
             else
             {
                 if (pt.Y >= (r.Bottom - close))
                 {
-                    this.timer.Interval = ((pt.Y >= (r.Bottom - close / 2)) ? 100 : 350);
-                    this.timer.Start();
-                    this.scrollAmount = rowHeight;
+                    timer.Interval = ((pt.Y >= (r.Bottom - close / 2)) ? 100 : 350);
+                    timer.Start();
+                    scrollAmount = rowHeight;
                 }
                 else
                 {
-                    this.timer.Stop();
+                    timer.Stop();
                 }
             }
         }
@@ -1003,19 +1003,19 @@ namespace BrightIdeasSoftware
         /// <param name="args"></param>
         protected virtual void UpdateAfterCanDropEvent(OlvDropEventArgs args)
         {
-            this.DropTargetIndex = args.DropTargetIndex;
-            this.DropTargetLocation = args.DropTargetLocation;
-            this.DropTargetSubItemIndex = args.DropTargetSubItemIndex;
+            DropTargetIndex = args.DropTargetIndex;
+            DropTargetLocation = args.DropTargetLocation;
+            DropTargetSubItemIndex = args.DropTargetSubItemIndex;
 
-            if (this.Billboard != null)
+            if (Billboard != null)
             {
                 Point pt = args.MouseLocation;
                 pt.Offset(5, 5);
-                if (this.Billboard.Text != this.dropEventArgs.InfoMessage || this.Billboard.Location != pt)
+                if (Billboard.Text != dropEventArgs.InfoMessage || Billboard.Location != pt)
                 {
-                    this.Billboard.Text = this.dropEventArgs.InfoMessage;
-                    this.Billboard.Location = pt;
-                    this.ListView.Invalidate();
+                    Billboard.Text = dropEventArgs.InfoMessage;
+                    Billboard.Location = pt;
+                    ListView.Invalidate();
                 }
             }
         }
@@ -1034,9 +1034,9 @@ namespace BrightIdeasSoftware
             float penWidth = 12.0f;
             Rectangle r = bounds;
             r.Inflate((int)-penWidth / 2, (int)-penWidth / 2);
-            using (Pen p = new Pen(Color.FromArgb(128, this.FeedbackColor), penWidth))
+            using (Pen p = new Pen(Color.FromArgb(128, FeedbackColor), penWidth))
             {
-                using (GraphicsPath path = this.GetRoundedRect(r, 30.0f))
+                using (GraphicsPath path = GetRoundedRect(r, 30.0f))
                 {
                     g.DrawPath(p, path);
                 }
@@ -1053,18 +1053,18 @@ namespace BrightIdeasSoftware
         /// </remarks>
         protected virtual void DrawFeedbackItemTarget(Graphics g, Rectangle bounds)
         {
-            if (this.DropTargetItem == null)
+            if (DropTargetItem == null)
                 return;
-            Rectangle r = this.CalculateDropTargetRectangle(this.DropTargetItem, this.DropTargetSubItemIndex);
+            Rectangle r = CalculateDropTargetRectangle(DropTargetItem, DropTargetSubItemIndex);
             r.Inflate(1, 1);
             float diameter = r.Height / 3;
-            using (GraphicsPath path = this.GetRoundedRect(r, diameter))
+            using (GraphicsPath path = GetRoundedRect(r, diameter))
             {
-                using (SolidBrush b = new SolidBrush(Color.FromArgb(48, this.FeedbackColor)))
+                using (SolidBrush b = new SolidBrush(Color.FromArgb(48, FeedbackColor)))
                 {
                     g.FillPath(b, path);
                 }
-                using (Pen p = new Pen(this.FeedbackColor, 3.0f))
+                using (Pen p = new Pen(FeedbackColor, 3.0f))
                 {
                     g.DrawPath(p, path);
                 }
@@ -1078,11 +1078,11 @@ namespace BrightIdeasSoftware
         /// <param name="bounds"></param>
         protected virtual void DrawFeedbackAboveItemTarget(Graphics g, Rectangle bounds)
         {
-            if (this.DropTargetItem == null)
+            if (DropTargetItem == null)
                 return;
 
-            Rectangle r = this.CalculateDropTargetRectangle(this.DropTargetItem, this.DropTargetSubItemIndex);
-            this.DrawBetweenLine(g, r.Left, r.Top, r.Right, r.Top);
+            Rectangle r = CalculateDropTargetRectangle(DropTargetItem, DropTargetSubItemIndex);
+            DrawBetweenLine(g, r.Left, r.Top, r.Right, r.Top);
         }
 
         /// <summary>
@@ -1092,11 +1092,11 @@ namespace BrightIdeasSoftware
         /// <param name="bounds"></param>
         protected virtual void DrawFeedbackBelowItemTarget(Graphics g, Rectangle bounds)
         {
-            if (this.DropTargetItem == null)
+            if (DropTargetItem == null)
                 return;
 
-            Rectangle r = this.CalculateDropTargetRectangle(this.DropTargetItem, this.DropTargetSubItemIndex);
-            this.DrawBetweenLine(g, r.Left, r.Bottom, r.Right, r.Bottom);
+            Rectangle r = CalculateDropTargetRectangle(DropTargetItem, DropTargetSubItemIndex);
+            DrawBetweenLine(g, r.Left, r.Bottom, r.Right, r.Bottom);
         }
 
         /// <summary>
@@ -1134,12 +1134,12 @@ namespace BrightIdeasSoftware
             if (subItem > 0)
                 return item.SubItems[subItem].Bounds;
 
-            Rectangle r = this.ListView.CalculateCellTextBounds(item, subItem);
+            Rectangle r = ListView.CalculateCellTextBounds(item, subItem);
 
             // Allow for indent
             if (item.IndentCount > 0)
             {
-                int indentWidth = this.ListView.SmallImageSize.Width;
+                int indentWidth = ListView.SmallImageSize.Width;
                 r.X += (indentWidth * item.IndentCount);
                 r.Width -= (indentWidth * item.IndentCount);
             }
@@ -1157,7 +1157,7 @@ namespace BrightIdeasSoftware
         /// <param name="y2"></param>
         protected virtual void DrawBetweenLine(Graphics g, int x1, int y1, int x2, int y2)
         {
-            using (Brush b = new SolidBrush(this.FeedbackColor))
+            using (Brush b = new SolidBrush(FeedbackColor))
             {
                 int x = x1;
                 int y = y1;
@@ -1200,7 +1200,7 @@ namespace BrightIdeasSoftware
                     g.FillPath(b, gp);
                 }
             }
-            using (Pen p = new Pen(this.FeedbackColor, 3.0f))
+            using (Pen p = new Pen(FeedbackColor, 3.0f))
             {
                 g.DrawLine(p, x1, y1, x2, y2);
             }
@@ -1245,9 +1245,9 @@ namespace BrightIdeasSoftware
         /// </summary>
         public RearrangingDropSink()
         {
-            this.CanDropBetween = true;
-            this.CanDropOnBackground = true;
-            this.CanDropOnItem = false;
+            CanDropBetween = true;
+            CanDropOnBackground = true;
+            CanDropOnItem = false;
         }
 
         /// <summary>
@@ -1257,7 +1257,7 @@ namespace BrightIdeasSoftware
         public RearrangingDropSink(bool acceptDropsFromOtherLists)
             : this()
         {
-            this.AcceptExternal = acceptDropsFromOtherLists;
+            AcceptExternal = acceptDropsFromOtherLists;
         }
 
         /// <summary>
@@ -1274,7 +1274,7 @@ namespace BrightIdeasSoftware
             args.Effect = DragDropEffects.Move;
 
             // Don't allow drops from other list, if that's what's configured
-            if (!this.AcceptExternal && args.SourceListView != this.ListView)
+            if (!AcceptExternal && args.SourceListView != ListView)
             {
                 args.Effect = DragDropEffects.None;
                 args.DropTargetLocation = DropTargetLocation.None;
@@ -1282,7 +1282,7 @@ namespace BrightIdeasSoftware
             }
 
             // If we are rearranging a list, don't allow drops on the background
-            if (args.DropTargetLocation == DropTargetLocation.Background && args.SourceListView == this.ListView)
+            if (args.DropTargetLocation == DropTargetLocation.Background && args.SourceListView == ListView)
             {
                 args.Effect = DragDropEffects.None;
                 args.DropTargetLocation = DropTargetLocation.None;
@@ -1298,7 +1298,7 @@ namespace BrightIdeasSoftware
             base.OnModelDropped(args);
 
             if (!args.Handled)
-                this.RearrangeModels(args);
+                RearrangeModels(args);
         }
 
         /// <summary>
@@ -1310,19 +1310,19 @@ namespace BrightIdeasSoftware
             switch (args.DropTargetLocation)
             {
                 case DropTargetLocation.AboveItem:
-                    this.ListView.MoveObjects(args.DropTargetIndex, args.SourceModels);
+                    ListView.MoveObjects(args.DropTargetIndex, args.SourceModels);
                     break;
                 case DropTargetLocation.BelowItem:
-                    this.ListView.MoveObjects(args.DropTargetIndex + 1, args.SourceModels);
+                    ListView.MoveObjects(args.DropTargetIndex + 1, args.SourceModels);
                     break;
                 case DropTargetLocation.Background:
-                    this.ListView.AddObjects(args.SourceModels);
+                    ListView.AddObjects(args.SourceModels);
                     break;
                 default:
                     return;
             }
 
-            if (args.SourceListView != this.ListView)
+            if (args.SourceListView != ListView)
             {
                 args.SourceListView.RemoveObjects(args.SourceModels);
             }
@@ -1349,8 +1349,8 @@ namespace BrightIdeasSoftware
         /// </summary>
         public DragEventArgs DragEventArgs
         {
-            get { return this.dragEventArgs; }
-            internal set { this.dragEventArgs = value; }
+            get { return dragEventArgs; }
+            internal set { dragEventArgs = value; }
         }
         private DragEventArgs dragEventArgs;
 
@@ -1359,8 +1359,8 @@ namespace BrightIdeasSoftware
         /// </summary>
         public object DataObject
         {
-            get { return this.dataObject; }
-            internal set { this.dataObject = value; }
+            get { return dataObject; }
+            internal set { dataObject = value; }
         }
         private object dataObject;
 
@@ -1369,8 +1369,8 @@ namespace BrightIdeasSoftware
         /// </summary>
         public SimpleDropSink DropSink
         {
-            get { return this.dropSink; }
-            internal set { this.dropSink = value; }
+            get { return dropSink; }
+            internal set { dropSink = value; }
         }
         private SimpleDropSink dropSink;
 
@@ -1380,7 +1380,7 @@ namespace BrightIdeasSoftware
         public int DropTargetIndex
         {
             get { return dropTargetIndex; }
-            set { this.dropTargetIndex = value; }
+            set { dropTargetIndex = value; }
         }
         private int dropTargetIndex = -1;
 
@@ -1390,7 +1390,7 @@ namespace BrightIdeasSoftware
         public DropTargetLocation DropTargetLocation
         {
             get { return dropTargetLocation; }
-            set { this.dropTargetLocation = value; }
+            set { dropTargetLocation = value; }
         }
         private DropTargetLocation dropTargetLocation;
 
@@ -1400,7 +1400,7 @@ namespace BrightIdeasSoftware
         public int DropTargetSubItemIndex
         {
             get { return dropTargetSubItemIndex; }
-            set { this.dropTargetSubItemIndex = value; }
+            set { dropTargetSubItemIndex = value; }
         }
         private int dropTargetSubItemIndex = -1;
 
@@ -1411,14 +1411,14 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                return this.ListView.GetItem(this.DropTargetIndex);
+                return ListView.GetItem(DropTargetIndex);
             }
             set
             {
                 if (value == null)
-                    this.DropTargetIndex = -1;
+                    DropTargetIndex = -1;
                 else
-                    this.DropTargetIndex = value.Index;
+                    DropTargetIndex = value.Index;
             }
         }
 
@@ -1427,8 +1427,8 @@ namespace BrightIdeasSoftware
         /// </summary>
         public DragDropEffects Effect
         {
-            get { return this.effect; }
-            set { this.effect = value; }
+            get { return effect; }
+            set { effect = value; }
         }
         private DragDropEffects effect;
 
@@ -1437,8 +1437,8 @@ namespace BrightIdeasSoftware
         /// </summary>
         public bool Handled
         {
-            get { return this.handled; }
-            set { this.handled = value; }
+            get { return handled; }
+            set { handled = value; }
         }
         private bool handled;
 
@@ -1451,8 +1451,8 @@ namespace BrightIdeasSoftware
         /// </remarks>
         public string InfoMessage
         {
-            get { return this.infoMessage; }
-            set { this.infoMessage = value; }
+            get { return infoMessage; }
+            set { infoMessage = value; }
         }
         private string infoMessage;
 
@@ -1461,8 +1461,8 @@ namespace BrightIdeasSoftware
         /// </summary>
         public ObjectListView ListView
         {
-            get { return this.listView; }
-            internal set { this.listView = value; }
+            get { return listView; }
+            internal set { listView = value; }
         }
         private ObjectListView listView;
 
@@ -1471,8 +1471,8 @@ namespace BrightIdeasSoftware
         /// </summary>
         public Point MouseLocation
         {
-            get { return this.mouseLocation; }
-            internal set { this.mouseLocation = value; }
+            get { return mouseLocation; }
+            internal set { mouseLocation = value; }
         }
         private Point mouseLocation;
 
@@ -1483,7 +1483,7 @@ namespace BrightIdeasSoftware
         {
             get
             {
-                return this.DropSink.CalculateStandardDropActionFromKeys();
+                return DropSink.CalculateStandardDropActionFromKeys();
             }
         }
 
@@ -1507,13 +1507,13 @@ namespace BrightIdeasSoftware
         /// </summary>
         public IList SourceModels
         {
-            get { return this.dragModels; }
+            get { return dragModels; }
             internal set
             {
-                this.dragModels = value;
-                if (this.SourceListView is TreeListView tlv)
+                dragModels = value;
+                if (SourceListView is TreeListView tlv)
                 {
-                    foreach (object model in this.SourceModels)
+                    foreach (object model in SourceModels)
                     {
                         object parent = tlv.GetParent(model);
                         if (!toBeRefreshed.Contains(parent))
@@ -1530,8 +1530,8 @@ namespace BrightIdeasSoftware
         /// </summary>
         public ObjectListView SourceListView
         {
-            get { return this.sourceListView; }
-            internal set { this.sourceListView = value; }
+            get { return sourceListView; }
+            internal set { sourceListView = value; }
         }
         private ObjectListView sourceListView;
 
@@ -1541,8 +1541,8 @@ namespace BrightIdeasSoftware
         /// <remarks>This is only value for TargetLocation == Item</remarks>
         public object TargetModel
         {
-            get { return this.targetModel; }
-            internal set { this.targetModel = value; }
+            get { return targetModel; }
+            internal set { targetModel = value; }
         }
         private object targetModel;
 
@@ -1551,14 +1551,14 @@ namespace BrightIdeasSoftware
         /// </summary>
         public void RefreshObjects()
         {
-            toBeRefreshed.AddRange(this.SourceModels);
-            if (!(this.SourceListView is TreeListView tlv))
-                this.SourceListView.RefreshObjects(toBeRefreshed);
+            toBeRefreshed.AddRange(SourceModels);
+            if (!(SourceListView is TreeListView tlv))
+                SourceListView.RefreshObjects(toBeRefreshed);
             else
                 tlv.RebuildAll(true);
 
-            if (!(this.ListView is TreeListView tlv2))
-                this.ListView.RefreshObject(this.TargetModel);
+            if (!(ListView is TreeListView tlv2))
+                ListView.RefreshObject(TargetModel);
             else
                 tlv2.RebuildAll(true);
         }

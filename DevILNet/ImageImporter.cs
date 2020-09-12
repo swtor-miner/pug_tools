@@ -61,9 +61,9 @@ namespace DevIL
             Dispose(false);
         }
 
-        public Image LoadImage(String filename)
+        public Image LoadImage(string filename)
         {
-            if (String.IsNullOrEmpty(filename))
+            if (string.IsNullOrEmpty(filename))
                 throw new IOException("Failed to load image, file does not exist.");
 
             CheckDisposed();
@@ -76,13 +76,13 @@ namespace DevIL
             }
             else
             {
-                throw new IOException(String.Format("Failed to loade image: {0}", IL.GetError()));
+                throw new IOException(string.Format("Failed to loade image: {0}", IL.GetError()));
             }
         }
 
-        public Image LoadImage(ImageType imageType, String filename)
+        public Image LoadImage(ImageType imageType, string filename)
         {
-            if (imageType == ImageType.Unknown || String.IsNullOrEmpty(filename))
+            if (imageType == ImageType.Unknown || string.IsNullOrEmpty(filename))
                 throw new IOException("Failed to load image, invalid imagetype or file does not exist.");
 
             CheckDisposed();
@@ -95,7 +95,7 @@ namespace DevIL
             }
             else
             {
-                throw new IOException(String.Format("Failed to loade image: {0}", IL.GetError()));
+                throw new IOException(string.Format("Failed to loade image: {0}", IL.GetError()));
             }
         }
 
@@ -114,7 +114,7 @@ namespace DevIL
             }
             else
             {
-                throw new IOException(String.Format("Failed to loade image: {0}", IL.GetError()));
+                throw new IOException(string.Format("Failed to loade image: {0}", IL.GetError()));
             }
         }
 
@@ -133,11 +133,11 @@ namespace DevIL
             }
             else
             {
-                throw new IOException(String.Format("Failed to load image: {0}", IL.GetError()));
+                throw new IOException(string.Format("Failed to load image: {0}", IL.GetError()));
             }
         }
 
-        public String[] GetSupportedExtensions()
+        public string[] GetSupportedExtensions()
         {
             return IL.GetImportExtensions();
         }

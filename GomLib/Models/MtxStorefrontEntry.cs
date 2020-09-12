@@ -84,41 +84,41 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, mtx)) return true;
 
-            if (this.BulletPoints != null)
+            if (BulletPoints != null)
             {
                 if (mtx.BulletPoints != null)
                 {
-                    if (!this.BulletPoints.SequenceEqual(mtx.BulletPoints))
+                    if (!BulletPoints.SequenceEqual(mtx.BulletPoints))
                         return false;
                 }
             }
             //if (this.categories != mtx.categories) //this doesn't appear to be used right now.
             //return false;
-            if (this.CategoryId != mtx.CategoryId)
+            if (CategoryId != mtx.CategoryId)
                 return false;
-            if (this.DiscountCost != mtx.DiscountCost)
+            if (DiscountCost != mtx.DiscountCost)
                 return false;
-            if (this.FullPriceCost != mtx.FullPriceCost)
+            if (FullPriceCost != mtx.FullPriceCost)
                 return false;
-            if (this.Icon != mtx.Icon)
+            if (Icon != mtx.Icon)
                 return false;
-            if (this.Id != mtx.Id)
+            if (Id != mtx.Id)
                 return false;
-            if (this.IsAccountUnlock != mtx.IsAccountUnlock)
+            if (IsAccountUnlock != mtx.IsAccountUnlock)
                 return false;
-            if (this.ItemIdsList != null)
+            if (ItemIdsList != null)
             {
                 if (mtx.ItemIdsList != null)
                 {
-                    if (!this.ItemIdsList.SequenceEqual(mtx.ItemIdsList))
+                    if (!ItemIdsList.SequenceEqual(mtx.ItemIdsList))
                         return false;
                 }
             }
-            if (this.LinkedMTXEntryId != mtx.LinkedMTXEntryId)
+            if (LinkedMTXEntryId != mtx.LinkedMTXEntryId)
                 return false;
 
             var ssComp = new DictionaryComparer<string, string>();
-            if (this.LocalizedBulletPoints != null)
+            if (LocalizedBulletPoints != null)
             {
                 if (mtx.LocalizedBulletPoints != null)
                 {
@@ -126,31 +126,31 @@ namespace GomLib.Models
                         return false;
                     for (int i = 0; i < mtx.LocalizedBulletPoints.Count; i++)
                     {
-                        if (!ssComp.Equals(this.LocalizedBulletPoints[i], mtx.LocalizedBulletPoints[i]))
+                        if (!ssComp.Equals(LocalizedBulletPoints[i], mtx.LocalizedBulletPoints[i]))
                             return false;
                     }
                 }
             }
-            if (!ssComp.Equals(this.LocalizedName, mtx.LocalizedName))
+            if (!ssComp.Equals(LocalizedName, mtx.LocalizedName))
                 return false;
-            if (!ssComp.Equals(this.LocalizedRarityDesc, mtx.LocalizedRarityDesc))
+            if (!ssComp.Equals(LocalizedRarityDesc, mtx.LocalizedRarityDesc))
                 return false;
-            if (!ssComp.Equals(this.Localizedunknowntext, mtx.Localizedunknowntext))
+            if (!ssComp.Equals(Localizedunknowntext, mtx.Localizedunknowntext))
                 return false;
 
-            if (this.Name != mtx.Name)
+            if (Name != mtx.Name)
                 return false;
-            if (this.RarityDesc != mtx.RarityDesc)
+            if (RarityDesc != mtx.RarityDesc)
                 return false;
-            if (this.RarityDescId != mtx.RarityDescId)
+            if (RarityDescId != mtx.RarityDescId)
                 return false;
-            if (this.UnknownBool2 != mtx.UnknownBool2)
+            if (UnknownBool2 != mtx.UnknownBool2)
                 return false;
-            if (this.UnknownNumber != mtx.UnknownNumber)
+            if (UnknownNumber != mtx.UnknownNumber)
                 return false;
-            if (this.Unknowntext != mtx.Unknowntext)
+            if (Unknowntext != mtx.Unknowntext)
                 return false;
-            if (this.UnknowntextId != mtx.UnknowntextId)
+            if (UnknowntextId != mtx.UnknowntextId)
                 return false;
             return true;
         }

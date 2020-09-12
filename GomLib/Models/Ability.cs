@@ -20,12 +20,12 @@ namespace GomLib.Models
         public Dictionary<string, string> LocalizedName { get; set; }
         [JsonConverter(typeof(LongConverter))]
         public long DescriptionId { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public string Description_
         {
             get
             {
-                return System.Text.RegularExpressions.Regex.Replace(Description, @"\r\n?|\n", "<br />");
+                return Regex.Replace(Description, @"\r\n?|\n", "<br />");
             }
         }
         public string Description { get; set; }
@@ -37,7 +37,7 @@ namespace GomLib.Models
                 return SQLHelpers.SqlSani(ParseDescription(Description));
             }
         }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal Dictionary<string, string> ParsedLocalizedDescription_ { get; set; }
         public Dictionary<string, string> ParsedLocalizedDescription
         {
@@ -102,7 +102,7 @@ namespace GomLib.Models
                         durationList = partialToken.Replace("%d", "").Split('/').ToArray();
                         //console.log(durationList);
 
-                        Int32.TryParse(value.ToString(), out int pValue);
+                        int.TryParse(value.ToString(), out int pValue);
 
                         durationText = "";
                         if (pValue <= 0)
@@ -197,7 +197,7 @@ namespace GomLib.Models
         public bool IgnoreAlacrity { get; set; }
 
         public Dictionary<int, Dictionary<string, object>> DescriptionTokens { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         internal Dictionary<int, Dictionary<string, object>> ModDescriptionTokens_ { get; set; }
         public Dictionary<int, Dictionary<string, object>> ModDescriptionTokens
         {
@@ -254,8 +254,8 @@ namespace GomLib.Models
                 {
                     icon = Icon;
                 }
-                var fileId = TorLib.FileId.FromFilePath(String.Format("/resources/gfx/icons/{0}.dds", icon));
-                return String.Format("{0}_{1}", fileId.ph, fileId.sh);
+                var fileId = TorLib.FileId.FromFilePath(string.Format("/resources/gfx/icons/{0}.dds", icon));
+                return string.Format("{0}_{1}", fileId.ph, fileId.sh);
             }
         }
 
@@ -396,40 +396,40 @@ namespace GomLib.Models
 
             //if (this.ablEffects != abl.ablEffects)
             //return false;
-            if (this.AiType != abl.AiType)
+            if (AiType != abl.AiType)
                 return false;
-            if (this.ApCost != abl.ApCost)
+            if (ApCost != abl.ApCost)
                 return false;
-            if (this.AppearanceSpec != abl.AppearanceSpec)
+            if (AppearanceSpec != abl.AppearanceSpec)
                 return false;
-            if (this.ApType != abl.ApType)
+            if (ApType != abl.ApType)
                 return false;
-            if (this.AutoAttackMode != abl.AutoAttackMode)
+            if (AutoAttackMode != abl.AutoAttackMode)
                 return false;
-            if (this.CastingTime != abl.CastingTime)
+            if (CastingTime != abl.CastingTime)
                 return false;
-            if (this.ChannelingTime != abl.ChannelingTime)
+            if (ChannelingTime != abl.ChannelingTime)
                 return false;
-            if (this.CombatMode != abl.CombatMode)
+            if (CombatMode != abl.CombatMode)
                 return false;
-            if (this.Cooldown != abl.Cooldown)
+            if (Cooldown != abl.Cooldown)
                 return false;
 
             var iuComp = new DictionaryComparer<int, ulong>();
-            if (!iuComp.Equals(this.CooldownTimerSpecs, abl.CooldownTimerSpecs))
+            if (!iuComp.Equals(CooldownTimerSpecs, abl.CooldownTimerSpecs))
                 return false;
 
-            if (this.Description != abl.Description)
+            if (Description != abl.Description)
                 return false;
-            if (this.DescriptionId != abl.DescriptionId)
+            if (DescriptionId != abl.DescriptionId)
                 return false;
 
             var soComp = new DictionaryComparer<string, object>();
-            if (this.DescriptionTokens != null)
+            if (DescriptionTokens != null)
             {
                 if (abl.DescriptionTokens == null)
                     return false;
-                foreach (var token in this.DescriptionTokens)
+                foreach (var token in DescriptionTokens)
                 {
                     _ = new Dictionary<string, object>();
                     abl.DescriptionTokens.TryGetValue(token.Key, out Dictionary<string, object> prevTok);
@@ -440,78 +440,78 @@ namespace GomLib.Models
             else if (abl.DescriptionTokens != null)
                 return false;
 
-            if (this.EnergyCost != abl.EnergyCost)
+            if (EnergyCost != abl.EnergyCost)
                 return false;
-            if (this.ForceCost != abl.ForceCost)
+            if (ForceCost != abl.ForceCost)
                 return false;
-            if (this.Fqn != abl.Fqn)
+            if (Fqn != abl.Fqn)
                 return false;
-            if (this.GCD != abl.GCD)
+            if (GCD != abl.GCD)
                 return false;
-            if (this.GcdOverride != abl.GcdOverride)
+            if (GcdOverride != abl.GcdOverride)
                 return false;
-            if (this.Icon != abl.Icon)
+            if (Icon != abl.Icon)
                 return false;
-            if (this.Id != abl.Id)
+            if (Id != abl.Id)
                 return false;
-            if (this.IgnoreAlacrity != abl.IgnoreAlacrity)
+            if (IgnoreAlacrity != abl.IgnoreAlacrity)
                 return false;
-            if (this.IsCustom != abl.IsCustom)
+            if (IsCustom != abl.IsCustom)
                 return false;
-            if (this.IsHidden != abl.IsHidden)
+            if (IsHidden != abl.IsHidden)
                 return false;
-            if (this.IsPassive != abl.IsPassive)
+            if (IsPassive != abl.IsPassive)
                 return false;
-            if (this.IsValid != abl.IsValid)
+            if (IsValid != abl.IsValid)
                 return false;
-            if (this.Level != abl.Level)
+            if (Level != abl.Level)
                 return false;
-            if (this.LineOfSightCheck != abl.LineOfSightCheck)
+            if (LineOfSightCheck != abl.LineOfSightCheck)
                 return false;
 
             var ssComp = new DictionaryComparer<string, string>();
-            if (!ssComp.Equals(this.LocalizedDescription, abl.LocalizedDescription))
+            if (!ssComp.Equals(LocalizedDescription, abl.LocalizedDescription))
                 return false;
-            if (!ssComp.Equals(this.LocalizedName, abl.LocalizedName))
+            if (!ssComp.Equals(LocalizedName, abl.LocalizedName))
                 return false;
 
-            if (this.MaxRange != abl.MaxRange)
+            if (MaxRange != abl.MaxRange)
                 return false;
-            if (this.MinRange != abl.MinRange)
+            if (MinRange != abl.MinRange)
                 return false;
-            if (this.ModalGroup != abl.ModalGroup)
+            if (ModalGroup != abl.ModalGroup)
                 return false;
-            if (this.Name != abl.Name)
+            if (Name != abl.Name)
                 return false;
-            if (this.NameId != abl.NameId)
+            if (NameId != abl.NameId)
                 return false;
-            if (this.NodeId != abl.NodeId)
+            if (NodeId != abl.NodeId)
                 return false;
-            if (this.Pushback != abl.Pushback)
+            if (Pushback != abl.Pushback)
                 return false;
-            if (this.SharedCooldown != abl.SharedCooldown)
+            if (SharedCooldown != abl.SharedCooldown)
                 return false;
-            if (this.TargetArc != abl.TargetArc)
+            if (TargetArc != abl.TargetArc)
                 return false;
-            if (this.TargetArcOffset != abl.TargetArcOffset)
+            if (TargetArcOffset != abl.TargetArcOffset)
                 return false;
-            if (this.TargetRule != abl.TargetRule)
+            if (TargetRule != abl.TargetRule)
                 return false;
-            if (this.UnknownBool != abl.UnknownBool)
+            if (UnknownBool != abl.UnknownBool)
                 return false;
-            if (this.UnknownInt != abl.UnknownInt)
+            if (UnknownInt != abl.UnknownInt)
                 return false;
-            if (this.UnknownInt2 != abl.UnknownInt2)
+            if (UnknownInt2 != abl.UnknownInt2)
                 return false;
-            if (this.Version != abl.Version)
+            if (Version != abl.Version)
                 return false;
-            if (this.AbsorbParams.Count != abl.AbsorbParams.Count)
+            if (AbsorbParams.Count != abl.AbsorbParams.Count)
                 return false;
 
             DictionaryComparer<string, float> absorbCompare = new DictionaryComparer<string, float>();
-            for (int i = 0; i < this.AbsorbParams.Count; i++)
+            for (int i = 0; i < AbsorbParams.Count; i++)
             {
-                if (!absorbCompare.Equals(this.AbsorbParams[i], abl.AbsorbParams[i]))
+                if (!absorbCompare.Equals(AbsorbParams[i], abl.AbsorbParams[i]))
                     return false;
             }
 
@@ -523,7 +523,7 @@ namespace GomLib.Models
             var txtFile = new StringBuilder();
             string n = Environment.NewLine;
 
-            if (this.NodeId == 0) return "";
+            if (NodeId == 0) return "";
 
             txtFile.Append("Name: " + Name + n);
             txtFile.Append("NodeId: " + NodeId + n);
@@ -553,7 +553,7 @@ namespace GomLib.Models
             if (ModalGroup != 0) { txtFile.Append("  Modal Group: " + ModalGroup + n); }
             if (SharedCooldown != 0) { txtFile.Append("  Shared Cooldown: " + SharedCooldown + n); }
             if (TargetArc != 0 && TargetArcOffset != 0) { txtFile.Append("  Target Arc/Offset: " + TargetArc + "/" + TargetArcOffset + n); }
-            txtFile.Append("  Target Rule: " + (GomLib.Models.TargetRule)TargetRule + n + n);
+            txtFile.Append("  Target Rule: " + (TargetRule)TargetRule + n + n);
 
             txtFile.Append("  Tokens: " + n);
 
@@ -716,7 +716,7 @@ namespace GomLib.Models
                         new XElement("SharedCooldown", SharedCooldown),
                         new XElement("TargetArc", TargetArc),
                         new XElement("TargetArcOffset", TargetArcOffset),
-                        new XElement("TargetRule", (GomLib.Models.TargetRule)TargetRule));
+                        new XElement("TargetRule", (TargetRule)TargetRule));
 
                     if (DescriptionTokens != null && DescriptionTokens.Count > 0)
                     {

@@ -30,13 +30,13 @@ namespace GomLib.Models
             if (ReferenceEquals(this, varObj))
                 return true;
 
-            if (this.SchemId != varObj.SchemId)
+            if (SchemId != varObj.SchemId)
                 return false;
-            if (this.Name != varObj.Name)
+            if (Name != varObj.Name)
                 return false;
-            if (this.VariationPackages.Count != varObj.VariationPackages.Count)
+            if (VariationPackages.Count != varObj.VariationPackages.Count)
                 return false;
-            if (!this.VariationPackages.SequenceEqual(varObj.VariationPackages))
+            if (!VariationPackages.SequenceEqual(varObj.VariationPackages))
                 return false;
 
             return true;

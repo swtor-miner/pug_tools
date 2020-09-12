@@ -18,7 +18,7 @@ namespace GomLib.Models
     {
         public static SpawnerType ToSpawnerType(this string str)
         {
-            if (String.IsNullOrEmpty(str)) { return SpawnerType.Unknown; }
+            if (string.IsNullOrEmpty(str)) { return SpawnerType.Unknown; }
 
             switch (str)
             {

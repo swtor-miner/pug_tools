@@ -202,7 +202,7 @@ namespace GomLib.Models
                 case 7483531293894126412: return ModifierSet.WeaponMeleePrototype;
                 case 5791706038191817667: return ModifierSet.WeaponRanged;
                 case 8022180020026237875: return ModifierSet.WeaponRangedPrototype;
-                default: throw new InvalidOperationException(String.Format("Unknown ModifierSet: {0}", modifierSetId));
+                default: throw new InvalidOperationException(string.Format("Unknown ModifierSet: {0}", modifierSetId));
             }
         }
     }

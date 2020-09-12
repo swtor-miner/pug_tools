@@ -10,8 +10,8 @@ namespace GomLib.Models
     {
         public AbilityPackage()
         {
-            this.PackageAbilities = new List<PackageAbility>();
-            this.PackageTalents = new List<PackageTalent>();
+            PackageAbilities = new List<PackageAbility>();
+            PackageTalents = new List<PackageTalent>();
         }
 
         public List<PackageAbility> PackageAbilities { get; private set; }
@@ -44,15 +44,15 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, apc)) return true;
 
-            if (this.Fqn != apc.Fqn)
+            if (Fqn != apc.Fqn)
                 return false;
-            if (this.Id != apc.Id)
+            if (Id != apc.Id)
                 return false;
-            if (this.IsUtilityPackage != apc.IsUtilityPackage)
+            if (IsUtilityPackage != apc.IsUtilityPackage)
                 return false;
-            if (!this.PackageAbilities.SequenceEqual(apc.PackageAbilities))
+            if (!PackageAbilities.SequenceEqual(apc.PackageAbilities))
                 return false;
-            if (!this.PackageTalents.SequenceEqual(apc.PackageTalents))
+            if (!PackageTalents.SequenceEqual(apc.PackageTalents))
                 return false;
             return true;
         }

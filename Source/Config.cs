@@ -25,7 +25,7 @@ namespace PugTools
         public static void Load()
         {
             // Path to the asset files
-            string str = Config.configFile.AppSettings.Settings["AssetsPath"].Value;
+            string str = configFile.AppSettings.Settings["AssetsPath"].Value;
             if (str != null)
                 if (Directory.Exists(str)) //Load from config, if directory exists
                     AssetsPath = str;
@@ -40,12 +40,12 @@ namespace PugTools
                     AssetsPath = str;
 
             // Load PTS assets if checked
-            str = Config.configFile.AppSettings.Settings["AssetsUsePTS"].Value;
+            str = configFile.AppSettings.Settings["AssetsUsePTS"].Value;
             if (str != null)
                 AssetsUsePTS = Convert.ToBoolean(str);
 
             // Path to the previous asset files
-            str = Config.configFile.AppSettings.Settings["PrevAssetsPath"].Value;
+            str = configFile.AppSettings.Settings["PrevAssetsPath"].Value;
             if (str != null)
                 if (Directory.Exists(str)) //Load from config, if directory exists
                     PrevAssetsPath = str;
@@ -60,12 +60,12 @@ namespace PugTools
                     PrevAssetsPath = str;
 
             // Load PTS assets if checked
-            str = Config.configFile.AppSettings.Settings["PrevAssetsUsePTS"].Value;
+            str = configFile.AppSettings.Settings["PrevAssetsUsePTS"].Value;
             if (str != null)
                 PrevAssetsUsePTS = Convert.ToBoolean(str);
 
             // Path to the extract files
-            str = Config.configFile.AppSettings.Settings["ExtractPath"].Value;
+            str = configFile.AppSettings.Settings["ExtractPath"].Value;
             if (str != null)
             {
                 if (!str.EndsWith("\\"))
@@ -79,7 +79,7 @@ namespace PugTools
             }
 
             // Path Where to Extract Assets
-            str = Config.configFile.AppSettings.Settings["ExtractAssetsPath"].Value;
+            str = configFile.AppSettings.Settings["ExtractAssetsPath"].Value;
             if (str != null)
             {
                 if (!str.EndsWith("\\"))
@@ -93,46 +93,46 @@ namespace PugTools
             }
 
             // Cross Link DOM
-            str = Config.configFile.AppSettings.Settings["CrossLinkDOM"].Value;
+            str = configFile.AppSettings.Settings["CrossLinkDOM"].Value;
             if (str != null)
                 CrossLinkDOM = Convert.ToBoolean(str);
         }
         public static void Save()
         {
             // Path to the asset files
-            string str = Config.AssetsPath;
+            string str = AssetsPath;
             if (str != null)
-                Config.configFile.AppSettings.Settings["AssetsPath"].Value = str;
+                configFile.AppSettings.Settings["AssetsPath"].Value = str;
 
             // Load PTS assets if checked
-            str = Config.AssetsUsePTS.ToString();
+            str = AssetsUsePTS.ToString();
             if (str != null)
-                Config.configFile.AppSettings.Settings["AssetsUsePTS"].Value = str;
+                configFile.AppSettings.Settings["AssetsUsePTS"].Value = str;
 
             // Path to the previous asset files
-            str = Config.PrevAssetsPath;
+            str = PrevAssetsPath;
             if (str != null)
-                Config.configFile.AppSettings.Settings["PrevAssetsPath"].Value = str;
+                configFile.AppSettings.Settings["PrevAssetsPath"].Value = str;
 
             // Load PTS assets if checked
-            str = Config.PrevAssetsUsePTS.ToString();
+            str = PrevAssetsUsePTS.ToString();
             if (str != null)
-                Config.configFile.AppSettings.Settings["PrevAssetsUsePTS"].Value = str;
+                configFile.AppSettings.Settings["PrevAssetsUsePTS"].Value = str;
 
             // Path to the extract files
-            str = Config.ExtractPath;
+            str = ExtractPath;
             if (str != null)
-                Config.configFile.AppSettings.Settings["ExtractPath"].Value = str;
+                configFile.AppSettings.Settings["ExtractPath"].Value = str;
 
             // Path to the extract files
-            str = Config.ExtractAssetsPath;
+            str = ExtractAssetsPath;
             if (str != null)
-                Config.configFile.AppSettings.Settings["ExtractAssetsPath"].Value = str;
+                configFile.AppSettings.Settings["ExtractAssetsPath"].Value = str;
 
             // Cross Link DOM
-            str = Config.CrossLinkDOM.ToString();
+            str = CrossLinkDOM.ToString();
             if (str != null)
-                Config.configFile.AppSettings.Settings["CrossLinkDOM"].Value = str;
+                configFile.AppSettings.Settings["CrossLinkDOM"].Value = str;
 
             configFile.Save(ConfigurationSaveMode.Modified);
             ConfigurationManager.RefreshSection("appSettings");

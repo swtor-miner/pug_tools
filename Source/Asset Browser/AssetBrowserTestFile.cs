@@ -22,66 +22,66 @@ namespace PugTools
         public List<string> GetTypes()
         {
             fileTypes.Clear();
-            if (this.chkAMX.Checked)
+            if (chkAMX.Checked)
                 fileTypes.Add("AMX");
-            if (this.chkBNK.Checked)
+            if (chkBNK.Checked)
                 fileTypes.Add("BNK");
-            if (this.chkCNV.Checked)
+            if (chkCNV.Checked)
                 fileTypes.Add("CNV");
-            if (this.chkDAT.Checked)
+            if (chkDAT.Checked)
                 fileTypes.Add("DAT");
-            if (this.chkDYN.Checked)
+            if (chkDYN.Checked)
                 fileTypes.Add("DYN");
-            if (this.chkEPP.Checked)
+            if (chkEPP.Checked)
                 fileTypes.Add("EPP");
-            if (this.chkFXSPEC.Checked)
+            if (chkFXSPEC.Checked)
                 fileTypes.Add("FXSPEC");
-            if (this.chkGR2.Checked)
+            if (chkGR2.Checked)
                 fileTypes.Add("GR2");
-            if (this.chkHYD.Checked)
+            if (chkHYD.Checked)
                 fileTypes.Add("HYD");
-            if (this.chkICONS.Checked)
+            if (chkICONS.Checked)
                 fileTypes.Add("ICONS");
-            if (this.chkMAT.Checked)
+            if (chkMAT.Checked)
                 fileTypes.Add("MAT");
-            if (this.chkMISC.Checked)
+            if (chkMISC.Checked)
                 fileTypes.Add("MISC");
-            if (this.chkMISC_WORLD.Checked)
+            if (chkMISC_WORLD.Checked)
                 fileTypes.Add("MISC_WORLD");
-            if (this.chkPLC.Checked)
+            if (chkPLC.Checked)
                 fileTypes.Add("PLC");
-            if (this.chkPRT.Checked)
+            if (chkPRT.Checked)
                 fileTypes.Add("PRT");
-            if (this.chkSDEF.Checked)
+            if (chkSDEF.Checked)
                 fileTypes.Add("SDEF");
-            if (this.chkSTB.Checked)
+            if (chkSTB.Checked)
                 fileTypes.Add("STB");
-            if (this.chkXML.Checked)
+            if (chkXML.Checked)
                 fileTypes.Add("XML");
             return fileTypes;
         }
 
         private void ChkALL_CheckedChanged(object sender, EventArgs e)
         {
-            bool value = this.chkALL.Checked;
-            this.chkAMX.Checked = value;
-            this.chkBNK.Checked = value;
-            this.chkCNV.Checked = value;
-            this.chkDAT.Checked = value;
-            this.chkDYN.Checked = value;
-            this.chkEPP.Checked = value;
-            this.chkFXSPEC.Checked = value;
-            this.chkGR2.Checked = value;
-            this.chkHYD.Checked = value;
-            this.chkICONS.Checked = value;
-            this.chkMAT.Checked = value;
-            this.chkMISC.Checked = value;
-            this.chkMISC_WORLD.Checked = value;
-            this.chkPLC.Checked = value;
-            this.chkPRT.Checked = value;
-            this.chkSDEF.Checked = value;
-            this.chkSTB.Checked = value;
-            this.chkXML.Checked = value;
+            bool value = chkALL.Checked;
+            chkAMX.Checked = value;
+            chkBNK.Checked = value;
+            chkCNV.Checked = value;
+            chkDAT.Checked = value;
+            chkDYN.Checked = value;
+            chkEPP.Checked = value;
+            chkFXSPEC.Checked = value;
+            chkGR2.Checked = value;
+            chkHYD.Checked = value;
+            chkICONS.Checked = value;
+            chkMAT.Checked = value;
+            chkMISC.Checked = value;
+            chkMISC_WORLD.Checked = value;
+            chkPLC.Checked = value;
+            chkPRT.Checked = value;
+            chkSDEF.Checked = value;
+            chkSTB.Checked = value;
+            chkXML.Checked = value;
         }
     }
 }

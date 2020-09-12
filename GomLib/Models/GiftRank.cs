@@ -20,13 +20,13 @@ namespace GomLib.Models
     {
         public static GiftRank ToGiftRank(this ScriptEnum val)
         {
-            if (val == null) { return ToGiftRank(String.Empty); }
+            if (val == null) { return ToGiftRank(string.Empty); }
             return ToGiftRank(val.ToString());
         }
 
         public static GiftRank ToGiftRank(this string str)
         {
-            if (String.IsNullOrEmpty(str)) return GiftRank.None;
+            if (string.IsNullOrEmpty(str)) return GiftRank.None;
             switch (str)
             {
                 case "chrCompanionAffection_Rank1": return GiftRank.Rank1;

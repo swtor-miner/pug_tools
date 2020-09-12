@@ -12,7 +12,7 @@ namespace GomLib.Models
         [JsonConverter(typeof(LongConverter))]
         public long Id { get; set; }
         public int DbId { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public Quest Quest { get; set; }
 
         public List<QuestStep> Steps { get; set; }
@@ -44,11 +44,11 @@ namespace GomLib.Models
 
             if (ReferenceEquals(this, qsb)) return true;
 
-            if (this.DbId != qsb.DbId)
+            if (DbId != qsb.DbId)
                 return false;
-            if (this.Id != qsb.Id)
+            if (Id != qsb.Id)
                 return false;
-            if (this.RewardAll != null)
+            if (RewardAll != null)
             {
                 if (qsb.RewardAll == null)
                 {
@@ -56,11 +56,11 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<Item>(this.RewardAll, qsb.RewardAll))
+                    if (!Enumerable.SequenceEqual(RewardAll, qsb.RewardAll))
                         return false;
                 }
             }
-            if (this.RewardOne != null)
+            if (RewardOne != null)
             {
                 if (qsb.RewardOne == null)
                 {
@@ -68,11 +68,11 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<Item>(this.RewardOne, qsb.RewardOne))
+                    if (!Enumerable.SequenceEqual(RewardOne, qsb.RewardOne))
                         return false;
                 }
             }
-            if (this.Steps != null)
+            if (Steps != null)
             {
                 if (qsb.Steps == null)
                 {
@@ -80,7 +80,7 @@ namespace GomLib.Models
                 }
                 else
                 {
-                    if (!Enumerable.SequenceEqual<QuestStep>(this.Steps, qsb.Steps))
+                    if (!Enumerable.SequenceEqual(Steps, qsb.Steps))
                         return false;
                 }
             }

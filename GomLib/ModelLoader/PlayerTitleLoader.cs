@@ -22,7 +22,7 @@ namespace GomLib.ModelLoader
             idLookup = new List<object>();
         }
 
-        public Models.PlayerTitle Load(Models.PlayerTitle title, GomObjectData obj)
+        public PlayerTitle Load(PlayerTitle title, GomObjectData obj)
         {
             if (obj == null) { return title; }
             if (title == null) { return null; }
@@ -33,7 +33,7 @@ namespace GomLib.ModelLoader
             }
             return Load(title, idLookup.FindIndex(x => x == obj), obj);
         }
-        public Models.PlayerTitle Load(Models.PlayerTitle title, long id, GomObjectData obj)
+        public PlayerTitle Load(PlayerTitle title, long id, GomObjectData obj)
         {
             if (obj == null) { return title; }
             if (title == null) { return null; }
@@ -43,7 +43,7 @@ namespace GomLib.ModelLoader
             title.TitleString = _dom.stringTable.TryGetString("str.pc.title", title.TitleStringId);
             title.LocalizedTitleString = _dom.stringTable.TryGetLocalizedStrings("str.pc.title", title.TitleStringId);
             title.TitleCodexNode = obj.ValueOrDefault<ulong>("titleCodex", 0);
-            title.TitleLegacyPrefix = obj.ValueOrDefault<bool>("titleDetailLegacyPrefix", false);
+            title.TitleLegacyPrefix = obj.ValueOrDefault("titleDetailLegacyPrefix", false);
 
             return title;
         }

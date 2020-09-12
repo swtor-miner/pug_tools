@@ -49,9 +49,9 @@ namespace DevIL
             Dispose(false);
         }
 
-        public bool SaveImage(Image image, String filename)
+        public bool SaveImage(Image image, string filename)
         {
-            if (!image.IsValid || String.IsNullOrEmpty(filename))
+            if (!image.IsValid || string.IsNullOrEmpty(filename))
             {
                 return false;
             }
@@ -62,9 +62,9 @@ namespace DevIL
             return IL.SaveImage(filename);
         }
 
-        public bool SaveImage(Image image, ImageType imageType, String filename)
+        public bool SaveImage(Image image, ImageType imageType, string filename)
         {
-            if (!image.IsValid || imageType == ImageType.Unknown || String.IsNullOrEmpty(filename))
+            if (!image.IsValid || imageType == ImageType.Unknown || string.IsNullOrEmpty(filename))
             {
                 return false;
             }
@@ -88,7 +88,7 @@ namespace DevIL
             return IL.SaveImageToStream(imageType, stream);
         }
 
-        public String[] GetSupportedExtensions()
+        public string[] GetSupportedExtensions()
         {
             return IL.GetExportExtensions();
         }

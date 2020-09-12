@@ -44,7 +44,7 @@ namespace BrightIdeasSoftware
     /// value for the column/model combination. It could be simply representative of
     /// the appropriate type of value.</param>
     /// <returns>A control which can edit the given value</returns>
-    public delegate Control EditorCreatorDelegate(Object model, OLVColumn column, Object value);
+    public delegate Control EditorCreatorDelegate(object model, OLVColumn column, object value);
 
     /// <summary>
     /// An editor registry gives a way to decide what cell editor should be used to edit
@@ -63,21 +63,21 @@ namespace BrightIdeasSoftware
         /// </summary>
         public EditorRegistry()
         {
-            this.InitializeStandardTypes();
+            InitializeStandardTypes();
         }
 
         private void InitializeStandardTypes()
         {
-            this.Register(typeof(Boolean), typeof(BooleanCellEditor));
-            this.Register(typeof(Int16), typeof(IntUpDown));
-            this.Register(typeof(Int32), typeof(IntUpDown));
-            this.Register(typeof(Int64), typeof(IntUpDown));
-            this.Register(typeof(UInt16), typeof(UintUpDown));
-            this.Register(typeof(UInt32), typeof(UintUpDown));
-            this.Register(typeof(UInt64), typeof(UintUpDown));
-            this.Register(typeof(Single), typeof(FloatCellEditor));
-            this.Register(typeof(Double), typeof(FloatCellEditor));
-            this.Register(typeof(DateTime), delegate (Object model, OLVColumn column, Object value)
+            Register(typeof(bool), typeof(BooleanCellEditor));
+            Register(typeof(short), typeof(IntUpDown));
+            Register(typeof(int), typeof(IntUpDown));
+            Register(typeof(long), typeof(IntUpDown));
+            Register(typeof(ushort), typeof(UintUpDown));
+            Register(typeof(uint), typeof(UintUpDown));
+            Register(typeof(ulong), typeof(UintUpDown));
+            Register(typeof(float), typeof(FloatCellEditor));
+            Register(typeof(double), typeof(FloatCellEditor));
+            Register(typeof(DateTime), delegate (object model, OLVColumn column, object value)
             {
                 DateTimePicker c = new DateTimePicker
                 {
@@ -85,7 +85,7 @@ namespace BrightIdeasSoftware
                 };
                 return c;
             });
-            this.Register(typeof(Boolean), delegate (Object model, OLVColumn column, Object value)
+            Register(typeof(bool), delegate (object model, OLVColumn column, object value)
             {
                 CheckBox c = new BooleanCellEditor2
                 {
@@ -109,7 +109,7 @@ namespace BrightIdeasSoftware
         /// </example>
         public void Register(Type type, Type controlType)
         {
-            this.Register(type, delegate (Object model, OLVColumn column, Object value)
+            Register(type, delegate (object model, OLVColumn column, object value)
             {
                 return controlType.InvokeMember("", BindingFlags.CreateInstance, null, null, null) as Control;
             });
@@ -131,7 +131,7 @@ namespace BrightIdeasSoftware
         /// </example>
         public void Register(Type type, EditorCreatorDelegate creator)
         {
-            this.creatorMap[type] = creator;
+            creatorMap[type] = creator;
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace BrightIdeasSoftware
         /// <param name="creator">The delegate that will create a editor for all other types</param>
         public void RegisterDefault(EditorCreatorDelegate creator)
         {
-            this.defaultCreator = creator;
+            defaultCreator = creator;
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace BrightIdeasSoftware
         /// <param name="creator">The delegate that will create a control</param>
         public void RegisterFirstChance(EditorCreatorDelegate creator)
         {
-            this.firstChanceCreator = creator;
+            firstChanceCreator = creator;
         }
 
         #endregion
@@ -168,34 +168,34 @@ namespace BrightIdeasSoftware
         /// value for the column/model combination. It could be simply representative of
         /// the appropriate type of value.</param>
         /// <returns>A Control that can edit the given type of values</returns>
-        public Control GetEditor(Object model, OLVColumn column, Object value)
+        public Control GetEditor(object model, OLVColumn column, object value)
         {
             Control editor;
 
             // Give the first chance delegate a chance to decide
-            if (this.firstChanceCreator != null)
+            if (firstChanceCreator != null)
             {
-                editor = this.firstChanceCreator(model, column, value);
+                editor = firstChanceCreator(model, column, value);
                 if (editor != null)
                     return editor;
             }
 
             // Try to find a creator based on the type of the value (or the column)
             Type type = value == null ? column.DataType : value.GetType();
-            if (type != null && this.creatorMap.ContainsKey(type))
+            if (type != null && creatorMap.ContainsKey(type))
             {
-                editor = this.creatorMap[type](model, column, value);
+                editor = creatorMap[type](model, column, value);
                 if (editor != null)
                     return editor;
             }
 
             // Enums without other processing get a special editor
             if (value != null && value.GetType().IsEnum)
-                return this.CreateEnumEditor(value.GetType());
+                return CreateEnumEditor(value.GetType());
 
             // Give any default creator a final chance
-            if (this.defaultCreator != null)
-                return this.defaultCreator(model, column, value);
+            if (defaultCreator != null)
+                return defaultCreator(model, column, value);
 
             return null;
         }

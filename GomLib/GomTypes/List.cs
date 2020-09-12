@@ -13,13 +13,13 @@ namespace GomLib.GomTypes
 
         internal override void Link(DataObjectModel dom)
         {
-            this._dom = dom;
+            _dom = dom;
             ContainedType.Link(dom);
         }
 
         public override string ToString()
         {
-            return System.String.Format("List<{0}>", ContainedType);
+            return string.Format("List<{0}>", ContainedType);
         }
 
         public override object ReadData(DataObjectModel dom, GomBinaryReader reader)

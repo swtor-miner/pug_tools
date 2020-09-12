@@ -208,9 +208,9 @@ namespace GomLib.Models
         public object Value { get; set; }
         public SubEffectFunctionParam(long key, int type, object value)
         {
-            this.Key = key;
-            this.Type = type;
-            this.Value = value;
+            Key = key;
+            Type = type;
+            Value = value;
         }
     }
 }

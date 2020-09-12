@@ -253,7 +253,7 @@ namespace GomLib.Models
     {
         public Dictionary<string, DetailedStat> StatLookup { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         readonly DataObjectModel _dom;
 
         public StatData(DataObjectModel dom)
@@ -263,7 +263,7 @@ namespace GomLib.Models
 
         public DetailedStat ToStat(string str)
         {
-            if (String.IsNullOrEmpty(str)) { return new DetailedStat("Undefined"); }
+            if (string.IsNullOrEmpty(str)) { return new DetailedStat("Undefined"); }
 
             if (StatLookup == null)
             {
@@ -276,12 +276,12 @@ namespace GomLib.Models
                 {
                     DetailedStat detStat = new DetailedStat();
                     string lookupName = stat.Key.ToString();
-                    detStat.Minimum = ((GomLib.GomObjectData)stat.Value).ValueOrDefault<float>("modStatMinimum", 0f);
-                    detStat.DisplayName = ((GomLib.GomObjectData)stat.Value).ValueOrDefault<string>("modStatDisplayName", stat.Key.ToString());
-                    detStat.Maximum = ((GomLib.GomObjectData)stat.Value).ValueOrDefault<float>("modStatMaximum", 0f);
-                    detStat.IsMeta = ((GomLib.GomObjectData)stat.Value).ValueOrDefault<bool>("modStatIsMetaStat", false);
-                    detStat.NumFormat = ((GomLib.GomObjectData)stat.Value).ValueOrDefault<ScriptEnum>("modStatDisplayNumberFormat", new ScriptEnum()).ToString();
-                    detStat.Id = ((GomLib.GomObjectData)stat.Value).ValueOrDefault<long>("modStatDisplayNameStringID", 0);
+                    detStat.Minimum = ((GomObjectData)stat.Value).ValueOrDefault("modStatMinimum", 0f);
+                    detStat.DisplayName = ((GomObjectData)stat.Value).ValueOrDefault("modStatDisplayName", stat.Key.ToString());
+                    detStat.Maximum = ((GomObjectData)stat.Value).ValueOrDefault("modStatMaximum", 0f);
+                    detStat.IsMeta = ((GomObjectData)stat.Value).ValueOrDefault("modStatIsMetaStat", false);
+                    detStat.NumFormat = ((GomObjectData)stat.Value).ValueOrDefault("modStatDisplayNumberFormat", new ScriptEnum()).ToString();
+                    detStat.Id = ((GomObjectData)stat.Value).ValueOrDefault<long>("modStatDisplayNameStringID", 0);
                     detStat.StringId = detStat.Id + 972058473267200;
                     detStat.LocalizedDisplayName = table.GetLocalizedText(detStat.StringId, "str.gui.stats");
                     StatLookup.Add(lookupName, detStat);
@@ -294,7 +294,7 @@ namespace GomLib.Models
 
         public DetailedStat ToStat(ScriptEnum val)
         {
-            if (val == null) { return ToStat(String.Empty); }
+            if (val == null) { return ToStat(string.Empty); }
             return ToStat(val.ToString());
         }
     }
@@ -331,7 +331,7 @@ namespace GomLib.Models
     {
         public static Stat ToStat(string str)
         {
-            if (String.IsNullOrEmpty(str)) { return Stat.Undefined; }
+            if (string.IsNullOrEmpty(str)) { return Stat.Undefined; }
 
             str = str.ToLower();
             str = str.Replace('.', '_');
@@ -582,7 +582,7 @@ namespace GomLib.Models
 
         public static Stat ToStat(ScriptEnum val)
         {
-            if (val == null) { return ToStat(String.Empty); }
+            if (val == null) { return ToStat(string.Empty); }
             return ToStat(val.ToString());
         }
     }

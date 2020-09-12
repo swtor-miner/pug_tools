@@ -22,7 +22,7 @@ namespace GomLib.ModelLoader
             idLookup = new Dictionary<long, ReputationGroup>();
         }
 
-        public Models.ReputationGroup Load(long id)
+        public ReputationGroup Load(long id)
         {
             if (idLookup.Count == 0)
             {
@@ -35,7 +35,7 @@ namespace GomLib.ModelLoader
             return data;
         }
 
-        public Models.ReputationGroup Load(Models.ReputationGroup rank, GomObjectData obj)
+        public ReputationGroup Load(ReputationGroup rank, GomObjectData obj)
         {
             if (obj == null) { return rank; }
             if (rank == null) { return null; }
@@ -53,7 +53,7 @@ namespace GomLib.ModelLoader
             StringTable repTable = _dom.stringTable.Find("str.lgc.reputation");
             rank.LocalizedGroupRepublicTitle = repTable.GetLocalizedText(rank.GroupRepublicTitleId, "str.lgc.reputation");
             rank.GroupRepublicRankTitles = obj.Get<List<object>>("repGroupInfoRepublicRankTitles");
-            rank.GroupRepublicIcon = obj.ValueOrDefault<string>("repGroupInfoIconRepublic", "");
+            rank.GroupRepublicIcon = obj.ValueOrDefault("repGroupInfoIconRepublic", "");
             rank.GroupRepublicRankLegacyTitles = new Dictionary<object, object>();
 
             //Empire Specific Fields
@@ -63,13 +63,13 @@ namespace GomLib.ModelLoader
             rank.GroupEmpireTitle = _dom.stringTable.TryGetString("str.lgc.reputation", rank.GroupEmpireTitleId);
             rank.LocalizedGroupEmpireTitle = repTable.GetLocalizedText(rank.GroupEmpireTitleId, "str.lgc.reputation");
             rank.GroupEmpireRankTitles = obj.Get<List<object>>("repGroupInfoEmpireRankTitles");
-            rank.GroupEmpireIcon = obj.ValueOrDefault<string>("repGroupInfoIconEmpire", "");
+            rank.GroupEmpireIcon = obj.ValueOrDefault("repGroupInfoIconEmpire", "");
             rank.GroupEmpireRankLegacyTitles = new Dictionary<object, object>();
 
             if (rank.LocalizedGroupEmpireTitle != null)
-                rank.LocalizedGroupleTitle = rank.LocalizedGroupEmpireTitle.ToDictionary(x => x.Key, x => String.Format("{0} / {1}", (rank.LocalizedGroupRepublicTitle != null) ? rank.LocalizedGroupRepublicTitle[x.Key] : "", x.Value));
+                rank.LocalizedGroupleTitle = rank.LocalizedGroupEmpireTitle.ToDictionary(x => x.Key, x => string.Format("{0} / {1}", (rank.LocalizedGroupRepublicTitle != null) ? rank.LocalizedGroupRepublicTitle[x.Key] : "", x.Value));
             else if (rank.LocalizedGroupRepublicTitle != null)
-                rank.LocalizedGroupleTitle = rank.LocalizedGroupRepublicTitle.ToDictionary(x => x.Key, x => String.Format("{0} / {1}", (rank.LocalizedGroupEmpireTitle != null) ? rank.LocalizedGroupEmpireTitle[x.Key] : "", x.Value));
+                rank.LocalizedGroupleTitle = rank.LocalizedGroupRepublicTitle.ToDictionary(x => x.Key, x => string.Format("{0} / {1}", (rank.LocalizedGroupEmpireTitle != null) ? rank.LocalizedGroupEmpireTitle[x.Key] : "", x.Value));
 
             List<object> repRankData = _dom.GetObject("repRankInfoPrototype").Data.Get<List<object>>("repRankInfoData");
             Dictionary<object, object> lgcTitleData = _dom.GetObject("lgcLegacyTitlesTablePrototype").Data.Get<Dictionary<object, object>>("lgcLegacyTitlesData");
@@ -77,7 +77,7 @@ namespace GomLib.ModelLoader
             int intCount = 0;
             foreach (long rankId in rank.GroupRepublicRankTitles)
             {
-                GomLib.Models.ReputationRank currentRank = new GomLib.Models.ReputationRank();
+                ReputationRank currentRank = new ReputationRank();
                 _dom.reputationRankLoader.Load(currentRank, (GomObjectData)repRankData[intCount]);
 
                 if (rankId != 0)
@@ -85,7 +85,7 @@ namespace GomLib.ModelLoader
                     object titleData = new object();
                     lgcTitleData.TryGetValue(rankId, out titleData);
 
-                    GomLib.Models.LegacyTitle title = new GomLib.Models.LegacyTitle();
+                    LegacyTitle title = new LegacyTitle();
                     _dom.legacyTitleLoader.Load(title, (GomObjectData)titleData);
                     rank.GroupRepublicRankLegacyTitles.Add(currentRank.RankTitle, title.LegacyTitleString);
                 }
@@ -99,7 +99,7 @@ namespace GomLib.ModelLoader
             intCount = 0;
             foreach (long rankId in rank.GroupEmpireRankTitles)
             {
-                GomLib.Models.ReputationRank currentRank = new GomLib.Models.ReputationRank();
+                ReputationRank currentRank = new ReputationRank();
                 _dom.reputationRankLoader.Load(currentRank, (GomObjectData)repRankData[intCount]);
 
                 if (rankId != 0)
@@ -107,7 +107,7 @@ namespace GomLib.ModelLoader
                     object titleData = new object();
                     lgcTitleData.TryGetValue(rankId, out titleData);
 
-                    GomLib.Models.LegacyTitle title = new GomLib.Models.LegacyTitle();
+                    LegacyTitle title = new LegacyTitle();
                     _dom.legacyTitleLoader.Load(title, (GomObjectData)titleData);
                     rank.GroupEmpireRankLegacyTitles.Add(currentRank.RankTitle, title.LegacyTitleString);
                 }

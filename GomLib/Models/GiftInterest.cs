@@ -18,13 +18,13 @@ namespace GomLib.Models
     {
         public static GiftInterest ToGiftInterest(this ScriptEnum val)
         {
-            if (val == null) { return ToGiftInterest(String.Empty); }
+            if (val == null) { return ToGiftInterest(string.Empty); }
             return ToGiftInterest(val.ToString());
         }
 
         public static GiftInterest ToGiftInterest(this string str)
         {
-            if (String.IsNullOrEmpty(str)) { return GiftInterest.None; }
+            if (string.IsNullOrEmpty(str)) { return GiftInterest.None; }
             str = str.Split(' ')[0]; // If there are multiple types, separated by spaces only take the first one
 
             switch (str)

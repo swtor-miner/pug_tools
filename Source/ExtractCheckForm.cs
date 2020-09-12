@@ -22,147 +22,147 @@ namespace PugTools
         public List<string> GetTypes()
         {
             fileTypes.Clear();
-            if (this.chkCdxCat.Checked)
+            if (chkCdxCat.Checked)
                 fileTypes.Add("CDXCAT");
-            if (this.chkSetBonus.Checked)
+            if (chkSetBonus.Checked)
                 fileTypes.Add("SBN");
-            if (this.chkGOM.Checked)
+            if (chkGOM.Checked)
                 fileTypes.Add("GOM");
-            if (this.chkEXP.Checked)
+            if (chkEXP.Checked)
                 fileTypes.Add("EXP");
-            if (this.chkAREA.Checked)
+            if (chkAREA.Checked)
                 fileTypes.Add("AREA");
-            if (this.chkSTB.Checked)
+            if (chkSTB.Checked)
                 fileTypes.Add("STB");
 
-            if (this.chkABL.Checked)
+            if (chkABL.Checked)
                 fileTypes.Add("ABL");
-            if (this.chkABLEFF.Checked)
+            if (chkABLEFF.Checked)
                 fileTypes.Add("ABLEFF");
-            if (this.chkACH.Checked)
+            if (chkACH.Checked)
                 fileTypes.Add("ACH");
-            if (this.chkAPT.Checked)
+            if (chkAPT.Checked)
                 fileTypes.Add("APT");
-            if (this.chkCDX.Checked)
+            if (chkCDX.Checked)
                 fileTypes.Add("CDX");
-            if (this.chkCNV.Checked)
+            if (chkCNV.Checked)
                 fileTypes.Add("CNV");
-            if (this.chkCMP.Checked)
+            if (chkCMP.Checked)
                 fileTypes.Add("CMP");
-            if (this.chkDEC.Checked)
+            if (chkDEC.Checked)
                 fileTypes.Add("DEC");
-            if (this.chkIPP.Checked)
+            if (chkIPP.Checked)
                 fileTypes.Add("IPP");
-            if (this.chkITM.Checked)
+            if (chkITM.Checked)
                 fileTypes.Add("ITM");
-            if (this.chkNPC.Checked)
+            if (chkNPC.Checked)
                 fileTypes.Add("NPC");
-            if (this.chkNPP.Checked)
+            if (chkNPP.Checked)
                 fileTypes.Add("NPP");
-            if (this.chkQST.Checked)
+            if (chkQST.Checked)
                 fileTypes.Add("QST");
-            if (this.chkSCHEM.Checked)
+            if (chkSCHEM.Checked)
                 fileTypes.Add("SCHEM");
-            if (this.chkTAL.Checked)
+            if (chkTAL.Checked)
                 fileTypes.Add("TAL");
 
-            if (this.chkCOL.Checked)
+            if (chkCOL.Checked)
                 fileTypes.Add("COL");
-            if (this.chkMTX.Checked)
+            if (chkMTX.Checked)
                 fileTypes.Add("MTX");
-            if (this.chkGSF.Checked)
+            if (chkGSF.Checked)
                 fileTypes.Add("GSF");
-            if (this.chkCNQ.Checked)
+            if (chkCNQ.Checked)
                 fileTypes.Add("CNQ");
-            if (this.chkAC.Checked)
+            if (chkAC.Checked)
                 fileTypes.Add("AC");
 
-            if (this.chkMISC.Checked)
+            if (chkMISC.Checked)
                 fileTypes.Add("MISC");
 
-            if (this.chkICONS.Checked)
+            if (chkICONS.Checked)
                 fileTypes.Add("ICONS");
-            if (this.chkTORC.Checked)
+            if (chkTORC.Checked)
                 fileTypes.Add("TORC");
-            if (this.chkSchemVaris.Checked)
+            if (chkSchemVaris.Checked)
                 fileTypes.Add("SCHVARI");
-            if (this.chkClass.Checked)
+            if (chkClass.Checked)
                 fileTypes.Add("CLASS");
-            if (this.chkAPN.Checked)
+            if (chkAPN.Checked)
                 fileTypes.Add("APN");
-            if (this.chkSPN.Checked)
+            if (chkSPN.Checked)
                 fileTypes.Add("SPN");
             return fileTypes;
         }
 
         private void ChkALL_CheckedChanged(object sender, EventArgs e)
         {
-            bool value = this.chkALL.Checked;
-            this.chkABL.Checked = value;
-            this.chkABLEFF.Checked = value;
-            this.chkAC.Checked = value;
-            this.chkACH.Checked = value;
-            this.chkAPT.Checked = value;
-            this.chkAREA.Checked = value;
-            this.chkCDX.Checked = value;
-            this.chkCMP.Checked = value;
-            this.chkCNQ.Checked = value;
-            this.chkCNV.Checked = value;
-            this.chkCOL.Checked = value;
-            this.chkDEC.Checked = value;
-            this.chkEXP.Checked = value;
-            this.chkGOM.Checked = value;
-            this.chkGSF.Checked = value;
-            this.chkIPP.Checked = value;
-            this.chkITM.Checked = value;
-            this.chkMISC.Checked = value;
-            this.chkMTX.Checked = value;
-            this.chkNPC.Checked = value;
-            this.chkNPP.Checked = value;
-            this.chkQST.Checked = value;
-            this.chkSCHEM.Checked = value;
-            this.chkSTB.Checked = value;
-            this.chkTAL.Checked = value;
-            this.chkICONS.Checked = value;
-            this.chkSetBonus.Checked = value;
-            this.chkCdxCat.Checked = value;
-            this.chkSchemVaris.Checked = value;
+            bool value = chkALL.Checked;
+            chkABL.Checked = value;
+            chkABLEFF.Checked = value;
+            chkAC.Checked = value;
+            chkACH.Checked = value;
+            chkAPT.Checked = value;
+            chkAREA.Checked = value;
+            chkCDX.Checked = value;
+            chkCMP.Checked = value;
+            chkCNQ.Checked = value;
+            chkCNV.Checked = value;
+            chkCOL.Checked = value;
+            chkDEC.Checked = value;
+            chkEXP.Checked = value;
+            chkGOM.Checked = value;
+            chkGSF.Checked = value;
+            chkIPP.Checked = value;
+            chkITM.Checked = value;
+            chkMISC.Checked = value;
+            chkMTX.Checked = value;
+            chkNPC.Checked = value;
+            chkNPP.Checked = value;
+            chkQST.Checked = value;
+            chkSCHEM.Checked = value;
+            chkSTB.Checked = value;
+            chkTAL.Checked = value;
+            chkICONS.Checked = value;
+            chkSetBonus.Checked = value;
+            chkCdxCat.Checked = value;
+            chkSchemVaris.Checked = value;
         }
 
         private void ChkDB_CheckedChanged(object sender, EventArgs e)
         {
-            this.chkABLEFF.Checked = false;
-            this.chkEXP.Checked = false;
-            this.chkGOM.Checked = false;
-            this.chkIPP.Checked = false;
-            this.chkMISC.Checked = false;
-            this.chkNPP.Checked = false;
-            this.chkSTB.Checked = false;
-            this.chkICONS.Checked = false;
-            this.chkCdxCat.Checked = false;
-            this.chkSchemVaris.Checked = false;
+            chkABLEFF.Checked = false;
+            chkEXP.Checked = false;
+            chkGOM.Checked = false;
+            chkIPP.Checked = false;
+            chkMISC.Checked = false;
+            chkNPP.Checked = false;
+            chkSTB.Checked = false;
+            chkICONS.Checked = false;
+            chkCdxCat.Checked = false;
+            chkSchemVaris.Checked = false;
 
-            this.chkACH.Checked = true;
-            this.chkABL.Checked = true;
-            this.chkAC.Checked = true;
-            this.chkAPT.Checked = true;
-            this.chkAREA.Checked = true;
-            this.chkCDX.Checked = true;
-            this.chkCMP.Checked = true;
-            this.chkCNQ.Checked = true;
-            this.chkCNV.Checked = true;
-            this.chkCOL.Checked = true;
-            this.chkDEC.Checked = true;
-            this.chkGSF.Checked = true;
-            this.chkITM.Checked = true;
-            this.chkMTX.Checked = true;
-            this.chkNPC.Checked = true;
-            this.chkSCHEM.Checked = true;
-            this.chkQST.Checked = true;
-            this.chkClass.Checked = true;
-            this.chkTAL.Checked = true;
-            this.chkSetBonus.Checked = true;
-            this.chkAPN.Checked = true;
+            chkACH.Checked = true;
+            chkABL.Checked = true;
+            chkAC.Checked = true;
+            chkAPT.Checked = true;
+            chkAREA.Checked = true;
+            chkCDX.Checked = true;
+            chkCMP.Checked = true;
+            chkCNQ.Checked = true;
+            chkCNV.Checked = true;
+            chkCOL.Checked = true;
+            chkDEC.Checked = true;
+            chkGSF.Checked = true;
+            chkITM.Checked = true;
+            chkMTX.Checked = true;
+            chkNPC.Checked = true;
+            chkSCHEM.Checked = true;
+            chkQST.Checked = true;
+            chkClass.Checked = true;
+            chkTAL.Checked = true;
+            chkSetBonus.Checked = true;
+            chkAPN.Checked = true;
         }
     }
 }
