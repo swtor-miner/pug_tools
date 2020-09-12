@@ -34,9 +34,6 @@
     <StartupObject>ConsoleTools.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DevILNet">
-      <HintPath>..\DevILNet\Bin\x64\DevILNet.dll</HintPath>
-    </Reference>
     <Reference Include="MongoDB.Bson">
       <HintPath>..\Assemblies\MongoDB.Bson.dll</HintPath>
       <Private>True</Private>
@@ -89,6 +86,18 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="patches.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="u_import.php">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DevILNet\DevILNet.csproj">
+      <Project>{578fd0d9-41aa-4fa4-8d9b-4021978fa48d}</Project>
+      <Name>DevILNet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GomLib\GomLib.csproj">
       <Project>{a147d4d8-1ea1-4bda-a388-ab843b037307}</Project>
       <Name>GomLib</Name>
@@ -101,14 +110,6 @@
       <Project>{f59df2f2-4e69-41e5-b63b-6d4abf2ca6e1}</Project>
       <Name>TorLib</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="patches.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="u_import.php">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

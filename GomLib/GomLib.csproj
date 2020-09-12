@@ -284,7 +284,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TorLib\TorLib.csproj">
-      <Project>{F59DF2F2-4E69-41E5-B63B-6D4ABF2CA6E1}</Project>
+      <Project>{f59df2f2-4e69-41e5-b63b-6d4abf2ca6e1}</Project>
       <Name>TorLib</Name>
     </ProjectReference>
   </ItemGroup>

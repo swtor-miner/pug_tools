@@ -29,9 +29,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HashDictionary">
-      <HintPath>..\HashDictionary\Bin\HashDictionary.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Assemblies\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -67,6 +64,12 @@
     <Compile Include="Library.cs" />
     <Compile Include="Patch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HashDictionary\HashDictionary.csproj">
+      <Project>{7d3858a9-1902-46b0-a121-c8b2f18806ed}</Project>
+      <Name>HashDictionary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
