@@ -45,10 +45,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
+<<<<<<< HEAD
     <StartupObject>PugTools.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <RootNamespace>PugTools</RootNamespace>
+=======
+    <StartupObject />
+>>>>>>> 23088b00ebb968ca6e669c9ed408f00146a10e76
   </PropertyGroup>
   <ItemGroup>
     <!-- ROOT -->

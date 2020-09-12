@@ -186,6 +186,7 @@
             this.treeViewList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeViewList.ImageIndex = 0;
             this.treeViewList.ImageList = this.imageList1;
+            this.treeViewList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeViewList.Location = new System.Drawing.Point(3, 3);
             this.treeViewList.Name = "treeViewList";
             this.treeViewList.SelectedImageIndex = 0;
@@ -249,6 +250,7 @@
             this.hexBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.hexBox1.Font = new System.Drawing.Font("Tahoma", 8.25F);
             this.hexBox1.LineInfoVisible = true;
+            this.hexBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.hexBox1.Location = new System.Drawing.Point(3, 3);
             this.hexBox1.Name = "hexBox1";
             this.hexBox1.ReadOnly = true;
@@ -282,6 +284,7 @@
             this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.pictureBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox2.Image = global::PugTools.Properties.Resources.LoadingImage;
+            this.pictureBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox2.Location = new System.Drawing.Point(3, 3);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(701, 601);
@@ -315,6 +318,7 @@
             this.olvColumn2});
             this.treeItemView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeItemView.GridLines = true;
+            this.treeItemView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeItemView.Location = new System.Drawing.Point(3, 3);
             this.treeItemView.Name = "treeItemView";
             this.treeItemView.OwnerDraw = true;
@@ -349,6 +353,7 @@
             this.txtRawView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtRawView.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtRawView.ForeColor = System.Drawing.Color.Black;
+            this.txtRawView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtRawView.Location = new System.Drawing.Point(3, 3);
             this.txtRawView.Multiline = true;
             this.txtRawView.Name = "txtRawView";
@@ -432,6 +437,7 @@
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Enabled = false;
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(3, 3);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersVisible = false;
