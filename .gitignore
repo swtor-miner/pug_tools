@@ -1,7 +1,5 @@
 .vs/
 .vscode/
-HexControl/Bin/
-HexControl/obj/
 ConsoleTools/Bin/
 ConsoleTools/obj/
 DevILNet/Bin/
@@ -10,11 +8,13 @@ GomLib/Bin/
 GomLib/obj/
 HashDictionary/Bin/
 HashDictionary/obj/
+HexControl/Bin/
+HexControl/obj/
 ObjectListView/Bin/
 ObjectListView/obj/
-Source/obj/
 SlimDXNet/Bin/
 SlimDXNet/obj/
+Source/obj/
 TorLib/Bin/
 TorLib/obj/
 *.pdb
