@@ -3,16 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30320.27
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PugTools", "Source\PugTools.csproj", "{C6399BF7-80CB-4A2E-8A84-3751A5E6E674}"
-	ProjectSection(ProjectDependencies) = postProject
-		{18FEDA0C-D147-4286-B39A-01204808106A} = {18FEDA0C-D147-4286-B39A-01204808106A}
-		{7D3858A9-1902-46B0-A121-C8B2F18806ED} = {7D3858A9-1902-46B0-A121-C8B2F18806ED}
-		{A147D4D8-1EA1-4BDA-A388-AB843B037307} = {A147D4D8-1EA1-4BDA-A388-AB843B037307}
-		{578FD0D9-41AA-4FA4-8D9B-4021978FA48D} = {578FD0D9-41AA-4FA4-8D9B-4021978FA48D}
-		{41ACBEF1-B159-4C49-A0F9-A07911617B52} = {41ACBEF1-B159-4C49-A0F9-A07911617B52}
-		{F59DF2F2-4E69-41E5-B63B-6D4ABF2CA6E1} = {F59DF2F2-4E69-41E5-B63B-6D4ABF2CA6E1}
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevILNet", "DevILNet\DevILNet.csproj", "{578FD0D9-41AA-4FA4-8D9B-4021978FA48D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GomLib", "GomLib\GomLib.csproj", "{A147D4D8-1EA1-4BDA-A388-AB843B037307}"
@@ -34,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlimDXNet", "SlimDXNet\Slim
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexControl", "HexControl\HexControl.csproj", "{18F68579-1DF5-411F-9DFB-9DDC9515130E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PugTools", "Source\PugTools.csproj", "{C6399BF7-80CB-4A2E-8A84-3751A5E6E674}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,12 +34,6 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C6399BF7-80CB-4A2E-8A84-3751A5E6E674}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{C6399BF7-80CB-4A2E-8A84-3751A5E6E674}.Debug|x64.ActiveCfg = Debug|x64
-		{C6399BF7-80CB-4A2E-8A84-3751A5E6E674}.Debug|x64.Build.0 = Debug|x64
-		{C6399BF7-80CB-4A2E-8A84-3751A5E6E674}.Release|Any CPU.ActiveCfg = Release|x64
-		{C6399BF7-80CB-4A2E-8A84-3751A5E6E674}.Release|x64.ActiveCfg = Release|x64
-		{C6399BF7-80CB-4A2E-8A84-3751A5E6E674}.Release|x64.Build.0 = Release|x64
 		{578FD0D9-41AA-4FA4-8D9B-4021978FA48D}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{578FD0D9-41AA-4FA4-8D9B-4021978FA48D}.Debug|x64.ActiveCfg = Debug|x64
 		{578FD0D9-41AA-4FA4-8D9B-4021978FA48D}.Debug|x64.Build.0 = Debug|x64
@@ -96,6 +82,12 @@ Global
 		{18F68579-1DF5-411F-9DFB-9DDC9515130E}.Release|Any CPU.ActiveCfg = Release|x64
 		{18F68579-1DF5-411F-9DFB-9DDC9515130E}.Release|x64.ActiveCfg = Release|x64
 		{18F68579-1DF5-411F-9DFB-9DDC9515130E}.Release|x64.Build.0 = Release|x64
+		{C6399BF7-80CB-4A2E-8A84-3751A5E6E674}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{C6399BF7-80CB-4A2E-8A84-3751A5E6E674}.Debug|x64.ActiveCfg = Debug|x64
+		{C6399BF7-80CB-4A2E-8A84-3751A5E6E674}.Debug|x64.Build.0 = Debug|x64
+		{C6399BF7-80CB-4A2E-8A84-3751A5E6E674}.Release|Any CPU.ActiveCfg = Release|x64
+		{C6399BF7-80CB-4A2E-8A84-3751A5E6E674}.Release|x64.ActiveCfg = Release|x64
+		{C6399BF7-80CB-4A2E-8A84-3751A5E6E674}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
