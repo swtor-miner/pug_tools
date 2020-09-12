@@ -1,6 +1,7 @@
 C:\Users\Lee\Development\PugTools\PugTools.git\HexControl\Bin\BeWindowsFormsHexBox.dll
 C:\Users\Lee\Development\PugTools\PugTools.git\HexControl\Bin\BeWindowsFormsHexBox.pdb
 C:\Users\Lee\Development\PugTools\PugTools.git\HexControl\Bin\BeWindowsFormsHexBox.xml
+C:\Users\Lee\Development\PugTools\PugTools.git\HexControl\obj\x64\Debug\HexControl.csprojAssemblyReference.cache
 C:\Users\Lee\Development\PugTools\PugTools.git\HexControl\obj\x64\Debug\Be.Windows.Forms.HexBox.resources
 C:\Users\Lee\Development\PugTools\PugTools.git\HexControl\obj\x64\Debug\Be.Windows.Forms.Properties.Resources.resources
 C:\Users\Lee\Development\PugTools\PugTools.git\HexControl\obj\x64\Debug\HexControl.csproj.GenerateResource.cache
