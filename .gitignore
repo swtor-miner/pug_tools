@@ -1,13 +1,11 @@
 .vs/
 .vscode/
-BeWindowsFormsHexBox/Bin/
-BeWindowsFormsHexBox/obj/
+HexControl/Bin/
+HexControl/obj/
 ConsoleTools/Bin/
 ConsoleTools/obj/
 DevILNet/Bin/
 DevILNet/obj/
-glMatrixNet/Bin/
-glMatrixNet/obj/
 GomLib/Bin/
 GomLib/obj/
 HashDictionary/Bin/
@@ -15,8 +13,8 @@ HashDictionary/obj/
 ObjectListView/Bin/
 ObjectListView/obj/
 Source/obj/
-SlimDXFramework/Bin/
-SlimDXFramework/obj/
+SlimDXNet/Bin/
+SlimDXNet/obj/
 TorLib/Bin/
 TorLib/obj/
 *.pdb
