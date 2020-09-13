@@ -105,7 +105,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
             this.splitContainer1.Size = new System.Drawing.Size(1187, 633);
-            this.splitContainer1.SplitterDistance = 243;
+            this.splitContainer1.SplitterDistance = 300;
             this.splitContainer1.TabIndex = 0;
             // 
             // splitContainer4
@@ -127,7 +127,7 @@
             // 
             this.splitContainer4.Panel2.Controls.Add(this.treeViewFast1);
             this.splitContainer4.Size = new System.Drawing.Size(239, 629);
-            this.splitContainer4.SplitterDistance = 65;
+            this.splitContainer4.SplitterDistance = 85;
             this.splitContainer4.TabIndex = 0;
             // 
             // btnClearSearch
@@ -176,6 +176,7 @@
             this.treeViewFast1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.treeViewFast1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeViewFast1.ImageIndex = 0;
             this.treeViewFast1.ImageList = this.imageList1;
             this.treeViewFast1.Location = new System.Drawing.Point(0, 3);
@@ -228,6 +229,7 @@
             this.olvColumn1,
             this.olvColumn2,
             this.olvColumn3});
+            this.treeListView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeListView1.GridLines = true;
             this.treeListView1.Location = new System.Drawing.Point(3, 3);
             this.treeListView1.Name = "treeListView1";
@@ -248,7 +250,7 @@
             this.olvColumn1.AspectName = "displayName";
             this.olvColumn1.CellPadding = null;
             this.olvColumn1.Text = "Name";
-            this.olvColumn1.Width = 144;
+            this.olvColumn1.Width = 200;
             // 
             // olvColumn2
             // 
@@ -271,6 +273,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox2.BackColor = System.Drawing.Color.White;
             this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.pictureBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox2.Image = global::PugTools.Properties.Resources.LoadingImage;
             this.pictureBox2.Location = new System.Drawing.Point(3, 3);
             this.pictureBox2.Name = "pictureBox2";
@@ -335,7 +338,7 @@
             this.splitContainer3.Panel2.Controls.Add(this.txtExtractPath);
             this.splitContainer3.Panel2.Controls.Add(this.btnExtract);
             this.splitContainer3.Size = new System.Drawing.Size(221, 629);
-            this.splitContainer3.SplitterDistance = 359;
+            this.splitContainer3.SplitterDistance = 300;
             this.splitContainer3.TabIndex = 0;
             // 
             // dataGridView1
@@ -347,6 +350,7 @@
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Enabled = false;
             this.dataGridView1.Location = new System.Drawing.Point(3, 3);
             this.dataGridView1.Name = "dataGridView1";
