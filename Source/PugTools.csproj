@@ -465,6 +465,6 @@
     <Copy SourceFiles="$(MSBuildProjectDirectory)\..\DevILNet\Lib\x64\ILU.dll" DestinationFolder="$(TargetDir)" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
     <Copy SourceFiles="$(MSBuildProjectDirectory)\..\GomLib\gom_type_names.xml" DestinationFolder="$(TargetDir)" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
     <MakeDir Directories="$(TargetDir)\Hash" Condition="!Exists('$(TargetDir)\Hash')" />
-	<Copy SourceFiles="$(MSBuildProjectDirectory)\..\Current Hash List\hashes_filename.bin.gz" DestinationFolder="$(TargetDir)\Hash" Condition="!Exists('$(TargetDir)\Hash\hashes_filename.bin.gz')"/>
+	  <Copy SourceFiles="$(MSBuildProjectDirectory)\..\CurrentHashList\hashes_filename.bin.gz" DestinationFolder="$(TargetDir)\Hash" Condition="!Exists('$(TargetDir)\Hash\hashes_filename.bin.gz')"/>
   </Target>
 </Project>
