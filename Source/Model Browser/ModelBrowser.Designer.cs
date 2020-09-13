@@ -103,7 +103,7 @@
             this.splitContainerLeft.Name = "splitContainerLeft";
             this.splitContainerLeft.Orientation = System.Windows.Forms.Orientation.Horizontal;
             this.splitContainerLeft.Size = new System.Drawing.Size(160, 561);
-            this.splitContainerLeft.SplitterDistance = 491;
+            this.splitContainerLeft.SplitterDistance = 400;
             this.splitContainerLeft.TabStop = false;
             // 
             // splitContainerLeft.Panel1
@@ -115,6 +115,7 @@
             this.treeViewList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.treeViewList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeViewList.Enabled = false;
             this.treeViewList.ImageIndex = 0;
             this.treeViewList.ImageList = this.imageList1;
@@ -204,6 +205,7 @@
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.renderPanel.Controls.Add(this.pictureBox1);
+            this.renderPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.renderPanel.Location = new System.Drawing.Point(3, 3);
             this.renderPanel.MouseHover += new System.EventHandler(this.RenderPanel_MouseHover);
             this.renderPanel.Name = "renderPanel";
@@ -217,6 +219,7 @@
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox1.BackColor = System.Drawing.Color.White;
+            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox1.Image = global::PugTools.Properties.Resources.LoadingImage;
             this.pictureBox1.Location = new System.Drawing.Point(3, 3);
             this.pictureBox1.Name = "pictureBox1";
@@ -235,8 +238,8 @@
             this.splitContainerRight.Location = new System.Drawing.Point(0, 0);
             this.splitContainerRight.Name = "splitContainerRight";
             this.splitContainerRight.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            this.splitContainerRight.Size = new System.Drawing.Size(143, 583);
-            this.splitContainerRight.SplitterDistance = 343;
+            this.splitContainerRight.Size = new System.Drawing.Size(109, 583);
+            this.splitContainerRight.SplitterDistance = 450;
             this.splitContainerRight.TabStop = false;
             // 
             // splitContainerRight.Panel1
@@ -249,6 +252,7 @@
             this.tvfDataViewer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.tvfDataViewer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tvfDataViewer.Enabled = false;
             this.tvfDataViewer.Location = new System.Drawing.Point(3, 3);
             this.tvfDataViewer.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TvfDataViewer_MouseUp);
@@ -269,6 +273,7 @@
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvDataViewer.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvDataViewer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvDataViewer.Enabled = false;
             this.dgvDataViewer.Location = new System.Drawing.Point(3, 3);
             this.dgvDataViewer.Name = "dgvDataViewer";
