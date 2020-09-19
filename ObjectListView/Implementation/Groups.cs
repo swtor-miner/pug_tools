@@ -592,8 +592,8 @@ namespace BrightIdeasSoftware
             if (imageSelector == null || ListView == null || ListView.GroupImageList == null)
                 return -1;
 
-            if (imageSelector is int)
-                return (int)imageSelector;
+            if (imageSelector is int @int)
+                return @int;
 
             if (imageSelector is string imageSelectorAsString)
                 return ListView.GroupImageList.Images.IndexOfKey(imageSelectorAsString);

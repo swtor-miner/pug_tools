@@ -1892,6 +1892,7 @@ namespace PugTools
 
                     if (model.Contains(".xml"))
                     {
+                        // BW lies! They're not XML files but instead are nodes!
                         string dynFqn = model.Replace("/art/", "").Replace(".xml", "").Replace("/", ".");
                         GomObject dynObj = currentDom.GetObject(dynFqn);
                         if (dynObj != null)
@@ -2265,6 +2266,7 @@ namespace PugTools
                 if (tag.Obj != null)
                 {
                     GomObject obj = tag.Obj;
+                    if (obj.Name.Split('.').Last().Contains("_")) continue;
                     ItemAppearance itemData = (ItemAppearance)currentDom.appearanceLoader.Load(obj.Name);
                     items.Add(itemData);
                 }

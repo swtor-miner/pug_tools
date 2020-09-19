@@ -585,7 +585,7 @@ namespace PugTools
                 foreach (var curObject in currentObjects)
                 {
                     ProgressUpdate(i, count);
-                    var prevObject = previousDom.GetObject(Name);
+                    var prevObject = previousDom.GetObject(curObject.Name);
                     if (prevObject != null)
                     {
                         if (!prevObject.Equals(curObject))
