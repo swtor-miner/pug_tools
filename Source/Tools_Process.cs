@@ -91,7 +91,7 @@ namespace PugTools
                     GameObject curItm = LoadGameObject(currentDom, curObject, classOverride);
 
                     ProgressUpdate(i, count);
-                    var prevObject = previousDom.GetObject(Name);
+                    var prevObject = previousDom.GetObject(curObject.Name);
 
                     if (prevObject != null)
                     {
