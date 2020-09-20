@@ -346,15 +346,11 @@
             // 
             // txtRawView
             // 
-            this.txtRawView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtRawView.BackColor = System.Drawing.Color.White;
             this.txtRawView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtRawView.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtRawView.ForeColor = System.Drawing.Color.Black;
-            this.txtRawView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtRawView.Location = new System.Drawing.Point(3, 3);
+            this.txtRawView.Location = new System.Drawing.Point(0, 0);
             this.txtRawView.Multiline = true;
             this.txtRawView.Name = "txtRawView";
             this.txtRawView.ScrollBars = System.Windows.Forms.ScrollBars.Both;
@@ -377,7 +373,7 @@
             this.toolStripStatusLabelLeft2,
             this.toolStripProgressBar1,
             this.toolStripStatusLabelRight});
-            this.txtRawView.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.statusStrip1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.statusStrip1.Location = new System.Drawing.Point(0, 607);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(707, 22);
