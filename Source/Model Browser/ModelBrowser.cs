@@ -980,6 +980,10 @@ namespace PugTools
                                 // Check for exclusions first
                                 CheckForExclusions(model, rule.tags, ref excluded);
 
+                                // Check if appSlotHair contains "pctogruta"
+                                if (!excluded && models.ContainsKey("appSlotHair")
+                                    && models["appSlotHair"].filename.Contains("pctogruta")) excluded = true;
+
                                 // Check if head model should be disabled
                                 TagModelAsDisabled(excluded, "appSlotFace", rule.tags, ref model);
                             }
@@ -1076,6 +1080,7 @@ namespace PugTools
 
                                 // Check if face model should be disabled
                                 TagModelAsDisabled(excluded, "appSlotHead", rule.tags, ref model);
+                                TagModelAsDisabled(excluded, "appSlotHair", rule.tags, ref model);
                             }
                             break;
                     }
