@@ -17,7 +17,7 @@ namespace FileFormats
 
         public Dictionary<ulong, AssetInstance> InstancesById { get; set; }
         public Dictionary<ulong, List<AssetInstance>> InstancesByAssetId { get; set; }
-        public Dictionary<ulong, List<AssetInstance1>> InstancesByParentId { get; set; }
+        public Dictionary<ulong, List<AssetInstance>> InstancesByParentId { get; set; }
 
         public Room(File roomDat, string roomName, Area area)
         {
@@ -29,7 +29,7 @@ namespace FileFormats
 
             InstancesByAssetId = new Dictionary<ulong, List<AssetInstance>>();
             InstancesById = new Dictionary<ulong, AssetInstance>();
-            InstancesByParentId = new Dictionary<ulong, List<AssetInstance1>>();
+            InstancesByParentId = new Dictionary<ulong, List<AssetInstance>>();
         }
 
         public void Read()
@@ -77,7 +77,7 @@ namespace FileFormats
                     currentInstance.AddProperty(ref br, name, type);
                 }
 
-                currentInstance.ReadHeightMap();
+                // currentInstance.ReadHeightMap();
 
                 currentInstance.CalculateTransform();
 

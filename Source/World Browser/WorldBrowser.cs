@@ -24,6 +24,8 @@ namespace PugTools
         public Assets currentAssets;
         private DataObjectModel currentDom;
         private readonly Dictionary<string, NodeAsset> dataviewDict = new Dictionary<string, NodeAsset>();
+        private bool showDBO = true;
+        private HashFileInfo info;
         public Dictionary<string, GR2_Material> materials = new Dictionary<string, GR2_Material>();
         public Dictionary<ulong, GR2> models = new Dictionary<ulong, GR2>();
         List<object> mapAreaData = new List<object>();
@@ -143,20 +145,22 @@ namespace PugTools
 
         private void DisableUI()
         {
-            btnDataCollapse.Enabled = false;
+            treeViewFast1.Enabled = false;
             btnWorldBrowserHelp.Enabled = false;
             btnStopRender.Enabled = false;
-            treeViewFast1.Enabled = false;
+            btnDataCollapse.Enabled = false;
+            btnToggleDBO.Enabled = false;
             tvfDataViewer.Enabled = false;
             dgvDataViewer.Enabled = false;
         }
 
         private void EnableUI()
         {
-            btnDataCollapse.Enabled = true;
+            treeViewFast1.Enabled = true;
             btnWorldBrowserHelp.Enabled = true;
             btnStopRender.Enabled = true;
-            treeViewFast1.Enabled = true;
+            btnDataCollapse.Enabled = true;
+            btnToggleDBO.Enabled = true;
             tvfDataViewer.Enabled = true;
             dgvDataViewer.Enabled = true;
         }
@@ -193,7 +197,7 @@ namespace PugTools
                     Text = "World Browser - " + tag.displayName;
                     toolStripStatusLabel1.Text = "Loading Area.dat File...";
                     Refresh();
-                    HashFileInfo info = info1;
+                    info = info1;
                     await Task.Run(() => PreviewAREA(info));
                     BuildDataViewer();
                     renderPanel.Visible = true;
@@ -470,6 +474,7 @@ namespace PugTools
                                 {
                                     string modelPath = "/resources/" + asset.Path.Replace("\\", "/") + ".gr2";
                                     File modelFile = currentAssets.FindFile(modelPath);
+                                    if (modelFile == null) continue;
                                     Stream modelStream = modelFile.OpenCopyInMemory();
                                     BinaryReader br = new BinaryReader(modelStream);
                                     GR2 gr2_model = new GR2(br, instance.ID.ToString(), materials);
@@ -489,12 +494,6 @@ namespace PugTools
         }
 #pragma warning restore CS1998, CS4014
 
-        private void RenderPanel_MouseHover(object sender, EventArgs e)
-        {
-            if (!_closing)
-                renderPanel.Focus();
-        }
-
         private void WorldBrowser_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (render != null)
@@ -511,12 +510,6 @@ namespace PugTools
             Dispose();
         }
 
-        private void BtnWorldBrowserHelp_Click(object sender, EventArgs e)
-        {
-            WorldBrowserHelp formHelp = new WorldBrowserHelp();
-            formHelp.Show();
-        }
-
         public void SetStatusLabel(string message)
         {
             if (statusStrip1.InvokeRequired)
@@ -527,6 +520,27 @@ namespace PugTools
             {
                 toolStripStatusLabel1.Text = message;
             }
+        }
+
+        private void RenderPanel_MouseHover(object sender, EventArgs e)
+        {
+            if (!_closing)
+                renderPanel.Focus();
+        }
+
+        private void RenderPanel_Resize(object sender, EventArgs e)
+        {
+            if (panelRender != null)
+            {
+                if (renderPanel.Width != panelRender.ClientWidth || renderPanel.Height != panelRender.ClientHeight)
+                    panelRender.SetSize(renderPanel.Height, renderPanel.Width);
+            }
+        }
+
+        private void BtnWorldBrowserHelp_Click(object sender, EventArgs e)
+        {
+            WorldBrowserHelp formHelp = new WorldBrowserHelp();
+            formHelp.Show();
         }
 
         private void BtnStopRender_Click(object sender, EventArgs e)
@@ -543,15 +557,6 @@ namespace PugTools
             }
         }
 
-        private void RenderPanel_Resize(object sender, EventArgs e)
-        {
-            if (panelRender != null)
-            {
-                if (renderPanel.Width != panelRender.ClientWidth || renderPanel.Height != panelRender.ClientHeight)
-                    panelRender.SetSize(renderPanel.Height, renderPanel.Width);
-            }
-        }
-
         private void BtnDataCollapse_Click(object sender, EventArgs e)
         {
             bool current = splitContainer3.Panel2Collapsed;
@@ -564,6 +569,68 @@ namespace PugTools
             {
                 splitContainer3.Panel2Collapsed = true;
                 btnDataCollapse.Text = "Show Data Viewer";
+            }
+        }
+
+        private async void BtnToggleDBO_Click(object sender, EventArgs e)
+        {
+            if (showDBO)
+            {
+                if (panelRender != null)
+                {
+                    renderPanel.Visible = false;
+
+                    if (render != null)
+                    {
+                        panelRender.StopRender();
+                        render.Join();
+                        panelRender.Clear();
+                        panelRender.ignoreList = new List<string> {
+                            "collision", "dbo", "fadeportal", "occluder"
+                        };
+                        showDBO = false;
+                        await PreviewAREA(info);
+                        renderPanel.Visible = true;
+                        btnToggleDBO.Text = "Show DBO";
+                    }
+                    else
+                    {
+                        panelRender.ignoreList = new List<string> {
+                            "collision", "dbo", "fadeportal", "occluder"
+                        };
+                        showDBO = false;
+                        btnToggleDBO.Text = "Show DBO";
+                    }
+                }
+            }
+            else
+            {
+                if (panelRender != null)
+                {
+                    renderPanel.Visible = false;
+
+                    if (render != null)
+                    {
+                        panelRender.StopRender();
+                        render.Join();
+                        panelRender.Clear();
+                        panelRender.ignoreList = new List<string> {
+                            "collision", "fadeportal", "occluder"
+                        };
+                        showDBO = true;
+                        await PreviewAREA(info);
+                        renderPanel.Visible = true;
+                        btnToggleDBO.Text = "Hide DBO";
+                    }
+                    else
+                    {
+                        panelRender.ignoreList = new List<string> {
+                            "collision", "fadeportal", "occluder"
+                        };
+                        showDBO = true;
+                        btnToggleDBO.Text = "Hide DBO";
+                    }
+                }
             }
         }
 

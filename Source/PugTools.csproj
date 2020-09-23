@@ -286,6 +286,7 @@
     <Compile Include="World Browser\File Readers\AreaSpecification.cs" />
     <Compile Include="World Browser\File Readers\AssetData.cs" />
     <Compile Include="World Browser\File Readers\AssetInstance.cs" />
+    <Compile Include="World Browser\File Readers\DataView.cs" />
     <Compile Include="World Browser\File Readers\HeightMap.cs" />
     <Compile Include="World Browser\File Readers\RoomSpecification.cs" />
     <Compile Include="World Browser\View_Area.cs" />

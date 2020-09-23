@@ -29,9 +29,9 @@ namespace PugTools
         private GR2_Effect _fx;
         private readonly FpsCamera camera;
         private float cameraSpeed = 1.0f;
-        private readonly List<string> ignoreList = new List<string>
+        internal List<string> ignoreList = new List<string>
         {
-            "collision", "dbo", "fadeportal", "occluder"
+            "collision", "fadeportal", "occluder"
         };
         private List<PosNormalTexTan> vertices = new List<PosNormalTexTan>();
         private readonly List<GR2_Mesh_Vertex_Index> indexes = new List<GR2_Mesh_Vertex_Index>();
@@ -382,7 +382,6 @@ namespace PugTools
                         }
                         */
 
-
                         if (models.Keys.Contains(instance.assetID))
                         {
                             GR2 model = models[instance.assetID];
@@ -392,6 +391,8 @@ namespace PugTools
                             foreach (var mesh in model.meshes)
                             {
                                 // if (mesh.meshName.Contains("collision")) continue;
+
+                                // if (ignoreList.Any(x => mesh.meshName.Contains(x))) continue;
 
                                 foreach (GR2_Mesh_Piece piece in mesh.meshPieces)
                                 {
@@ -444,6 +445,8 @@ namespace PugTools
                                     foreach (var attachMesh in attachModel.meshes)
                                     {
                                         // if (attachMesh.meshName.Contains("collision")) continue;
+
+                                        // if (ignoreList.Any(x => attachMesh.meshName.Contains(x))) continue;
 
                                         foreach (GR2_Mesh_Piece attachPiece in attachMesh.meshPieces)
                                         {
@@ -615,6 +618,7 @@ namespace PugTools
                             foreach (var mesh in model.meshes)
                             {
                                 if (ignoreList.Any(x => mesh.meshName.Contains(x))) continue;
+                                // if (mesh.meshName.Contains("collision")) continue;
 
                                 vertices = new List<PosNormalTexTan>();
 
@@ -646,6 +650,8 @@ namespace PugTools
                                     foreach (var attachMesh in attachModel.meshes)
                                     {
                                         if (ignoreList.Any(x => attachMesh.meshName.Contains(x))) continue;
+
+                                        // if (attachMesh.meshName.Contains("collision")) continue;
 
                                         vertices = new List<PosNormalTexTan>();
 
