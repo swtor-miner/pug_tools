@@ -538,7 +538,7 @@
             // 
             this.gbxTools.Controls.Add(this.file_button);
             this.gbxTools.Controls.Add(this.btnNodeBrowser);
-            // this.gbxTools.Controls.Add(this.btnWorldBrowser);
+            this.gbxTools.Controls.Add(this.btnWorldBrowser);
             this.gbxTools.Controls.Add(this.btnModelBrowser);
             this.gbxTools.Controls.Add(this.btnAssetBrowser);
             this.gbxTools.Controls.Add(this.button1);
@@ -571,14 +571,14 @@
             // 
             // btnWorldBrowser
             // 
-            // this.btnWorldBrowser.Enabled = false;
-            // this.btnWorldBrowser.Location = new System.Drawing.Point(6, 77);
-            // this.btnWorldBrowser.Name = "btnWorldBrowser";
-            // this.btnWorldBrowser.Size = new System.Drawing.Size(108, 23);
-            // this.btnWorldBrowser.TabIndex = 49;
-            // this.btnWorldBrowser.Text = "World Browser";
-            // this.btnWorldBrowser.UseVisualStyleBackColor = true;
-            // this.btnWorldBrowser.Click += new System.EventHandler(this.BtnWorldBrowser_Click);
+            // this.btnWorldBrowser.Visible = false;
+            this.btnWorldBrowser.Location = new System.Drawing.Point(6, 77);
+            this.btnWorldBrowser.Name = "btnWorldBrowser";
+            this.btnWorldBrowser.Size = new System.Drawing.Size(108, 23);
+            this.btnWorldBrowser.TabIndex = 49;
+            this.btnWorldBrowser.Text = "World Browser";
+            this.btnWorldBrowser.UseVisualStyleBackColor = true;
+            this.btnWorldBrowser.Click += new System.EventHandler(this.BtnWorldBrowser_Click);
             // 
             // btnModelBrowser
             // 

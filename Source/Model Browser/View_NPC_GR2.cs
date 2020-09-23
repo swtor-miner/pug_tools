@@ -590,8 +590,7 @@ namespace PugTools
 
             foreach (var model in models)
             {
-                if (model.Value.enabled == false)
-                    continue;
+                if (!model.Value.enabled) continue;
 
                 var mvMatrix = new Matrix();
                 mvMatrix = model.Value.GetTransform();
@@ -696,12 +695,12 @@ namespace PugTools
         public void SetMaterial(GR2_Material selectedMaterial)
         {
             List<EffectTechnique> derivedList = new List<EffectTechnique>() {
-        _fx.Generic,
-        _fx.Eye,
-        _fx.Garment,
-        _fx.HairC,
-        _fx.SkinB
-    };
+                _fx.Generic,
+                _fx.Eye,
+                _fx.Garment,
+                _fx.HairC,
+                _fx.SkinB
+                };
 
             if (derivedList.Any(x => activeTech == x))
             {

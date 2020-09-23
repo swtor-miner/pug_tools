@@ -242,14 +242,14 @@ namespace PugTools
 
         private void CheckBox1_CheckedChanged(object sender, EventArgs e)
         {
-            verbose = (chkVerbose.CheckState == CheckState.Checked);
+            verbose = chkVerbose.CheckState == CheckState.Checked;
             //if (verbose) prefix = "Verbose";
             //else prefix = "";
         }
 
         private void RemoveElementsCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            removeUnchangedElements = (chkRemoveElements.CheckState == CheckState.Checked);
+            removeUnchangedElements = chkRemoveElements.CheckState == CheckState.Checked;
         }
 
         private void CbxExtractFormat_SelectedIndexChanged(object sender, EventArgs e)
@@ -414,12 +414,12 @@ namespace PugTools
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
         }
 
-        // private void BtnWorldBrowser_Click(object sender, EventArgs e)
-        // {
-        //     bool usePTS = this.usePTSAssets.Checked;
-        //     Form WorldBrowser = new WorldBrowser(this.textBoxAssetsFolder.Text, usePTS);
-        //     WorldBrowser.Show();
-        // }
+        private void BtnWorldBrowser_Click(object sender, EventArgs e)
+        {
+            bool usePTS = usePTSAssets.Checked;
+            Form WorldBrowser = new WorldBrowser(textBoxAssetsFolder.Text, usePTS);
+            WorldBrowser.Show();
+        }
 
         private void File_button_Click(object sender, EventArgs e)
         {

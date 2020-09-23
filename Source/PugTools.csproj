@@ -282,6 +282,25 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Tools\HelperFunctions.cs" />
+    <!-- ROOT -> WORLD BROWSER -->
+    <Compile Include="World Browser\File Readers\AreaSpecification.cs" />
+    <Compile Include="World Browser\File Readers\AssetData.cs" />
+    <Compile Include="World Browser\File Readers\AssetInstance.cs" />
+    <Compile Include="World Browser\File Readers\HeightMap.cs" />
+    <Compile Include="World Browser\File Readers\RoomSpecification.cs" />
+    <Compile Include="World Browser\View_Area.cs" />
+    <Compile Include="World Browser\WorldBrowser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="World Browser\WorldBrowser.Designer.cs">
+      <DependentUpon>WorldBrowser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="World Browser\WorldBrowserHelp.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="World Browser\WorldBrowserHelp.Designer.cs">
+      <DependentUpon>WorldBrowserHelp.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Asset Browser\Icons\COMPUTER.ICO" />
@@ -364,6 +383,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Transparent.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="World Browser\WorldBrowser.resx">
+      <DependentUpon>WorldBrowser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="World Browser\WorldBrowserHelp.resx">
+      <DependentUpon>WorldBrowserHelp.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -465,6 +490,6 @@
     <Copy SourceFiles="$(MSBuildProjectDirectory)\..\DevILNet\Lib\x64\ILU.dll" DestinationFolder="$(TargetDir)" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
     <Copy SourceFiles="$(MSBuildProjectDirectory)\..\GomLib\gom_type_names.xml" DestinationFolder="$(TargetDir)" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
     <MakeDir Directories="$(TargetDir)\Hash" Condition="!Exists('$(TargetDir)\Hash')" />
-	  <Copy SourceFiles="$(MSBuildProjectDirectory)\..\CurrentHashList\hashes_filename.bin.gz" DestinationFolder="$(TargetDir)\Hash" Condition="!Exists('$(TargetDir)\Hash\hashes_filename.bin.gz')"/>
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\..\CurrentHashList\hashes_filename.bin.gz" DestinationFolder="$(TargetDir)\Hash" Condition="!Exists('$(TargetDir)\Hash\hashes_filename.bin.gz')" />
   </Target>
 </Project>

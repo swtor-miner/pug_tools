@@ -36,20 +36,21 @@ namespace FileFormats
         public ShaderResourceView paletteSRV;
         public string paletteMaskDDS;
         public ShaderResourceView paletteMaskSRV;
+        public string palette1XML;
+        public string palette2XML;
         public Vector4 palette1;
         public Vector4 palette2;
-        public Vector4 palette1MetSpec;
         public Vector4 palette1Spec;
-        public string palette1XML;
-        public Vector4 palette2MetSpec;
         public Vector4 palette2Spec;
-        public string palette2XML;
+        public Vector4 palette1MetSpec;
+        public Vector4 palette2MetSpec;
         public bool parsed;
         public string polytype;
         public string rotationDDS;
         public ShaderResourceView rotationSRV;
         public bool useEmissive;
         public bool useReflection;
+        public string visibility;
 
 
         public GR2_Material(string materialName)
@@ -134,10 +135,10 @@ namespace FileFormats
                 XmlDocument material = new XmlDocument();
                 material.Load(materialStream);
 
-                string matType = material.SelectSingleNode("/Material/Derived").InnerText;
+                derived = material.SelectSingleNode("/Material/Derived").InnerText;
                 polytype = material.SelectSingleNode("/Material/PolyType").InnerText;
+                visibility = material.SelectSingleNode("/Material/Visibility").InnerText;
 
-                derived = matType;
                 string alphaMode = material.SelectSingleNode("/Material/AlphaMode").InnerText;
                 string alphaTestValue = material.SelectSingleNode("/Material/AlphaTestValue").InnerText;
 
@@ -209,7 +210,7 @@ namespace FileFormats
                         useEmissive = Convert.ToBoolean(value);
                     }
 
-                    if (matType == "Garment" || matType == "GarmentScrolling" || matType == "SkinB" || matType == "HairC" || matType == "Eye")
+                    if (derived == "Garment" || derived == "GarmentScrolling" || derived == "SkinB" || derived == "HairC" || derived == "Eye")
                     {
                         if (semantic == "PaletteMap")
                         {
@@ -263,7 +264,7 @@ namespace FileFormats
                         }
                     }
 
-                    if (matType == "SkinB")
+                    if (derived == "SkinB")
                     {
                         if (semantic == "ComplexionMap")
                         {
@@ -313,7 +314,7 @@ namespace FileFormats
                         }
                     }
 
-                    if (matType == "Glass")
+                    if (derived == "Glass")
                     {
                         if (semantic == "UsesReflection")
                         {
