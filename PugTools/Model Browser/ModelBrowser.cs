@@ -83,6 +83,8 @@ namespace tor_tools
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             //Get the relevant nodes from the new dom.
+            if (currentDom == null)
+                throw new Exception("Assets didn't load: " + String.Join(", ", e));
             List<GomObject> itmList = currentDom.GetObjectsStartingWith("npp.")
                     .Union(currentDom.GetObjectsStartingWith("ipp."))
                     .Union(currentDom.GetObjectsStartingWith("itm."))
