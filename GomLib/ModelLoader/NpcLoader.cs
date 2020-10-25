@@ -97,9 +97,6 @@ namespace GomLib.ModelLoader
                 {
                     switch (toughness)
                     {
-                        case Toughness.None:
-                            ToughnessLocalizationMap.Add(toughness, null);
-                            break;
                         case Toughness.Standard:
                             ToughnessLocalizationMap.Add(toughness, miscTable.GetLocalizedText(1002634345447535, "str.gui.auctionhouse"));
                             break;
@@ -117,6 +114,10 @@ namespace GomLib.ModelLoader
                         case Toughness.Boss3:
                         case Toughness.Boss4:
                             ToughnessLocalizationMap.Add(toughness, portTable.GetLocalizedText(946292964458567, "str.gui.portraitbar"));
+                            break;
+                        case Toughness.None:
+                        default:
+                            ToughnessLocalizationMap.Add(toughness, null);
                             break;
                     }
                 }
@@ -181,7 +182,6 @@ namespace GomLib.ModelLoader
             {
                 npc.Toughness = ToughnessExtensions.ToToughness(toughnessEnum);
             }
-
             npc.LocalizedToughness = ToughnessLocalizationMap[npc.Toughness];
 
             // Load Packages
