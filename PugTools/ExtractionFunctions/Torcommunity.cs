@@ -748,7 +748,18 @@ namespace tor_tools
         private JProperty AbilityTokensToMinifiedJSON(Dictionary<int, Dictionary<string, object>> descTokens)
         {
             if (descTokens == null) return new JProperty(new JProperty("Tokens"));
+
             JProperty jDescTokens = new JProperty("Tokens", new JArray(descTokens
+                .Select(x => new JObject(
+                    new JProperty("TokenId", x.Key),
+                    new JProperty("TokenData", x.Value.ContainsKey("ablParsedDescriptionToken") ? JsonConvert.SerializeObject(x.Value["ablParsedDescriptionToken"]) : ""),
+                    new JProperty("TokenType", x.Value.ContainsKey("ablDescriptionTokenType") ? x.Value["ablDescriptionTokenType"].ToString().Replace("ablDescriptionTokenType", "") : "")
+                        )
+                    )
+                )
+            );
+
+            /* JProperty jDescTokens = new JProperty("Tokens", new JArray(descTokens
                 .Select(x => new JObject(
                     new JProperty("TokenId", x.Key),
                     new JProperty("TokenData", JsonConvert.SerializeObject(x.Value["ablParsedDescriptionToken"])),
@@ -757,6 +768,7 @@ namespace tor_tools
                     )
                 )
             );
+            */
 
             return jDescTokens;
         }
@@ -1039,9 +1051,17 @@ namespace tor_tools
 
             for (var i = 0; i < skill.DescriptionTokens.Count; i++)
             {
-                var id = skill.DescriptionTokens.ElementAt(i).Key;
-                var value = skill.DescriptionTokens.ElementAt(i).Value["ablParsedDescriptionToken"].ToString();
-                var type = skill.DescriptionTokens.ElementAt(i).Value["ablDescriptionTokenType"].ToString().Replace("ablDescriptionTokenType", "");
+                // var id = skill.DescriptionTokens.ElementAt(i).Key;
+                // var value = skill.DescriptionTokens.ElementAt(i).Value["ablParsedDescriptionToken"].ToString();
+                // var type = skill.DescriptionTokens.ElementAt(i).Value["ablDescriptionTokenType"].ToString().Replace("ablDescriptionTokenType", "");
+                var curToken = skill.DescriptionTokens.ElementAt(i);
+                var id = curToken.Key;
+                var value = "";
+                if (curToken.Value.ContainsKey("ablParsedDescriptionToken"))
+                    value = curToken.Value["ablParsedDescriptionToken"].ToString();
+                var type = "";
+                if (curToken.Value.ContainsKey("ablDescriptionTokenType"))
+                    type = curToken.Value["ablDescriptionTokenType"].ToString().Replace("ablDescriptionTokenType", "");
                 var start = retval.IndexOf("<<" + id);
 
                 if (start == -1)
