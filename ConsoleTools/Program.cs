@@ -46,6 +46,7 @@ namespace ConsoleTools
             { "Items", "item"},
             //{ "ItemAppearances", "ipp" },
             { "Quests", "mission"},
+            { "MapNotes", "mapnote"},
             { "MtxStoreFronts", "mtx"},
             { "NewCompanions", "newcompanion"},
             { "Npcs", "npc"},
@@ -108,7 +109,7 @@ namespace ConsoleTools
                 Console.WriteLine(String.Join(", ", args));
                 if(args.Count() == 0)
                 {
-                    args = new string[]{ "5.4PTS3", "e:\\swtor_db\\patches\\", "J:\\swtor_db\\processed\\", "false"};
+                    args = new string[]{ "5.6 PTS19", "e:\\swtor_db\\patches\\", "e:\\swtor_db\\processed\\", "true"};
                 }
                 patch = args[0];
                 patchDir = args[1];
@@ -117,7 +118,7 @@ namespace ConsoleTools
 
                 if (processAll)
                 {
-                    var patches = System.Xml.Linq.XDocument.Load(@"pts.xml"); //@"patches.xml");
+                    var patches = System.Xml.Linq.XDocument.Load(@"patches.xml");
                     var nodes = patches.Element("patches").Elements("patch");
                     //HashSet<string> filenames = new HashSet<string>();
                     //string[] langs = { "en-us", "fr-fr", "de-de"};
@@ -184,6 +185,10 @@ namespace ConsoleTools
                     foreach (var node in nodes)
                     {
                         patch = node.Attribute("version").Value;
+                        //if(patch == "1.0.2")
+                        //{
+                        //    break;
+                        //}
                         if (node.Attribute("processed") != null)
                         {
                             Console.WriteLine(String.Format("Skipping {0}", patch));
@@ -218,45 +223,44 @@ namespace ConsoleTools
                         }
                         Console.SetOut(writer);
                         Console.WriteLine(start.ToString());
-
                         ProcessAssets(String.Format("{0}{1}\\Assets\\", patchDir, patch));
 
-                        using (Process deltaProcess = new Process())
-                        {
-                            //Maybe this shouldn't be hard coded? Could do this in memory instead to.
-                            deltaProcess.StartInfo.FileName = "php.exe";
+                        //using (Process deltaProcess = new Process())
+                        //{
+                        //    //Maybe this shouldn't be hard coded? Could do this in memory instead to.
+                        //    deltaProcess.StartInfo.FileName = "php.exe";
 
-                            deltaProcess.StartInfo.CreateNoWindow = false;
-                            deltaProcess.StartInfo.UseShellExecute = false;
-                            deltaProcess.StartInfo.RedirectStandardOutput = true;
-                            deltaProcess.StartInfo.RedirectStandardError = true;
-                            deltaProcess.StartInfo.WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-                            deltaProcess.StartInfo.Arguments = String.Format("{0} {1}", "u_import.php", outputDir);
-                            deltaProcess.Start();
-                            string output = deltaProcess.StandardOutput.ReadToEnd();
-                            Console.WriteLine(output);
-                            deltaProcess.WaitForExit();
-                        }
-                        //Console.SetOut(oldOut);
-                        using (Process dumpProcess = new Process())
-                        {
-                            //Maybe this shouldn't be hard coded? Could do this in memory instead to.
-                            dumpProcess.StartInfo.FileName = "mongodump.exe";
+                        //    deltaProcess.StartInfo.CreateNoWindow = false;
+                        //    deltaProcess.StartInfo.UseShellExecute = false;
+                        //    deltaProcess.StartInfo.RedirectStandardOutput = true;
+                        //    deltaProcess.StartInfo.RedirectStandardError = true;
+                        //    deltaProcess.StartInfo.WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                        //    deltaProcess.StartInfo.Arguments = String.Format("{0} {1}", "u_import.php", outputDir);
+                        //    deltaProcess.Start();
+                        //    string output = deltaProcess.StandardOutput.ReadToEnd();
+                        //    Console.WriteLine(output);
+                        //    deltaProcess.WaitForExit();
+                        //}
 
-                            dumpProcess.StartInfo.CreateNoWindow = false;
-                            dumpProcess.StartInfo.UseShellExecute = false;
-                            dumpProcess.StartInfo.RedirectStandardOutput = true;
-                            dumpProcess.StartInfo.RedirectStandardError = true;
-                            dumpProcess.StartInfo.WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-                            dumpProcess.StartInfo.Arguments = String.Format("--gzip --out {0}backup\\", outputDir);
-                            dumpProcess.OutputDataReceived += new DataReceivedEventHandler(OutputHandler);
-                            dumpProcess.ErrorDataReceived += new DataReceivedEventHandler(OutputHandler);
-                            dumpProcess.Start();
-                            dumpProcess.BeginOutputReadLine();
-                            dumpProcess.BeginErrorReadLine();
-                            dumpProcess.WaitForExit();
-                        }
-                        //Console.SetOut(writer);
+                        ////Console.SetOut(oldOut);
+                        //using (Process dumpProcess = new Process())
+                        //{
+                        //    //Maybe this shouldn't be hard coded? Could do this in memory instead to.
+                        //    dumpProcess.StartInfo.FileName = "mongodump.exe";
+                        //    dumpProcess.StartInfo.CreateNoWindow = false;
+                        //    dumpProcess.StartInfo.UseShellExecute = false;
+                        //    dumpProcess.StartInfo.RedirectStandardOutput = true;
+                        //    dumpProcess.StartInfo.RedirectStandardError = true;
+                        //    dumpProcess.StartInfo.WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                        //    dumpProcess.StartInfo.Arguments = String.Format("--gzip --out {0}backup\\", outputDir);
+                        //    dumpProcess.OutputDataReceived += new DataReceivedEventHandler(OutputHandler);
+                        //    dumpProcess.ErrorDataReceived += new DataReceivedEventHandler(OutputHandler);
+                        //    dumpProcess.Start();
+                        //    dumpProcess.BeginOutputReadLine();
+                        //    dumpProcess.BeginErrorReadLine();
+                        //    dumpProcess.WaitForExit();
+                        //}
+                        ////Console.SetOut(writer);
                         var end = DateTime.Now;
                         var span = end - start;
                         Console.WriteLine(String.Format("Processed in {0} seconds", Math.Round(span.TotalSeconds, 2)));
@@ -361,29 +365,29 @@ namespace ConsoleTools
                 getPrototypeObjects("Collections", "colCollectionItemsPrototype", "colCollectionItemsData");
                 getObjects("cnv.", "Conversations");
                 getObjects("dec.", "Decorations");
-                //getObjects("eff.", "Effects");
-                //getObjects("enc.", "Encounters");
                 getObjects("itm.", "Items");
-                //getObjects("ipp.", "ItemAppearances");
                 getObjects("npc.", "Npcs");
-                //getObjects("npp.", "NpcAppearances");
                 getObjects("qst.", "Quests");
                 getObjects("schem.", "Schematics");
                 getPrototypeObjects("SetBonuses", "itmSetBonusesPrototype", "itmSetBonuses");
-                //getObjects("spn.", "Spawners");
                 getObjects("apt.", "Strongholds");
                 getObjects("tal.", "Talents");
                 getObjects("nco.", "NewCompanions");
                 getPrototypeObjects("Companions", "chrCompanionInfo_Prototype", "chrCompanionInfoData");
                 getPrototypeObjects("MtxStoreFronts", "mtxStorefrontInfoPrototype", "mtxStorefrontData");
 
+                //getObjects("eff.", "Effects");
+                //getObjects("enc.", "Encounters");
+                //getObjects("ipp.", "ItemAppearances");
+                //getObjects("spn.", "Spawners");
+                //getObjects("npp.", "NpcAppearances");
                 //Reload hash dict.
                 //TorLib.HashDictionaryInstance.Instance.Unload();
                 //TorLib.HashDictionaryInstance.Instance.Load();
                 //TorLib.HashDictionaryInstance.Instance.dictionary.CreateHelpers();
                 getPrototypeObjects("Ships", "scFFShipsDataPrototype", "scFFShipsData");
                 getObjects("plc.", "Placeables");
-                getReqFiles();
+                //getReqFiles();
                 getIcons();
                 TorLib.HashDictionaryInstance.Instance.dictionary.SaveHashList();
                 TorLib.HashDictionaryInstance.Instance.Unload();

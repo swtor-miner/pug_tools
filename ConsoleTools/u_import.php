@@ -21,7 +21,7 @@ $dbname = 'torc_db';
 //$dbname = 'torc_test';
 
 // Get the collection cursor
-//$backup_db = $m->torc_versions;
+$backup_db = 'torc_versions';
 
 $genericSorts = [
     //[[ '$**' => "text" ], [ 'name' => "TextIndex" ]],
@@ -235,6 +235,9 @@ $data = [
         //    ['ReqArtEquipAuth' => 1],
         //])
     ],
+    #MapNotes
+    ['mapnote', 'MapNotes',
+    ],
     #Missions
     ['mission', 'Quests',
         //array_merge($genericSorts2, [
@@ -414,15 +417,32 @@ foreach($data as &$row) {
     if($row[2] !== null)
         $row[2] = array_merge($row[2],  $version);
     $colname = $row[0];
-    $c_mongo = (new MongoDB\Client)->$dbname->$colname;
+    $c_mongo = (new MongoDB\Client)->selectCollection(
+        $dbname,
+        $row[0],
+        ['typeMap' => [
+            'array' => 'array',
+            'document' => 'array',
+            'root' => 'array',
+
+        ]]);
+    $v_mongo = (new MongoDB\Client)->selectCollection(
+        $backup_db,
+        $row[0],
+        ['typeMap' => [
+            'array' => 'array',
+            'document' => 'array',
+            'root' => 'array',
+
+        ]]);
     if($dropMongo){ 
         $c_mongo->drop();
+        $v_mongo->drop();
     }
-    //$v_mongo = $backup_db->$row[0];
 
     $c_mongo ->createIndex(array('Base62Id' => 1), array('unique' => true));
     $c_mongo ->createIndex(array('removed_in' => 1));
-    //$v_mongo ->createIndex(array('Base62Id' => 1, 'current_version' => 1), array('unique' => true));
+    $v_mongo ->createIndex(array('Base62Id' => 1, 'current_version' => 1), array('unique' => true));
 
     $varId = $row[1];
     if(file_exists("json/Full$varId.json.gz")) {
@@ -444,13 +464,14 @@ foreach($data as &$row) {
                     $decoded = json_decode($line, true);
                     $decoded["hash"] = $hash;
                     $found = $c_mongo->findOne(array('Base62Id' => $bId));
-                    $decoded["previous_versions"] = [];
                     $decoded["current_version"] = $patch_version;
                     //$decoded["last_seen"] = $patch_version;
                     if($found == NULL) {
                         //echo "new[$bId] ";
+                        $decoded["previous_versions"] = false;
                         $decoded["first_seen"] = $patch_version;
                         $c_mongo->insertOne($decoded);
+                        $v_mongo->insertOne($decoded);
                     }
                     else {
                         if($found["hash"] == $hash) {
@@ -461,6 +482,7 @@ foreach($data as &$row) {
 //                            );
                             continue;
                         }
+                        unset($found["_id"]);
                         $foundflattented = flattenObject($found);
                         $prevVersion = $found['current_version'];
                         $first_seen = $found["first_seen"];
@@ -469,7 +491,7 @@ foreach($data as &$row) {
                         unset_version($changes);
                         if(count($changes) > 0){
                             //echo "changed[$bId] ";
-                            $decoded["previous_versions"][] = $prevVersion;
+                            $decoded["previous_versions"] = true;
                             $decoded["first_seen"] = $first_seen;
                             $decoded["changed_fields"] = array_keys($changes);
                             try {
@@ -482,8 +504,9 @@ foreach($data as &$row) {
                                 // overwrite the entry with the new version in the current db
                                 $c_mongo->updateOne(
                                     ["Base62Id" => $bId],
-                                    $decoded
+                                    ['$set' => $decoded]
                                 );
+                                $v_mongo->insertOne($decoded);
                             }
                             catch(Exception $e) {
                               echo $e->getMessage() , "\n";
